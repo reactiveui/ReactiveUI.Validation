@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Class1.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Collections\" />
+    <Folder Include="Components\" />
+    <Folder Include="Contexts\" />
+    <Folder Include="Abstractions\" />
+    <Folder Include="Comparators\" />
+    <Folder Include="Extensions\" />
+    <Folder Include="Formatters\" />
+    <Folder Include="Helpers\" />
+    <Folder Include="States\" />
+    <Folder Include="TemplateGenerators\" />
+    <Folder Include="ValidationBindings\" />
+    <Folder Include="Components\Abstractions\" />
+    <Folder Include="Formatters\Abstractions\" />
+    <Folder Include="ValidationBindings\Abstractions\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI" Version="9.11.1" />
+  </ItemGroup>
+</Project>
