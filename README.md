@@ -121,8 +121,8 @@ In essence, its a relatively simple model of the ValidationContext containing a 
 
 ## Authors
 
-* **jcmm33** - *Initial work* - [PurpleBooth](https://github.com/jcmm33)
-* **Àlex Martínez** - *Repository maintenance* - [PurpleBooth](https://github.com/alexmartinezm)
+* **jcmm33** - *Initial work* - [GitHub profile](https://github.com/jcmm33)
+* **Àlex Martínez** - *Repository maintenance* - [GitHub profile](https://github.com/alexmartinezm)
 
 ## Copyright and license
 
