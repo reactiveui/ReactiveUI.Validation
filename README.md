@@ -3,7 +3,7 @@
 Validation for ReactiveUI based solutions, functioning in a reactive way. This repository is based on [jcmm33's Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation).
 
 ## Setup
-* Available on NuGet: [ReactiveUI.Validation](https://www.nuget.org/packages/reactiveui-validation/)
+* Available on NuGet: [reactiveui-validation](https://www.nuget.org/packages/reactiveui-validation/)
 
 ## How to use
 
