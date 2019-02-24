@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>reactiveui-validation</id>
+    <version>1.0.0</version>
+    <title>Validations library for ReactiveUI</title>
+    <authors>Àlex Martínez Morón</authors>
+    <owners>alexmartinezm</owners>
+    <projectUrl>https://github.com/alexmartinezm/ReactiveUI.Validation</projectUrl>
+    <license>https://github.com/alexmartinezm/ReactiveUI.Validation/blob/master/LICENSE</license>
+    <iconUrl>https://github.com/alexmartinezm/ReactiveUI.Validation/blob/master/media/logo.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+      Validations library for ReactiveUI
+      Built against: 9.11.1
+    </description>
+    <summary>Validation for ReactiveUI based solutions, functioning in a reactive way.</summary>
+    <tags>reactiveui, validation-library, reactive-programming, xamarin-forms, netcore</tags>
+    <dependencies>
+      <dependency id="ReactiveUI" version="9.11.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="bin\Release\netstandard2.0\ReactiveUI.Validation.dll" target="lib\netstandard2.0" />
+    <file src="bin\Release\netstandard2.0\ReactiveUI.Validation.pdb" target="lib\netstandard2.0" />
+  </files>
+</package>

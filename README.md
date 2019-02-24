@@ -119,6 +119,10 @@ Validation for ReactiveUI based solutions, functioning in a reactive way. This r
 
 In essence, its a relatively simple model of the ValidationContext containing a list of IValidationComponent instances. An IValidationComponent provides an observable for ValidationState. Whenever validation state changes (either a transition of validity) or ValidationText changes, then a new value is pushed out.
 
+## Feedback
+
+Please use [GitHub issues](https://github.com/alexmartinezm/ReactiveUI.Validation/issues) for questions or comments.
+
 ## Authors
 
 * **jcmm33** - *Initial work* - [GitHub profile](https://github.com/jcmm33)
