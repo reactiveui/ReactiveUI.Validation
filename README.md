@@ -2,14 +2,17 @@
 
 Validation for ReactiveUI based solutions, functioning in a reactive way. This repository is based on [jcmm33's Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation).
 
-## How to use
+## Setup
+* Available on NuGet: [ReactiveUI.Validation](https://www.nuget.org/packages/reactiveui-validation/)
 
+## How to use
 
 * For those ViewModels which need validation, implement ISupportsValidation
 * Add validation rules to the ViewModel
 * Bind to the validation rules in the View
 
 ## Example
+
 1. Decorate existing ViewModel with ISupportsValidation, which has a single member, ValidationContext. The ValidationContext contains all of the functionality surrounding the validation of the ViewModel.  Most access to the specification of validation rules is performed through extension methods on the ISupportsValidation interface.
 
 ```
