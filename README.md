@@ -4,6 +4,7 @@ Validation for ReactiveUI based solutions, functioning in a reactive way. This r
 
 ## Setup
 * Available on NuGet: [reactiveui-validation](https://www.nuget.org/packages/reactiveui-validation/)
+* Android Extensions for ReactiveUI.Validation available on NuGet: [reactiveui-validation-droid](https://www.nuget.org/packages/reactiveui-validation-droid)
 
 ## How to use
 
