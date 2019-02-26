@@ -343,3 +343,16 @@ healthchecksdb
 
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
+
+# Tools
+tools/
+artifacts/
+
+# macOS
+.DS_Store
+
+# Test related
+src/*.Tests/API/*.received.txt
+
+# IntelliJ
+.idea/

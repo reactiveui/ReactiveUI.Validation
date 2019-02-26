@@ -1,29 +1,22 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFrameworks>MonoAndroid81;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;tizen40;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461;uap10.0.16299</TargetFrameworks>
   </PropertyGroup>
 
+
   <ItemGroup>
-    <Compile Remove="Class1.cs" />
+    <Compile Remove="Platforms\**\*.cs" />
+    <None Include="Platforms\**\*.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Collections\" />
-    <Folder Include="Components\" />
-    <Folder Include="Contexts\" />
-    <Folder Include="Abstractions\" />
-    <Folder Include="Comparators\" />
-    <Folder Include="Extensions\" />
-    <Folder Include="Formatters\" />
-    <Folder Include="Helpers\" />
-    <Folder Include="States\" />
-    <Folder Include="TemplateGenerators\" />
-    <Folder Include="ValidationBindings\" />
-    <Folder Include="Components\Abstractions\" />
-    <Folder Include="Formatters\Abstractions\" />
-    <Folder Include="ValidationBindings\Abstractions\" />
+
+  <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">  
+    <Compile Include="Platforms\Android\**\*.cs" />
+    <PackageReference Include="Xamarin.Android.Support.Design" Version="27.*" />
   </ItemGroup>
+
   <ItemGroup>
-    <PackageReference Include="ReactiveUI" Version="9.11.1" />
+    <PackageReference Include="ReactiveUI" Version="9.*" />
   </ItemGroup>
 </Project>
