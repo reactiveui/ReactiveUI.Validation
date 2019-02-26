@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveUI.Validation", "ReactiveUI.Validation\ReactiveUI.Validation.csproj", "{B62AABD0-22A4-470D-B6EB-F6B3EAE668DE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReactiveUI.Validation.Tests", "ReactiveUI.Validation.Tests\ReactiveUI.Validation.Tests.csproj", "{892D51D9-7A3F-4E66-A871-082A63D9BE05}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B62AABD0-22A4-470D-B6EB-F6B3EAE668DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B62AABD0-22A4-470D-B6EB-F6B3EAE668DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B62AABD0-22A4-470D-B6EB-F6B3EAE668DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B62AABD0-22A4-470D-B6EB-F6B3EAE668DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{892D51D9-7A3F-4E66-A871-082A63D9BE05}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{892D51D9-7A3F-4E66-A871-082A63D9BE05}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{892D51D9-7A3F-4E66-A871-082A63D9BE05}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{892D51D9-7A3F-4E66-A871-082A63D9BE05}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

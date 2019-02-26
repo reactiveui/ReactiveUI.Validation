@@ -8,8 +8,9 @@ var packageWhitelist = new[]
     MakeAbsolute(File("./src/ReactiveUI.Validation/ReactiveUI.Validation.csproj")),
 };
 
-var packageTestWhitelist = new FilePath[]
+var packageTestWhitelist = new[]
 {
+    MakeAbsolute(File("./src/ReactiveUI.Validation.Tests/ReactiveUI.Validation.Tests.csproj")),
 };
 
 BuildParameters.SetParameters(context: Context, 
