@@ -16,16 +16,16 @@ Validation for ReactiveUI based solutions, functioning in a reactive way. This r
 
 1. Decorate existing ViewModel with ISupportsValidation, which has a single member, ValidationContext. The ValidationContext contains all of the functionality surrounding the validation of the ViewModel.  Most access to the specification of validation rules is performed through extension methods on the ISupportsValidation interface.
 
-```
+```cs
     public class SampleViewModel : ReactiveObject, ISupportsValidation
     {
         public ValidationContext ValidationContext => new ValidationContext();
-	}
+    }
 ```
 
 2. Add validation to the ViewModel
 
-```
+```cs
 	// Bindable rule
 	public ValidationHelper ComplexRule { get; set; }
 
@@ -53,7 +53,7 @@ Validation for ReactiveUI based solutions, functioning in a reactive way. This r
 
 3. Add validation presentation to the View.
 
-```
+```cs
 	public class MainActivity : ReactiveAppCompatActivity<SampleViewModel>
     {
         public EditText nameEdit { get; set; }
@@ -125,7 +125,7 @@ In essence, its a relatively simple model of the ValidationContext containing a 
 
 ## Feedback
 
-Please use [GitHub issues](https://github.com/alexmartinezm/ReactiveUI.Validation/issues) for questions or comments.
+Please use [GitHub issues](https://github.com/reactiveui/ReactiveUI.Validation/issues) for questions or comments.
 
 ## Authors
 
