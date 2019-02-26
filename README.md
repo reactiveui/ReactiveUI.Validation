@@ -2,104 +2,131 @@
 
 Validation for ReactiveUI based solutions, functioning in a reactive way. This repository is based on [jcmm33's Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation).
 
-## Setup
-* Available on NuGet: [reactiveui-validation](https://www.nuget.org/packages/reactiveui-validation/)
-* Android Extensions for ReactiveUI.Validation available on NuGet: [reactiveui-validation-droid](https://www.nuget.org/packages/reactiveui-validation-droid)
+## NuGet Packages
+
+Install the following package into you class library and platform-specific project. ReactiveUI.Validation package supports all platforms, including .NET Framework, .NET Standard, MonoAndroid, Tizen, UAP, Xamarin.iOS, Xamarin.Mac, Xamarin.TVOS.
+
+| Platform          | ReactiveUI Package                  | NuGet                |
+| ----------------- | ----------------------------------- | -------------------- |
+| Any               | [ReactiveUI.Validation][CoreDoc]    | [![CoreBadge]][Core] |
+
+[Core]: https://www.nuget.org/packages/ReactiveUI.Validation/
+[CoreBadge]: https://img.shields.io/nuget/v/ReactiveUI.Validation.svg
+[CoreDoc]: https://reactiveui.net/docs/handbook/user-input-validation/
 
 ## How to use
 
-* For those ViewModels which need validation, implement ISupportsValidation
+* For those ViewModels which need validation, implement `ISupportsValidation`
 * Add validation rules to the ViewModel
 * Bind to the validation rules in the View
 
 ## Example
 
-1. Decorate existing ViewModel with ISupportsValidation, which has a single member, ValidationContext. The ValidationContext contains all of the functionality surrounding the validation of the ViewModel.  Most access to the specification of validation rules is performed through extension methods on the ISupportsValidation interface.
+1. Decorate existing ViewModel with `ISupportsValidation`, which has a single member, `ValidationContext`. The ValidationContext contains all of the functionality surrounding the validation of the ViewModel. Most access to the specification of validation rules is performed through extension methods on the ISupportsValidation interface. Then, add validation to the view model.
 
 ```cs
-    public class SampleViewModel : ReactiveObject, ISupportsValidation
+public class SampleViewModel : ReactiveObject, ISupportsValidation
+{
+    public SampleViewModel()
     {
-        public ValidationContext ValidationContext => new ValidationContext();
+        // Name must be at least 3 chars. The selector is the property 
+        // name and the line below is a single property validator.
+        this.ValidationRule(
+            viewModel => viewModel.Name,
+            name => !string.IsNullOrWhiteSpace(name),
+            "You must specify a valid name");
+
+        // Age must be between 13 and 100, message includes the silly 
+        // length being passed in, stored in a property of the ViewModel.
+        AgeRule = this.ValidationRule(
+            viewModel => viewModel.Age,
+            age => age >= 13 && age <= 100,
+            age => $"{age} is a silly age");
+
+        var nameAndAgeValid = this
+            .WhenAnyValue(x => x.Age, x => x.Name, (age, name) => new { Age = age, Name = name })
+            .Select(x => x.Age > 10 && !string.IsNullOrEmpty(x.Name));
+
+        // Create a rule using an IObservable.
+        // Store in a property of the ViewModel.
+        ComplexRule = this.ValidationRule(
+            _ => nameAndAgeValid,
+            (vm, state) => !state ? "That's a ridiculous name / age combination" : string.Empty);
+            
+        // Save command is only active when all validators are valid.
+        Save = ReactiveCommand.CreateFromTask(async unit => { }, this.IsValid());
     }
+
+    public ValidationContext ValidationContext => new ValidationContext();
+
+    public ValidationHelper ComplexRule { get; set; }
+
+    public ValidationHelper AgeRule { get; set; }
+
+    public ReactiveCommand<Unit, Unit> Save { get; }
+
+    private int _age;
+    public int Age
+    {
+        get => _age;
+        set => this.RaiseAndSetIfChanged(ref _age, value);
+    }
+
+    private string _name;
+    public string Name
+    {
+        get => _name;
+        set => this.RaiseAndSetIfChanged(ref _name, value);
+    }
+}
 ```
 
-2. Add validation to the ViewModel
+2. Add validation presentation to the View.
 
 ```cs
-	// Bindable rule
-	public ValidationHelper ComplexRule { get; set; }
+public class MainActivity : ReactiveAppCompatActivity<SampleViewModel>
+{
+    public EditText nameEdit { get; set; }
 
-	// Bindable rule
-	public ValidationHelper AgeRule { get; set; }
+    public EditText ageEdit { get; set; }
 
-	public SampleViewModel()
-	{
-		// name must be at least 3 chars - the selector heee is the property name and its a single property validator
-		this.ValidationRule(vm => vm.Name, _isDefined, "You must specify a valid name");
+    public TextView nameValidation { get; set; }
 
-		// age must be between 13 and 100, message includes the silly length being passed in, store in a property of the ViewModel
-		AgeRule = this.ValidationRule(vm => vm.Age, age => age >= 13 && age <= 100, (a) => $"{a} is a silly age");
+    public TextView ageValidation { get; set; }
 
-		// create a rule using an observable. Store in a property of the ViewModel
-		ComplexRule = this.ValidationRule(
-			_ => this.WhenAny(vm => vm.Age, vm => vm.Name, (a, n) => new {Age = a.Value, Name = n.Value})
-				.Select(v => v.Age > 10 && !string.IsNullOrEmpty(v.Name)),
-			(vm, state) => (!state) ? "That's a ridiculous name / age combination" : string.Empty);
+    public TextView validationSummary { get; set; }
 
-		// Save command only active when all validators are valid
-		Save = ReactiveCommand.CreateAsyncTask(this.IsValid(), async _ => { });
-	}
-```
+    public Button myButton { get; set; }
 
-3. Add validation presentation to the View.
+    public TextInputLayout til { get; set; }
 
-```cs
-	public class MainActivity : ReactiveAppCompatActivity<SampleViewModel>
+    public TextInputEditText tiet { get; set; }
+
+    protected override void OnCreate(Bundle bundle)
     {
-        public EditText nameEdit { get; set; }
+        base.OnCreate(bundle);
 
-        public EditText ageEdit { get; set; }
+        // Set our View from the "main" layout resource.
+        SetContentView(Resource.Layout.Main);
+        WireUpControls();
 
-        public TextView nameValidation { get; set; }
+        this.BindCommand(ViewModel, vm => vm.Save, v => v.myButton);
+        this.Bind(ViewModel, vm => vm.Name, v => v.nameEdit.Text);
+        this.Bind(ViewModel, vm => vm.Age, v => v.ageEdit.Text);
 
-        public TextView ageValidation { get; set; }
+        // Bind any validations which reference the name property to the text of the nameValidation control
+        this.BindValidation(ViewModel, vm => vm.Name, v => v.nameValidation.Text);
 
-        public TextView validationSummary { get; set; }
+        // Bind the validation specified by the AgeRule to the text of the ageValidation control
+        this.BindValidation(ViewModel, vm => vm.AgeRule, v => v.ageValidation.Text);
 
-        public Button myButton { get; set; }
+        // bind the summary validation text to the validationSummary control
+        this.BindValidation(ViewModel, v => v.validationSummary.Text);
 
-        public TextInputLayout til { get; set; }
-
-        public TextInputEditText tiet { get; set; }
-
-        protected override void OnCreate(Bundle bundle)
-        {
-            base.OnCreate(bundle);
-
-            // Set our View from the "main" layout resource
-            SetContentView(Resource.Layout.Main);
-
-            WireUpControls();
-
-            this.BindCommand(ViewModel, vm => vm.Save, v => v.myButton);
-
-            this.Bind(ViewModel, vm => vm.Name, v => v.nameEdit.Text);
-
-            this.Bind(ViewModel, vm => vm.Age, v => v.ageEdit.Text);
-
-            // Bind any validations which reference the name property to the text of the nameValidation control
-            this.BindValidation(ViewModel, vm => vm.Name, v => v.nameValidation.Text);
-
-            // Bind the validation specified by the AgeRule to the text of the ageValidation control
-            this.BindValidation(ViewModel, vm => vm.AgeRule, v => v.ageValidation.Text);
-
-            // bind the summary validation text to the validationSummary control
-            this.BindValidation(ViewModel, v => v.validationSummary.Text);
-
-            // bind to an Android TextInputLayout control, utilising the Error property
-            this.BindValidation(ViewModel, vm => vm.ComplexRule, til);
-        }
+        // bind to an Android TextInputLayout control, utilising the Error property
+        this.BindValidation(ViewModel, vm => vm.ComplexRule, til);
     }
+}
 ```
 
 ## Capabilities
