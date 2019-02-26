@@ -3,8 +3,8 @@
     <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
     <Product>ReactiveUI.Validations ($(TargetFramework))</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/reactiveui/splat/</PackageProjectUrl>
-    <PackageIconUrl>https://github.com/reactiveui/ReactiveUI.Validation/blob/master/media/logo.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/reactiveui/ReactiveUI.Validation/</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/reactiveui/ReactiveUI.Validation/blob/master/media/logo.png?raw=true</PackageIconUrl>
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>Validations library for ReactiveUI.</Description>
     <Owners>xpaulbettsx;ghuntley</Owners>
