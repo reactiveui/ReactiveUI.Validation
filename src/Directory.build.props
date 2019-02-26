@@ -1,0 +1,54 @@
+<Project>  
+  <PropertyGroup>
+    <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
+    <Product>ReactiveUI.Validations ($(TargetFramework))</Product>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/reactiveui/splat/</PackageProjectUrl>
+    <PackageIconUrl>https://github.com/reactiveui/ReactiveUI.Validation/blob/master/media/logo.png</PackageIconUrl>
+    <Authors>.NET Foundation and Contributors</Authors>
+    <Description>Validations library for ReactiveUI.</Description>
+    <Owners>xpaulbettsx;ghuntley</Owners>
+    <PackageTags>reactiveui;validation library;reactive programming;xamarin forms;netcore;portable;xamarin;xamarin ios;xamarin mac;android;monodroid;uwp;net45</PackageTags>
+    <PackageReleaseNotes>https://github.com/reactiveui/reactiveui.validation/releases</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/reactiveui/reactiveui.validation</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IsTestProject>$(MSBuildProjectName.Contains('Tests'))</IsTestProject>
+    <DebugType>Embedded</DebugType>
+    <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <!-- Optional: Embed source files that are not tracked by the source control manager in the PDB -->
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <!-- Optional: Include PDB in the built .nupkg -->
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <!-- disable sourcelink on mono, to workaround https://github.com/dotnet/sourcelink/issues/155 -->
+    <EnableSourceLink Condition=" '$(OS)' != 'Windows_NT' AND '$(MSBuildRuntimeType)' != 'Core' ">false</EnableSourceLink>
+    <EnableSourceControlManagerQueries>$(EnableSourceLink)</EnableSourceControlManagerQueries>    
+  </PropertyGroup>
+
+  <ItemGroup Condition="$(IsTestProject)">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.9.0" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Include="Xunit.StaFact" Version="0.3.18" />
+    <PackageReference Include="Shouldly" Version=" 3.0.2" />
+    <PackageReference Include="PublicApiGenerator" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(IsTestProject)">
+    <Compile Include="$(MSBuildThisFileDirectory)ApiGeneratorGlobalSuppressions.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="LICENSE" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nerdbank.GitVersioning" Version="2.3.38" PrivateAssets="all" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(IsTestProject)' != 'true' and '$(SourceLinkEnabled)' != 'false'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" /> 
+  </ItemGroup>
+ </Project>
+ 
