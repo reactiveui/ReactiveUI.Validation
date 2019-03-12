@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginApp.iOS", "LoginApp.iO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginApp", "LoginApp\LoginApp.csproj", "{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{ECC07E3E-9E01-410F-A706-37FB5E0F6BEB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,5 +69,14 @@ Global
 		{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFC}.Ad-Hoc|iPhone.Build.0 = Debug|Any CPU
 		{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFC}.AppStore|iPhone.ActiveCfg = Debug|Any CPU
 		{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFC}.AppStore|iPhone.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{CA4F85FE-2FA5-44F3-A718-882E8E53F31B} = {ECC07E3E-9E01-410F-A706-37FB5E0F6BEB}
+		{BFB2CA00-73E2-4289-9F66-785DE6B7EA7C} = {ECC07E3E-9E01-410F-A706-37FB5E0F6BEB}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.StandardHeader = $1
+		$1.Text = @extensions: designer.cs generated.cs\nextensions: .cs .cpp .h\n// Licensed to the .NET Foundation under one or more agreements.\n// The .NET Foundation licenses this file to you under the MIT license.\n// See the LICENSE file in the project root for more information.\n\nextensions:  .xml .config .xsd\n<!--\nLicensed to the .NET Foundation under one or more agreements.\nThe .NET Foundation licenses this file to you under the MIT license.\nSee the LICENSE file in the project root for more information.\n-->
 	EndGlobalSection
 EndGlobal
