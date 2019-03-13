@@ -16,30 +16,41 @@ namespace LoginApp.ViewModels
     public class SignUpViewModel : ViewModelBase, ISupportsValidation
     {
         private readonly Func<string, bool> _isDefined = userName => !string.IsNullOrEmpty(userName);
-        
+
         [Reactive] public string UserName { get; set; }
 
         [Reactive] public string Password { get; set; }
 
         [Reactive] public string ConfirmPassword { get; set; }
 
-        [Reactive] public ReactiveCommand<Unit, bool> SignUp { get; set; }
+        [Reactive] public ReactiveCommand<Unit, bool> SignUp { get; private set; }
 
-        public ValidationContext ValidationContext => new ValidationContext();
+        public ValidationContext ValidationContext { get; } = new ValidationContext();
 
         public SignUpViewModel(IScreen hostScreen = null)
             : base(hostScreen)
+        {
+            SignUp = ReactiveCommand.Create(SignUpImpl);
+            CreateValidations();
+        }
+
+        private bool SignUpImpl()
+        {
+            return ValidationContext.IsValid;
+        }
+
+        private void CreateValidations()
         {
             this.ValidationRule(
                 vm => vm.UserName,
                 _isDefined,
                 $"{nameof(UserName)} is required.");
-            
+
             this.ValidationRule(
                 vm => vm.Password,
                 _isDefined,
                 $"{nameof(Password)} is required.");
-            
+
             this.ValidationRule(
                 vm => vm.ConfirmPassword,
                 confirmPassword => confirmPassword == Password,
