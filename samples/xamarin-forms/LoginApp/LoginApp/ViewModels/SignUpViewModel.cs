@@ -36,7 +36,7 @@ namespace LoginApp.ViewModels
 
         private bool SignUpImpl()
         {
-            return ValidationContext.IsValid;
+            return ValidationContext.GetIsValid();
         }
 
         private void CreateValidations()
@@ -44,13 +44,23 @@ namespace LoginApp.ViewModels
             this.ValidationRule(
                 vm => vm.UserName,
                 _isDefined,
-                $"{nameof(UserName)} is required.");
+                "UserName is required.");
 
             this.ValidationRule(
                 vm => vm.Password,
                 _isDefined,
-                $"{nameof(Password)} is required.");
+                "Password is required.");
+            
+            this.ValidationRule(
+                vm => vm.ConfirmPassword,
+                _isDefined,
+                "Confirm password is required.");
 
+            this.ValidationRule(
+                vm => vm.Password,
+                password => password == ConfirmPassword,
+                "Passwords must match.");
+            
             this.ValidationRule(
                 vm => vm.ConfirmPassword,
                 confirmPassword => confirmPassword == Password,

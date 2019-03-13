@@ -6,6 +6,8 @@ using System.Reactive.Disposables;
 using LoginApp.ViewModels.Abstractions;
 using ReactiveUI;
 using ReactiveUI.XamForms;
+using Xamarin.Forms.PlatformConfiguration;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace LoginApp.Views
 {
@@ -16,6 +18,7 @@ namespace LoginApp.Views
         
         public ContentPageBase()
         {
+            On<iOS>().SetUseSafeArea(true);
             this.WhenActivated(CreateBindings);
         }
     }

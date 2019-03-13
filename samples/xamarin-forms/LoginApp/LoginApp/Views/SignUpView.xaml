@@ -6,7 +6,7 @@
                     xmlns:vms="clr-namespace:LoginApp.ViewModels;assembly=LoginApp"
                     x:Class="LoginApp.Views.SignUpView">
     <ContentPage.Content>
-        <Grid Padding="{x:OnPlatform Android=16, iOS=20}">
+        <Grid Padding="{StaticResource OuterPadding}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -17,16 +17,21 @@
                 <Label Text="UserName" />
                 <Entry x:Name="UserName" />
                 <Label x:Name="UserNameErrorMessage"
+                       Style="{StaticResource ErrorLabelStyle}"
                        VerticalOptions="Start" />
 
-                <Label Text="Password" />
-                <Entry x:Name="Password" />
+                <Label Text="Password"
+                       Margin="0, 10, 0, 0" />
+                <Entry x:Name="Password" IsPassword="True" />
                 <Label x:Name="PasswordErrorMessage"
+                       Style="{StaticResource ErrorLabelStyle}"
                        VerticalOptions="Start" />
 
-                <Label Text="Confirm password" />
-                <Entry x:Name="ConfirmPassword" />
+                <Label Text="Confirm password"
+                       Margin="0, 10, 0, 0" />
+                <Entry x:Name="ConfirmPassword" IsPassword="True" />
                 <Label x:Name="ConfirmPasswordErrorMessage"
+                       Style="{StaticResource ErrorLabelStyle}"
                        VerticalOptions="Start" />
             </StackLayout>
 
