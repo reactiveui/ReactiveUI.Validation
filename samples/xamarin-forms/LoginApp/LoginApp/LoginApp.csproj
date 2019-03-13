@@ -18,15 +18,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Page Include="Views\SignUpView.xaml">
-      <SubType>Designer</SubType>
-      <Generator></Generator>
-    </Page>
-  </ItemGroup>
-
-  <ItemGroup>
     <Compile Update="Views\SignUpView.xaml.cs">
       <DependentUpon>SignUpPage.xaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Views\SignUpView.xaml">
+      <Generator></Generator>
+    </EmbeddedResource>
   </ItemGroup>
 </Project>
