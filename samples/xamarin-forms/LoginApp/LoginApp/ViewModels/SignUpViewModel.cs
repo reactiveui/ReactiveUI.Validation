@@ -45,7 +45,12 @@ namespace LoginApp.ViewModels
 
             if (!isValid)
             {
-                _dialogs.Toast(ValidationContext.Text.First());
+                // It should not be necessary to check for this
+                var errorMessage = ValidationContext.Text?.FirstOrDefault();
+                if (errorMessage != null)
+                {
+                    _dialogs.Toast(errorMessage);
+                }
             }
 
             return isValid;
