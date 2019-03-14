@@ -1,4 +1,5 @@
-﻿using Android.App;
+﻿using Acr.UserDialogs;
+using Android.App;
 using Android.Content.PM;
 using Android.OS;
 
@@ -14,7 +15,10 @@ namespace LoginApp.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
+            
             Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            UserDialogs.Init(() => this);
+            
             LoadApplication(new App());
         }
     }

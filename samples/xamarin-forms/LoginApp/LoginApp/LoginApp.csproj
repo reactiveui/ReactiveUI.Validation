@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Acr.UserDialogs" Version="7.0.4" />
     <PackageReference Include="ReactiveUI" Version="9.11.3" />
     <PackageReference Include="ReactiveUI.Fody" Version="9.11.3" />
     <PackageReference Include="ReactiveUI.Validation" Version="1.0.3" />
