@@ -27,7 +27,7 @@ namespace LoginApp.ViewModels
 
         [Reactive] public string ConfirmPassword { get; set; }
 
-        [Reactive] public ReactiveCommand<Unit, bool> SignUp { get; private set; }
+        public ReactiveCommand<Unit, bool> SignUp { get; }
 
         public ValidationContext ValidationContext { get; } = new ValidationContext();
 
