@@ -30,6 +30,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             _disposables.Add(validationObservable.Subscribe());
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _disposables?.Dispose();
@@ -48,12 +49,11 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="formatter"></param>
         /// <param name="strict"></param>
         /// <returns></returns>
-        public static IValidationBinding ForProperty
-            <TView, TViewModel, TViewModelProperty1, TViewProperty>(TView view,
-                Expression<Func<TViewModel, TViewModelProperty1>> viewModelProperty,
-                Expression<Func<TView, TViewProperty>> viewProperty,
-                IValidationTextFormatter<string> formatter = null,
-                bool strict = true)
+        public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty1, TViewProperty>(TView view,
+            Expression<Func<TViewModel, TViewModelProperty1>> viewModelProperty,
+            Expression<Func<TView, TViewProperty>> viewProperty,
+            IValidationTextFormatter<string> formatter = null,
+            bool strict = true)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, ISupportsValidation
         {
@@ -88,12 +88,11 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="formatter"></param>
         /// <param name="strict"></param>
         /// <returns></returns>
-        public static IValidationBinding ForProperty
-            <TView, TViewModel, TViewModelProperty1, TOut>(TView view,
-                Expression<Func<TViewModel, TViewModelProperty1>> viewModelProperty,
-                Action<ValidationState, TOut> action,
-                IValidationTextFormatter<TOut> formatter = null,
-                bool strict = true)
+        public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty1, TOut>(TView view,
+            Expression<Func<TViewModel, TViewModelProperty1>> viewModelProperty,
+            Action<ValidationState, TOut> action,
+            IValidationTextFormatter<TOut> formatter = null,
+            bool strict = true)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, ISupportsValidation
         {
@@ -125,11 +124,10 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="viewProperty"></param>
         /// <param name="formatter"></param>
         /// <returns></returns>
-        public static IValidationBinding ForValidationHelperProperty
-            <TView, TViewModel, TViewProperty>(TView view,
-                Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
-                Expression<Func<TView, TViewProperty>> viewProperty,
-                IValidationTextFormatter<string> formatter = null)
+        public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(TView view,
+            Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
+            Expression<Func<TView, TViewProperty>> viewProperty,
+            IValidationTextFormatter<string> formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, ISupportsValidation
 
@@ -162,11 +160,10 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="action"></param>
         /// <param name="formatter"></param>
         /// <returns></returns>
-        public static IValidationBinding ForValidationHelperProperty
-            <TView, TViewModel, TOut>(TView view,
-                Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
-                Action<ValidationState, TOut> action,
-                IValidationTextFormatter<TOut> formatter = null)
+        public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TOut>(TView view,
+            Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
+            Action<ValidationState, TOut> action,
+            IValidationTextFormatter<TOut> formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, ISupportsValidation
         {
@@ -227,11 +224,9 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="viewProperty"></param>
         /// <param name="formatter"></param>
         /// <returns></returns>
-        public static IValidationBinding ForViewModel
-            <TView, TViewModel, TViewProperty>(TView view,
-                Expression<Func<TView, TViewProperty>> viewProperty,
-                IValidationTextFormatter<string> formatter = null
-            )
+        public static IValidationBinding ForViewModel<TView, TViewModel, TViewProperty>(TView view,
+            Expression<Func<TView, TViewProperty>> viewProperty,
+            IValidationTextFormatter<string> formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, ISupportsValidation
         {
