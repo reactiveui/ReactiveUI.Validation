@@ -36,7 +36,7 @@ namespace LoginApp.ViewModels
             : base(hostScreen)
         {
             _dialogs = dialogs ?? Locator.Current.GetService<IUserDialogs>();
-            SignUp = ReactiveCommand.Create(SignUpImpl, ValidationContext.Valid);
+            SignUp = ReactiveCommand.Create(SignUpImpl, this.IsValid());
             this.WhenActivated(disposables =>
             {
                 CreateValidations(disposables);
