@@ -1,6 +1,7 @@
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using ReactiveUI.Validation.Components;
+using ReactiveUI.Validation.Tests.Models;
 using Xunit;
 
 namespace ReactiveUI.Validation.Tests

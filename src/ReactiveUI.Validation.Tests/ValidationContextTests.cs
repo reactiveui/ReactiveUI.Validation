@@ -1,6 +1,10 @@
+using System.Reactive.Linq;
+using DynamicData.Binding;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
+using ReactiveUI.Validation.Helpers;
+using ReactiveUI.Validation.Tests.Models;
 using Xunit;
 
 namespace ReactiveUI.Validation.Tests
@@ -91,7 +95,6 @@ namespace ReactiveUI.Validation.Tests
         {
             const string validName = "valid";
             const int minimumLength = 5;
-            var invalidName = string.Empty;
 
             var viewModel = new TestViewModel {Name = validName};
             var view = new TestView(viewModel);
@@ -112,7 +115,7 @@ namespace ReactiveUI.Validation.Tests
 
             // View bindings
             view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
-            
+
             // View validations bindings
             view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameLabelError);
 
@@ -121,29 +124,53 @@ namespace ReactiveUI.Validation.Tests
             // Check if second validation error message is shown
             Assert.Equal(minimumLengthErrorMessage, view.NameLabelError);
         }
-    }
 
-    public class TestView : IViewFor<TestViewModel>
-    {
-        object IViewFor.ViewModel
+        [Fact]
+        public void TwoValidationPropertiesInSamePropertyWithValidationHelperResultsTest()
         {
-            get => ViewModel;
-            set => ViewModel = value as TestViewModel;
-        }
+            const string validName = "valid";
+            const int minimumLength = 5;
 
-        public TestViewModel ViewModel { get; set; }
+            var viewModel = new TestViewModel {Name = validName};
+            var view = new TestView(viewModel);
 
-        public string NameLabel { get; set; }
-        
-        public string NameLabelError { get; set; }
+            var firstValidation = new BasePropertyValidation<TestViewModel, string>(viewModel,
+                vm => vm.Name,
+                s => !string.IsNullOrEmpty(s),
+                s => $"Name {s} isn't valid");
 
-        private TestView()
-        {
-        }
+            var minimumLengthErrorMessage = $"Minimum length is {minimumLength}";
+            var secondValidation = new BasePropertyValidation<TestViewModel, string>(viewModel,
+                vm => vm.Name,
+                s => s.Length > minimumLength,
+                s => minimumLengthErrorMessage);
 
-        public TestView(TestViewModel viewModel)
-        {
-            ViewModel = viewModel;
+            viewModel.NameRule = viewModel.ValidationRule(_ =>
+            {
+                return viewModel.WhenValueChanged(
+                    _ => viewModel.WhenAny(
+                            vm => vm.Name, 
+                            vm => vm.Name, 
+                            (a, n) => a)
+                        .Select(v => v.Age > 10 && !string.IsNullOrEmpty(v.Name)),
+                    (vm, state) => (!state)
+                        ? "Thats a ridiculous name / age combination"
+                        : string.Empty);
+            });
+
+            viewModel.ValidationContext.Add(firstValidation);
+            viewModel.ValidationContext.Add(secondValidation);
+
+            // View bindings
+            view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+
+            // View validations bindings
+            view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameLabelError);
+
+            Assert.False(viewModel.ValidationContext.IsValid);
+            Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
+            // Check if second validation error message is shown
+            Assert.Equal(minimumLengthErrorMessage, view.NameLabelError);
         }
     }
 }
