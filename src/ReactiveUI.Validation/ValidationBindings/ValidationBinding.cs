@@ -41,7 +41,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TViewModelProperty1"></typeparam>
+        /// <typeparam name="TViewModelProperty"></typeparam>
         /// <typeparam name="TViewProperty"></typeparam>
         /// <param name="view"></param>
         /// <param name="viewModelProperty"></param>
@@ -49,8 +49,8 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="formatter"></param>
         /// <param name="strict"></param>
         /// <returns></returns>
-        public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty1, TViewProperty>(TView view,
-            Expression<Func<TViewModel, TViewModelProperty1>> viewModelProperty,
+        public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(TView view,
+            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Expression<Func<TView, TViewProperty>> viewProperty,
             IValidationTextFormatter<string> formatter = null,
             bool strict = true)
@@ -80,7 +80,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TViewModelProperty1"></typeparam>
+        /// <typeparam name="TViewModelProperty"></typeparam>
         /// <typeparam name="TOut"></typeparam>
         /// <param name="view"></param>
         /// <param name="viewModelProperty"></param>
@@ -88,8 +88,8 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="formatter"></param>
         /// <param name="strict"></param>
         /// <returns></returns>
-        public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty1, TOut>(TView view,
-            Expression<Func<TViewModel, TViewModelProperty1>> viewModelProperty,
+        public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(TView view,
+            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Action<ValidationState, TOut> action,
             IValidationTextFormatter<TOut> formatter = null,
             bool strict = true)
@@ -251,14 +251,14 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="target"></param>
         /// <param name="viewProperty"></param>
         /// <typeparam name="TView"></typeparam>
-        /// <typeparam name="TViewProp"></typeparam>
+        /// <typeparam name="TViewProperty"></typeparam>
         /// <typeparam name="TTarget"></typeparam>
         /// <typeparam name="TValue"></typeparam>
         /// <returns></returns>
-        public static IObservable<TValue> BindToView<TView, TViewProp, TTarget, TValue>(
+        public static IObservable<TValue> BindToView<TView, TViewProperty, TTarget, TValue>(
             IObservable<TValue> valueChange,
             TTarget target,
-            Expression<Func<TView, TViewProp>> viewProperty)
+            Expression<Func<TView, TViewProperty>> viewProperty)
         {
             var viewExpression = Reflection.Rewrite(viewProperty.Body);
 

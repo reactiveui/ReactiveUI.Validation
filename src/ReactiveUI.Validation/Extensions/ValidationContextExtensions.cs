@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using ReactiveUI.Validation.Components;
@@ -13,22 +14,41 @@ namespace ReactiveUI.Validation.Extensions
     public static class ValidationContextExtensions
     {
         /// <summary>
-        /// Resolve the property valuation for a specified property
+        /// Resolve the property valuation for a specified property.
         /// </summary>
         /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TProperty1"></typeparam>
+        /// <typeparam name="TProperty"></typeparam>
         /// <returns></returns>
-        public static BasePropertyValidation<TViewModel, TProperty1> ResolveFor<TViewModel, TProperty1>(
+        public static BasePropertyValidation<TViewModel, TProperty> ResolveFor<TViewModel, TProperty>(
             this ValidationContext context,
-            Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
+            Expression<Func<TViewModel, TProperty>> viewModelProperty,
             bool strict = true)
         {
             var instance = context.Validations
-                .Where(p => p is BasePropertyValidation<TViewModel, TProperty1>)
-                .Cast<BasePropertyValidation<TViewModel, TProperty1>>()
-                .FirstOrDefault(v => v.ContainsProperty(viewModelProperty1, strict));
+                .Where(p => p is BasePropertyValidation<TViewModel, TProperty>)
+                .Cast<BasePropertyValidation<TViewModel, TProperty>>()
+                .FirstOrDefault(v => v.ContainsProperty(viewModelProperty, strict));
 
             return instance;
+        }
+        
+        /// <summary>
+        /// Resolve the property valuation for a specified property.
+        /// </summary>
+        /// <typeparam name="TViewModel"></typeparam>
+        /// <typeparam name="TProperty"></typeparam>
+        /// <returns></returns>
+        public static IEnumerable<BasePropertyValidation<TViewModel, TProperty>> ResolveForMultiple<TViewModel, TProperty>(
+            this ValidationContext context,
+            Expression<Func<TViewModel, TProperty>> viewModelProperty,
+            bool strict = true)
+        {
+            var validations = context.Validations
+                .Where(p => p is BasePropertyValidation<TViewModel, TProperty>)
+                .Cast<BasePropertyValidation<TViewModel, TProperty>>()
+                .Where(v => v.ContainsProperty(viewModelProperty, strict));
+
+            return validations;
         }
 
         /// <summary>

@@ -13,21 +13,31 @@ namespace ReactiveUI.Validation.Extensions
     /// </summary>
     public static class ViewForExtensions
     {
+        public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view,
+            TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
+            Expression<Func<TView, TViewProperty>> viewProperty)
+            where TViewModel : ReactiveObject, ISupportsValidation
+            where TView : IViewFor<TViewModel>
+        {
+            return ValidationExtendedBinding.ForProperty(view, viewModelProperty, viewProperty);
+        }
+
         /// <summary>
         /// Bind the specified ViewModel property validation to the View property.
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TViewModelProperty1"></typeparam>
+        /// <typeparam name="TViewModelProperty"></typeparam>
         /// <typeparam name="TViewProperty"></typeparam>
         /// <param name="view"></param>
         /// <param name="viewModel"></param>
         /// <param name="viewModelProperty"></param>
         /// <param name="viewProperty"></param>
         /// <returns></returns>
-        public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty1, TViewProperty>(this TView view,
+        public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view,
             TViewModel viewModel,
-            Expression<Func<TViewModel, TViewModelProperty1>> viewModelProperty,
+            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Expression<Func<TView, TViewProperty>> viewProperty)
             where TViewModel : ReactiveObject, ISupportsValidation
             where TView : IViewFor<TViewModel>
