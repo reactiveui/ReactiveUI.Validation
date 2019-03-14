@@ -19,11 +19,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="message"></param>
         /// <returns></returns>
         public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel,
-            Expression<Func<TViewModel,
-                    TViewModelProp>>
-                viewModelProperty,
-            Func<TViewModelProp, bool>
-                viewPropertyValid,
+            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
+            Func<TViewModelProp, bool> viewPropertyValid,
             string message)
             where TViewModel : ReactiveObject, ISupportsValidation
         {
@@ -51,11 +48,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="message"></param>
         /// <returns></returns>
         public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel,
-            Expression<Func<TViewModel,
-                    TViewModelProp>>
-                viewModelProperty,
-            Func<TViewModelProp, bool>
-                viewPropertyValid,
+            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
+            Func<TViewModelProp, bool> viewPropertyValid,
             Func<TViewModelProp, string> message)
             where TViewModel : ReactiveObject, ISupportsValidation
         {
@@ -83,8 +77,7 @@ namespace ReactiveUI.Validation.Extensions
         ///     inconsistent performance.
         /// </remarks>
         public static ValidationHelper ValidationRule<TViewModel>(this TViewModel viewModel,
-            Func<TViewModel, IObservable<bool>>
-                validationObservableFunc,
+            Func<TViewModel, IObservable<bool>> validationObservableFunc,
             Func<TViewModel, bool, string> messageFunc)
             where TViewModel : ReactiveObject, ISupportsValidation
         {
