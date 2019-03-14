@@ -99,9 +99,12 @@ namespace ReactiveUI.Validation.ValidationBindings
         {
             if (formatter == null) throw new ArgumentNullException(nameof(formatter));
 
-            var vcObs = view.WhenAnyValue(v => v.ViewModel).Where(vm => vm != null).Select(
+            var vcObs = view.WhenAnyValue(v => v.ViewModel)
+                .Where(vm => vm != null)
+                .Select(
                     viewModel =>
-                        viewModel.ValidationContext.ResolveFor(viewModelProperty, strict)
+                        viewModel.ValidationContext
+                            .ResolveFor(viewModelProperty, strict)
                             .ValidationStatusChange)
                 .Switch()
                 .Select(vc => new {ValidationChange = vc, Formatted = formatter.Format(vc.Text)})
@@ -133,7 +136,9 @@ namespace ReactiveUI.Validation.ValidationBindings
         {
             if (formatter == null) formatter = SingleLineFormatter.Default;
 
-            var vcObs = view.WhenAnyValue(v => v.ViewModel).Where(vm => vm != null).Select(
+            var vcObs = view.WhenAnyValue(v => v.ViewModel)
+                .Where(vm => vm != null)
+                .Select(
                     viewModel =>
                         viewModel.WhenAnyValue(viewModelHelperProperty)
                             .SelectMany(vy => vy.ValidationChanged))
