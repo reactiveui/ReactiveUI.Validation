@@ -1,9 +1,6 @@
-using System.Reactive.Linq;
-using DynamicData.Binding;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
-using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.Tests.Models;
 using Xunit;
 
@@ -91,6 +88,44 @@ namespace ReactiveUI.Validation.Tests
         }
 
         [Fact]
+        public void TwoValidationPropertiesInSamePropertyThrowsExceptionTest()
+        {
+            const string validName = "valid";
+            const int minimumLength = 5;
+
+            var viewModel = new TestViewModel {Name = validName};
+            var view = new TestView(viewModel);
+
+            var firstValidation = new BasePropertyValidation<TestViewModel, string>(viewModel,
+                vm => vm.Name,
+                s => !string.IsNullOrEmpty(s),
+                s => $"Name {s} isn't valid");
+
+            var minimumLengthErrorMessage = $"Minimum length is {minimumLength}";
+            var secondValidation = new BasePropertyValidation<TestViewModel, string>(viewModel,
+                vm => vm.Name,
+                s => s.Length > minimumLength,
+                s => minimumLengthErrorMessage);
+
+            // Add validations
+            viewModel.ValidationContext.Add(firstValidation);
+            viewModel.ValidationContext.Add(secondValidation);
+
+            // View bindings
+            view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+
+            // TODO: add Assert.Throws to custom exception wrapping this call
+            // View validations bindings
+            view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameLabelError);
+
+            Assert.False(viewModel.ValidationContext.IsValid);
+            Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
+
+            // Checks if second validation error message is shown
+            Assert.Equal(minimumLengthErrorMessage, view.NameLabelError);
+        }
+
+        [Fact]
         public void TwoValidationPropertiesInSamePropertyResultsTest()
         {
             const string validName = "valid";
@@ -110,6 +145,7 @@ namespace ReactiveUI.Validation.Tests
                 s => s.Length > minimumLength,
                 s => minimumLengthErrorMessage);
 
+            // Add validations
             viewModel.ValidationContext.Add(firstValidation);
             viewModel.ValidationContext.Add(secondValidation);
 
@@ -121,55 +157,8 @@ namespace ReactiveUI.Validation.Tests
 
             Assert.False(viewModel.ValidationContext.IsValid);
             Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
-            // Check if second validation error message is shown
-            Assert.Equal(minimumLengthErrorMessage, view.NameLabelError);
-        }
 
-        [Fact]
-        public void TwoValidationPropertiesInSamePropertyWithValidationHelperResultsTest()
-        {
-            const string validName = "valid";
-            const int minimumLength = 5;
-
-            var viewModel = new TestViewModel {Name = validName};
-            var view = new TestView(viewModel);
-
-            var firstValidation = new BasePropertyValidation<TestViewModel, string>(viewModel,
-                vm => vm.Name,
-                s => !string.IsNullOrEmpty(s),
-                s => $"Name {s} isn't valid");
-
-            var minimumLengthErrorMessage = $"Minimum length is {minimumLength}";
-            var secondValidation = new BasePropertyValidation<TestViewModel, string>(viewModel,
-                vm => vm.Name,
-                s => s.Length > minimumLength,
-                s => minimumLengthErrorMessage);
-
-            viewModel.NameRule = viewModel.ValidationRule(_ =>
-            {
-                return viewModel.WhenValueChanged(
-                    _ => viewModel.WhenAny(
-                            vm => vm.Name, 
-                            vm => vm.Name, 
-                            (a, n) => a)
-                        .Select(v => v.Age > 10 && !string.IsNullOrEmpty(v.Name)),
-                    (vm, state) => (!state)
-                        ? "Thats a ridiculous name / age combination"
-                        : string.Empty);
-            });
-
-            viewModel.ValidationContext.Add(firstValidation);
-            viewModel.ValidationContext.Add(secondValidation);
-
-            // View bindings
-            view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
-
-            // View validations bindings
-            view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameLabelError);
-
-            Assert.False(viewModel.ValidationContext.IsValid);
-            Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
-            // Check if second validation error message is shown
+            // Checks if second validation error message is shown
             Assert.Equal(minimumLengthErrorMessage, view.NameLabelError);
         }
     }
