@@ -28,7 +28,7 @@ namespace LoginApp.ViewModels
 
         [Reactive] public string ConfirmPassword { get; set; }
 
-        public ReactiveCommand<Unit, bool> SignUp { get; }
+        public ReactiveCommand<Unit, Unit> SignUp { get; }
 
         public ValidationContext ValidationContext { get; } = new ValidationContext();
 
@@ -48,26 +48,7 @@ namespace LoginApp.ViewModels
             });
         }
 
-        private bool SignUpImpl()
-        {
-            var isValid = ValidationContext.GetIsValid();
-
-            if (!isValid)
-            {
-                // It should not be necessary to check for this
-                var errorMessage = ValidationContext.Text?.FirstOrDefault();
-                if (errorMessage != null)
-                {
-                    _dialogs.Toast(errorMessage);
-                }
-            }
-            else
-            {
-                _dialogs.Toast("User created successfully");
-            }
-
-            return isValid;
-        }
+        private void SignUpImpl() => _dialogs.Toast("User created successfully.");
 
         private void CreateValidations(CompositeDisposable disposables)
         {
