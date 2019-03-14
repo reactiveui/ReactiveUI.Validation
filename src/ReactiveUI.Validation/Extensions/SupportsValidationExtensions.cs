@@ -6,10 +6,13 @@ using ReactiveUI.Validation.Helpers;
 
 namespace ReactiveUI.Validation.Extensions
 {
+    /// <summary>
+    /// Extensions methods associated to <see cref="ISupportsValidation"/> instances.
+    /// </summary>
     public static class SupportsValidationExtensions
     {
         /// <summary>
-        /// Validation rule for a property of a view model
+        /// Setup a validation rule for a specified ViewModel property with static error message.
         /// </summary>
         /// <typeparam name="TViewModel"></typeparam>
         /// <typeparam name="TViewModelProp"></typeparam>
@@ -24,7 +27,7 @@ namespace ReactiveUI.Validation.Extensions
             string message)
             where TViewModel : ReactiveObject, ISupportsValidation
         {
-            // we need to associate the view model property 
+            // We need to associate the ViewModel property 
             // with something that can be easily looked up and bound to
 
             var propValidation = new BasePropertyValidation<TViewModel, TViewModelProp>(viewModel, viewModelProperty,
@@ -38,7 +41,7 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        ///     Setup a validation rule for a specified view model property
+        /// Setup a validation rule for a specified ViewModel property with dynamic error message.
         /// </summary>
         /// <typeparam name="TViewModel"></typeparam>
         /// <typeparam name="TViewModelProp"></typeparam>
@@ -53,7 +56,7 @@ namespace ReactiveUI.Validation.Extensions
             Func<TViewModelProp, string> message)
             where TViewModel : ReactiveObject, ISupportsValidation
         {
-            // we need to associate the view model property 
+            // We need to associate the ViewModel property 
             // with something that can be easily looked up and bound to
 
             var propValidation = new BasePropertyValidation<TViewModel, TViewModelProp>(viewModel, viewModelProperty,
@@ -65,7 +68,7 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        ///     Setup a rule with a general observable indicating validity.
+        /// Setup a validation rule with a general observable indicating validity.
         /// </summary>
         /// <typeparam name="TViewModel"></typeparam>
         /// <param name="viewModel"></param>
@@ -73,8 +76,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="messageFunc"></param>
         /// <returns></returns>
         /// <remarks>
-        ///     It should be noted that the observable should provide an initial value, otherwise that can result in an
-        ///     inconsistent performance.
+        /// It should be noted that the observable should provide an initial value, otherwise that can result
+        /// in an inconsistent performance.
         /// </remarks>
         public static ValidationHelper ValidationRule<TViewModel>(this TViewModel viewModel,
             Func<TViewModel, IObservable<bool>> validationObservableFunc,
@@ -90,7 +93,7 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        ///     Get an observable for the validity of the view model.
+        /// Get an observable for the validity of the ViewModel.
         /// </summary>
         /// <typeparam name="TViewModel"></typeparam>
         /// <param name="viewModel"></param>
