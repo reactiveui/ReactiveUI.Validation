@@ -115,7 +115,6 @@ namespace ReactiveUI.Validation.Tests
             
             // View validations bindings
             view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameLabelError);
-            view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameLabelError);
 
             Assert.False(viewModel.ValidationContext.IsValid);
             Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
