@@ -5,6 +5,7 @@
 using System;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using Acr.UserDialogs;
 using LoginApp.ViewModels.Abstractions;
 using ReactiveUI;
@@ -35,8 +36,16 @@ namespace LoginApp.ViewModels
             : base(hostScreen)
         {
             _dialogs = dialogs ?? Locator.Current.GetService<IUserDialogs>();
-            SignUp = ReactiveCommand.Create(SignUpImpl);
-            CreateValidations();
+            SignUp = ReactiveCommand.Create(SignUpImpl, ValidationContext.Valid);
+            this.WhenActivated(disposables =>
+            {
+                CreateValidations(disposables);
+
+                // Prints current validation errors
+                this.WhenAnyValue(x => x.UserName, x => x.Password, x => x.ConfirmPassword)
+                    .Subscribe(_ => this.Log().Debug(ValidationContext?.Text?.ToSingleLine()))
+                    .DisposeWith(disposables);
+            });
         }
 
         private bool SignUpImpl()
@@ -52,36 +61,39 @@ namespace LoginApp.ViewModels
                     _dialogs.Toast(errorMessage);
                 }
             }
+            else
+            {
+                _dialogs.Toast("User created successfully");
+            }
 
             return isValid;
         }
 
-        private void CreateValidations()
+        private void CreateValidations(CompositeDisposable disposables)
         {
             this.ValidationRule(
-                vm => vm.UserName,
-                _isDefined,
-                "UserName is required.");
+                    vm => vm.UserName,
+                    _isDefined,
+                    "UserName is required.")
+                .DisposeWith(disposables);
 
             this.ValidationRule(
-                vm => vm.Password,
-                _isDefined,
-                "Password is required.");
+                    vm => vm.Password,
+                    _isDefined,
+                    "Password is required.")
+                .DisposeWith(disposables);
 
             this.ValidationRule(
-                vm => vm.ConfirmPassword,
-                _isDefined,
-                "Confirm password is required.");
+                    vm => vm.ConfirmPassword,
+                    _isDefined,
+                    "Confirm password is required.")
+                .DisposeWith(disposables);
 
             this.ValidationRule(
-                vm => vm.Password,
-                password => password == ConfirmPassword,
-                "Passwords must match.");
-
-            this.ValidationRule(
-                vm => vm.ConfirmPassword,
-                confirmPassword => confirmPassword == Password,
-                "Passwords must match.");
+                    vm => vm.ConfirmPassword,
+                    confirmPassword => confirmPassword == Password,
+                    "Passwords must match.")
+                .DisposeWith(disposables);
         }
     }
 }
