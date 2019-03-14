@@ -3,9 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Linq;
 using System.Reactive;
-using System.Reactive.Disposables;
 using Acr.UserDialogs;
 using LoginApp.ViewModels.Abstractions;
 using ReactiveUI;
