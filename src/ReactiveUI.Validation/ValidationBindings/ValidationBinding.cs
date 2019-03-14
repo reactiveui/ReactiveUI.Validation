@@ -10,18 +10,19 @@ using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.ValidationBindings.Abstractions;
+using Splat;
 
 namespace ReactiveUI.Validation.ValidationBindings
 {
     /// <summary>
-    ///     A validation binding.
+    /// A validation binding.
     /// </summary>
     public class ValidationBinding : IValidationBinding
     {
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
         /// <summary>
-        ///     Create an instance with a specified observable for validation changes.
+        /// Create an instance with a specified observable for validation changes.
         /// </summary>
         /// <param name="validationObservable"></param>
         public ValidationBinding(IObservable<Unit> validationObservable)
@@ -35,7 +36,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         }
 
         /// <summary>
-        ///     Create a binding between a view model property and a view property.
+        /// Create a binding between a view model property and a view property.
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
@@ -49,10 +50,8 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <returns></returns>
         public static IValidationBinding ForProperty
             <TView, TViewModel, TViewModelProperty1, TViewProperty>(TView view,
-                Expression<Func<TViewModel, TViewModelProperty1>>
-                    viewModelProperty,
-                Expression<Func<TView, TViewProperty>>
-                    viewProperty,
+                Expression<Func<TViewModel, TViewModelProperty1>> viewModelProperty,
+                Expression<Func<TView, TViewProperty>> viewProperty,
                 IValidationTextFormatter<string> formatter = null,
                 bool strict = true)
             where TView : IViewFor<TViewModel>
@@ -66,15 +65,18 @@ namespace ReactiveUI.Validation.ValidationBindings
                     viewModel =>
                         viewModel.ValidationContext
                             .ResolveFor(viewModelProperty, strict)
-                            .ValidationStatusChange).Switch().Select(vc => formatter.Format(vc.Text));
+                            .ValidationStatusChange)
+                .Switch()
+                .Select(vc => formatter.Format(vc.Text));
 
-            var updateObs = BindToView(vcObs, view, viewProperty).Select(_ => Unit.Default);
+            var updateObs = BindToView(vcObs, view, viewProperty)
+                .Select(_ => Unit.Default);
 
             return new ValidationBinding(updateObs);
         }
 
         /// <summary>
-        ///     Binding a specified view model property to a provided action.
+        /// Binding a specified view model property to a provided action.
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
@@ -88,8 +90,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <returns></returns>
         public static IValidationBinding ForProperty
             <TView, TViewModel, TViewModelProperty1, TOut>(TView view,
-                Expression<Func<TViewModel, TViewModelProperty1>>
-                    viewModelProperty,
+                Expression<Func<TViewModel, TViewModelProperty1>> viewModelProperty,
                 Action<ValidationState, TOut> action,
                 IValidationTextFormatter<TOut> formatter = null,
                 bool strict = true)
@@ -101,15 +102,17 @@ namespace ReactiveUI.Validation.ValidationBindings
             var vcObs = view.WhenAnyValue(v => v.ViewModel).Where(vm => vm != null).Select(
                     viewModel =>
                         viewModel.ValidationContext.ResolveFor(viewModelProperty, strict)
-                            .ValidationStatusChange).Switch()
+                            .ValidationStatusChange)
+                .Switch()
                 .Select(vc => new {ValidationChange = vc, Formatted = formatter.Format(vc.Text)})
-                .Do(r => action(r.ValidationChange, r.Formatted)).Select(_ => Unit.Default);
+                .Do(r => action(r.ValidationChange, r.Formatted))
+                .Select(_ => Unit.Default);
 
             return new ValidationBinding(vcObs);
         }
 
         /// <summary>
-        ///     Create a binding between a <see cref="ValidationHelper" /> and a specified view property.
+        /// Create a binding between a <see cref="ValidationHelper" /> and a specified view property.
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
@@ -133,16 +136,18 @@ namespace ReactiveUI.Validation.ValidationBindings
             var vcObs = view.WhenAnyValue(v => v.ViewModel).Where(vm => vm != null).Select(
                     viewModel =>
                         viewModel.WhenAnyValue(viewModelHelperProperty)
-                            .SelectMany(vy => vy.ValidationChanged)).Switch()
+                            .SelectMany(vy => vy.ValidationChanged))
+                .Switch()
                 .Select(vc => formatter.Format(vc.Text));
 
-            var updateObs = BindToView(vcObs, view, viewProperty).Select(_ => Unit.Default);
+            var updateObs = BindToView(vcObs, view, viewProperty)
+                .Select(_ => Unit.Default);
 
             return new ValidationBinding(updateObs);
         }
 
         /// <summary>
-        ///     Bind a <see cref="ValidationHelper" /> to a specified action.
+        /// Bind a <see cref="ValidationHelper" /> to a specified action.
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
@@ -169,8 +174,7 @@ namespace ReactiveUI.Validation.ValidationBindings
                         viewModel.WhenAnyValue(viewModelHelperProperty)
                             .SelectMany(vy => vy.ValidationChanged))
                 .Switch()
-                .Select(vc =>
-                    new {ValidationChange = vc, Formatted = formatter.Format(vc.Text)});
+                .Select(vc => new {ValidationChange = vc, Formatted = formatter.Format(vc.Text)});
 
             var updateObs = vcObs.Do(r => { action(r.ValidationChange, r.Formatted); })
                 .Select(_ => Unit.Default);
@@ -179,7 +183,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         }
 
         /// <summary>
-        ///     Create a binding between a view model and a specified action.
+        /// Create a binding between a view model and a specified action.
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
@@ -202,13 +206,14 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Select(vm => vm.ValidationContext.Text)
                 .Select(formatter.Format);
 
-            var updateObs = vcObs.Do(action).Select(_ => Unit.Default);
+            var updateObs = vcObs.Do(action)
+                .Select(_ => Unit.Default);
 
             return new ValidationBinding(updateObs);
         }
 
         /// <summary>
-        ///     Create a binding between a view model and a view property.
+        /// Create a binding between a view model and a view property.
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
@@ -233,12 +238,23 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .SelectMany(vm => vm.ValidationContext.ValidationStatusChange)
                 .Select(vc => formatter.Format(vc.Text));
 
-            var updateObs = BindToView(vcObs, view, viewProperty).Select(_ => Unit.Default);
+            var updateObs = BindToView(vcObs, view, viewProperty)
+                .Select(_ => Unit.Default);
 
             return new ValidationBinding(updateObs);
         }
 
-
+        /// <summary>
+        /// Create a binding to a view property.
+        /// </summary>
+        /// <param name="valueChange"></param>
+        /// <param name="target"></param>
+        /// <param name="viewProperty"></param>
+        /// <typeparam name="TView"></typeparam>
+        /// <typeparam name="TViewProp"></typeparam>
+        /// <typeparam name="TTarget"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <returns></returns>
         public static IObservable<TValue> BindToView<TView, TViewProp, TTarget, TValue>(
             IObservable<TValue> valueChange,
             TTarget target,
@@ -249,12 +265,9 @@ namespace ReactiveUI.Validation.ValidationBindings
             var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo());
 
             if (viewExpression.GetParent().NodeType == ExpressionType.Parameter)
-                return valueChange.Do(
-                    x => setter(target, x, viewExpression.GetArgumentsArray()),
-                    ex =>
-                    {
-                        //this.Log().ErrorException(String.Format("{0} Binding received an Exception!", viewExpression), ex);
-                    });
+                return valueChange
+                    .Do(x => setter(target, x, viewExpression.GetArgumentsArray()),
+                        ex => LogHost.Default.ErrorException($"{viewExpression} Binding received an Exception!", ex));
 
             var bindInfo = valueChange.CombineLatest(target.WhenAnyDynamic(viewExpression.GetParent(), x => x.Value),
                 (val, host) => new {val, host});
@@ -263,10 +276,7 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Where(x => x.host != null)
                 .Do(
                     x => setter(x.host, x.val, viewExpression.GetArgumentsArray()),
-                    ex =>
-                    {
-                        //this.Log().ErrorException(String.Format("{0} Binding received an Exception!", viewExpression), ex);
-                    })
+                    ex => { LogHost.Default.ErrorException($"{viewExpression} Binding received an Exception!", ex); })
                 .Select(v => v.val);
         }
     }
