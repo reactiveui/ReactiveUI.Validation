@@ -7,7 +7,7 @@ using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
 
-namespace ReactiveUI.Validation.DroidExtensions.Extensions
+namespace ReactiveUI.Validation.Platforms.Android
 {
     /// <summary>
     /// Android specific extensions methods associated to <see cref="IViewFor"/> instances.
