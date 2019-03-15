@@ -9,6 +9,7 @@ using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
+using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.ValidationBindings.Abstractions;
 using Splat;
 
@@ -57,17 +58,16 @@ namespace ReactiveUI.Validation.ValidationBindings
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, ISupportsValidation
         {
-            if (formatter == null) formatter = SingleLineFormatter.Default;
+            if (formatter == null)
+                formatter = SingleLineFormatter.Default;
 
             var vcObs = view.WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
                 .Select(
-                    viewModel =>
-                    {
-                        var validations = viewModel.ValidationContext.ResolveForMultiple(viewModelProperty, strict);
-                        return validations.Select(x => x.ValidationStatusChange)
-                            .CombineLatest();
-                    })
+                    viewModel => viewModel.ValidationContext
+                        .ResolveForMultiple(viewModelProperty, strict)
+                        .Select(x => x.ValidationStatusChange)
+                        .CombineLatest())
                 .Switch()
                 .Select(states => states.Select(state => formatter.Format(state.Text)).ToList());
 
@@ -75,6 +75,54 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Select(_ => Unit.Default);
 
             return new ValidationBinding(updateObs);
+        }
+
+        /// <summary>
+        /// Binding a specified view model property to a provided action.
+        /// </summary>
+        /// <typeparam name="TView"></typeparam>
+        /// <typeparam name="TViewModel"></typeparam>
+        /// <typeparam name="TViewModelProperty"></typeparam>
+        /// <typeparam name="TOut"></typeparam>
+        /// <param name="view"></param>
+        /// <param name="viewModelProperty"></param>
+        /// <param name="action"></param>
+        /// <param name="formatter"></param>
+        /// <param name="strict"></param>
+        /// <returns></returns>
+        public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(TView view,
+            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
+            Action<IList<ValidationState>, IList<TOut>> action,
+            IValidationTextFormatter<TOut> formatter = null,
+            bool strict = true)
+            where TView : IViewFor<TViewModel>
+            where TViewModel : ReactiveObject, ISupportsValidation
+        {
+            if (formatter == null)
+                throw new ArgumentNullException(nameof(formatter));
+
+            var vcObs = view.WhenAnyValue(v => v.ViewModel)
+                .Where(vm => vm != null)
+                .Select(
+                    viewModel => viewModel.ValidationContext
+                        .ResolveForMultiple(viewModelProperty, strict)
+                        .Select(x => x.ValidationStatusChange)
+                        .CombineLatest())
+                .Switch()
+                .Select(vc =>
+                {
+                    return new
+                    {
+                        ValidationChange = vc,
+                        Formatted = vc
+                            .Select(state => formatter.Format(state.Text))
+                            .ToList()
+                    };
+                })
+                .Do(r => action(r.ValidationChange, r.Formatted))
+                .Select(_ => Unit.Default);
+
+            return new ValidationBinding(vcObs);
         }
 
         /// <summary>
@@ -88,7 +136,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <typeparam name="TTarget"></typeparam>
         /// <typeparam name="TValue"></typeparam>
         /// <returns></returns>
-        public static IObservable<TValue> BindToView<TView, TViewProperty, TTarget, TValue>(
+        private static IObservable<TValue> BindToView<TView, TViewProperty, TTarget, TValue>(
             IObservable<TValue> valueChange,
             TTarget target,
             Expression<Func<TView, TViewProperty>> viewProperty)
