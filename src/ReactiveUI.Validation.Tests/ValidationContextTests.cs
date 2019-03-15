@@ -1,5 +1,6 @@
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.Exceptions;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Tests.Models;
 using Xunit;
@@ -101,11 +102,10 @@ namespace ReactiveUI.Validation.Tests
                 s => !string.IsNullOrEmpty(s),
                 s => $"Name {s} isn't valid");
 
-            var minimumLengthErrorMessage = $"Minimum length is {minimumLength}";
             var secondValidation = new BasePropertyValidation<TestViewModel, string>(viewModel,
                 vm => vm.Name,
                 s => s.Length > minimumLength,
-                s => minimumLengthErrorMessage);
+                s => $"Minimum length is {minimumLength}");
 
             // Add validations
             viewModel.ValidationContext.Add(firstValidation);
@@ -116,13 +116,21 @@ namespace ReactiveUI.Validation.Tests
 
             // TODO: add Assert.Throws to custom exception wrapping this call
             // View validations bindings
-            view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameLabelError);
+            var ex = Assert.Throws<MultipleValidationNotSupportedException>(() =>
+            {
+                return view.BindValidation(
+                    view.ViewModel,
+                    vm => vm.Name,
+                    v => v.NameLabelError);
+            });
 
             Assert.False(viewModel.ValidationContext.IsValid);
             Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
 
             // Checks if second validation error message is shown
-            Assert.Equal(minimumLengthErrorMessage, view.NameLabelError);
+            var expectedError =
+                $"Property {nameof(viewModel.Name)} has more than one validation rule associated. Consider using ValidationExtendedBinding methods.";
+            Assert.Equal(expectedError, ex.Message);
         }
 
         [Fact]

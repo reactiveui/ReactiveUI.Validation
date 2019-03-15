@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.Exceptions;
 using ReactiveUI.Validation.TemplateGenerators;
 
 namespace ReactiveUI.Validation.Extensions
@@ -24,21 +25,28 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TProperty>> viewModelProperty,
             bool strict = true)
         {
-            var instance = context.Validations
+            var validations = context.Validations
                 .Where(p => p is BasePropertyValidation<TViewModel, TProperty>)
                 .Cast<BasePropertyValidation<TViewModel, TProperty>>()
-                .FirstOrDefault(v => v.ContainsProperty(viewModelProperty, strict));
+                .Where(v => v.ContainsProperty(viewModelProperty, strict))
+                .ToList();
 
-            return instance;
+            if (validations.Count > 1)
+            {
+                throw new MultipleValidationNotSupportedException(viewModelProperty.Body.GetMemberInfo().Name);
+            }
+
+            return validations.First();
         }
-        
+
         /// <summary>
         /// Resolve the property valuation for a specified property.
         /// </summary>
         /// <typeparam name="TViewModel"></typeparam>
         /// <typeparam name="TProperty"></typeparam>
         /// <returns></returns>
-        public static IEnumerable<BasePropertyValidation<TViewModel, TProperty>> ResolveForMultiple<TViewModel, TProperty>(
+        public static IEnumerable<BasePropertyValidation<TViewModel, TProperty>> ResolveForMultiple<TViewModel,
+            TProperty>(
             this ValidationContext context,
             Expression<Func<TViewModel, TProperty>> viewModelProperty,
             bool strict = true)
@@ -68,15 +76,23 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TProperty1>> viewModelProperty2,
             bool strict = true)
         {
-            var instance = context
+            var validations = context
                 .Validations
                 .Where(p => p is BasePropertyValidation<TViewModel, TProperty1, TProperty2>)
                 .Cast<BasePropertyValidation<TViewModel, TProperty1, TProperty2>>()
-                .FirstOrDefault(v =>
+                .Where(v =>
                     v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2) &&
-                    v.PropertyCount == 2);
+                    v.PropertyCount == 2)
+                .ToList();
 
-            return instance;
+            if (validations.Count > 1)
+            {
+                throw new MultipleValidationNotSupportedException(
+                    viewModelProperty1.Body.GetMemberInfo().Name,
+                    viewModelProperty2.Body.GetMemberInfo().Name);
+            }
+
+            return validations.First();
         }
 
         /// <summary>
@@ -99,15 +115,24 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TProperty1>> viewModelProperty3,
             bool strict = true)
         {
-            var instance = context
+            var validations = context
                 .Validations
                 .Where(p => p is BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>)
                 .Cast<BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>>()
-                .FirstOrDefault(v =>
+                .Where(v =>
                     v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2) &&
-                    v.ContainsProperty(viewModelProperty3) && v.PropertyCount == 3);
+                    v.ContainsProperty(viewModelProperty3) && v.PropertyCount == 3)
+                .ToList();
 
-            return instance;
+            if (validations.Count > 1)
+            {
+                throw new MultipleValidationNotSupportedException(
+                    viewModelProperty1.Body.GetMemberInfo().Name,
+                    viewModelProperty2.Body.GetMemberInfo().Name,
+                    viewModelProperty3.Body.GetMemberInfo().Name);
+            }
+
+            return validations.First();
         }
     }
 }

@@ -6,15 +6,16 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using ReactiveUI.Validation.Abstractions;
-using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
-using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.ValidationBindings.Abstractions;
 
 namespace ReactiveUI.Validation.ValidationBindings
 {
+    /// <summary>
+    /// An extended validation binding which supports multiple validations.
+    /// </summary>
     public class ValidationExtendedBinding : IValidationBinding
     {
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
@@ -57,20 +58,17 @@ namespace ReactiveUI.Validation.ValidationBindings
         {
             if (formatter == null) formatter = SingleLineFormatter.Default;
 
-            // TODO: check this…
             var vcObs = view.WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
                 .Select(
                     viewModel =>
                     {
-                        var validations = viewModel
-                            .ValidationContext
-                            .ResolveForMultiple(viewModelProperty, strict)
-                            .Select(validation => validation.ValidationStatusChange).ToList();
-
-                        return validations;
+                        var validations = viewModel.ValidationContext.ResolveForMultiple(viewModelProperty, strict);
+                        return validations.Select(x => x.ValidationStatusChange)
+                            .CombineLatest();
                     })
-                .Subscribe(vc => vc.ForEach());
+                .Switch()
+                .Select(states => states.Select(state => formatter.Format(state.Text)).ToList());
 
             var updateObs = ValidationBinding.BindToView(vcObs, view, viewProperty)
                 .Select(_ => Unit.Default);
