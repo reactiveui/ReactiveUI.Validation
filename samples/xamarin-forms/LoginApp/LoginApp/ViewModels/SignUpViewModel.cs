@@ -1,9 +1,9 @@
+// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+// See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Linq;
 using System.Reactive;
 using Acr.UserDialogs;
 using LoginApp.ViewModels.Abstractions;
@@ -27,7 +27,7 @@ namespace LoginApp.ViewModels
 
         [Reactive] public string ConfirmPassword { get; set; }
 
-        [Reactive] public ReactiveCommand<Unit, bool> SignUp { get; private set; }
+        public ReactiveCommand<Unit, Unit> SignUp { get; }
 
         public ValidationContext ValidationContext { get; } = new ValidationContext();
 
@@ -35,26 +35,15 @@ namespace LoginApp.ViewModels
             : base(hostScreen)
         {
             _dialogs = dialogs ?? Locator.Current.GetService<IUserDialogs>();
-            SignUp = ReactiveCommand.Create(SignUpImpl);
+            SignUp = ReactiveCommand.Create(SignUpImpl, this.IsValid());
             CreateValidations();
+
+            // Prints current validation errors
+            this.WhenAnyValue(x => x.UserName, x => x.Password, x => x.ConfirmPassword)
+                .Subscribe(_ => this.Log().Debug(ValidationContext?.Text?.ToSingleLine()));
         }
 
-        private bool SignUpImpl()
-        {
-            var isValid = ValidationContext.GetIsValid();
-
-            if (!isValid)
-            {
-                // It should not be necessary to check for this
-                var errorMessage = ValidationContext.Text?.FirstOrDefault();
-                if (errorMessage != null)
-                {
-                    _dialogs.Toast(errorMessage);
-                }
-            }
-
-            return isValid;
-        }
+        private void SignUpImpl() => _dialogs.Toast("User created successfully.");
 
         private void CreateValidations()
         {
@@ -72,11 +61,6 @@ namespace LoginApp.ViewModels
                 vm => vm.ConfirmPassword,
                 _isDefined,
                 "Confirm password is required.");
-
-            this.ValidationRule(
-                vm => vm.Password,
-                password => password == ConfirmPassword,
-                "Passwords must match.");
 
             this.ValidationRule(
                 vm => vm.ConfirmPassword,
