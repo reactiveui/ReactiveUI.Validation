@@ -14,7 +14,7 @@ namespace ReactiveUI.Validation.Extensions
     public static class ValidationContextExtensions
     {
         /// <summary>
-        /// Resolve the property valuation for a specified property.
+        /// Resolves the property valuation for a specified property.
         /// </summary>
         /// <typeparam name="TViewModel"></typeparam>
         /// <typeparam name="TProperty"></typeparam>
@@ -39,7 +39,7 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Resolve the property valuation for two properties.
+        /// Resolves the property valuation for two properties.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="viewModelProperty1"></param>
@@ -75,7 +75,7 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Resolve the property valuation for three properties.
+        /// Resolves the property valuation for three properties.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="viewModelProperty1"></param>

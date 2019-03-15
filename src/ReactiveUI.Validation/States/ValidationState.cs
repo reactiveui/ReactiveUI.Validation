@@ -4,13 +4,13 @@ using ReactiveUI.Validation.Components.Abstractions;
 namespace ReactiveUI.Validation.States
 {
     /// <summary>
-    ///     Represents the validation state of a validation component.
+    /// Represents the validation state of a validation component.
     /// </summary>
     public sealed class ValidationState
     {
         /// <inheritdoc />
         /// <summary>
-        ///     Create an instance.
+        /// Creates an instance.
         /// </summary>
         /// <param name="isValid"></param>
         /// <param name="text"></param>
@@ -21,7 +21,7 @@ namespace ReactiveUI.Validation.States
         }
 
         /// <summary>
-        ///     Create an instance.
+        /// Creates an instance.
         /// </summary>
         /// <param name="isValid"></param>
         /// <param name="text"></param>
@@ -34,17 +34,17 @@ namespace ReactiveUI.Validation.States
         }
 
         /// <summary>
-        ///     The associated component
+        /// The associated component.
         /// </summary>
         public IValidationComponent Component { get; }
 
         /// <summary>
-        ///     Get whether the validation is currently valid or not.
+        /// Get whether the validation is currently valid or not.
         /// </summary>
         public bool IsValid { get; }
 
         /// <summary>
-        ///     Get the validation text.
+        /// Get the validation text.
         /// </summary>
         public ValidationText Text { get; }
     }

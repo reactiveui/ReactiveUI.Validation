@@ -15,7 +15,7 @@ namespace ReactiveUI.Validation.Extensions
     public static class ViewForExtensions
     {
         /// <summary>
-        /// Bind the specified ViewModel property validation to the View property.
+        /// Binds the specified ViewModel property validation to the View property.
         /// </summary>
         /// <remarks>Supports multiple validations for the same property.</remarks>
         /// <param name="view"></param>
@@ -39,7 +39,7 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Bind the specified ViewModel property validation to the View property.
+        /// Binds the specified ViewModel property validation to the View property.
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
@@ -62,7 +62,7 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Bind the overall validation of a ViewModel to a specified View property.
+        /// Binds the overall validation of a ViewModel to a specified View property.
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
@@ -81,7 +81,7 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Bind a <see cref="ValidationHelper" /> from a ViewModel to a specified View property.
+        /// Binds a <see cref="ValidationHelper" /> from a ViewModel to a specified View property.
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
@@ -102,7 +102,7 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Create a binding to a View property.
+        /// Creates a binding to a View property.
         /// </summary>
         /// <param name="This"></param>
         /// <param name="target"></param>

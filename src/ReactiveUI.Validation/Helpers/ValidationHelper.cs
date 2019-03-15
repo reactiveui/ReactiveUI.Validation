@@ -10,30 +10,39 @@ namespace ReactiveUI.Validation.Helpers
     /// <inheritdoc cref="ReactiveObject" />
     /// <inheritdoc cref="IDisposable" />
     /// <summary>
-    ///     Encapsulation of a validation with bindable properties.
+    /// Encapsulation of a validation with bindable properties.
     /// </summary>
     public class ValidationHelper : ReactiveObject, IDisposable
     {
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
         private readonly IValidationComponent _validation;
 
-        // how do we get this to be reactive though? we need to publish 
-        // validation object
         private ObservableAsPropertyHelper<bool> _isValid;
-
         private ObservableAsPropertyHelper<ValidationText> _message;
 
+        /// <inheritdoc />
         public ValidationHelper(IValidationComponent validation)
         {
             _validation = validation;
             Setup();
         }
 
+        /// <summary>
+        /// Gets the current validation state.
+        /// </summary>
         public bool IsValid => _isValid.Value;
+
+        /// <summary>
+        /// Gets the current (optional) validation message.
+        /// </summary>
         public ValidationText Message => _message.Value;
 
+        /// <summary>
+        /// Gets the observable for validation state changes.
+        /// </summary>
         public IObservable<ValidationState> ValidationChanged => _validation.ValidationStatusChange;
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _disposables?.Dispose();

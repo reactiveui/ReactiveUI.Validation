@@ -93,7 +93,7 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Get an observable for the validity of the ViewModel.
+        /// Gets an observable for the validity of the ViewModel.
         /// </summary>
         /// <typeparam name="TViewModel"></typeparam>
         /// <param name="viewModel"></param>

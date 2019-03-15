@@ -10,17 +10,17 @@ namespace ReactiveUI.Validation.Components.Abstractions
     public interface IValidationComponent
     {
         /// <summary>
-        /// Get the Current (optional) validation message.
+        /// Gets the current (optional) validation message.
         /// </summary>
         ValidationText Text { get; }
 
         /// <summary>
-        /// Get the current validation state.
+        /// Gets the current validation state.
         /// </summary>
         bool IsValid { get; }
 
         /// <summary>
-        /// Get the observable for validation state changes.
+        /// Gets the observable for validation state changes.
         /// </summary>
         IObservable<ValidationState> ValidationStatusChange { get; }
     }

@@ -48,7 +48,7 @@ namespace ReactiveUI.Validation.Contexts
         private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
 
         /// <summary>
-        /// Subject for validality of the context.
+        /// Subject for validity of the context.
         /// </summary>
         private readonly ReplaySubject<bool> _validSubject = new ReplaySubject<bool>(1);
 
@@ -56,23 +56,23 @@ namespace ReactiveUI.Validation.Contexts
 
         /// <inheritdoc />
         /// <summary>
-        /// Create the context
+        /// Creates the context.
         /// </summary>
         public ValidationContext()
         {
-            // publish the current validation state 
+            // Publish the current validation state 
             _disposables.Add(_validSubject.StartWith(true).ToProperty(this, m => m.IsValid, out _isValid));
 
-            // when a change occurs in the validation state, publish the updated validation text
+            // When a change occurs in the validation state, publish the updated validation text
             _disposables.Add(_validSubject.StartWith(true).Select(v => BuildText())
                 .ToProperty(this, m => m.Text, out _validationText, new ValidationText()));
 
-            //publish the current validation state
+            // Publish the current validation state
             _disposables.Add(_validSubject.Select(v => new ValidationState(IsValid, BuildText(), this))
                 .Do(vc => _validationStatusChange.OnNext(vc)).Subscribe());
 
 
-            // observe the defined validations and whenever there is a change publish the current validation state.
+            // Observe the defined validations and whenever there is a change publish the current validation state.
             _validationConnectable = _validations.CountChanged.StartWith(0)
                 .Select(_ =>
                     _validations
