@@ -25,13 +25,6 @@ namespace ReactiveUI.Validation.Tests.Models
 
         public ValidationHelper NameRule { get; set; }
 
-        public List<string> GetIt { get; set; } = new List<string>();
-
-        public string Go()
-        {
-            return "here";
-        }
-
         public ValidationContext ValidationContext { get; } = new ValidationContext();
     }
 }
