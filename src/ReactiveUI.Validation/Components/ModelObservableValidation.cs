@@ -12,12 +12,12 @@ namespace ReactiveUI.Validation.Components
     /// <inheritdoc cref="IValidationComponent" />
     /// <inheritdoc cref="IDisposable" />
     /// <summary>
-    ///     More generic observable for determination of validity
+    /// More generic observable for determination of validity
     /// </summary>
     /// <remarks>
-    ///     We probably need a more 'complex' one, where the params of the validation block are
-    ///     passed through ?
-    ///     Also, what about access to the view model to output the error message ?
+    /// We probably need a more 'complex' one, where the params of the validation block are
+    /// passed through?
+    /// Also, what about access to the view model to output the error message?
     /// </remarks>
     public class ModelObservableValidation<TViewModel> : ReactiveObject, IValidationComponent, IDisposable
     {
@@ -34,7 +34,7 @@ namespace ReactiveUI.Validation.Components
 
         private ValidationText _text;
 
-
+        /// <inheritdoc />
         public ModelObservableValidation(TViewModel model,
             Func<TViewModel, IObservable<bool>> validityObservable,
             Func<TViewModel, bool, string> messageFunc) : this(model, validityObservable,
@@ -42,6 +42,7 @@ namespace ReactiveUI.Validation.Components
         {
         }
 
+        /// <inheritdoc />
         public ModelObservableValidation(TViewModel model,
             Func<TViewModel, IObservable<bool>> validityObservable,
             Func<TViewModel, bool, ValidationText> messageFunc)
@@ -57,6 +58,7 @@ namespace ReactiveUI.Validation.Components
                 .Multicast(_lastValidationStateSubject);
         }
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _disposables?.Dispose();
@@ -64,7 +66,7 @@ namespace ReactiveUI.Validation.Components
 
         /// <inheritdoc />
         /// <summary>
-        ///     Get the current validation text
+        /// Get the current validation text
         /// </summary>
         public ValidationText Text
         {
@@ -77,7 +79,7 @@ namespace ReactiveUI.Validation.Components
 
         /// <inheritdoc />
         /// <summary>
-        ///     Get the current state
+        /// Get the current state
         /// </summary>
         public bool IsValid
         {
@@ -90,7 +92,7 @@ namespace ReactiveUI.Validation.Components
 
         /// <inheritdoc />
         /// <summary>
-        ///     Get the observable for <see cref="T:ReactiveUI.Validation.States.ValidationState" /> changes
+        /// Get the observable for <see cref="T:ReactiveUI.Validation.States.ValidationState" /> changes
         /// </summary>
         public IObservable<ValidationState> ValidationStatusChange
         {

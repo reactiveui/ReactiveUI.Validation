@@ -15,40 +15,40 @@ namespace ReactiveUI.Validation.Contexts
     /// <inheritdoc cref="IDisposable" />
     /// <inheritdoc cref="IValidationComponent" />
     /// <summary>
-    ///     The overall context for a view model under which validation takes place.
+    /// The overall context for a view model under which validation takes place.
     /// </summary>
     /// <remarks>
-    ///     Contains all of the <see cref="T:ReactiveUI.Validation.Components.Contracts.IValidationComponent" /> instances
-    ///     applicable to the view model.
+    /// Contains all of the <see cref="T:ReactiveUI.Validation.Components.Contracts.IValidationComponent" /> instances
+    /// applicable to the view model.
     /// </remarks>
     public class ValidationContext : ReactiveObject, IDisposable, IValidationComponent
     {
         /// <summary>
-        ///     What needs to be disposed off
+        /// What needs to be disposed off
         /// </summary>
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
         /// <summary>
-        ///     Backing field for the current validation state
+        /// Backing field for the current validation state
         /// </summary>
         private readonly ObservableAsPropertyHelper<bool> _isValid;
 
         private readonly IConnectableObservable<bool> _validationConnectable;
 
         /// <summary>
-        ///     The list of current validations
+        /// The list of current validations
         /// </summary>
         private readonly ReactiveList<IValidationComponent> _validations = new ReactiveList<IValidationComponent>();
 
         private readonly ReplaySubject<ValidationState> _validationStatusChange = new ReplaySubject<ValidationState>(1);
 
         /// <summary>
-        ///     Backing field for the validation summary
+        /// Backing field for the validation summary
         /// </summary>
         private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
 
         /// <summary>
-        ///     Subject for validality of the context.
+        /// Subject for validality of the context.
         /// </summary>
         private readonly ReplaySubject<bool> _validSubject = new ReplaySubject<bool>(1);
 
@@ -56,7 +56,7 @@ namespace ReactiveUI.Validation.Contexts
 
         /// <inheritdoc />
         /// <summary>
-        ///     Create the context
+        /// Create the context
         /// </summary>
         public ValidationContext()
         {
@@ -83,31 +83,29 @@ namespace ReactiveUI.Validation.Contexts
         }
 
         /// <summary>
-        ///     An observable for the Valid state
+        /// An observable for the Valid state
         /// </summary>
         public IObservable<bool> Valid
         {
             get
             {
                 Activate();
-
                 return _validSubject.AsObservable();
             }
         }
 
         /// <summary>
-        ///     Get the list of validations
+        /// Get the list of validations
         /// </summary>
         public IReadOnlyReactiveList<IValidationComponent> Validations => _validations;
 
+        /// <inheritdoc />
         public void Dispose()
         {
             _disposables?.Dispose();
         }
 
-        /// <summary>
-        ///     Get whether currently valid or not
-        /// </summary>
+        /// <inheritdoc />
         public bool IsValid
         {
             get
@@ -117,6 +115,7 @@ namespace ReactiveUI.Validation.Contexts
             }
         }
 
+        /// <inheritdoc />
         public IObservable<ValidationState> ValidationStatusChange
         {
             get
@@ -127,9 +126,6 @@ namespace ReactiveUI.Validation.Contexts
         }
 
         /// <inheritdoc />
-        /// <summary>
-        ///     Get the current validation summary.
-        /// </summary>
         public ValidationText Text
         {
             get
@@ -148,11 +144,19 @@ namespace ReactiveUI.Validation.Contexts
             _disposables.Add(_validationConnectable.Connect());
         }
 
+        /// <summary>
+        /// Adds a validation into the validations collection.
+        /// </summary>
+        /// <param name="validation"></param>
         public void Add(IValidationComponent validation)
         {
             _validations.Add(validation);
         }
 
+        /// <summary>
+        /// Returns if the whole context is valid checking all the validations.
+        /// </summary>
+        /// <returns></returns>
         public bool GetIsValid()
         {
             var isValid = _validations.Count == 0 || _validations.All(v => v.IsValid);
@@ -160,7 +164,7 @@ namespace ReactiveUI.Validation.Contexts
         }
 
         /// <summary>
-        ///     Build a list of the validation text for each invalid component
+        /// Build a list of the validation text for each invalid component
         /// </summary>
         /// <returns></returns>
         private ValidationText BuildText()
