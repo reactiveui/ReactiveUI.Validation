@@ -20,7 +20,7 @@ namespace ReactiveUI.Validation.Extensions
             where TViewModel : ReactiveObject, ISupportsValidation
             where TView : IViewFor<TViewModel>
         {
-            return ValidationExtendedBinding.ForProperty(view, viewModelProperty, viewProperty);
+            return ValidationBindingEx.ForProperty(view, viewModelProperty, viewProperty);
         }
 
         /// <summary>

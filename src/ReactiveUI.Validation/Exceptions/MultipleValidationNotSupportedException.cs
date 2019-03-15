@@ -14,7 +14,7 @@ namespace ReactiveUI.Validation.Exceptions
         /// <param name="propertyName">Property evaluated</param>
         public MultipleValidationNotSupportedException(string propertyName)
             : base(
-                $"Property {propertyName} has more than one validation rule associated. Consider using {nameof(ValidationExtendedBinding)} methods.")
+                $"Property {propertyName} has more than one validation rule associated. Consider using {nameof(ValidationBindingEx)} methods.")
         {
         }
 
@@ -24,7 +24,7 @@ namespace ReactiveUI.Validation.Exceptions
         /// <param name="propertyNames">Properties evaluated</param>
         public MultipleValidationNotSupportedException(params string[] propertyNames)
             : base(
-                $"Properties {string.Join(", ", propertyNames)} have more than one validation rule associated. Consider using {nameof(ValidationExtendedBinding)} methods.")
+                $"Properties {string.Join(", ", propertyNames)} have more than one validation rule associated. Consider using {nameof(ValidationBindingEx)} methods.")
 
         {
         }

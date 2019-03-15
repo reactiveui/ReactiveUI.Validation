@@ -3,6 +3,7 @@ using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Exceptions;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Tests.Models;
+using ReactiveUI.Validation.ValidationBindings;
 using Xunit;
 
 namespace ReactiveUI.Validation.Tests
@@ -129,7 +130,7 @@ namespace ReactiveUI.Validation.Tests
 
             // Checks if second validation error message is shown
             var expectedError =
-                $"Property {nameof(viewModel.Name)} has more than one validation rule associated. Consider using ValidationExtendedBinding methods.";
+                $"Property {nameof(viewModel.Name)} has more than one validation rule associated. Consider using {nameof(ValidationBindingEx)} methods.";
             Assert.Equal(expectedError, ex.Message);
         }
 

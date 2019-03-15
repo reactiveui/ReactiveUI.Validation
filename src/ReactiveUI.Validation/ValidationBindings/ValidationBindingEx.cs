@@ -16,7 +16,7 @@ namespace ReactiveUI.Validation.ValidationBindings
     /// <summary>
     /// An extended validation binding which supports multiple validations.
     /// </summary>
-    public class ValidationExtendedBinding : IValidationBinding
+    public class ValidationBindingEx : IValidationBinding
     {
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -24,7 +24,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// Create an instance with a specified observable for validation changes.
         /// </summary>
         /// <param name="validationObservable"></param>
-        public ValidationExtendedBinding(IObservable<Unit> validationObservable)
+        public ValidationBindingEx(IObservable<Unit> validationObservable)
         {
             _disposables.Add(validationObservable.Subscribe());
         }
