@@ -2,6 +2,7 @@ using System;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
 using ReactiveUI.Validation.Abstractions;
+using ReactiveUI.Validation.Exceptions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
 using Splat;
@@ -13,7 +14,21 @@ namespace ReactiveUI.Validation.Extensions
     /// </summary>
     public static class ViewForExtensions
     {
-        public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view,
+        /// <summary>
+        /// Bind the specified ViewModel property validation to the View property.
+        /// </summary>
+        /// <remarks>Supports multiple validations for the same property.</remarks>
+        /// <param name="view"></param>
+        /// <param name="viewModel"></param>
+        /// <param name="viewModelProperty"></param>
+        /// <param name="viewProperty"></param>
+        /// <typeparam name="TView"></typeparam>
+        /// <typeparam name="TViewModel"></typeparam>
+        /// <typeparam name="TViewModelProperty"></typeparam>
+        /// <typeparam name="TViewProperty"></typeparam>
+        /// <returns></returns>
+        public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(
+            this TView view,
             TViewModel viewModel,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Expression<Func<TView, TViewProperty>> viewProperty)
@@ -35,6 +50,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty"></param>
         /// <param name="viewProperty"></param>
         /// <returns></returns>
+        /// <exception cref="MultipleValidationNotSupportedException"></exception>
         public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view,
             TViewModel viewModel,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
@@ -46,7 +62,7 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Bind the overall validation of a View model to a specified View property.
+        /// Bind the overall validation of a ViewModel to a specified View property.
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
@@ -85,6 +101,15 @@ namespace ReactiveUI.Validation.Extensions
             return ValidationBinding.ForValidationHelperProperty(view, viewModelHelperProperty, viewProperty);
         }
 
+        /// <summary>
+        /// Create a binding to a View property.
+        /// </summary>
+        /// <param name="This"></param>
+        /// <param name="target"></param>
+        /// <param name="viewExpression"></param>
+        /// <typeparam name="TTarget"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <returns></returns>
         public static IDisposable BindToDirect<TTarget, TValue>(IObservable<TValue> This,
             TTarget target,
             Expression viewExpression)

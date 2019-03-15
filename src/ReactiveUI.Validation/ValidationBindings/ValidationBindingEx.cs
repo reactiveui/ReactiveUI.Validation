@@ -74,7 +74,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             var updateObs = BindToView(vcObs, view, viewProperty)
                 .Select(_ => Unit.Default);
 
-            return new ValidationBinding(updateObs);
+            return new ValidationBindingEx(updateObs);
         }
 
         /// <summary>
@@ -122,11 +122,11 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Do(r => action(r.ValidationChange, r.Formatted))
                 .Select(_ => Unit.Default);
 
-            return new ValidationBinding(vcObs);
+            return new ValidationBindingEx(vcObs);
         }
 
         /// <summary>
-        /// Create a binding to a view property.
+        /// Create a binding to a View property.
         /// </summary>
         /// <param name="valueChange"></param>
         /// <param name="target"></param>

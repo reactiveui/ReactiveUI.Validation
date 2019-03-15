@@ -215,7 +215,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         }
 
         /// <summary>
-        /// Create a binding between a view model and a view property.
+        /// Create a binding between a ViewModel and a View property.
         /// </summary>
         /// <typeparam name="TView"></typeparam>
         /// <typeparam name="TViewModel"></typeparam>
