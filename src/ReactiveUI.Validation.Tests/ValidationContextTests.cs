@@ -137,16 +137,15 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void TwoValidationPropertiesInSamePropertyResultsTest()
         {
-            const string validName = "valid";
             const int minimumLength = 5;
 
-            var viewModel = new TestViewModel {Name = validName};
+            var viewModel = new TestViewModel {Name = "some"};
             var view = new TestView(viewModel);
 
             var firstValidation = new BasePropertyValidation<TestViewModel, string>(viewModel,
                 vm => vm.Name,
                 s => !string.IsNullOrEmpty(s),
-                s => $"Name {s} isn't valid");
+                "Name is required.");
 
             var minimumLengthErrorMessage = $"Minimum length is {minimumLength}";
             var secondValidation = new BasePropertyValidation<TestViewModel, string>(viewModel,
@@ -163,6 +162,8 @@ namespace ReactiveUI.Validation.Tests
 
             // View validations bindings
             view.BindValidationEx(view.ViewModel, vm => vm.Name, v => v.NameLabelError);
+
+            viewModel.Name = "som";
 
             Assert.False(viewModel.ValidationContext.IsValid);
             Assert.Equal(2, viewModel.ValidationContext.Validations.Count);

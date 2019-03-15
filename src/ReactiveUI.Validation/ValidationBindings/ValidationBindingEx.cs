@@ -10,6 +10,7 @@ using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.ValidationBindings.Abstractions;
+using Splat;
 
 namespace ReactiveUI.Validation.ValidationBindings
 {
@@ -70,10 +71,52 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Switch()
                 .Select(states => states.Select(state => formatter.Format(state.Text)).ToList());
 
-            var updateObs = ValidationBinding.BindToView(vcObs, view, viewProperty)
+            var updateObs = BindToView(vcObs, view, viewProperty)
                 .Select(_ => Unit.Default);
 
             return new ValidationBinding(updateObs);
+        }
+
+        /// <summary>
+        /// Create a binding to a view property.
+        /// </summary>
+        /// <param name="valueChange"></param>
+        /// <param name="target"></param>
+        /// <param name="viewProperty"></param>
+        /// <typeparam name="TView"></typeparam>
+        /// <typeparam name="TViewProperty"></typeparam>
+        /// <typeparam name="TTarget"></typeparam>
+        /// <typeparam name="TValue"></typeparam>
+        /// <returns></returns>
+        public static IObservable<TValue> BindToView<TView, TViewProperty, TTarget, TValue>(
+            IObservable<TValue> valueChange,
+            TTarget target,
+            Expression<Func<TView, TViewProperty>> viewProperty)
+            where TValue : List<string>
+        {
+            var viewExpression = Reflection.Rewrite(viewProperty.Body);
+
+            var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo());
+
+            if (viewExpression.GetParent().NodeType == ExpressionType.Parameter)
+                return valueChange
+                    .Do(
+                        x =>
+                        {
+                            setter(target, x.First(msg => !string.IsNullOrEmpty(msg)),
+                                viewExpression.GetArgumentsArray());
+                        },
+                        ex => LogHost.Default.ErrorException($"{viewExpression} Binding received an Exception!", ex));
+
+            var bindInfo = valueChange.CombineLatest(target.WhenAnyDynamic(viewExpression.GetParent(), x => x.Value),
+                (val, host) => new {val, host});
+
+            return bindInfo
+                .Where(x => x.host != null)
+                .Do(
+                    x => setter(x.host, x.val, viewExpression.GetArgumentsArray()),
+                    ex => { LogHost.Default.ErrorException($"{viewExpression} Binding received an Exception!", ex); })
+                .Select(v => v.val);
         }
     }
 }
