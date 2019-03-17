@@ -1,7 +1,8 @@
-// Copyright (c) 2019 .NET Foundation and Contributors. All rights reserved.
+// <copyright file="ReactiveUI.Validation/samples/xamarin-forms/LoginApp/LoginApp/Views/SignUpView.xaml.cs" company=".NET Foundation">
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for full license information.
+// See the LICENSE file in the project root for more information.
+// </copyright>
 
 using System.Reactive.Disposables;
 using LoginApp.ViewModels;
@@ -10,13 +11,21 @@ using ReactiveUI.Validation.Extensions;
 
 namespace LoginApp.Views
 {
+    /// <inheritdoc />
+    /// <summary>
+    /// A page which contains controls about Sign Up an account.
+    /// </summary>
     public partial class SignUpView : ContentPageBase<SignUpViewModel>
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SignUpView"/> class.
+        /// </summary>
         public SignUpView()
         {
             InitializeComponent();
         }
 
+        /// <inheritdoc />
         protected override void CreateBindings(CompositeDisposable disposables)
         {
             this.Bind(ViewModel, x => x.UserName, x => x.UserName.Text).DisposeWith(disposables);
