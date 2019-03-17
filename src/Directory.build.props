@@ -50,5 +50,7 @@
   <ItemGroup Condition="'$(IsTestProject)' != 'true' and '$(SourceLinkEnabled)' != 'false'">
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-18618-05" PrivateAssets="All" /> 
   </ItemGroup>
+
+  <Import Project="..\Directory.build.props" />
  </Project>
  
