@@ -1,4 +1,4 @@
-﻿// <copyright file="/Users/alexmartinezm/GitHub/ReactiveUI.Validation/samples/xamarin-forms/LoginApp/LoginApp.Android/Properties/AssemblyInfo.cs" company=".NET Foundation">
+﻿// <copyright file="ReactiveUI.Validation/samples/xamarin-forms/LoginApp/LoginApp.Android/Properties/AssemblyInfo.cs" company=".NET Foundation">
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
