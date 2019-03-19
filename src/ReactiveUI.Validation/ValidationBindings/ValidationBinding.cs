@@ -21,17 +21,11 @@ using Splat;
 
 namespace ReactiveUI.Validation.ValidationBindings
 {
-    /// <summary>
-    /// A validation binding.
-    /// </summary>
-    public class ValidationBinding : IValidationBinding
+    /// <inheritdoc />
+    public sealed class ValidationBinding : IValidationBinding
     {
         private CompositeDisposable _disposables = new CompositeDisposable();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationBinding"/> class.
-        /// </summary>
-        /// <param name="validationObservable">Validation Unit observable.</param>
         private ValidationBinding(IObservable<Unit> validationObservable)
         {
             _disposables.Add(validationObservable.Subscribe());
@@ -290,6 +284,16 @@ namespace ReactiveUI.Validation.ValidationBindings
             return new ValidationBinding(updateObs);
         }
 
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            // Dispose of unmanaged resources.
+            Dispose(true);
+
+            // Suppress finalization.
+            GC.SuppressFinalize(this);
+        }
+
         /// <summary>
         /// Creates a binding to a View property.
         /// </summary>
@@ -305,7 +309,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <exception cref="MultipleValidationNotSupportedException">
         /// Thrown if the ViewModel property has more than one validation associated.
         /// </exception>
-        public static IObservable<TValue> BindToView<TView, TViewProperty, TTarget, TValue>(
+        private static IObservable<TValue> BindToView<TView, TViewProperty, TTarget, TValue>(
             IObservable<TValue> valueChange,
             TTarget target,
             Expression<Func<TView, TViewProperty>> viewProperty)
@@ -334,21 +338,11 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Select(v => v.val);
         }
 
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            // Dispose of unmanaged resources.
-            Dispose(true);
-
-            // Suppress finalization.
-            GC.SuppressFinalize(this);
-        }
-
         /// <summary>
         /// Disposes of the managed resources.
         /// </summary>
         /// <param name="disposing">If its getting called by the <see cref="Dispose"/> method.</param>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (disposing)
             {
