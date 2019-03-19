@@ -8,8 +8,14 @@ using Xunit;
 
 namespace ReactiveUI.Validation.Tests
 {
+    /// <summary>
+    /// Tests for <see cref="ValidationContext"/>.
+    /// </summary>
     public class ValidationContextTests
     {
+        /// <summary>
+        /// Verifies that a <see cref="ValidationContext"/> without validations is valid.
+        /// </summary>
         [Fact]
         public void EmptyValidationContextIsValid()
         {
@@ -19,6 +25,9 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal(0, vc.Text.Count);
         }
 
+        /// <summary>
+        /// Verifies that validations can be added in the <see cref="ValidationContext"/>.
+        /// </summary>
         [Fact]
         public void CanAddValidationComponentsTest()
         {
@@ -26,9 +35,10 @@ namespace ReactiveUI.Validation.Tests
 
             var invalidName = string.Empty;
 
-            var vm = new TestViewModel {Name = "valid"};
+            var vm = new TestViewModel { Name = "valid" };
 
-            var v1 = new BasePropertyValidation<TestViewModel, string>(vm,
+            var v1 = new BasePropertyValidation<TestViewModel, string>(
+                vm,
                 v => v.Name,
                 s => !string.IsNullOrEmpty(s),
                 msg => $"{msg} isn't valid");
@@ -45,6 +55,9 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal(1, vc.Text.Count);
         }
 
+        /// <summary>
+        /// Verifies that two validations properties are correctly applied in the <see cref="ValidationContext"/>.
+        /// </summary>
         [Fact]
         public void TwoValidationComponentsCorrectlyResultInContextTest()
         {
@@ -53,20 +66,22 @@ namespace ReactiveUI.Validation.Tests
 
             var vc = new ValidationContext();
 
-            var vm = new TestViewModel {Name = validName, Name2 = validName};
+            var vm = new TestViewModel { Name = validName, Name2 = validName };
 
-            var v1 = new BasePropertyValidation<TestViewModel, string>(vm,
+            var firstValidation = new BasePropertyValidation<TestViewModel, string>(
+                vm,
                 v => v.Name,
                 s => !string.IsNullOrEmpty(s),
                 s => $"Name {s} isn't valid");
 
-            var v2 = new BasePropertyValidation<TestViewModel, string>(vm,
+            var secondValidation = new BasePropertyValidation<TestViewModel, string>(
+                vm,
                 v => v.Name2,
                 s => !string.IsNullOrEmpty(s),
                 s => $"Name 2 {s} isn't valid");
 
-            vc.Add(v1);
-            vc.Add(v2);
+            vc.Add(firstValidation);
+            vc.Add(secondValidation);
 
             Assert.True(vc.IsValid);
             Assert.Equal(0, vc.Text.Count);
@@ -89,24 +104,29 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal(0, vc.Text.Count);
         }
 
+        /// <summary>
+        /// Verifies that a View property cannot have more than one validation and throws a <see cref="MultipleValidationNotSupportedException"/>.
+        /// </summary>
         [Fact]
         public void TwoValidationPropertiesInSamePropertyThrowsExceptionTest()
         {
             const string validName = "valid";
             const int minimumLength = 5;
 
-            var viewModel = new TestViewModel {Name = validName};
+            var viewModel = new TestViewModel { Name = validName };
             var view = new TestView(viewModel);
 
-            var firstValidation = new BasePropertyValidation<TestViewModel, string>(viewModel,
+            var firstValidation = new BasePropertyValidation<TestViewModel, string>(
+                viewModel,
                 vm => vm.Name,
                 s => !string.IsNullOrEmpty(s),
                 s => $"Name {s} isn't valid");
 
-            var secondValidation = new BasePropertyValidation<TestViewModel, string>(viewModel,
+            var secondValidation = new BasePropertyValidation<TestViewModel, string>(
+                viewModel,
                 vm => vm.Name,
                 s => s.Length > minimumLength,
-                s => $"Minimum length is {minimumLength}");
+                _ => $"Minimum length is {minimumLength}");
 
             // Add validations
             viewModel.ValidationContext.Add(firstValidation);
@@ -122,7 +142,7 @@ namespace ReactiveUI.Validation.Tests
                 return view.BindValidation(
                     view.ViewModel,
                     vm => vm.Name,
-                    v => v.NameLabelError);
+                    v => v.NameErrorLabel);
             });
 
             Assert.False(viewModel.ValidationContext.IsValid);

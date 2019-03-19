@@ -8,17 +8,21 @@ using Xunit;
 
 namespace ReactiveUI.Validation.Tests
 {
+    /// <summary>
+    /// Tests for <see cref="BasePropertyValidation{TViewModel}"/>.
+    /// </summary>
     public class PropertyValidationTests
     {
         /// <summary>
-        /// Default state is true.
+        /// Verifies if the default state is true.
         /// </summary>
         [Fact]
-        public void ValidModelDefaultState()
+        public void ValidModelDefaultStateTest()
         {
             var model = CreateDefaultValidModel();
 
-            var validation = new BasePropertyValidation<TestViewModel, string>(model,
+            var validation = new BasePropertyValidation<TestViewModel, string>(
+                model,
                 vm => vm.Name,
                 n => !string.IsNullOrEmpty(n),
                 "broken");
@@ -27,6 +31,9 @@ namespace ReactiveUI.Validation.Tests
             Assert.True(string.IsNullOrEmpty(validation.Text.ToSingleLine()));
         }
 
+        /// <summary>
+        /// Verifies if the state transition is valid when the IsValid property changes.
+        /// </summary>
         [Fact]
         public void StateTransitionsWhenValidityChangesTest()
         {
@@ -34,14 +41,15 @@ namespace ReactiveUI.Validation.Tests
 
             var model = new TestViewModel();
 
-            var validation = new BasePropertyValidation<TestViewModel, string>(model,
+            var validation = new BasePropertyValidation<TestViewModel, string>(
+                model,
                 vm => vm.Name,
                 n => n != null && n.Length >= testValue.Length,
                 "broken");
 
             bool? lastVal = null;
 
-            var obs = validation
+            var unused = validation
                 .ValidationStatusChange
                 .Subscribe(v => lastVal = v.IsValid);
 
@@ -55,6 +63,9 @@ namespace ReactiveUI.Validation.Tests
             Assert.True(lastVal);
         }
 
+        /// <summary>
+        /// Verifies if the validation message is the expected.
+        /// </summary>
         [Fact]
         public void PropertyContentsProvidedToMessageTest()
         {
@@ -62,7 +73,8 @@ namespace ReactiveUI.Validation.Tests
 
             var model = new TestViewModel();
 
-            var validation = new BasePropertyValidation<TestViewModel, string>(model,
+            var validation = new BasePropertyValidation<TestViewModel, string>(
+                model,
                 vm => vm.Name,
                 n => n != null && n.Length > testValue.Length,
                 v => $"The value '{v}' is incorrect");
@@ -72,9 +84,8 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal("The value 'bongo' is incorrect", validation.Text.ToSingleLine());
         }
 
-
         /// <summary>
-        /// Verify that validation message updates are correctly propagated.
+        /// Verifies that validation message updates are correctly propagated.
         /// </summary>
         [Fact]
         public void MessageUpdatedWhenPropertyChanged()
@@ -84,7 +95,8 @@ namespace ReactiveUI.Validation.Tests
 
             var model = new TestViewModel();
 
-            var validation = new BasePropertyValidation<TestViewModel, string>(model,
+            var validation = new BasePropertyValidation<TestViewModel, string>(
+                model,
                 vm => vm.Name,
                 n => n != null && n.Length > testValue.Length,
                 v => $"The value '{v}' is incorrect");
@@ -97,26 +109,28 @@ namespace ReactiveUI.Validation.Tests
 
             Assert.Equal("The value 'bongo' is incorrect", validation.Text.ToSingleLine());
             Assert.Single(changes);
-            Assert.Equal(new ValidationState(false, "The value 'bongo' is incorrect", validation), changes[0],
-                new ValidationStateComparer());
+            Assert.Equal(new ValidationState(false, "The value 'bongo' is incorrect", validation), changes[0], new ValidationStateComparer());
 
             model.Name = testRoot;
 
             Assert.Equal("The value 'bon' is incorrect", validation.Text.ToSingleLine());
             Assert.Equal(2, changes.Count);
-            Assert.Equal(new ValidationState(false, "The value 'bon' is incorrect", validation), changes[1],
-                new ValidationStateComparer());
+            Assert.Equal(new ValidationState(false, "The value 'bon' is incorrect", validation), changes[1], new ValidationStateComparer());
         }
 
+        /// <summary>
+        /// Verifies that validation message changes if one validation is valid but the other one is not.
+        /// </summary>
         [Fact]
         public void DualStateMessageTest()
         {
             const string testRoot = "bon";
             const string testValue = testRoot + "go";
 
-            var model = new TestViewModel {Name = testValue};
+            var model = new TestViewModel { Name = testValue };
 
-            var validation = new BasePropertyValidation<TestViewModel, string>(model,
+            var validation = new BasePropertyValidation<TestViewModel, string>(
+                model,
                 vm => vm.Name,
                 n => n != null && n.Length > testRoot.Length,
                 (p, v) => v ? "cool" : $"The value '{p}' is incorrect");
@@ -128,10 +142,9 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal("The value 'bon' is incorrect", validation.Text.ToSingleLine());
         }
 
-
-        private TestViewModel CreateDefaultValidModel()
+        private static TestViewModel CreateDefaultValidModel()
         {
-            return new TestViewModel {Name = "name"};
+            return new TestViewModel { Name = "name" };
         }
     }
 }
