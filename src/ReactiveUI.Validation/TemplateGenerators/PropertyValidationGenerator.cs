@@ -107,7 +107,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             return _valueSubject.Select(value =>
             {
                 var isValid = _isValidFunc(value);
-                return new ValidationState(isValid, this.GetMessage(value, isValid), this);
+                return new ValidationState(isValid, GetMessage(value, isValid), this);
             }).DistinctUntilChanged(new ValidationStateComparer());
         }
 
@@ -239,7 +239,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             return _valueSubject.Select(value =>
             {
                 var isValid = _isValidFunc(value);
-                return new ValidationState(isValid, this.GetMessage(value, isValid), this);
+                return new ValidationState(isValid, GetMessage(value, isValid), this);
             }).DistinctUntilChanged(new ValidationStateComparer());
         }
 
@@ -375,7 +375,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             return _valueSubject.Select(value =>
             {
                 var isValid = _isValidFunc(value);
-                return new ValidationState(isValid, this.GetMessage(value, isValid), this);
+                return new ValidationState(isValid, GetMessage(value, isValid), this);
             }).DistinctUntilChanged(new ValidationStateComparer());
         }
 
@@ -515,7 +515,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             return _valueSubject.Select(value =>
             {
                 var isValid = _isValidFunc(value);
-                return new ValidationState(isValid, this.GetMessage(value, isValid), this);
+                return new ValidationState(isValid, GetMessage(value, isValid), this);
             }).DistinctUntilChanged(new ValidationStateComparer());
         }
 
@@ -659,7 +659,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             return _valueSubject.Select(value =>
             {
                 var isValid = _isValidFunc(value);
-                return new ValidationState(isValid, this.GetMessage(value, isValid), this);
+                return new ValidationState(isValid, GetMessage(value, isValid), this);
             }).DistinctUntilChanged(new ValidationStateComparer());
         }
 
