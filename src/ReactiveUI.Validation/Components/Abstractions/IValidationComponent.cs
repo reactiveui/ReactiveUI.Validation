@@ -21,7 +21,7 @@ namespace ReactiveUI.Validation.Components.Abstractions
         ValidationText Text { get; }
 
         /// <summary>
-        /// Gets a value indicating whether gets the current validation state.
+        /// Gets a value indicating whether the validation is currently valid or not.
         /// </summary>
         bool IsValid { get; }
 
