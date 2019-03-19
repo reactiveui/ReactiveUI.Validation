@@ -150,8 +150,11 @@ namespace ReactiveUI.Validation.Components
         /// <param name="disposing">If its getting called by the <see cref="Dispose"/> method.</param>
         protected virtual void Dispose(bool disposing)
         {
-            _disposables?.Dispose();
-            _disposables = null;
+            if (disposing)
+            {
+                _disposables?.Dispose();
+                _disposables = null;
+            }
         }
 
         private void Activate()
@@ -302,6 +305,8 @@ namespace ReactiveUI.Validation.Components
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
+
             if (disposing)
             {
                 _disposables?.Dispose();
