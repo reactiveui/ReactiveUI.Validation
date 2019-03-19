@@ -1,3 +1,9 @@
+// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Extensions/ValidationContextMultipleExtensions.cs" company=".NET Foundation">
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+// </copyright>
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,78 +22,81 @@ namespace ReactiveUI.Validation.Extensions
         /// <summary>
         /// Resolves all the properties valuations for a specified property.
         /// </summary>
-        /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TProperty"></typeparam>
-        /// <returns></returns>
-        public static IEnumerable<BasePropertyValidation<TViewModel, TProperty>> ResolveForMultiple<TViewModel,
-            TProperty>(this ValidationContext context,
-            Expression<Func<TViewModel, TProperty>> viewModelProperty,
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
+        /// <param name="context">ValidationContext instance.</param>
+        /// <param name="viewModelProperty">ViewModel property.</param>
+        /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
+        /// <returns>Returns a <see cref="BasePropertyValidation{TViewModel}"/> object.</returns>
+        public static IEnumerable<BasePropertyValidation<TViewModel, TViewModelProperty>> ResolveForMultiple<TViewModel,
+            TViewModelProperty>(
+            this ValidationContext context,
+            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             bool strict = true)
         {
             var validations = context.Validations
-                .Where(p => p is BasePropertyValidation<TViewModel, TProperty>)
-                .Cast<BasePropertyValidation<TViewModel, TProperty>>()
+                .OfType<BasePropertyValidation<TViewModel, TViewModelProperty>>()
                 .Where(v => v.ContainsProperty(viewModelProperty, strict));
 
             return validations;
         }
 
         /// <summary>
-        /// Resolves all the properties valuations for two properties.
+        /// Resolves the property valuation for two properties.
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="viewModelProperty1"></param>
-        /// <param name="viewModelProperty2"></param>
-        /// <param name="strict"></param>
-        /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TProperty1"></typeparam>
-        /// <typeparam name="TProperty2"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TProperty1">ViewModel first property type.</typeparam>
+        /// <typeparam name="TProperty2">ViewModel second property type.</typeparam>
+        /// <param name="context">ValidationContext instance.</param>
+        /// <param name="viewModelProperty1">First ViewModel property.</param>
+        /// <param name="viewModelProperty2">Second ViewModel property.</param>
+        /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
+        /// <returns>Returns a <see cref="BasePropertyValidation{TViewModel}"/> object.</returns>
         public static IEnumerable<BasePropertyValidation<TViewModel, TProperty1, TProperty2>> ResolveForMultiple<
             TViewModel,
-            TProperty1, TProperty2>(this ValidationContext context,
+            TProperty1, TProperty2>(
+            this ValidationContext context,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty2,
             bool strict = true)
         {
             var validations = context
                 .Validations
-                .Where(p => p is BasePropertyValidation<TViewModel, TProperty1, TProperty2>)
-                .Cast<BasePropertyValidation<TViewModel, TProperty1, TProperty2>>()
-                .Where(v =>
-                    v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2) &&
-                    v.PropertyCount == 2);
+                .OfType<BasePropertyValidation<TViewModel, TProperty1, TProperty2>>()
+                .Where(v => v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
+                                                                   && v.PropertyCount == 2);
 
             return validations;
         }
 
         /// <summary>
-        /// Resolves all the properties valuations for three properties.
+        /// Resolves the property valuation for three properties.
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="viewModelProperty1"></param>
-        /// <param name="viewModelProperty2"></param>
-        /// <param name="viewModelProperty3"></param>
-        /// <param name="strict"></param>
-        /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TProperty1"></typeparam>
-        /// <typeparam name="TProperty2"></typeparam>
-        /// <typeparam name="TProperty3"></typeparam>
-        /// <returns></returns>
-        public static IEnumerable<BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>>ResolveForMultiple<
-            TViewModel, TProperty1, TProperty2, TProperty3>(this ValidationContext context,
-            Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
-            Expression<Func<TViewModel, TProperty1>> viewModelProperty2,
-            Expression<Func<TViewModel, TProperty1>> viewModelProperty3,
-            bool strict = true)
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TProperty1">ViewModel first property type.</typeparam>
+        /// <typeparam name="TProperty2">ViewModel second property type.</typeparam>
+        /// <typeparam name="TProperty3">ViewModel third property type.</typeparam>
+        /// <param name="context">ValidationContext instance.</param>
+        /// <param name="viewModelProperty1">First ViewModel property.</param>
+        /// <param name="viewModelProperty2">Second ViewModel property.</param>
+        /// <param name="viewModelProperty3">Third ViewModel property.</param>
+        /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
+        /// <returns>Returns a <see cref="BasePropertyValidation{TViewModel}"/> object.</returns>
+        public static IEnumerable<BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>>
+            ResolveForMultiple<
+                TViewModel, TProperty1, TProperty2, TProperty3>(
+                this ValidationContext context,
+                Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
+                Expression<Func<TViewModel, TProperty1>> viewModelProperty2,
+                Expression<Func<TViewModel, TProperty1>> viewModelProperty3,
+                bool strict = true)
         {
             var validations = context
                 .Validations
-                .Where(p => p is BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>)
-                .Cast<BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>>()
-                .Where(v =>
-                    v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2) &&
-                    v.ContainsProperty(viewModelProperty3) && v.PropertyCount == 3);
+                .OfType<BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>>()
+                .Where(v => v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
+                                                                   && v.ContainsProperty(viewModelProperty3)
+                                                                   && v.PropertyCount == 3);
 
             return validations;
         }

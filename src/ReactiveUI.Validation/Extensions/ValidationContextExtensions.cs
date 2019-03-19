@@ -1,3 +1,9 @@
+// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Extensions/ValidationContextExtensions.cs" company=".NET Foundation">
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+// </copyright>
+
 using System;
 using System.Linq;
 using System.Linq.Expressions;
@@ -16,17 +22,23 @@ namespace ReactiveUI.Validation.Extensions
         /// <summary>
         /// Resolves the property valuation for a specified property.
         /// </summary>
-        /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TProperty"></typeparam>
-        /// <returns></returns>
-        public static BasePropertyValidation<TViewModel, TProperty> ResolveFor<TViewModel, TProperty>(
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
+        /// <param name="context">ValidationContext instance.</param>
+        /// <param name="viewModelProperty">ViewModel property.</param>
+        /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
+        /// <returns>Returns a <see cref="BasePropertyValidation{TViewModel}"/> object if has a single validation property,
+        /// otherwise will throw a <see cref="MultipleValidationNotSupportedException"/> exception.</returns>
+        /// <exception cref="MultipleValidationNotSupportedException">
+        /// Thrown if the ViewModel property has more than one validation associated.
+        /// </exception>
+        public static BasePropertyValidation<TViewModel, TViewModelProperty> ResolveFor<TViewModel, TViewModelProperty>(
             this ValidationContext context,
-            Expression<Func<TViewModel, TProperty>> viewModelProperty,
+            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             bool strict = true)
         {
             var validations = context.Validations
-                .Where(p => p is BasePropertyValidation<TViewModel, TProperty>)
-                .Cast<BasePropertyValidation<TViewModel, TProperty>>()
+                .OfType<BasePropertyValidation<TViewModel, TViewModelProperty>>()
                 .Where(v => v.ContainsProperty(viewModelProperty, strict))
                 .ToList();
 
@@ -35,33 +47,37 @@ namespace ReactiveUI.Validation.Extensions
                 throw new MultipleValidationNotSupportedException(viewModelProperty.Body.GetMemberInfo().Name);
             }
 
-            return validations.First();
+            return validations[0];
         }
 
         /// <summary>
         /// Resolves the property valuation for two properties.
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="viewModelProperty1"></param>
-        /// <param name="viewModelProperty2"></param>
-        /// <param name="strict"></param>
-        /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TProperty1"></typeparam>
-        /// <typeparam name="TProperty2"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TProperty1">ViewModel first property type.</typeparam>
+        /// <typeparam name="TProperty2">ViewModel second property type.</typeparam>
+        /// <param name="context">ValidationContext instance.</param>
+        /// <param name="viewModelProperty1">First ViewModel property.</param>
+        /// <param name="viewModelProperty2">Second ViewModel property.</param>
+        /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
+        /// <returns>Returns a <see cref="BasePropertyValidation{TViewModel}"/> object if has a single validation property,
+        /// otherwise will throw a <see cref="MultipleValidationNotSupportedException"/> exception.</returns>
+        /// <exception cref="MultipleValidationNotSupportedException">
+        /// Thrown if the ViewModel property has more than one validation associated.
+        /// </exception>
         public static BasePropertyValidation<TViewModel, TProperty1, TProperty2> ResolveFor<TViewModel, TProperty1,
-            TProperty2>(this ValidationContext context,
+            TProperty2>(
+            this ValidationContext context,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty2,
             bool strict = true)
         {
             var validations = context
                 .Validations
-                .Where(p => p is BasePropertyValidation<TViewModel, TProperty1, TProperty2>)
-                .Cast<BasePropertyValidation<TViewModel, TProperty1, TProperty2>>()
+                .OfType<BasePropertyValidation<TViewModel, TProperty1, TProperty2>>()
                 .Where(v =>
-                    v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2) &&
-                    v.PropertyCount == 2)
+                    v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
+                    && v.PropertyCount == 2)
                 .ToList();
 
             if (validations.Count > 1)
@@ -71,24 +87,29 @@ namespace ReactiveUI.Validation.Extensions
                     viewModelProperty2.Body.GetMemberInfo().Name);
             }
 
-            return validations.First();
+            return validations[0];
         }
 
         /// <summary>
         /// Resolves the property valuation for three properties.
         /// </summary>
-        /// <param name="context"></param>
-        /// <param name="viewModelProperty1"></param>
-        /// <param name="viewModelProperty2"></param>
-        /// <param name="viewModelProperty3"></param>
-        /// <param name="strict"></param>
-        /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TProperty1"></typeparam>
-        /// <typeparam name="TProperty2"></typeparam>
-        /// <typeparam name="TProperty3"></typeparam>
-        /// <returns></returns>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TProperty1">ViewModel first property type.</typeparam>
+        /// <typeparam name="TProperty2">ViewModel second property type.</typeparam>
+        /// <typeparam name="TProperty3">ViewModel third property type.</typeparam>
+        /// <param name="context">ValidationContext instance.</param>
+        /// <param name="viewModelProperty1">First ViewModel property.</param>
+        /// <param name="viewModelProperty2">Second ViewModel property.</param>
+        /// <param name="viewModelProperty3">Third ViewModel property.</param>
+        /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
+        /// <returns>Returns a <see cref="BasePropertyValidation{TViewModel}"/> object if has a single validation property,
+        /// otherwise will throw a <see cref="MultipleValidationNotSupportedException"/> exception.</returns>
+        /// <exception cref="MultipleValidationNotSupportedException">
+        /// Thrown if the ViewModel property has more than one validation associated.
+        /// </exception>
         public static BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3> ResolveFor<TViewModel,
-            TProperty1, TProperty2, TProperty3>(this ValidationContext context,
+            TProperty1, TProperty2, TProperty3>(
+            this ValidationContext context,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty2,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty3,
@@ -96,11 +117,11 @@ namespace ReactiveUI.Validation.Extensions
         {
             var validations = context
                 .Validations
-                .Where(p => p is BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>)
-                .Cast<BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>>()
+                .OfType<BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>>()
                 .Where(v =>
-                    v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2) &&
-                    v.ContainsProperty(viewModelProperty3) && v.PropertyCount == 3)
+                    v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
+                                                           && v.ContainsProperty(viewModelProperty3)
+                                                           && v.PropertyCount == 3)
                 .ToList();
 
             if (validations.Count > 1)
@@ -111,7 +132,7 @@ namespace ReactiveUI.Validation.Extensions
                     viewModelProperty3.Body.GetMemberInfo().Name);
             }
 
-            return validations.First();
+            return validations[0];
         }
     }
 }
