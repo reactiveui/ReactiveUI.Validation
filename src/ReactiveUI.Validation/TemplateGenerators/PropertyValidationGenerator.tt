@@ -4,125 +4,146 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
+// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/TemplateGenerators/PropertyValidationGenerator.cs" company=".NET Foundation">
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+// </copyright>
+
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using ReactiveUI;
 using ReactiveUI.Validation.Collections;
+using ReactiveUI.Validation.Comparators;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.States;
-using ReactiveUI.Validation.Comparators;
 
 namespace ReactiveUI.Validation.TemplateGenerators
 {
-	<# int maxFuncLength = 6; #>
-    <# for(int length=2; length <= maxFuncLength; length++) { #>
-    <# var templParams = Enumerable.Range(1, length).Select(x => "TProperty" + x.ToString()); #>
-    <# string valuePropertyParams = String.Join(", ", Enumerable.Range(1, length).Select(x => String.Format("property{0}", x))); #>
-	<# string actionParams = String.Join(", ", Enumerable.Range(1, length).Select(x => String.Format("prop{0}", x))); #>
-    public sealed class BasePropertyValidation<TViewModel,<#= String.Join(",",templParams) #>> : BasePropertyValidation<TViewModel>
-    {
-        /// <summary>
-        /// The last calculated value of the properties.
-        /// </summary>
-        private Tuple<<#= String.Join(",",templParams) #>> _lastValue;
+<# int maxFuncLength = 6; #>
+<# for(int length=2; length <= maxFuncLength; length++) { #>
+<# var templParams = Enumerable.Range(1, length).Select(x => "TProperty" + x.ToString()); #>
+<# string valuePropertyParams = String.Join(", ", Enumerable.Range(1, length).Select(x => String.Format("property{0}", x))); #>
 
+    /// <inheritdoc />
+    [SuppressMessage("IDE", "SA1649", Justification = "Generated classes with template.")]
+    [SuppressMessage("IDE", "SA1402", Justification = "Generated classes with template.")]
+    public sealed class BasePropertyValidation<TViewModel, <#= String.Join(", ",templParams) #>>
+        : BasePropertyValidation<TViewModel>
+    {
         /// <summary>
         /// Represents the current value.
         /// </summary>
-        private readonly Subject<Tuple<<#= String.Join(",",templParams) #>>> _valueSubject = new Subject<Tuple<<#= String.Join(",",templParams) #>>>();
+        private readonly Subject<Tuple<<#= String.Join(", ",templParams) #>>> _valueSubject = new Subject<Tuple<<#= String.Join(", ",templParams) #>>>();
 
         /// <summary>
-        /// The validation message factory
+        /// The validation message factory.
         /// </summary>
-        private readonly Func<Tuple<<#= String.Join(",",templParams) #>>,bool,ValidationText> _message;
+        private readonly Func<Tuple<<#= String.Join(", ",templParams) #>>, bool, ValidationText> _message;
 
         /// <summary>
-        /// The connected observable to see updates in properties being validated
+        /// The connected observable to see updates in properties being validated.
         /// </summary>
-        private readonly IConnectableObservable<Tuple<<#= String.Join(",",templParams) #>>> _valueConnectedObservable;
-
-        private readonly CompositeDisposable _disposables = new CompositeDisposable();
-
-        /// <summary>
-        /// Are we connected
-        /// </summary>
-        private bool _connected;
+        private readonly IConnectableObservable<Tuple<<#= String.Join(", ",templParams) #>>> _valueConnectedObservable;
 
         /// <summary>
         /// Function to determine if valid or not.
         /// </summary>
-        private readonly Func<Tuple<<#= String.Join(",",templParams) #>>, bool> _isValidFunc;
+        private readonly Func<Tuple<<#= String.Join(", ",templParams) #>>, bool> _isValidFunc;
 
+        private CompositeDisposable _disposables = new CompositeDisposable();
 
-        public BasePropertyValidation(TViewModel viewModel,
+        /// <summary>
+        /// The last calculated value of the properties.
+        /// </summary>
+        private Tuple<<#= String.Join(", ",templParams) #>> _lastValue;
 
-			<# for(int property=1;property <= length;++property) { #>
-		Expression<Func<TViewModel,TProperty<#=property#>>> property<#=property #>,
-	<# } #>
+        /// <summary>
+        /// Are we connected.
+        /// </summary>
+        private bool _connected;
 
-            Func<Tuple<<#=String.Join(",",templParams)#>>, bool> isValidFunc,
-			Func<Tuple<<#=String.Join(",",templParams)#>>,string> message):
-
-            this(viewModel,<#=String.Join(",",valuePropertyParams)#>,isValidFunc,
-                (Tuple<<#=String.Join(",",templParams)#>> p, bool v) => new ValidationText(v ? string.Empty : message(p)))
+        /// <inheritdoc />
+        public BasePropertyValidation(
+            TViewModel viewModel,
+    <# for(int property=1;property <= length;++property) { #>
+        Expression<Func<TViewModel, TProperty<#=property#>>> property<#=property #>,<#Write("\r\n");#>
+    <# } #>
+        Func<Tuple<<#=String.Join(", ",templParams)#>>, bool> isValidFunc,<#Write("\r\n");#>
+            Func<Tuple<<#=String.Join(", ",templParams)#>>, string> message)
+            : this(viewModel, <#=String.Join(", ",valuePropertyParams)#>, isValidFunc, (p, v) => new ValidationText(v ? string.Empty : message(p)))
         {
         }
 
-        public BasePropertyValidation(TViewModel viewModel,
-
-	<# for(int property=1;property <= length;++property) { #>
-		Expression<Func<TViewModel,TProperty<#=property#>>> property<#=property #>,
-	<# } #>
-
-            Func<Tuple<<#=String.Join(",",templParams) #>>, bool> isValidFunc,
-
-            Func<Tuple<<#=String.Join(",",templParams)#>>, bool, string> messageFunc):
-			this(viewModel,<#=String.Join(",",valuePropertyParams)#>,isValidFunc,(parameters,isValid) => new ValidationText(messageFunc(parameters,isValid)))
-        {            
+        /// <inheritdoc />
+        public BasePropertyValidation(
+            TViewModel viewModel,
+    <# for(int property=1;property <= length;++property) { #>
+        Expression<Func<TViewModel, TProperty<#=property#>>> property<#=property #>,<#Write("\r\n");#>
+    <# } #>
+        Func<Tuple<<#=String.Join(", ",templParams) #>>, bool> isValidFunc,
+            Func<Tuple<<#=String.Join(", ",templParams)#>>, bool, string> messageFunc)
+            : this(viewModel, <#=String.Join(", ",valuePropertyParams)#>, isValidFunc, (p, v) => new ValidationText(messageFunc(p, v)))
+        {
         }
 
-
-        public BasePropertyValidation(TViewModel viewModel,
-	<# for(int property=1;property <= length;++property) { #>
-		Expression<Func<TViewModel,TProperty<#=property#>>> property<#=property #>,
-	<# } #>
-		Func<Tuple<<#= String.Join(",",templParams) #>>,bool> validSelector,
-		Func<Tuple<<#= String.Join(",",templParams) #>>,bool,ValidationText> message)
+        /// <inheritdoc />
+        public BasePropertyValidation(
+            TViewModel viewModel,
+    <# for(int property=1;property <= length;++property) { #>
+        Expression<Func<TViewModel, TProperty<#=property#>>> property<#=property #>,<#Write("\r\n");#>
+    <# } #>
+        Func<Tuple<<#= String.Join(", ",templParams) #>>, bool> validSelector,
+            Func<Tuple<<#= String.Join(", ",templParams) #>>, bool, ValidationText> message)
         {
             _message = message;
-            _isValidFunc = validSelector;
-
-            // add the properties used to our list
-			<# for(int property=1;property<=length;property++) { #>
+            _isValidFunc = validSelector;<#Write("\r\n");#><#Write("\r\n");#>
+            // Add the properties used to our list
+            <# for(int property=1;property<=length;property++) { #>
 AddProperty(property<#=property#>);
-			<# } #>
+            <#}#>
+_disposables.Add(_valueSubject.Subscribe(v => _lastValue = v));
 
-            // always record the last value seen
-            _disposables.Add(_valueSubject.Subscribe(v => _lastValue = v));
-
-            // setup a connected observable to see when values change and cast that to our value subject
-            _valueConnectedObservable = viewModel.WhenAnyValue(<#=valuePropertyParams#>).DistinctUntilChanged().Multicast(_valueSubject);
+            // Setup a connected observable to see when values change and cast that to our value subject
+            _valueConnectedObservable = viewModel.WhenAnyValue(<#=valuePropertyParams#>)
+                .DistinctUntilChanged()
+                .Multicast(_valueSubject);
         }
 
+        /// <inheritdoc/>
         protected override IObservable<ValidationState> GetValidationChangeObservable()
         {
             Activate();
 
-            return _valueSubject.
-                    Select(value =>
-                    {
-                        var isValid = _isValidFunc(value);
-                        return new ValidationState(isValid, this.GetMessage(value, isValid), this);
-                    }).DistinctUntilChanged(new ValidationStateComparer());
+            return _valueSubject.Select(value =>
+            {
+                var isValid = _isValidFunc(value);
+                return new ValidationState(isValid, GetMessage(value, isValid), this);
+            }).DistinctUntilChanged(new ValidationStateComparer());
         }
 
-
-        protected ValidationText GetMessage(Tuple<<#=String.Join(",",templParams)#>> @params,bool isValid)
+        /// <inheritdoc/>
+        protected override void Dispose(bool disposing)
         {
-            return _message(@params,isValid);
+            if (disposing)
+            {
+                _disposables?.Dispose();
+                _disposables = null;
+            }
+        }
+
+        /// <summary>
+        /// Gets the validation message.
+        /// </summary>
+        /// <param name="params">ViewModel properties.</param>
+        /// <param name="isValid">Whether the property is valid or not.</param>
+        /// <returns>Returns the <see cref="ValidationText"/> object.</returns>
+        private ValidationText GetMessage(Tuple<<#=String.Join(", ",templParams)#>> @params, bool isValid)
+        {
+            return _message(@params, isValid);
         }
 
         /// <summary>
@@ -132,16 +153,9 @@ AddProperty(property<#=property#>);
         {
             if (!_connected)
             {
-                _disposables.Add(_valueConnectedObservable.Connect());
-
                 _connected = true;
+                _disposables.Add(_valueConnectedObservable.Connect());
             }
-        }
-
-        public override void Dispose()
-        {
-            _disposables.Dispose();
-            base.Dispose();
         }
     }
 <# } #>

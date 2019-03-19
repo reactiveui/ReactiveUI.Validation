@@ -1,44 +1,55 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Text;
-using System.Threading.Tasks;
 using ReactiveUI.Validation.Components;
+using ReactiveUI.Validation.Tests.Models;
 using Xunit;
 
 namespace ReactiveUI.Validation.Tests
 {
+    /// <summary>
+    /// Tests for <see cref="ModelObservableValidation{TViewModel}"/>.
+    /// </summary>
     public class ModelObservableTests
     {
+        /// <summary>
+        /// Verifies if the initial state is True.
+        /// </summary>
         [Fact]
-        public void InitialValidStateIsCorrect()
+        public void InitialValidStateIsCorrectTest()
         {
-            var model = new TestViewModel() {Name = "name", Name2 = "name2"};
+            var model = new TestViewModel { Name = "name", Name2 = "name2" };
 
-            Subject<bool> validState = new Subject<bool>();
+            var validState = new Subject<bool>();
 
-            var v = new ModelObservableValidation<TestViewModel>(model,(m) => validState.StartWith(true),(m,s) => "broken") ;
+            var v = new ModelObservableValidation<TestViewModel>(
+                model,
+                _ => validState.StartWith(true),
+                (_, __) => "broken");
 
             Assert.True(v.IsValid);
         }
 
+        /// <summary>
+        /// Verifies if the observable returns invalid.
+        /// </summary>
         [Fact]
-        public void ObservableToInvalid()
+        public void ObservableToInvalidTest()
         {
-            var model = new TestViewModel() { Name = "name", Name2 = "name2" };
+            var model = new TestViewModel { Name = "name", Name2 = "name2" };
 
-            ReplaySubject<bool> validState = new ReplaySubject<bool>(1);
+            var validState = new ReplaySubject<bool>(1);
 
-            var v = new ModelObservableValidation<TestViewModel>(model, (m) => validState, (m,s) => "broken");
+            var v = new ModelObservableValidation<TestViewModel>(
+                model,
+                _ => validState,
+                (_, __) => "broken");
 
             validState.OnNext(false);
             validState.OnNext(true);
             validState.OnNext(false);
 
             Assert.False(v.IsValid);
-            Assert.Equal("broken",v.Text.ToSingleLine());
+            Assert.Equal("broken", v.Text.ToSingleLine());
         }
     }
 }

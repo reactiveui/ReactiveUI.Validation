@@ -1,3 +1,9 @@
+// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Components/Abstractions/IValidationComponent.cs" company=".NET Foundation">
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+// </copyright>
+
 using System;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.States;
@@ -5,22 +11,22 @@ using ReactiveUI.Validation.States;
 namespace ReactiveUI.Validation.Components.Abstractions
 {
     /// <summary>
-    ///     Core interface which all validation components must implement.
+    /// Core interface which all validation components must implement.
     /// </summary>
     public interface IValidationComponent
     {
         /// <summary>
-        ///     Get the Current,optional validation message
+        /// Gets the current (optional) validation message.
         /// </summary>
         ValidationText Text { get; }
 
         /// <summary>
-        ///     Get the current validation state
+        /// Gets a value indicating whether the validation is currently valid or not.
         /// </summary>
         bool IsValid { get; }
 
         /// <summary>
-        ///     Get the observable for validation state changes.
+        /// Gets the observable for validation state changes.
         /// </summary>
         IObservable<ValidationState> ValidationStatusChange { get; }
     }
