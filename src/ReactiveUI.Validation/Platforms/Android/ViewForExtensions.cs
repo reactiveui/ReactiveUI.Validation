@@ -1,61 +1,110 @@
-﻿using System;
+﻿// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Platforms/Android/ViewForExtensions.cs" company=".NET Foundation">
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+// </copyright>
+
+using System;
+using System.Linq;
 using System.Linq.Expressions;
 using Android.Support.Design.Widget;
 using ReactiveUI.Validation.Abstractions;
+using ReactiveUI.Validation.Exceptions;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
 
-namespace ReactiveUI.Validation.DroidExtensions.Extensions
+namespace ReactiveUI.Validation.Platforms.Android
 {
+    /// <summary>
+    /// Android specific extensions methods associated to <see cref="IViewFor"/> instances.
+    /// </summary>
     public static class ViewForExtensions
     {
         /// <summary>
-        /// Platform binding to the <see cref="TextInputLayout"/>
+        /// Platform binding to the <see cref="TextInputLayout"/>.
         /// </summary>
-        /// <typeparam name="TView"></typeparam>
-        /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TViewModelProp"></typeparam>
-        /// <param name="view"></param>
-        /// <param name="viewModel"></param>
-        /// <param name="viewModelProperty"></param>
-        /// <param name="viewProperty"></param>
-        /// <returns></returns>
-        public static IDisposable BindValidation
-            <TView, TViewModel, TViewModelProp>(this TView view,
-                                                TViewModel viewModel,
-                                                Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
-                                                TextInputLayout viewProperty)
-            where TViewModel : ReactiveObject, ISupportsValidation
+        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
+        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
+        /// <param name="view">IViewFor instance.</param>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelProperty">ViewModel property.</param>
+        /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        /// <exception cref="MultipleValidationNotSupportedException">
+        /// Thrown if the ViewModel property has more than one validation associated.
+        /// </exception>
+        public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty>(
+            this TView view,
+            TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
+            TextInputLayout viewProperty)
             where TView : IViewFor<TViewModel>
+            where TViewModel : ReactiveObject, ISupportsValidation
         {
-            return ValidationBinding.ForProperty(view, viewModelProperty,
-                (state, errorText) => viewProperty.Error = errorText, SingleLineFormatter.Default);
+            return ValidationBinding.ForProperty(
+                view,
+                viewModelProperty,
+                (_, errorText) => viewProperty.Error = errorText,
+                SingleLineFormatter.Default);
         }
 
         /// <summary>
-        /// Platform binding to the <see cref="TextInputLayout"/>
+        /// Platform binding to the <see cref="TextInputLayout"/>.
         /// </summary>
-        /// <typeparam name="TView"></typeparam>
-        /// <typeparam name="TViewModel"></typeparam>
-        /// <param name="view"></param>
-        /// <param name="viewModel"></param>
-        /// <param name="viewModelHelperProperty"></param>
-        /// <param name="viewProperty"></param>
-        /// <returns></returns>
-        public static IDisposable BindValidation
-            <TView, TViewModel>(this TView view,
-                                TViewModel viewModel,
-                                Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
-                                TextInputLayout viewProperty)
-            where TViewModel : ReactiveObject, ISupportsValidation
+        /// <remarks>Supports multiple validations for the same property.</remarks>
+        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
+        /// <param name="view">IViewFor instance.</param>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelProperty">ViewModel property.</param>
+        /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty>(
+            this TView view,
+            TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
+            TextInputLayout viewProperty)
             where TView : IViewFor<TViewModel>
+            where TViewModel : ReactiveObject, ISupportsValidation
         {
-            return ValidationBinding.ForValidationHelperProperty(view, viewModelHelperProperty,
-                (state, errorText) =>
-                {
-                    viewProperty.Error = errorText;
-                }, SingleLineFormatter.Default);
+            return ValidationBindingEx.ForProperty(
+                view,
+                viewModelProperty,
+                (_, errors) => viewProperty.Error = errors.FirstOrDefault(msg => !string.IsNullOrEmpty(msg)),
+                SingleLineFormatter.Default);
+        }
+
+        /// <summary>
+        /// Platform binding to the <see cref="TextInputLayout"/>.
+        /// </summary>
+        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
+        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <param name="view">IViewFor instance.</param>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelHelperProperty">ViewModel's ValidationHelper property.</param>
+        /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        /// <exception cref="MultipleValidationNotSupportedException">
+        /// Thrown if the ViewModel property has more than one validation associated.
+        /// </exception>
+        public static IDisposable BindValidation<TView, TViewModel>(
+            this TView view,
+            TViewModel viewModel,
+            Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
+            TextInputLayout viewProperty)
+            where TView : IViewFor<TViewModel>
+            where TViewModel : ReactiveObject, ISupportsValidation
+        {
+            return ValidationBinding.ForValidationHelperProperty(
+                view,
+                viewModelHelperProperty,
+                (_, errorText) => viewProperty.Error = errorText,
+                SingleLineFormatter.Default);
         }
     }
 }

@@ -1,105 +1,157 @@
+// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Extensions/ViewForExtensions.cs" company=".NET Foundation">
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+// </copyright>
+
 using System;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
 using ReactiveUI.Validation.Abstractions;
+using ReactiveUI.Validation.Exceptions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
+using Splat;
 
 namespace ReactiveUI.Validation.Extensions
 {
+    /// <summary>
+    /// Extensions methods associated to <see cref="IViewFor"/> instances.
+    /// </summary>
     public static class ViewForExtensions
     {
         /// <summary>
-        ///     Bind the specified view property validation to the view property.
+        /// Binds the specified ViewModel property validation to the View property.
         /// </summary>
-        /// <typeparam name="TView"></typeparam>
-        /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TViewModelProperty1"></typeparam>
-        /// <typeparam name="TViewProperty"></typeparam>
-        /// <param name="view"></param>
-        /// <param name="viewModel"></param>
-        /// <param name="viewModelProperty1"></param>
-        /// <param name="viewProperty"></param>
-        /// <returns></returns>
-        public static IDisposable BindValidation
-            <TView, TViewModel, TViewModelProperty1, TViewProperty>(this TView view,
-                TViewModel viewModel,
-                Expression<Func<TViewModel, TViewModelProperty1>>
-                    viewModelProperty1,
-                Expression<Func<TView, TViewProperty>> viewProperty)
-            where TViewModel : ReactiveObject, ISupportsValidation
+        /// <remarks>Supports multiple validations for the same property.</remarks>
+        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
+        /// <typeparam name="TViewProperty">View property type.</typeparam>
+        /// <param name="view">IViewFor instance.</param>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelProperty">ViewModel property.</param>
+        /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(
+            this TView view,
+            TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
+            Expression<Func<TView, TViewProperty>> viewProperty)
             where TView : IViewFor<TViewModel>
+            where TViewModel : ReactiveObject, ISupportsValidation
         {
-            return ValidationBinding.ForProperty(view, viewModelProperty1, viewProperty);
+            return ValidationBindingEx.ForProperty(view, viewModelProperty, viewProperty);
         }
 
         /// <summary>
-        ///     Bind the overall validation of a view model to a specified view property.
+        /// Binds the specified ViewModel property validation to the View property.
         /// </summary>
-        /// <typeparam name="TView"></typeparam>
-        /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TViewProperty"></typeparam>
-        /// <param name="view"></param>
-        /// <param name="viewModel"></param>
-        /// <param name="viewProperty"></param>
-        /// <returns></returns>
-        public static IDisposable BindValidation
-            <TView, TViewModel, TViewProperty>(this TView view,
-                TViewModel viewModel,
-                Expression<Func<TView, TViewProperty>> viewProperty)
+        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
+        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
+        /// <typeparam name="TViewProperty">View property type.</typeparam>
+        /// <param name="view">IViewFor instance.</param>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelProperty">ViewModel property.</param>
+        /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        /// <exception cref="MultipleValidationNotSupportedException">
+        /// Thrown if the ViewModel property has more than one validation associated.
+        /// </exception>
+        public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(
+            this TView view,
+            TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
+            Expression<Func<TView, TViewProperty>> viewProperty)
+            where TView : IViewFor<TViewModel>
+            where TViewModel : ReactiveObject, ISupportsValidation
+        {
+            return ValidationBinding.ForProperty(view, viewModelProperty, viewProperty);
+        }
+
+        /// <summary>
+        /// Binds the overall validation of a ViewModel to a specified View property.
+        /// </summary>
+        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
+        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewProperty">View property type.</typeparam>
+        /// <param name="view">IViewFor instance.</param>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        /// <exception cref="MultipleValidationNotSupportedException">
+        /// Thrown if the ViewModel property has more than one validation associated.
+        /// </exception>
+        public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
+            this TView view,
+            TViewModel viewModel,
+            Expression<Func<TView, TViewProperty>> viewProperty)
             where TViewModel : ReactiveObject, ISupportsValidation
             where TView : IViewFor<TViewModel>
         {
             return ValidationBinding.ForViewModel<TView, TViewModel, TViewProperty>(view, viewProperty);
         }
 
-
         /// <summary>
-        ///     Bind a <see cref="ValidationHelper" /> from a view model to a specified view property.
+        /// Binds a <see cref="ValidationHelper" /> from a ViewModel to a specified View property.
         /// </summary>
-        /// <typeparam name="TView"></typeparam>
-        /// <typeparam name="TViewModel"></typeparam>
-        /// <typeparam name="TViewProperty"></typeparam>
-        /// <param name="view"></param>
-        /// <param name="viewModel"></param>
-        /// <param name="viewModelHelperProperty"></param>
-        /// <param name="viewProperty"></param>
-        /// <returns></returns>
-        public static IDisposable BindValidation
-            <TView, TViewModel, TViewProperty>(this TView view,
-                TViewModel viewModel,
-                Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
-                Expression<Func<TView, TViewProperty>> viewProperty)
-            where TViewModel : ReactiveObject, ISupportsValidation
+        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
+        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewProperty">View property type.</typeparam>
+        /// <param name="view">IViewFor instance.</param>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelHelperProperty">ViewModel's ValidationHelper property.</param>
+        /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        /// <exception cref="MultipleValidationNotSupportedException">
+        /// Thrown if the ViewModel property has more than one validation associated.
+        /// </exception>
+        public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
+            this TView view,
+            TViewModel viewModel,
+            Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
+            Expression<Func<TView, TViewProperty>> viewProperty)
             where TView : IViewFor<TViewModel>
+            where TViewModel : ReactiveObject, ISupportsValidation
         {
             return ValidationBinding.ForValidationHelperProperty(view, viewModelHelperProperty, viewProperty);
         }
 
-
-        public static IDisposable BindToDirect
-            <TTarget, TValue>(IObservable<TValue> This, TTarget target, Expression viewExpression)
+        /// <summary>
+        /// Creates a binding to a View property.
+        /// </summary>
+        /// <typeparam name="TTarget">Observable of any type.</typeparam>
+        /// <typeparam name="TValue">Any type.</typeparam>
+        /// <param name="this">Current observable instance.</param>
+        /// <param name="target">Target instance.</param>
+        /// <param name="viewExpression">Expression to discover View properties.</param>
+        /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        public static IDisposable BindToDirect<TTarget, TValue>(
+            IObservable<TValue> @this,
+            TTarget target,
+            Expression viewExpression)
         {
             var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo());
             if (viewExpression.GetParent().NodeType == ExpressionType.Parameter)
-                return This.Subscribe(
+            {
+                return @this.Subscribe(
                     x => setter(target, x, viewExpression.GetArgumentsArray()),
-                    ex =>
-                    {
-                        //this.Log().ErrorException(String.Format("{0} Binding received an Exception!", viewExpression), ex);
-                    });
+                    ex => LogHost.Default.ErrorException($"{viewExpression} Binding received an Exception!", ex));
+            }
 
-            var bindInfo = This.CombineLatest(target.WhenAnyDynamic(viewExpression.GetParent(), x => x.Value),
-                (val, host) => new {val, host});
+            var bindInfo = @this.CombineLatest(
+                target.WhenAnyDynamic(viewExpression.GetParent(), x => x.Value),
+                (val, host) => new { val, host });
 
             return bindInfo
                 .Where(x => x.host != null)
                 .Subscribe(
                     x => setter(x.host, x.val, viewExpression.GetArgumentsArray()),
-                    ex =>
-                    {
-                        //this.Log().ErrorException(String.Format("{0} Binding received an Exception!", viewExpression), ex);
-                    });
+                    ex => LogHost.Default.ErrorException($"{viewExpression} Binding received an Exception!", ex));
         }
     }
 }
