@@ -1,3 +1,5 @@
+[![NuGet Stats](https://img.shields.io/nuget/v/reactiveui.validation.svg)](https://www.nuget.org/packages/reactiveui.validation) [![Build Status](https://dev.azure.com/dotnet/ReactiveUI/_apis/build/status/ReactiveUI.Validation-CI)](https://dev.azure.com/dotnet/ReactiveUI/_build/latest?definitionId=11)  [![Code Coverage](https://codecov.io/gh/reactiveui/ReactiveUI.Validation/branch/master/graph/badge.svg)](https://codecov.io/gh/reactiveui/ReactiveUI.Validation)
+
 # ReactiveUI.Validation
 
 Validation for ReactiveUI based solutions, functioning in a reactive way. This repository is based on [jcmm33's Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation).
