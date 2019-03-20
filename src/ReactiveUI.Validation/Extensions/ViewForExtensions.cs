@@ -5,6 +5,7 @@
 // </copyright>
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
 using ReactiveUI.Validation.Abstractions;
@@ -18,13 +19,14 @@ namespace ReactiveUI.Validation.Extensions
     /// <summary>
     /// Extensions methods associated to <see cref="IViewFor"/> instances.
     /// </summary>
+    [SuppressMessage("Roslynator", "RCS1163", Justification = "Needed for Expression context.")]
     public static class ViewForExtensions
     {
         /// <summary>
         /// Binds the specified ViewModel property validation to the View property.
         /// </summary>
         /// <remarks>Supports multiple validations for the same property.</remarks>
-        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
         /// <typeparam name="TViewProperty">View property type.</typeparam>
@@ -33,6 +35,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(
             this TView view,
             TViewModel viewModel,
@@ -48,7 +51,7 @@ namespace ReactiveUI.Validation.Extensions
         /// Binds the specified ViewModel property validation to the View property.
         /// </summary>
         /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
-        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
         /// <typeparam name="TViewProperty">View property type.</typeparam>
@@ -60,6 +63,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <exception cref="MultipleValidationNotSupportedException">
         /// Thrown if the ViewModel property has more than one validation associated.
         /// </exception>
+        [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(
             this TView view,
             TViewModel viewModel,
@@ -75,7 +79,7 @@ namespace ReactiveUI.Validation.Extensions
         /// Binds the overall validation of a ViewModel to a specified View property.
         /// </summary>
         /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
-        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewProperty">View property type.</typeparam>
         /// <param name="view">IViewFor instance.</param>
@@ -85,6 +89,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <exception cref="MultipleValidationNotSupportedException">
         /// Thrown if the ViewModel property has more than one validation associated.
         /// </exception>
+        [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
             this TView view,
             TViewModel viewModel,
@@ -99,7 +104,7 @@ namespace ReactiveUI.Validation.Extensions
         /// Binds a <see cref="ValidationHelper" /> from a ViewModel to a specified View property.
         /// </summary>
         /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
-        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewProperty">View property type.</typeparam>
         /// <param name="view">IViewFor instance.</param>
@@ -110,6 +115,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <exception cref="MultipleValidationNotSupportedException">
         /// Thrown if the ViewModel property has more than one validation associated.
         /// </exception>
+        [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
             this TView view,
             TViewModel viewModel,
@@ -140,7 +146,7 @@ namespace ReactiveUI.Validation.Extensions
             {
                 return @this.Subscribe(
                     x => setter(target, x, viewExpression.GetArgumentsArray()),
-                    ex => LogHost.Default.ErrorException($"{viewExpression} Binding received an Exception!", ex));
+                    ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"));
             }
 
             var bindInfo = @this.CombineLatest(
@@ -151,7 +157,7 @@ namespace ReactiveUI.Validation.Extensions
                 .Where(x => x.host != null)
                 .Subscribe(
                     x => setter(x.host, x.val, viewExpression.GetArgumentsArray()),
-                    ex => LogHost.Default.ErrorException($"{viewExpression} Binding received an Exception!", ex));
+                    ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"));
         }
     }
 }

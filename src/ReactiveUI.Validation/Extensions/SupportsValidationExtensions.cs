@@ -24,7 +24,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
-        /// <param name="isPropertyValid">Func to define if the <see cref="viewModelProperty"/> is valid or not.</param>
+        /// <param name="isPropertyValid">Func to define if the viewModelProperty is valid or not.</param>
         /// <param name="message">Validation error message.</param>
         /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
         public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
@@ -54,8 +54,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
-        /// <param name="isPropertyValid">Func to define if the <see cref="viewModelProperty"/> is valid or not.</param>
-        /// <param name="message">Func to define the validation error message based on the <see cref="viewModelProperty"/> value.</param>
+        /// <param name="isPropertyValid">Func to define if the viewModelProperty is valid or not.</param>
+        /// <param name="message">Func to define the validation error message based on the viewModelProperty value.</param>
         /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
         public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
             this TViewModel viewModel,
@@ -82,8 +82,8 @@ namespace ReactiveUI.Validation.Extensions
         /// </summary>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <param name="viewModel">ViewModel instance.</param>
-        /// <param name="viewModelObservableProperty">Func to define if the <see cref="viewModel"/> is valid or not.</param>
-        /// <param name="messageFunc">Func to define the validation error message based on the <see cref="viewModel"/> and <see cref="viewModelObservableProperty"/> values.</param>
+        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
+        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and viewModelObservableProperty values.</param>
         /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
         /// <remarks>
         /// It should be noted that the observable should provide an initial value, otherwise that can result

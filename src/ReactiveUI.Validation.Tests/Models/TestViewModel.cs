@@ -1,3 +1,4 @@
+using System.Reactive.Concurrency;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Helpers;
@@ -36,6 +37,6 @@ namespace ReactiveUI.Validation.Tests.Models
         public ValidationHelper NameRule { get; set; }
 
         /// <inheritdoc/>
-        public ValidationContext ValidationContext { get; } = new ValidationContext();
+        public ValidationContext ValidationContext { get; } = new ValidationContext(ImmediateScheduler.Instance);
     }
 }

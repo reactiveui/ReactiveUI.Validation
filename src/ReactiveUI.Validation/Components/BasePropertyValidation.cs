@@ -147,7 +147,7 @@ namespace ReactiveUI.Validation.Components
         /// <summary>
         /// Disposes of the managed resources.
         /// </summary>
-        /// <param name="disposing">If its getting called by the <see cref="Dispose"/> method.</param>
+        /// <param name="disposing">If its getting called by the <see cref="BasePropertyValidation{TViewModel}.Dispose()"/> method.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
@@ -184,7 +184,7 @@ namespace ReactiveUI.Validation.Components
     /// </summary>
     /// <typeparam name="TViewModel"></typeparam>
     /// <typeparam name="TViewModelProperty"></typeparam>
-    [SuppressMessage("IDE", "SA1402", Justification = ".NET does not allow multiple types with the same name.")]
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just generic.")]
     public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : BasePropertyValidation<TViewModel>
     {
         /// <summary>
@@ -208,7 +208,7 @@ namespace ReactiveUI.Validation.Components
         /// </summary>
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
-        /// <param name="isValidFunc">Func to define if the <see cref="viewModelProperty"/> is valid or not.</param>
+        /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
         /// <param name="message">Validation error message.</param>
         public BasePropertyValidation(
             TViewModel viewModel,
@@ -226,8 +226,8 @@ namespace ReactiveUI.Validation.Components
         /// </summary>
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
-        /// <param name="isValidFunc">Func to define if the <see cref="viewModelProperty"/> is valid or not.</param>
-        /// <param name="message">Func to define the validation error message based on the <see cref="viewModelProperty"/> value.</param>
+        /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
+        /// <param name="message">Func to define the validation error message based on the viewModelProperty value.</param>
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
@@ -244,8 +244,8 @@ namespace ReactiveUI.Validation.Components
         /// </summary>
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
-        /// <param name="isValidFunc">Func to define if the <see cref="viewModelProperty"/> is valid or not.</param>
-        /// <param name="messageFunc">Func to define the validation error message based on the <see cref="viewModelProperty"/> and <see cref="isValidFunc"/> values.</param>
+        /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
+        /// <param name="messageFunc">Func to define the validation error message based on the viewModelProperty and isValidFunc values.</param>
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
@@ -262,8 +262,8 @@ namespace ReactiveUI.Validation.Components
         /// </summary>
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
-        /// <param name="isValidFunc">Func to define if the <see cref="viewModelProperty"/> is valid or not.</param>
-        /// <param name="messageFunc">Func to define the validation error message based on the <see cref="viewModelProperty"/> and <see cref="isValidFunc"/> values.</param>
+        /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
+        /// <param name="messageFunc">Func to define the validation error message based on the viewModelProperty and isValidFunc values.</param>
         private BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,

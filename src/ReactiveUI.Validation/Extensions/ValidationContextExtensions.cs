@@ -59,7 +59,6 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="context">ValidationContext instance.</param>
         /// <param name="viewModelProperty1">First ViewModel property.</param>
         /// <param name="viewModelProperty2">Second ViewModel property.</param>
-        /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
         /// <returns>Returns a <see cref="BasePropertyValidation{TViewModel}"/> object if has a single validation property,
         /// otherwise will throw a <see cref="MultipleValidationNotSupportedException"/> exception.</returns>
         /// <exception cref="MultipleValidationNotSupportedException">
@@ -69,8 +68,7 @@ namespace ReactiveUI.Validation.Extensions
             TProperty2>(
             this ValidationContext context,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
-            Expression<Func<TViewModel, TProperty1>> viewModelProperty2,
-            bool strict = true)
+            Expression<Func<TViewModel, TProperty1>> viewModelProperty2)
         {
             var validations = context
                 .Validations
@@ -101,7 +99,6 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty1">First ViewModel property.</param>
         /// <param name="viewModelProperty2">Second ViewModel property.</param>
         /// <param name="viewModelProperty3">Third ViewModel property.</param>
-        /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
         /// <returns>Returns a <see cref="BasePropertyValidation{TViewModel}"/> object if has a single validation property,
         /// otherwise will throw a <see cref="MultipleValidationNotSupportedException"/> exception.</returns>
         /// <exception cref="MultipleValidationNotSupportedException">
@@ -112,8 +109,7 @@ namespace ReactiveUI.Validation.Extensions
             this ValidationContext context,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty2,
-            Expression<Func<TViewModel, TProperty1>> viewModelProperty3,
-            bool strict = true)
+            Expression<Func<TViewModel, TProperty1>> viewModelProperty3)
         {
             var validations = context
                 .Validations

@@ -6,8 +6,10 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -46,18 +48,29 @@ namespace ReactiveUI.Validation.Contexts
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationContext"/> class.
         /// </summary>
-        public ValidationContext()
+        /// <param name="scheduler">Optional scheduler to use for the properties. Uses the main thread scheduler by default.</param>
+        public ValidationContext(IScheduler scheduler = null)
         {
+            scheduler = scheduler ?? RxApp.MainThreadScheduler;
+
+            var validationChangedObservable = _validationSource.Connect();
+
+            // Connect SourceList to read only observable collection.
+            validationChangedObservable
+                .ObserveOn(scheduler)
+                .Bind(out _validations)
+                .Subscribe();
+
             // Publish the current validation state.
             _disposables.Add(_validSubject
                 .StartWith(true)
-                .ToProperty(this, m => m.IsValid, out _isValid));
+                .ToProperty(this, m => m.IsValid, out _isValid, scheduler: scheduler));
 
             // When a change occurs in the validation state, publish the updated validation text.
             _disposables.Add(_validSubject
                 .StartWith(true)
                 .Select(_ => BuildText())
-                .ToProperty(this, m => m.Text, out _validationText, new ValidationText()));
+                .ToProperty(this, m => m.Text, out _validationText, new ValidationText(), scheduler: scheduler));
 
             // Publish the current validation state.
             _disposables.Add(_validSubject
@@ -66,8 +79,7 @@ namespace ReactiveUI.Validation.Contexts
                 .Subscribe());
 
             // Observe the defined validations and whenever there is a change publish the current validation state.
-            _validationConnectable = _validationSource
-                .Connect()
+            _validationConnectable = validationChangedObservable
                 .CountChanged()
                 .Count()
                 .StartWith(0)
@@ -80,12 +92,6 @@ namespace ReactiveUI.Validation.Contexts
                 .Switch()
                 .Select(_ => GetIsValid())
                 .Multicast(_validSubject);
-
-            // Connect SourceList to read only observable collection.
-            _validationSource
-                .Connect()
-                .Bind(out _validations)
-                .Subscribe();
         }
 
         /// <summary>
@@ -105,7 +111,8 @@ namespace ReactiveUI.Validation.Contexts
         /// </summary>
         public ReadOnlyObservableCollection<IValidationComponent> Validations => _validations;
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
+        [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "Reviewed.")]
         public bool IsValid
         {
             get
@@ -166,7 +173,7 @@ namespace ReactiveUI.Validation.Contexts
         /// <summary>
         /// Disposes of the managed resources.
         /// </summary>
-        /// <param name="disposing">If its getting called by the <see cref="Dispose"/> method.</param>
+        /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

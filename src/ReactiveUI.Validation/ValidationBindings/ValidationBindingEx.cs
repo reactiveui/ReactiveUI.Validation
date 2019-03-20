@@ -132,9 +132,6 @@ namespace ReactiveUI.Validation.ValidationBindings
         {
             // Dispose of unmanaged resources.
             Dispose(true);
-
-            // Suppress finalization.
-            GC.SuppressFinalize(this);
         }
 
         private static IObservable<TValue> BindToView<TView, TViewProperty, TTarget, TValue>(
@@ -152,7 +149,7 @@ namespace ReactiveUI.Validation.ValidationBindings
                 return valueChange
                    .Do(
                        x => setter(target, x.First(msg => !string.IsNullOrEmpty(msg)), viewExpression.GetArgumentsArray()),
-                       ex => LogHost.Default.ErrorException($"{viewExpression} Binding received an Exception!", ex));
+                       ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"));
             }
 
             var bindInfo = valueChange.CombineLatest(
@@ -163,14 +160,14 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Where(x => x.host != null)
                 .Do(
                     x => setter(x.host, x.val, viewExpression.GetArgumentsArray()),
-                    ex => LogHost.Default.ErrorException($"{viewExpression} Binding received an Exception!", ex))
+                    ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"))
                 .Select(v => v.val);
         }
 
         /// <summary>
         /// Disposes of the managed resources.
         /// </summary>
-        /// <param name="disposing">If its getting called by the <see cref="Dispose"/> method.</param>
+        /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
         private void Dispose(bool disposing)
         {
             if (disposing)
