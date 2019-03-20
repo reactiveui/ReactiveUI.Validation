@@ -184,7 +184,7 @@ namespace ReactiveUI.Validation.Components
     /// </summary>
     /// <typeparam name="TViewModel"></typeparam>
     /// <typeparam name="TViewModelProperty"></typeparam>
-    [SuppressMessage("IDE", "SA1402", Justification = ".NET does not allow multiple types with the same name.")]
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just generic.")]
     public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : BasePropertyValidation<TViewModel>
     {
         /// <summary>

@@ -5,6 +5,7 @@
 // </copyright>
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using Android.Support.Design.Widget;
@@ -19,13 +20,14 @@ namespace ReactiveUI.Validation.Platforms.Android
     /// <summary>
     /// Android specific extensions methods associated to <see cref="IViewFor"/> instances.
     /// </summary>
+    [SuppressMessage("Roslynator", "RCS1163", Justification = "Needed for Expression context.")]
     public static class ViewForExtensions
     {
         /// <summary>
-        /// Platform binding to the <see cref="TextInputLayout"/>.
+        /// Platform binding to the TextInputLayout.
         /// </summary>
         /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
-        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
         /// <param name="view">IViewFor instance.</param>
@@ -52,10 +54,10 @@ namespace ReactiveUI.Validation.Platforms.Android
         }
 
         /// <summary>
-        /// Platform binding to the <see cref="TextInputLayout"/>.
+        /// Platform binding to the TextInputLayout.
         /// </summary>
         /// <remarks>Supports multiple validations for the same property.</remarks>
-        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
         /// <param name="view">IViewFor instance.</param>
@@ -79,10 +81,10 @@ namespace ReactiveUI.Validation.Platforms.Android
         }
 
         /// <summary>
-        /// Platform binding to the <see cref="TextInputLayout"/>.
+        /// Platform binding to the TextInputLayout.
         /// </summary>
         /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
-        /// <typeparam name="TView">IViewFor of <see cref="TViewModel"/>.</typeparam>
+        /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <param name="view">IViewFor instance.</param>
         /// <param name="viewModel">ViewModel instance.</param>

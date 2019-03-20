@@ -66,7 +66,7 @@ namespace ReactiveUI.Validation.Helpers
         /// <summary>
         /// Disposes of the managed resources.
         /// </summary>
-        /// <param name="disposing">If its getting called by the <see cref="Dispose"/> method.</param>
+        /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

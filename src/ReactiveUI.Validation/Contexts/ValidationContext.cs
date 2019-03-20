@@ -107,7 +107,7 @@ namespace ReactiveUI.Validation.Contexts
         public ReadOnlyObservableCollection<IValidationComponent> Validations => _validations;
 
         /// <inheritdoc/>
-        [SuppressMessage("IDE", "CA1721", Justification = "Implemented from IValidationComponent.")]
+        [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "Reviewed.")]
         public bool IsValid
         {
             get
