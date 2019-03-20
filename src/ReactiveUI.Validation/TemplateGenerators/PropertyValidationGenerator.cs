@@ -18,8 +18,8 @@ using ReactiveUI.Validation.States;
 namespace ReactiveUI.Validation.TemplateGenerators
 {
     /// <inheritdoc />
-    [SuppressMessage("IDE", "SA1649", Justification = "Generated classes with template.")]
-    [SuppressMessage("IDE", "SA1402", Justification = "Generated classes with template.")]
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:FileHeaderFileNameDocumentationMustMatchTypeName", Justification = "Same class just generic.")]
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just generic.")]
     public sealed class BasePropertyValidation<TViewModel, TProperty1, TProperty2>
         : BasePropertyValidation<TViewModel>
     {
@@ -46,16 +46,11 @@ namespace ReactiveUI.Validation.TemplateGenerators
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         /// <summary>
-        /// The last calculated value of the properties.
-        /// </summary>
-        private Tuple<TProperty1, TProperty2> _lastValue;
-
-        /// <summary>
         /// Are we connected.
         /// </summary>
         private bool _connected;
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
@@ -66,7 +61,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         {
         }
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
@@ -77,27 +72,32 @@ namespace ReactiveUI.Validation.TemplateGenerators
         {
         }
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
             Expression<Func<TViewModel, TProperty2>> property2,
-            Func<Tuple<TProperty1, TProperty2>, bool> validSelector,
+            Func<Tuple<TProperty1, TProperty2>, bool> isValidFunc,
             Func<Tuple<TProperty1, TProperty2>, bool, ValidationText> message)
         {
             _message = message;
-            _isValidFunc = validSelector;
+            _isValidFunc = isValidFunc;
 
             // Add the properties used to our list
             AddProperty(property1);
             AddProperty(property2);
-            _disposables.Add(_valueSubject.Subscribe(v => _lastValue = v));
+            _disposables.Add(_valueSubject.Subscribe(v => LastValue = v));
 
             // Setup a connected observable to see when values change and cast that to our value subject
             _valueConnectedObservable = viewModel.WhenAnyValue(property1, property2)
                 .DistinctUntilChanged()
                 .Multicast(_valueSubject);
         }
+
+        /// <summary>
+        /// Gets or sets the last calculated value of the properties.
+        /// </summary>
+        private Tuple<TProperty1, TProperty2> LastValue { get; set; }
 
         /// <inheritdoc/>
         protected override IObservable<ValidationState> GetValidationChangeObservable()
@@ -146,8 +146,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
     }
 
     /// <inheritdoc />
-    [SuppressMessage("IDE", "SA1649", Justification = "Generated classes with template.")]
-    [SuppressMessage("IDE", "SA1402", Justification = "Generated classes with template.")]
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:FileHeaderFileNameDocumentationMustMatchTypeName", Justification = "Same class just generic.")]
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just generic.")]
     public sealed class BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>
         : BasePropertyValidation<TViewModel>
     {
@@ -174,16 +174,11 @@ namespace ReactiveUI.Validation.TemplateGenerators
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         /// <summary>
-        /// The last calculated value of the properties.
-        /// </summary>
-        private Tuple<TProperty1, TProperty2, TProperty3> _lastValue;
-
-        /// <summary>
         /// Are we connected.
         /// </summary>
         private bool _connected;
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
@@ -195,7 +190,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         {
         }
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
@@ -207,29 +202,34 @@ namespace ReactiveUI.Validation.TemplateGenerators
         {
         }
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
             Expression<Func<TViewModel, TProperty2>> property2,
             Expression<Func<TViewModel, TProperty3>> property3,
-            Func<Tuple<TProperty1, TProperty2, TProperty3>, bool> validSelector,
+            Func<Tuple<TProperty1, TProperty2, TProperty3>, bool> isValidFunc,
             Func<Tuple<TProperty1, TProperty2, TProperty3>, bool, ValidationText> message)
         {
             _message = message;
-            _isValidFunc = validSelector;
+            _isValidFunc = isValidFunc;
 
             // Add the properties used to our list
             AddProperty(property1);
             AddProperty(property2);
             AddProperty(property3);
-            _disposables.Add(_valueSubject.Subscribe(v => _lastValue = v));
+            _disposables.Add(_valueSubject.Subscribe(v => LastValue = v));
 
             // Setup a connected observable to see when values change and cast that to our value subject
             _valueConnectedObservable = viewModel.WhenAnyValue(property1, property2, property3)
                 .DistinctUntilChanged()
                 .Multicast(_valueSubject);
         }
+
+        /// <summary>
+        /// Gets or sets the last calculated value of the properties.
+        /// </summary>
+        private Tuple<TProperty1, TProperty2, TProperty3> LastValue { get; set; }
 
         /// <inheritdoc/>
         protected override IObservable<ValidationState> GetValidationChangeObservable()
@@ -278,8 +278,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
     }
 
     /// <inheritdoc />
-    [SuppressMessage("IDE", "SA1649", Justification = "Generated classes with template.")]
-    [SuppressMessage("IDE", "SA1402", Justification = "Generated classes with template.")]
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:FileHeaderFileNameDocumentationMustMatchTypeName", Justification = "Same class just generic.")]
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just generic.")]
     public sealed class BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3, TProperty4>
         : BasePropertyValidation<TViewModel>
     {
@@ -306,16 +306,11 @@ namespace ReactiveUI.Validation.TemplateGenerators
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         /// <summary>
-        /// The last calculated value of the properties.
-        /// </summary>
-        private Tuple<TProperty1, TProperty2, TProperty3, TProperty4> _lastValue;
-
-        /// <summary>
         /// Are we connected.
         /// </summary>
         private bool _connected;
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
@@ -328,7 +323,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         {
         }
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
@@ -341,31 +336,36 @@ namespace ReactiveUI.Validation.TemplateGenerators
         {
         }
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
             Expression<Func<TViewModel, TProperty2>> property2,
             Expression<Func<TViewModel, TProperty3>> property3,
             Expression<Func<TViewModel, TProperty4>> property4,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> validSelector,
+            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> isValidFunc,
             Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool, ValidationText> message)
         {
             _message = message;
-            _isValidFunc = validSelector;
+            _isValidFunc = isValidFunc;
 
             // Add the properties used to our list
             AddProperty(property1);
             AddProperty(property2);
             AddProperty(property3);
             AddProperty(property4);
-            _disposables.Add(_valueSubject.Subscribe(v => _lastValue = v));
+            _disposables.Add(_valueSubject.Subscribe(v => LastValue = v));
 
             // Setup a connected observable to see when values change and cast that to our value subject
             _valueConnectedObservable = viewModel.WhenAnyValue(property1, property2, property3, property4)
                 .DistinctUntilChanged()
                 .Multicast(_valueSubject);
         }
+
+        /// <summary>
+        /// Gets or sets the last calculated value of the properties.
+        /// </summary>
+        private Tuple<TProperty1, TProperty2, TProperty3, TProperty4> LastValue { get; set; }
 
         /// <inheritdoc/>
         protected override IObservable<ValidationState> GetValidationChangeObservable()
@@ -414,8 +414,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
     }
 
     /// <inheritdoc />
-    [SuppressMessage("IDE", "SA1649", Justification = "Generated classes with template.")]
-    [SuppressMessage("IDE", "SA1402", Justification = "Generated classes with template.")]
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:FileHeaderFileNameDocumentationMustMatchTypeName", Justification = "Same class just generic.")]
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just generic.")]
     public sealed class BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>
         : BasePropertyValidation<TViewModel>
     {
@@ -442,16 +442,11 @@ namespace ReactiveUI.Validation.TemplateGenerators
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         /// <summary>
-        /// The last calculated value of the properties.
-        /// </summary>
-        private Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5> _lastValue;
-
-        /// <summary>
         /// Are we connected.
         /// </summary>
         private bool _connected;
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
@@ -465,7 +460,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         {
         }
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
@@ -479,7 +474,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         {
         }
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
@@ -487,11 +482,11 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty3>> property3,
             Expression<Func<TViewModel, TProperty4>> property4,
             Expression<Func<TViewModel, TProperty5>> property5,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> validSelector,
+            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> isValidFunc,
             Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool, ValidationText> message)
         {
             _message = message;
-            _isValidFunc = validSelector;
+            _isValidFunc = isValidFunc;
 
             // Add the properties used to our list
             AddProperty(property1);
@@ -499,13 +494,18 @@ namespace ReactiveUI.Validation.TemplateGenerators
             AddProperty(property3);
             AddProperty(property4);
             AddProperty(property5);
-            _disposables.Add(_valueSubject.Subscribe(v => _lastValue = v));
+            _disposables.Add(_valueSubject.Subscribe(v => LastValue = v));
 
             // Setup a connected observable to see when values change and cast that to our value subject
             _valueConnectedObservable = viewModel.WhenAnyValue(property1, property2, property3, property4, property5)
                 .DistinctUntilChanged()
                 .Multicast(_valueSubject);
         }
+
+        /// <summary>
+        /// Gets or sets the last calculated value of the properties.
+        /// </summary>
+        private Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5> LastValue { get; set; }
 
         /// <inheritdoc/>
         protected override IObservable<ValidationState> GetValidationChangeObservable()
@@ -554,8 +554,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
     }
 
     /// <inheritdoc />
-    [SuppressMessage("IDE", "SA1649", Justification = "Generated classes with template.")]
-    [SuppressMessage("IDE", "SA1402", Justification = "Generated classes with template.")]
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:FileHeaderFileNameDocumentationMustMatchTypeName", Justification = "Same class just generic.")]
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just generic.")]
     public sealed class BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>
         : BasePropertyValidation<TViewModel>
     {
@@ -582,16 +582,11 @@ namespace ReactiveUI.Validation.TemplateGenerators
         private CompositeDisposable _disposables = new CompositeDisposable();
 
         /// <summary>
-        /// The last calculated value of the properties.
-        /// </summary>
-        private Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6> _lastValue;
-
-        /// <summary>
         /// Are we connected.
         /// </summary>
         private bool _connected;
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
@@ -606,7 +601,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         {
         }
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
@@ -621,7 +616,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         {
         }
 
-        /// <inheritdoc />
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
@@ -630,11 +625,11 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty4>> property4,
             Expression<Func<TViewModel, TProperty5>> property5,
             Expression<Func<TViewModel, TProperty6>> property6,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> validSelector,
+            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> isValidFunc,
             Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool, ValidationText> message)
         {
             _message = message;
-            _isValidFunc = validSelector;
+            _isValidFunc = isValidFunc;
 
             // Add the properties used to our list
             AddProperty(property1);
@@ -643,13 +638,18 @@ namespace ReactiveUI.Validation.TemplateGenerators
             AddProperty(property4);
             AddProperty(property5);
             AddProperty(property6);
-            _disposables.Add(_valueSubject.Subscribe(v => _lastValue = v));
+            _disposables.Add(_valueSubject.Subscribe(v => LastValue = v));
 
             // Setup a connected observable to see when values change and cast that to our value subject
             _valueConnectedObservable = viewModel.WhenAnyValue(property1, property2, property3, property4, property5, property6)
                 .DistinctUntilChanged()
                 .Multicast(_valueSubject);
         }
+
+        /// <summary>
+        /// Gets or sets the last calculated value of the properties.
+        /// </summary>
+        private Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6> LastValue { get; set; }
 
         /// <inheritdoc/>
         protected override IObservable<ValidationState> GetValidationChangeObservable()
