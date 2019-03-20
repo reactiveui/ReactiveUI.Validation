@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
@@ -105,7 +106,8 @@ namespace ReactiveUI.Validation.Contexts
         /// </summary>
         public ReadOnlyObservableCollection<IValidationComponent> Validations => _validations;
 
-        /// <inheritdoc />
+        /// <inheritdoc/>
+        [SuppressMessage("IDE", "CA1721", Justification = "Implemented from IValidationComponent.")]
         public bool IsValid
         {
             get
@@ -166,7 +168,7 @@ namespace ReactiveUI.Validation.Contexts
         /// <summary>
         /// Disposes of the managed resources.
         /// </summary>
-        /// <param name="disposing">If its getting called by the <see cref="Dispose"/> method.</param>
+        /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
