@@ -320,7 +320,7 @@ namespace ReactiveUI.Validation.ValidationBindings
                 return valueChange
                    .Do(
                        x => setter(target, x, viewExpression.GetArgumentsArray()),
-                       ex => LogHost.Default.Error($"{viewExpression} Binding received an Exception!", ex));
+                       ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"));
             }
 
             var bindInfo = valueChange.CombineLatest(
@@ -331,7 +331,7 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Where(x => x.host != null)
                 .Do(
                     x => setter(x.host, x.val, viewExpression.GetArgumentsArray()),
-                    ex => LogHost.Default.Error($"{viewExpression} Binding received an Exception!", ex))
+                    ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"))
                 .Select(v => v.val);
         }
 

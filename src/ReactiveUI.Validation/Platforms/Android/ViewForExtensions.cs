@@ -38,6 +38,7 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <exception cref="MultipleValidationNotSupportedException">
         /// Thrown if the ViewModel property has more than one validation associated.
         /// </exception>
+        [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty>(
             this TView view,
             TViewModel viewModel,
@@ -65,6 +66,7 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty>(
             this TView view,
             TViewModel viewModel,
@@ -94,6 +96,7 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <exception cref="MultipleValidationNotSupportedException">
         /// Thrown if the ViewModel property has more than one validation associated.
         /// </exception>
+        [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidation<TView, TViewModel>(
             this TView view,
             TViewModel viewModel,

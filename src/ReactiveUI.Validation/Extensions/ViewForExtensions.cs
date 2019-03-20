@@ -35,6 +35,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(
             this TView view,
             TViewModel viewModel,
@@ -62,6 +63,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <exception cref="MultipleValidationNotSupportedException">
         /// Thrown if the ViewModel property has more than one validation associated.
         /// </exception>
+        [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(
             this TView view,
             TViewModel viewModel,
@@ -87,6 +89,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <exception cref="MultipleValidationNotSupportedException">
         /// Thrown if the ViewModel property has more than one validation associated.
         /// </exception>
+        [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
             this TView view,
             TViewModel viewModel,
@@ -112,6 +115,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <exception cref="MultipleValidationNotSupportedException">
         /// Thrown if the ViewModel property has more than one validation associated.
         /// </exception>
+        [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
             this TView view,
             TViewModel viewModel,
@@ -142,7 +146,7 @@ namespace ReactiveUI.Validation.Extensions
             {
                 return @this.Subscribe(
                     x => setter(target, x, viewExpression.GetArgumentsArray()),
-                    ex => LogHost.Default.Error($"{viewExpression} Binding received an Exception!", ex));
+                    ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"));
             }
 
             var bindInfo = @this.CombineLatest(
@@ -153,7 +157,7 @@ namespace ReactiveUI.Validation.Extensions
                 .Where(x => x.host != null)
                 .Subscribe(
                     x => setter(x.host, x.val, viewExpression.GetArgumentsArray()),
-                    ex => LogHost.Default.Error($"{viewExpression} Binding received an Exception!", ex));
+                    ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"));
         }
     }
 }

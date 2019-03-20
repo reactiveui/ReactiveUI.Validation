@@ -49,6 +49,14 @@ namespace ReactiveUI.Validation.Contexts
         /// </summary>
         public ValidationContext()
         {
+            var validationChangedObservable = _validationSource.Connect();
+
+            // Connect SourceList to read only observable collection.
+            validationChangedObservable
+                .ObserveOn(RxApp.MainThreadScheduler)
+                .Bind(out _validations)
+                .Subscribe();
+
             // Publish the current validation state.
             _disposables.Add(_validSubject
                 .StartWith(true)
@@ -67,8 +75,7 @@ namespace ReactiveUI.Validation.Contexts
                 .Subscribe());
 
             // Observe the defined validations and whenever there is a change publish the current validation state.
-            _validationConnectable = _validationSource
-                .Connect()
+            _validationConnectable = validationChangedObservable
                 .CountChanged()
                 .Count()
                 .StartWith(0)
@@ -81,12 +88,6 @@ namespace ReactiveUI.Validation.Contexts
                 .Switch()
                 .Select(_ => GetIsValid())
                 .Multicast(_validSubject);
-
-            // Connect SourceList to read only observable collection.
-            _validationSource
-                .Connect()
-                .Bind(out _validations)
-                .Subscribe();
         }
 
         /// <summary>
