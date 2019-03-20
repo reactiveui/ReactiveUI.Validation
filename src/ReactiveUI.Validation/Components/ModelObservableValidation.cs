@@ -45,8 +45,8 @@ namespace ReactiveUI.Validation.Components
         /// Initializes a new instance of the <see cref="ModelObservableValidation{TViewModel}"/> class.
         /// </summary>
         /// <param name="viewModel">ViewModel instance.</param>
-        /// <param name="validityObservable">Func to define if the <see cref="viewModel"/> is valid or not.</param>
-        /// <param name="messageFunc">Func to define the validation error message based on the <see cref="viewModel"/> and <see cref="validityObservable"/> values.</param>
+        /// <param name="validityObservable">Func to define if the viewModel is valid or not.</param>
+        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and validityObservable values.</param>
         public ModelObservableValidation(
             TViewModel viewModel,
             Func<TViewModel, IObservable<bool>> validityObservable,
@@ -114,7 +114,7 @@ namespace ReactiveUI.Validation.Components
         /// <summary>
         /// Disposes of the managed resources.
         /// </summary>
-        /// <param name="disposing">If its getting called by the <see cref="Dispose"/> method.</param>
+        /// <param name="disposing">If its getting called by the <see cref="BasePropertyValidation{TViewModel}.Dispose()"/> method.</param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

@@ -68,7 +68,7 @@ namespace ReactiveUI.Validation.Collections
         }
 
         /// <summary>
-        /// Adds a <see cref="text"/> to the collection.
+        /// Adds a text to the collection.
         /// </summary>
         /// <param name="text">Text to be added in the collection.</param>
         public void Add(string text)
@@ -88,7 +88,7 @@ namespace ReactiveUI.Validation.Collections
         /// Convert representation to a single line using a specified separator.
         /// </summary>
         /// <param name="separator">String separator.</param>
-        /// <returns>Returns all the text collection separated by the <see cref="separator"/>.</returns>
+        /// <returns>Returns all the text collection separated by the separator.</returns>
         public string ToSingleLine(string separator = ",")
         {
             return string.Join(separator, _texts);
