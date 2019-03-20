@@ -1,3 +1,4 @@
+using System.Reactive.Concurrency;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Exceptions;
@@ -19,7 +20,7 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void EmptyValidationContextIsValid()
         {
-            var vc = new ValidationContext();
+            var vc = new ValidationContext(ImmediateScheduler.Instance);
 
             Assert.True(vc.IsValid);
             Assert.Equal(0, vc.Text.Count);
@@ -31,7 +32,7 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void CanAddValidationComponentsTest()
         {
-            var vc = new ValidationContext();
+            var vc = new ValidationContext(ImmediateScheduler.Instance);
 
             var invalidName = string.Empty;
 
@@ -64,7 +65,7 @@ namespace ReactiveUI.Validation.Tests
             const string validName = "valid";
             var invalidName = string.Empty;
 
-            var vc = new ValidationContext();
+            var vc = new ValidationContext(ImmediateScheduler.Instance);
 
             var vm = new TestViewModel { Name = validName, Name2 = validName };
 

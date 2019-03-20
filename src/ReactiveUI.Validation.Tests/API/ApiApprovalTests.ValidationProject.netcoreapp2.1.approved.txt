@@ -76,7 +76,7 @@ namespace ReactiveUI.Validation.Contexts
 {
     public class ValidationContext : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, System.IDisposable
     {
-        public ValidationContext() { }
+        public ValidationContext(System.Reactive.Concurrency.IScheduler scheduler = null) { }
         public bool IsValid { get; }
         public ReactiveUI.Validation.Collections.ValidationText Text { get; }
         public System.IObservable<bool> Valid { get; }

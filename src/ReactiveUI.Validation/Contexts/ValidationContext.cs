@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
@@ -47,26 +48,29 @@ namespace ReactiveUI.Validation.Contexts
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationContext"/> class.
         /// </summary>
-        public ValidationContext()
+        /// <param name="scheduler">Optional scheduler to use for the properties. Uses the main thread scheduler by default.</param>
+        public ValidationContext(IScheduler scheduler = null)
         {
+            scheduler = scheduler ?? RxApp.MainThreadScheduler;
+
             var validationChangedObservable = _validationSource.Connect();
 
             // Connect SourceList to read only observable collection.
             validationChangedObservable
-                .ObserveOn(RxApp.MainThreadScheduler)
+                .ObserveOn(scheduler)
                 .Bind(out _validations)
                 .Subscribe();
 
             // Publish the current validation state.
             _disposables.Add(_validSubject
                 .StartWith(true)
-                .ToProperty(this, m => m.IsValid, out _isValid));
+                .ToProperty(this, m => m.IsValid, out _isValid, scheduler: scheduler));
 
             // When a change occurs in the validation state, publish the updated validation text.
             _disposables.Add(_validSubject
                 .StartWith(true)
                 .Select(_ => BuildText())
-                .ToProperty(this, m => m.Text, out _validationText, new ValidationText()));
+                .ToProperty(this, m => m.Text, out _validationText, new ValidationText(), scheduler: scheduler));
 
             // Publish the current validation state.
             _disposables.Add(_validSubject
