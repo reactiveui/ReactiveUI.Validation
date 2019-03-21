@@ -18,7 +18,7 @@ Install the following package into you class library and platform-specific proje
 
 ## How to use
 
-* For those ViewModels which need validation, implement `ISupportsValidation`.
+* For ViewModels which need validation, implement `ISupportsValidation`.
 * Add validation rules to the ViewModel.
 * Bind to the validation rules in the View.
 
