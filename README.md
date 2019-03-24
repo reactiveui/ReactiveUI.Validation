@@ -77,10 +77,10 @@ public class SampleView : ReactiveContentPage<SampleViewModel>
 
 There are extensions methods for Android specific and its Material design control `TextInputLayout`. These extensions use internally the Error property from this control, allowing you a Material Design and fully native behavior to showing errors.
 
-To use these extensions you must import `ReactiveUI.Validation.DroidExtensions.Extensions`.
+To use these extensions you must import `ReactiveUI.Validation.Platforms.Android`.
 
 ```csharp
-using ReactiveUI.Validation.DroidExtensions.Extensions;
+using ReactiveUI.Validation.Platforms.Android;
 
 namespace SampleApp.Activities
 {
