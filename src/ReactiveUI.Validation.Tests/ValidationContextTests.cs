@@ -136,7 +136,6 @@ namespace ReactiveUI.Validation.Tests
             // View bindings
             view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
 
-            // TODO: add Assert.Throws to custom exception wrapping this call
             // View validations bindings
             var ex = Assert.Throws<MultipleValidationNotSupportedException>(() =>
             {
@@ -153,6 +152,40 @@ namespace ReactiveUI.Validation.Tests
             var expectedError =
                 $"Property {nameof(viewModel.Name)} has more than one validation rule associated. Consider using {nameof(ValidationBindingEx)} methods.";
             Assert.Equal(expectedError, ex.Message);
+        }
+
+        /// <summary>
+        /// Verifies that validations registered with different lambda names are retrieved successfully.
+        /// </summary>
+        [Fact]
+        public void RegisterValidationsWithDifferentLambdaNameWorksTest()
+        {
+            const string validName = "valid";
+            const int minimumLength = 5;
+
+            var viewModel = new TestViewModel { Name = validName };
+            var view = new TestView(viewModel);
+
+            var firstValidation = new BasePropertyValidation<TestViewModel, string>(
+                viewModel,
+                viewModelProperty => viewModelProperty.Name,
+                s => !string.IsNullOrEmpty(s),
+                s => $"Name {s} isn't valid");
+
+            // Add validations
+            viewModel.ValidationContext.Add(firstValidation);
+
+            // View bindings
+            view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+
+            // This was throwing exception due to naming problems with lambdas expressions
+            view.BindValidation(
+                view.ViewModel,
+                vm => vm.Name,
+                v => v.NameErrorLabel);
+
+            Assert.True(viewModel.ValidationContext.IsValid);
+            Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
         }
     }
 }

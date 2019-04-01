@@ -120,7 +120,7 @@ namespace ReactiveUI.Validation.Components
         /// <returns>Returns true if it contains the property, otherwise false.</returns>
         public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
         {
-            var propertyName = property.Body.ToString();
+            var propertyName = property.Body.GetMemberInfo().ToString();
 
             return exclusively
                 ? _propertyNames.Contains(propertyName) && _propertyNames.Count == 1
@@ -134,7 +134,7 @@ namespace ReactiveUI.Validation.Components
         /// <param name="property">ViewModel property.</param>
         protected void AddProperty<TProp>(Expression<Func<TViewModel, TProp>> property)
         {
-            var propertyName = property.Body.ToString();
+            var propertyName = property.Body.GetMemberInfo().ToString();
             _propertyNames.Add(propertyName);
         }
 
