@@ -80,11 +80,10 @@ namespace ReactiveUI.Validation.Contexts
 
             // Observe the defined validations and whenever there is a change publish the current validation state.
             _validationConnectable = validationChangedObservable
-                .CountChanged()
-                .Count()
-                .StartWith(0)
-                .Select(_ =>
-                    _validations
+                .ToCollection()
+                .StartWithEmpty()
+                .Select(validations =>
+                    validations
                         .Select(v => v.ValidationStatusChange)
                         .Merge()
                         .Select(__ => Unit.Default)
