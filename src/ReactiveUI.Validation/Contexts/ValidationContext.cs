@@ -86,7 +86,7 @@ namespace ReactiveUI.Validation.Contexts
                     validations
                         .Select(v => v.ValidationStatusChange)
                         .Merge()
-                        .Select(__ => Unit.Default)
+                        .Select(_ => Unit.Default)
                         .StartWith(Unit.Default))
                 .Switch()
                 .Select(_ => GetIsValid())
@@ -156,7 +156,8 @@ namespace ReactiveUI.Validation.Contexts
         /// <returns>Returns true if the <see cref="ValidationContext"/> is valid, otherwise false.</returns>
         public bool GetIsValid()
         {
-            return _validations.Count == 0 || _validations.All(v => v.IsValid);
+            var validations = _validationSource.Items.ToList();
+            return validations.Count == 0 || validations.All(v => v.IsValid);
         }
 
         /// <inheritdoc/>
@@ -199,7 +200,9 @@ namespace ReactiveUI.Validation.Contexts
         /// <returns>Returns the <see cref="ValidationText"/> with all the error messages from the non valid components.</returns>
         private ValidationText BuildText()
         {
-            return new ValidationText(_validations.Where(p => !p.IsValid).Select(p => p.Text));
+            return new ValidationText(_validationSource.Items
+                .Where(p => !p.IsValid)
+                .Select(p => p.Text));
         }
     }
 }
