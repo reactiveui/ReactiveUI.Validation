@@ -30,6 +30,11 @@ namespace ReactiveUI.Validation.Tests.Models
         public string NameLabel { get; set; }
 
         /// <summary>
+        /// Gets or sets the Name2 Label which emulates a Text property (eg. Entry in Xamarin.Forms).
+        /// </summary>
+        public string Name2Label { get; set; }
+
+        /// <summary>
         /// Gets or sets the NameError Label which emulates a Text property (eg. Entry in Xamarin.Forms).
         /// </summary>
         public string NameErrorLabel { get; set; }

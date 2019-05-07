@@ -29,7 +29,7 @@ namespace ReactiveUI.Validation.Formatters
         /// <summary>
         /// Gets the default formatter.
         /// </summary>
-        public static SingleLineFormatter Default { get; } = new SingleLineFormatter();
+        public static SingleLineFormatter Default { get; } = new SingleLineFormatter(" ");
 
         /// <summary>
         /// Formats the <see cref="ValidationText"/> into a single line text using the
