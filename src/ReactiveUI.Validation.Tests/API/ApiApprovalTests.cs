@@ -4,13 +4,11 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using System.Runtime.Versioning;
 using System.Text.RegularExpressions;
 using PublicApiGenerator;
 using ReactiveUI.Validation.ValidationBindings;
@@ -18,7 +16,7 @@ using Shouldly;
 using Splat;
 using Xunit;
 
-namespace Sextant.Tests
+namespace ReactiveUI.Validation.Tests.API
 {
     /// <summary>
     /// Tests to make sure that the API matches the approved ones.

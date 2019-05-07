@@ -161,8 +161,6 @@ namespace ReactiveUI.Validation.Tests
         public void RegisterValidationsWithDifferentLambdaNameWorksTest()
         {
             const string validName = "valid";
-            const int minimumLength = 5;
-
             var viewModel = new TestViewModel { Name = validName };
             var view = new TestView(viewModel);
 
@@ -185,7 +183,41 @@ namespace ReactiveUI.Validation.Tests
                 v => v.NameErrorLabel);
 
             Assert.True(viewModel.ValidationContext.IsValid);
-            Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
+            Assert.Single(viewModel.ValidationContext.Validations);
+        }
+
+        /// <summary>
+        /// Verifies that validation error messages get concatenated using white space.
+        /// </summary>
+        [Fact]
+        public void ValidationMessagesDefaultConcatenationTest()
+        {
+            var viewModel = new TestViewModel { Name = string.Empty };
+            var view = new TestView(viewModel);
+
+            var nameValidation = new BasePropertyValidation<TestViewModel, string>(
+                viewModel,
+                viewModelProperty => viewModelProperty.Name,
+                s => !string.IsNullOrEmpty(s),
+                "Name should not be empty.");
+
+            var name2Validation = new BasePropertyValidation<TestViewModel, string>(
+                viewModel,
+                viewModelProperty => viewModelProperty.Name2,
+                s => !string.IsNullOrEmpty(s),
+                "Name2 should not be empty.");
+
+            viewModel.ValidationContext.Add(nameValidation);
+            viewModel.ValidationContext.Add(name2Validation);
+
+            view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+            view.Bind(view.ViewModel, vm => vm.Name2, v => v.Name2Label);
+            view.BindValidation(view.ViewModel, v => v.NameErrorLabel);
+
+            Assert.False(viewModel.ValidationContext.IsValid);
+            Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
+            Assert.NotEmpty(view.NameErrorLabel);
+            Assert.Equal("Name should not be empty. Name2 should not be empty.", view.NameErrorLabel);
         }
     }
 }
