@@ -1,8 +1,14 @@
-[![NuGet Stats](https://img.shields.io/nuget/v/reactiveui.validation.svg)](https://www.nuget.org/packages/reactiveui.validation) [![Build Status](https://dev.azure.com/dotnet/ReactiveUI/_apis/build/status/ReactiveUI.Validation-CI)](https://dev.azure.com/dotnet/ReactiveUI/_build/latest?definitionId=11)  [![Code Coverage](https://codecov.io/gh/reactiveui/ReactiveUI.Validation/branch/master/graph/badge.svg)](https://codecov.io/gh/reactiveui/ReactiveUI.Validation)
+[![NuGet Stats](https://img.shields.io/nuget/v/reactiveui.validation.svg)](https://www.nuget.org/packages/reactiveui.validation) [![Build Status](https://dev.azure.com/dotnet/ReactiveUI/_apis/build/status/ReactiveUI.Validation-CI)](https://dev.azure.com/dotnet/ReactiveUI/_build/latest?definitionId=11)  [![Code Coverage](https://codecov.io/gh/reactiveui/ReactiveUI.Validation/branch/master/graph/badge.svg)](https://codecov.io/gh/reactiveui/ReactiveUI.Validation) [![#yourfirstpr](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](https://reactiveui.net/contribute) [![Downloads](https://img.shields.io/nuget/dt/reactiveui.validation.svg)](https://www.nuget.org/packages/reactiveui.validation) [![Slack](https://img.shields.io/badge/chat-slack-blue.svg)](https://reactiveui.net/slack)
+
+<a href="https://github.com/reactiveui/ReactiveUI.Validation">
+  <img width="140" heigth="140" src="https://github.com/reactiveui/ReactiveUI.Validation/blob/master/media/logo.png">
+</a>
 
 # ReactiveUI.Validation
 
-Validation for ReactiveUI based solutions, functioning in a reactive way. This repository is based on [jcmm33's Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation).
+Validation for ReactiveUI based solutions, functioning in a reactive way.
+
+This repository is based on [jcmm33's Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation).
 
 ## NuGet Packages
 
@@ -38,7 +44,7 @@ public class SampleViewModel : ReactiveObject, ISupportsValidation
             "You must specify a valid name");
     }
 
-    public ValidationContext ValidationContext => new ValidationContext();
+    public ValidationContext ValidationContext { get; } = new ValidationContext();
 
     private string _name;
     public string Name
@@ -57,8 +63,7 @@ public class SampleView : ReactiveContentPage<SampleViewModel>
     public SampleView()
     {
         InitializeComponent();
-
-        this.WhenActivated((CompositeDisposable disposables) =>
+        this.WhenActivated(disposables =>
         {
             this.Bind(ViewModel, vm => vm.Name, view => view.Name.Text)
                 .DisposeWith(disposables);
@@ -71,7 +76,8 @@ public class SampleView : ReactiveContentPage<SampleViewModel>
     }
 }
 ```
- Note: `Name` is an Entry and `NameError` is a Label (both are controls from the Xamarin.Forms library).
+
+> **Note** `Name` is an Entry and `NameError` is a Label (both are controls from the Xamarin.Forms library).
 
 ## Example with Android extensions
 
@@ -92,10 +98,10 @@ namespace SampleApp.Activities
 
         protected override void OnCreate (Bundle bundle)
         {
-            base.OnCreate (bundle);
+            base.OnCreate(bundle);
 
             // Sets our view from the "main" layout resource
-            SetContentView (Resource.Layout.Main);
+            SetContentView(Resource.Layout.Main);
 
             WireUpControls();
 
@@ -130,6 +136,19 @@ Please use [GitHub issues](https://github.com/reactiveui/ReactiveUI.Validation/i
 * **jcmm33** - *Initial work* - [GitHub profile](https://github.com/jcmm33)
 * **Àlex Martínez Morón** - *Repository maintenance* - [GitHub profile](https://github.com/alexmartinezm)
 
-## Copyright and license
+## Contribute
+
+ReactiveUI.Validation is developed under an OSI-approved open source license, making it freely usable and distributable, even for commercial use. Because of our Open Collective model for funding and transparency, we are able to funnel support and funds through to our contributors and community. We ❤ the people who are involved in this project, and we’d love to have you on board, especially if you are just getting started or have never contributed to open-source before.
+
+So here's to you, lovely person who wants to join us — this is how you can support us:
+
+* [Responding to questions on StackOverflow](https://stackoverflow.com/questions/tagged/reactiveui)
+* [Passing on knowledge and teaching the next generation of developers](http://ericsink.com/entries/dont_use_rxui.html)
+* [Donations](https://reactiveui.net/donate) and [Corporate Sponsorships](https://reactiveui.net/sponsorship)
+* [Asking your employer to reciprocate and contribute to open-source](https://github.com/github/balanced-employee-ip-agreement)
+* Submitting documentation updates where you see fit or lacking.
+* Making contributions to the code base.
+
+## Copyright and License
 
 Code released under the [MIT license](https://opensource.org/licenses/MIT).
