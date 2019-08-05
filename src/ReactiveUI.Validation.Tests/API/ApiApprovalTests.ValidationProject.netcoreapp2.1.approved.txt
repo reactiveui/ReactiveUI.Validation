@@ -80,8 +80,8 @@ namespace ReactiveUI.Validation.Contexts
         public bool IsValid { get; }
         public ReactiveUI.Validation.Collections.ValidationText Text { get; }
         public System.IObservable<bool> Valid { get; }
-        public System.Collections.ObjectModel.ReadOnlyObservableCollection<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> Validations { get; }
         public System.IObservable<ReactiveUI.Validation.States.ValidationState> ValidationStatusChange { get; }
+        public System.Collections.ObjectModel.ReadOnlyObservableCollection<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> Validations { get; }
         public void Add(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation) { }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
@@ -128,16 +128,16 @@ namespace ReactiveUI.Validation.Extensions
     {
         public static System.IDisposable BindToDirect<TTarget, TValue>(System.IObservable<TValue> @this, TTarget target, System.Linq.Expressions.Expression viewExpression) { }
         public static System.IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
-            where TView : ReactiveUI.IViewFor<>
+            where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.ISupportsValidation { }
         public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
-            where TView : ReactiveUI.IViewFor<>
+            where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.ISupportsValidation { }
         public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, ReactiveUI.Validation.Helpers.ValidationHelper>> viewModelHelperProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
-            where TView : ReactiveUI.IViewFor<>
+            where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.ISupportsValidation { }
         public static System.IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
-            where TView : ReactiveUI.IViewFor<>
+            where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.ISupportsValidation { }
     }
 }
@@ -233,32 +233,32 @@ namespace ReactiveUI.Validation.ValidationBindings
     {
         public void Dispose() { }
         public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string> formatter = null, bool strict = True)
-            where TView : ReactiveUI.IViewFor<>
+            where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.ISupportsValidation { }
         public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Action<ReactiveUI.Validation.States.ValidationState, TOut> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter = null, bool strict = True)
-            where TView : ReactiveUI.IViewFor<>
+            where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.ISupportsValidation { }
         public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, ReactiveUI.Validation.Helpers.ValidationHelper>> viewModelHelperProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string> formatter = null)
-            where TView : ReactiveUI.IViewFor<>
+            where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.ISupportsValidation { }
         public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForValidationHelperProperty<TView, TViewModel, TOut>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, ReactiveUI.Validation.Helpers.ValidationHelper>> viewModelHelperProperty, System.Action<ReactiveUI.Validation.States.ValidationState, TOut> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter = null)
-            where TView : ReactiveUI.IViewFor<>
+            where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.ISupportsValidation { }
         public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForViewModel<TView, TViewModel, TOut>(TView view, System.Action<TOut> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter)
-            where TView : ReactiveUI.IViewFor<>
+            where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.ISupportsValidation { }
         public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForViewModel<TView, TViewModel, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string> formatter = null)
-            where TView : ReactiveUI.IViewFor<>
+            where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.ISupportsValidation { }
     }
     public sealed class ValidationBindingEx : ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding, System.IDisposable
     {
         public void Dispose() { }
         public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string> formatter = null, bool strict = True)
-            where TView : ReactiveUI.IViewFor<>
+            where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.ISupportsValidation { }
         public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Action<System.Collections.Generic.IList<ReactiveUI.Validation.States.ValidationState>, System.Collections.Generic.IList<TOut>> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter = null, bool strict = True)
-            where TView : ReactiveUI.IViewFor<>
+            where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.ISupportsValidation { }
     }
 }
