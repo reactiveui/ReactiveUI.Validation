@@ -46,12 +46,12 @@ namespace ReactiveUI.Validation.Tests.API
 
             if (!File.Exists(receivedFileName))
             {
-                File.Create(receivedFileName);
+                File.Create(receivedFileName).Close();
             }
 
             if (!File.Exists(approvedFileName))
             {
-                File.Create(approvedFileName);
+                File.Create(approvedFileName).Close();
             }
 
             var approvedPublicApi = File.ReadAllText(approvedFileName);
