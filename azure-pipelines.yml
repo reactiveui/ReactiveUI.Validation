@@ -17,3 +17,6 @@ resources:
 
 jobs:
 - template: Azure/azure-pipelines.yml@templates  # Template reference
+  parameters:
+    runMacBuild: false
+    
