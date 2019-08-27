@@ -13,7 +13,7 @@
 
   <ItemGroup Condition=" $(TargetFramework.StartsWith('MonoAndroid')) ">  
     <Compile Include="Platforms\Android\**\*.cs" />
-    <PackageReference Include="Xamarin.Android.Support.Design" Version="27.*" />
+    <PackageReference Include="Xamarin.Android.Support.Design" Version="28.*" />
   </ItemGroup>
 
   <ItemGroup>
