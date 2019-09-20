@@ -79,9 +79,9 @@ namespace ReactiveUI.Validation.Helpers
         private void Setup()
         {
             _disposables.Add(_validation.ValidationStatusChange.Select(v => v.IsValid)
-                .ToProperty(this, vm => vm.IsValid, out _isValid));
+                .BindTo(this, vm => vm.IsValid));
             _disposables.Add(_validation.ValidationStatusChange.Select(v => v.Text)
-                .ToProperty(this, vm => vm.Message, out _message));
+                .BindTo(this, vm => vm.Message));
         }
     }
 }
