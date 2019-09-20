@@ -36,22 +36,22 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Represents the current value.
         /// </summary>
-        private readonly Subject<Tuple<TProperty1, TProperty2>> _valueSubject = new Subject<Tuple<TProperty1, TProperty2>>();
+        private readonly Subject<ValueTuple<TProperty1, TProperty2>> _valueSubject = new Subject<ValueTuple<TProperty1, TProperty2>>();
 
         /// <summary>
         /// The validation message factory.
         /// </summary>
-        private readonly Func<Tuple<TProperty1, TProperty2>, bool, ValidationText> _message;
+        private readonly Func<ValueTuple<TProperty1, TProperty2>, bool, ValidationText> _message;
 
         /// <summary>
         /// The connected observable to see updates in properties being validated.
         /// </summary>
-        private readonly IConnectableObservable<Tuple<TProperty1, TProperty2>> _valueConnectedObservable;
+        private readonly IConnectableObservable<ValueTuple<TProperty1, TProperty2>> _valueConnectedObservable;
 
         /// <summary>
         /// Function to determine if valid or not.
         /// </summary>
-        private readonly Func<Tuple<TProperty1, TProperty2>, bool> _isValidFunc;
+        private readonly Func<ValueTuple<TProperty1, TProperty2>, bool> _isValidFunc;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -65,8 +65,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
             Expression<Func<TViewModel, TProperty2>> property2,
-            Func<Tuple<TProperty1, TProperty2>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2>, string> message)
+            Func<ValueTuple<TProperty1, TProperty2>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2>, string> message)
             : this(viewModel, property1, property2, isValidFunc, (p, v) => new ValidationText(v ? string.Empty : message(p)))
         {
         }
@@ -76,8 +76,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
             Expression<Func<TViewModel, TProperty2>> property2,
-            Func<Tuple<TProperty1, TProperty2>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2>, bool, string> messageFunc)
+            Func<ValueTuple<TProperty1, TProperty2>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2>, bool, string> messageFunc)
             : this(viewModel, property1, property2, isValidFunc, (p, v) => new ValidationText(messageFunc(p, v)))
         {
         }
@@ -87,8 +87,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
             Expression<Func<TViewModel, TProperty2>> property2,
-            Func<Tuple<TProperty1, TProperty2>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2>, bool, ValidationText> message)
+            Func<ValueTuple<TProperty1, TProperty2>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2>, bool, ValidationText> message)
         {
             _message = message;
             _isValidFunc = isValidFunc;
@@ -107,7 +107,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Gets or sets the last calculated value of the properties.
         /// </summary>
-        private Tuple<TProperty1, TProperty2> LastValue { get; set; }
+        private ValueTuple<TProperty1, TProperty2> LastValue { get; set; }
 
         /// <inheritdoc/>
         protected override IObservable<ValidationState> GetValidationChangeObservable()
@@ -137,7 +137,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <param name="params">ViewModel properties.</param>
         /// <param name="isValid">Whether the property is valid or not.</param>
         /// <returns>Returns the <see cref="ValidationText"/> object.</returns>
-        private ValidationText GetMessage(Tuple<TProperty1, TProperty2> @params, bool isValid)
+        private ValidationText GetMessage(ValueTuple<TProperty1, TProperty2> @params, bool isValid)
         {
             return _message(@params, isValid);
         }
@@ -164,22 +164,22 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Represents the current value.
         /// </summary>
-        private readonly Subject<Tuple<TProperty1, TProperty2, TProperty3>> _valueSubject = new Subject<Tuple<TProperty1, TProperty2, TProperty3>>();
+        private readonly Subject<ValueTuple<TProperty1, TProperty2, TProperty3>> _valueSubject = new Subject<ValueTuple<TProperty1, TProperty2, TProperty3>>();
 
         /// <summary>
         /// The validation message factory.
         /// </summary>
-        private readonly Func<Tuple<TProperty1, TProperty2, TProperty3>, bool, ValidationText> _message;
+        private readonly Func<ValueTuple<TProperty1, TProperty2, TProperty3>, bool, ValidationText> _message;
 
         /// <summary>
         /// The connected observable to see updates in properties being validated.
         /// </summary>
-        private readonly IConnectableObservable<Tuple<TProperty1, TProperty2, TProperty3>> _valueConnectedObservable;
+        private readonly IConnectableObservable<ValueTuple<TProperty1, TProperty2, TProperty3>> _valueConnectedObservable;
 
         /// <summary>
         /// Function to determine if valid or not.
         /// </summary>
-        private readonly Func<Tuple<TProperty1, TProperty2, TProperty3>, bool> _isValidFunc;
+        private readonly Func<ValueTuple<TProperty1, TProperty2, TProperty3>, bool> _isValidFunc;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -194,8 +194,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty1>> property1,
             Expression<Func<TViewModel, TProperty2>> property2,
             Expression<Func<TViewModel, TProperty3>> property3,
-            Func<Tuple<TProperty1, TProperty2, TProperty3>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2, TProperty3>, string> message)
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3>, string> message)
             : this(viewModel, property1, property2, property3, isValidFunc, (p, v) => new ValidationText(v ? string.Empty : message(p)))
         {
         }
@@ -206,8 +206,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty1>> property1,
             Expression<Func<TViewModel, TProperty2>> property2,
             Expression<Func<TViewModel, TProperty3>> property3,
-            Func<Tuple<TProperty1, TProperty2, TProperty3>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2, TProperty3>, bool, string> messageFunc)
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3>, bool, string> messageFunc)
             : this(viewModel, property1, property2, property3, isValidFunc, (p, v) => new ValidationText(messageFunc(p, v)))
         {
         }
@@ -218,8 +218,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty1>> property1,
             Expression<Func<TViewModel, TProperty2>> property2,
             Expression<Func<TViewModel, TProperty3>> property3,
-            Func<Tuple<TProperty1, TProperty2, TProperty3>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2, TProperty3>, bool, ValidationText> message)
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3>, bool, ValidationText> message)
         {
             _message = message;
             _isValidFunc = isValidFunc;
@@ -239,7 +239,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Gets or sets the last calculated value of the properties.
         /// </summary>
-        private Tuple<TProperty1, TProperty2, TProperty3> LastValue { get; set; }
+        private ValueTuple<TProperty1, TProperty2, TProperty3> LastValue { get; set; }
 
         /// <inheritdoc/>
         protected override IObservable<ValidationState> GetValidationChangeObservable()
@@ -269,7 +269,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <param name="params">ViewModel properties.</param>
         /// <param name="isValid">Whether the property is valid or not.</param>
         /// <returns>Returns the <see cref="ValidationText"/> object.</returns>
-        private ValidationText GetMessage(Tuple<TProperty1, TProperty2, TProperty3> @params, bool isValid)
+        private ValidationText GetMessage(ValueTuple<TProperty1, TProperty2, TProperty3> @params, bool isValid)
         {
             return _message(@params, isValid);
         }
@@ -296,22 +296,22 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Represents the current value.
         /// </summary>
-        private readonly Subject<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>> _valueSubject = new Subject<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>>();
+        private readonly Subject<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>> _valueSubject = new Subject<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>>();
 
         /// <summary>
         /// The validation message factory.
         /// </summary>
-        private readonly Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool, ValidationText> _message;
+        private readonly Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool, ValidationText> _message;
 
         /// <summary>
         /// The connected observable to see updates in properties being validated.
         /// </summary>
-        private readonly IConnectableObservable<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>> _valueConnectedObservable;
+        private readonly IConnectableObservable<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>> _valueConnectedObservable;
 
         /// <summary>
         /// Function to determine if valid or not.
         /// </summary>
-        private readonly Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> _isValidFunc;
+        private readonly Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> _isValidFunc;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -327,8 +327,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty2>> property2,
             Expression<Func<TViewModel, TProperty3>> property3,
             Expression<Func<TViewModel, TProperty4>> property4,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>, string> message)
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, string> message)
             : this(viewModel, property1, property2, property3, property4, isValidFunc, (p, v) => new ValidationText(v ? string.Empty : message(p)))
         {
         }
@@ -340,8 +340,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty2>> property2,
             Expression<Func<TViewModel, TProperty3>> property3,
             Expression<Func<TViewModel, TProperty4>> property4,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool, string> messageFunc)
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool, string> messageFunc)
             : this(viewModel, property1, property2, property3, property4, isValidFunc, (p, v) => new ValidationText(messageFunc(p, v)))
         {
         }
@@ -353,8 +353,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty2>> property2,
             Expression<Func<TViewModel, TProperty3>> property3,
             Expression<Func<TViewModel, TProperty4>> property4,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool, ValidationText> message)
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool, ValidationText> message)
         {
             _message = message;
             _isValidFunc = isValidFunc;
@@ -375,7 +375,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Gets or sets the last calculated value of the properties.
         /// </summary>
-        private Tuple<TProperty1, TProperty2, TProperty3, TProperty4> LastValue { get; set; }
+        private ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4> LastValue { get; set; }
 
         /// <inheritdoc/>
         protected override IObservable<ValidationState> GetValidationChangeObservable()
@@ -405,7 +405,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <param name="params">ViewModel properties.</param>
         /// <param name="isValid">Whether the property is valid or not.</param>
         /// <returns>Returns the <see cref="ValidationText"/> object.</returns>
-        private ValidationText GetMessage(Tuple<TProperty1, TProperty2, TProperty3, TProperty4> @params, bool isValid)
+        private ValidationText GetMessage(ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4> @params, bool isValid)
         {
             return _message(@params, isValid);
         }
@@ -432,22 +432,22 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Represents the current value.
         /// </summary>
-        private readonly Subject<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>> _valueSubject = new Subject<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>>();
+        private readonly Subject<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>> _valueSubject = new Subject<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>>();
 
         /// <summary>
         /// The validation message factory.
         /// </summary>
-        private readonly Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool, ValidationText> _message;
+        private readonly Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool, ValidationText> _message;
 
         /// <summary>
         /// The connected observable to see updates in properties being validated.
         /// </summary>
-        private readonly IConnectableObservable<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>> _valueConnectedObservable;
+        private readonly IConnectableObservable<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>> _valueConnectedObservable;
 
         /// <summary>
         /// Function to determine if valid or not.
         /// </summary>
-        private readonly Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> _isValidFunc;
+        private readonly Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> _isValidFunc;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -464,8 +464,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty3>> property3,
             Expression<Func<TViewModel, TProperty4>> property4,
             Expression<Func<TViewModel, TProperty5>> property5,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, string> message)
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, string> message)
             : this(viewModel, property1, property2, property3, property4, property5, isValidFunc, (p, v) => new ValidationText(v ? string.Empty : message(p)))
         {
         }
@@ -478,8 +478,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty3>> property3,
             Expression<Func<TViewModel, TProperty4>> property4,
             Expression<Func<TViewModel, TProperty5>> property5,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool, string> messageFunc)
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool, string> messageFunc)
             : this(viewModel, property1, property2, property3, property4, property5, isValidFunc, (p, v) => new ValidationText(messageFunc(p, v)))
         {
         }
@@ -492,8 +492,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty3>> property3,
             Expression<Func<TViewModel, TProperty4>> property4,
             Expression<Func<TViewModel, TProperty5>> property5,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool, ValidationText> message)
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool, ValidationText> message)
         {
             _message = message;
             _isValidFunc = isValidFunc;
@@ -515,7 +515,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Gets or sets the last calculated value of the properties.
         /// </summary>
-        private Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5> LastValue { get; set; }
+        private ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5> LastValue { get; set; }
 
         /// <inheritdoc/>
         protected override IObservable<ValidationState> GetValidationChangeObservable()
@@ -545,7 +545,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <param name="params">ViewModel properties.</param>
         /// <param name="isValid">Whether the property is valid or not.</param>
         /// <returns>Returns the <see cref="ValidationText"/> object.</returns>
-        private ValidationText GetMessage(Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5> @params, bool isValid)
+        private ValidationText GetMessage(ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5> @params, bool isValid)
         {
             return _message(@params, isValid);
         }
@@ -572,22 +572,22 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Represents the current value.
         /// </summary>
-        private readonly Subject<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>> _valueSubject = new Subject<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>>();
+        private readonly Subject<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>> _valueSubject = new Subject<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>>();
 
         /// <summary>
         /// The validation message factory.
         /// </summary>
-        private readonly Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool, ValidationText> _message;
+        private readonly Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool, ValidationText> _message;
 
         /// <summary>
         /// The connected observable to see updates in properties being validated.
         /// </summary>
-        private readonly IConnectableObservable<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>> _valueConnectedObservable;
+        private readonly IConnectableObservable<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>> _valueConnectedObservable;
 
         /// <summary>
         /// Function to determine if valid or not.
         /// </summary>
-        private readonly Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> _isValidFunc;
+        private readonly Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> _isValidFunc;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -605,8 +605,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty4>> property4,
             Expression<Func<TViewModel, TProperty5>> property5,
             Expression<Func<TViewModel, TProperty6>> property6,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, string> message)
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, string> message)
             : this(viewModel, property1, property2, property3, property4, property5, property6, isValidFunc, (p, v) => new ValidationText(v ? string.Empty : message(p)))
         {
         }
@@ -620,8 +620,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty4>> property4,
             Expression<Func<TViewModel, TProperty5>> property5,
             Expression<Func<TViewModel, TProperty6>> property6,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool, string> messageFunc)
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool, string> messageFunc)
             : this(viewModel, property1, property2, property3, property4, property5, property6, isValidFunc, (p, v) => new ValidationText(messageFunc(p, v)))
         {
         }
@@ -635,8 +635,8 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty4>> property4,
             Expression<Func<TViewModel, TProperty5>> property5,
             Expression<Func<TViewModel, TProperty6>> property6,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> isValidFunc,
-            Func<Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool, ValidationText> message)
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> isValidFunc,
+            Func<ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool, ValidationText> message)
         {
             _message = message;
             _isValidFunc = isValidFunc;
@@ -659,7 +659,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Gets or sets the last calculated value of the properties.
         /// </summary>
-        private Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6> LastValue { get; set; }
+        private ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6> LastValue { get; set; }
 
         /// <inheritdoc/>
         protected override IObservable<ValidationState> GetValidationChangeObservable()
@@ -689,7 +689,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <param name="params">ViewModel properties.</param>
         /// <param name="isValid">Whether the property is valid or not.</param>
         /// <returns>Returns the <see cref="ValidationText"/> object.</returns>
-        private ValidationText GetMessage(Tuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6> @params, bool isValid)
+        private ValidationText GetMessage(ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6> @params, bool isValid)
         {
             return _message(@params, isValid);
         }
