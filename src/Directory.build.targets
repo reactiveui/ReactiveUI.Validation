@@ -1,4 +1,9 @@
 <Project>
+  <PropertyGroup>  
+    <Product>$(AssemblyName) ($(TargetFramework))</Product>
+    <AndroidUseIntermediateDesignerFile>False</AndroidUseIntermediateDesignerFile>
+  </PropertyGroup>
+
   <PropertyGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <DefineConstants>$(DefineConstants);NET_45;XAML</DefineConstants>
   </PropertyGroup>
