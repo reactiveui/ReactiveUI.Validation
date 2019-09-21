@@ -52,7 +52,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             IValidationTextFormatter<string> formatter = null,
             bool strict = true)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             if (formatter == null)
             {
@@ -96,7 +96,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             IValidationTextFormatter<TOut> formatter = null,
             bool strict = true)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             if (formatter == null)
             {
@@ -148,7 +148,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             {
                 return valueChange
                    .Do(
-                       x => setter(target, x.First(msg => !string.IsNullOrEmpty(msg)), viewExpression.GetArgumentsArray()),
+                       x => setter(target, x.FirstOrDefault(msg => !string.IsNullOrEmpty(msg)) ?? string.Empty, viewExpression.GetArgumentsArray()),
                        ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"));
             }
 

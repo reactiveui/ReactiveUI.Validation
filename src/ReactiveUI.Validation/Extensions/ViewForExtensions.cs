@@ -42,7 +42,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Expression<Func<TView, TViewProperty>> viewProperty)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             return ValidationBindingEx.ForProperty(view, viewModelProperty, viewProperty);
         }
@@ -70,7 +70,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Expression<Func<TView, TViewProperty>> viewProperty)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             return ValidationBinding.ForProperty(view, viewModelProperty, viewProperty);
         }
@@ -94,7 +94,7 @@ namespace ReactiveUI.Validation.Extensions
             this TView view,
             TViewModel viewModel,
             Expression<Func<TView, TViewProperty>> viewProperty)
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
             where TView : IViewFor<TViewModel>
         {
             return ValidationBinding.ForViewModel<TView, TViewModel, TViewProperty>(view, viewProperty);
@@ -122,7 +122,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
             Expression<Func<TView, TViewProperty>> viewProperty)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             return ValidationBinding.ForValidationHelperProperty(view, viewModelHelperProperty, viewProperty);
         }

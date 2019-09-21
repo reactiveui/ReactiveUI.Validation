@@ -13,7 +13,7 @@ using ReactiveUI.Validation.Helpers;
 namespace ReactiveUI.Validation.Extensions
 {
     /// <summary>
-    /// Extensions methods associated to <see cref="ISupportsValidation"/> instances.
+    /// Extensions methods associated to <see cref="IValidatableViewModel"/> instances.
     /// </summary>
     public static class SupportsValidationExtensions
     {
@@ -32,7 +32,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
             Func<TViewModelProp, bool> isPropertyValid,
             string message)
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             // We need to associate the ViewModel property
             // with something that can be easily looked up and bound to
@@ -62,7 +62,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
             Func<TViewModelProp, bool> isPropertyValid,
             Func<TViewModelProp, string> message)
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             // We need to associate the ViewModel property
             // with something that can be easily looked up and bound to
@@ -93,7 +93,7 @@ namespace ReactiveUI.Validation.Extensions
             this TViewModel viewModel,
             Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
             Func<TViewModel, bool, string> messageFunc)
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             var validation =
                 new ModelObservableValidation<TViewModel>(viewModel, viewModelObservableProperty, messageFunc);
@@ -110,7 +110,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModel">ViewModel instance.</param>
         /// <returns>Returns true if the ValidationContext is valid, otherwise false.</returns>
         public static IObservable<bool> IsValid<TViewModel>(this TViewModel viewModel)
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             return viewModel?.ValidationContext.Valid;
         }

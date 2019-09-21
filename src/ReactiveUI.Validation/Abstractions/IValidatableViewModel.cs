@@ -11,7 +11,7 @@ namespace ReactiveUI.Validation.Abstractions
     /// <summary>
     /// Interface used by view models to indicate they have a validation context.
     /// </summary>
-    public interface ISupportsValidation
+    public interface IValidatableViewModel
     {
         /// <summary>
         /// Gets get the validation context.
