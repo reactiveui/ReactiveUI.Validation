@@ -11,10 +11,19 @@ using ReactiveUI.Validation.Extensions;
 
 namespace ReactiveUI.Validation.Helpers
 {
+    /// <summary>
+    /// Base class for ReactiveObjects that support INotifyDataErrorInfo validation. 
+    /// </summary>
+    /// <typeparam name="TViewModel">The parent view model.</typeparam>
     public abstract class ReactiveValidationObject<TViewModel> : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
     {
         private readonly ObservableAsPropertyHelper<bool> _hasErrors;
     
+        /// <summary>
+        /// Initializes a new instance of the ReactiveValidationObject.
+        /// </summary>
+        /// <param name="scheduler">Scheduler for OAPHs and for the the ValidationContext.</param>
+        /// <inheritdoc />
         protected ReactiveValidationObject(IScheduler scheduler = null)
         {
             ValidationContext = new ValidationContext(scheduler);
@@ -32,13 +41,22 @@ namespace ReactiveUI.Validation.Helpers
                 .Subscribe(args => ErrorsChanged?.Invoke(this, args)); 
         }
 
+        /// <inheritdoc />
         public bool HasErrors => _hasErrors.Value;
     
+        /// <inheritdoc />
         public ValidationContext ValidationContext { get; }
 
+        /// <inheritdoc />
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
     
-        public IEnumerable GetErrors(string propertyName)
+        /// <summary>
+        /// Returns a collection of error messages, required by the INotifyDataErrorInfo interface.
+        /// </summary>
+        /// <param name="propertyName">Property to search error notifications for.</param>
+        /// <returns>A list of error messages, usually strings.</returns>
+        /// <inheritdoc />
+        public virtual IEnumerable GetErrors(string propertyName)
         {
             var memberInfoName = GetType()
                 .GetMember(propertyName)
