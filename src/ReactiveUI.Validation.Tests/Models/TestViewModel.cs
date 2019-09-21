@@ -8,7 +8,7 @@ namespace ReactiveUI.Validation.Tests.Models
     /// <summary>
     /// Mocked ViewModel.
     /// </summary>
-    public class TestViewModel : ReactiveObject, ISupportsValidation
+    public class TestViewModel : ReactiveObject, IValidatableViewModel
     {
         private string _name;
         private string _name2;

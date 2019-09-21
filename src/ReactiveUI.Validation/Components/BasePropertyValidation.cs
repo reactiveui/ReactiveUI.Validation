@@ -121,7 +121,17 @@ namespace ReactiveUI.Validation.Components
         public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
         {
             var propertyName = property.Body.GetMemberInfo().ToString();
+            return ContainsPropertyName(propertyName, exclusively);
+        }
 
+        /// <summary>
+        /// Determine if a property name is actually contained within this.
+        /// </summary>
+        /// <param name="propertyName">ViewModel property name.</param>
+        /// <param name="exclusively">Indicates if the property to find is unique.</param>
+        /// <returns>Returns true if it contains the property, otherwise false.</returns>
+        public bool ContainsPropertyName(string propertyName, bool exclusively = false)
+        {
             return exclusively
                 ? _propertyNames.Contains(propertyName) && _propertyNames.Count == 1
                 : _propertyNames.Contains(propertyName);

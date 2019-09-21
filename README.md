@@ -24,20 +24,20 @@ Install the following package into you class library and platform-specific proje
 
 ## How to use
 
-* For ViewModels which need validation, implement `ISupportsValidation`.
+* For ViewModels which need validation, implement `IValidatableViewModel`.
 * Add validation rules to the ViewModel.
 * Bind to the validation rules in the View.
 
 ## Example
 
-1. Decorate existing ViewModel with `ISupportsValidation`, which has a single member, `ValidationContext`. The ValidationContext contains all of the functionality surrounding the validation of the ViewModel. Most access to the specification of validation rules is performed through extension methods on the ISupportsValidation interface. Then, add validation to the ViewModel.
+1. Decorate existing ViewModel with `IValidatableViewModel`, which has a single member, `ValidationContext`. The ValidationContext contains all of the functionality surrounding the validation of the ViewModel. Most access to the specification of validation rules is performed through extension methods on the `IValidatableViewModel` interface. Then, add validation to the ViewModel.
 
 ```csharp
-public class SampleViewModel : ReactiveObject, ISupportsValidation
+public class SampleViewModel : ReactiveObject, IValidatableViewModel
 {
     public SampleViewModel()
     {
-        // Creates the validation for the Name property
+        // Creates the validation for the Name property.
         this.ValidationRule(
             viewModel => viewModel.Name,
             name => !string.IsNullOrWhiteSpace(name),
@@ -69,7 +69,7 @@ public class SampleView : ReactiveContentPage<SampleViewModel>
                 .DisposeWith(disposables);
 
             // Bind any validations which reference the Name property 
-            // to the text of the NameError UI control
+            // to the text of the NameError UI control.
             this.BindValidation(ViewModel, vm => vm.Name, view => view.NameError.Text)
                 .DisposeWith(disposables);
         });
@@ -114,6 +114,28 @@ namespace SampleApp.Activities
     }
 }
 ```
+
+## INotifyDataErrorInfo Support
+
+For those platforms which support the `INotifyDataErrorInfo` interface, ReactiveUI.Validation provides a helper base class named `ReactiveValidationObject<TViewModel>`. The helper class implements both the `IValidatableViewModel` interface and the `INotifyDataErrorInfo` interface. It listens to any changes in the `ValidationContext` and invokes `INotifyDataErrorInfo` events. 
+
+```cs
+public class SampleViewModel : ReactiveValidationObject<SampleViewModel>
+{
+    [Reactive]
+    public string Name { get; set; } = string.Empty;
+
+    public SampleViewModel()
+    {
+        this.ValidationRule(
+            x => x.Name, 
+            name => !string.IsNullOrWhiteSpace(name),
+            "Name shouldn't be empty.");
+    }
+}
+```
+
+> **Note** The `Reactive` attribute is from the [ReactiveUI.Fody](https://reactiveui.net/docs/handbook/view-models/boilerplate-code) NuGet package.
 
 ## Capabilities
 

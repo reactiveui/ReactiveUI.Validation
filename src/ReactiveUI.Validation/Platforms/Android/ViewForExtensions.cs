@@ -45,7 +45,7 @@ namespace ReactiveUI.Validation.Platforms.Android
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             TextInputLayout viewProperty)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             return ValidationBinding.ForProperty(
                 view,
@@ -73,7 +73,7 @@ namespace ReactiveUI.Validation.Platforms.Android
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             TextInputLayout viewProperty)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             return ValidationBindingEx.ForProperty(
                 view,
@@ -103,7 +103,7 @@ namespace ReactiveUI.Validation.Platforms.Android
             Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
             TextInputLayout viewProperty)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             return ValidationBinding.ForValidationHelperProperty(
                 view,

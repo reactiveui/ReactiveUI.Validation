@@ -55,7 +55,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             IValidationTextFormatter<string> formatter = null,
             bool strict = true)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             if (formatter == null)
             {
@@ -102,7 +102,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             IValidationTextFormatter<TOut> formatter = null,
             bool strict = true)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             if (formatter == null)
             {
@@ -145,7 +145,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             Expression<Func<TView, TViewProperty>> viewProperty,
             IValidationTextFormatter<string> formatter = null)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             if (formatter == null)
             {
@@ -188,7 +188,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             Action<ValidationState, TOut> action,
             IValidationTextFormatter<TOut> formatter = null)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             if (formatter == null)
             {
@@ -229,7 +229,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             Action<TOut> action,
             IValidationTextFormatter<TOut> formatter)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             if (formatter == null)
             {
@@ -266,7 +266,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             Expression<Func<TView, TViewProperty>> viewProperty,
             IValidationTextFormatter<string> formatter = null)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, ISupportsValidation
+            where TViewModel : ReactiveObject, IValidatableViewModel
         {
             if (formatter == null)
             {
