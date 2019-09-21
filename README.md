@@ -120,12 +120,12 @@ namespace SampleApp.Activities
 For those platforms which support the `INotifyDataErrorInfo` interface, ReactiveUI.Validation provides a helper base class named `ReactiveValidationObject<TViewModel>`. The helper class implements both the `IValidatableViewModel` interface and the `INotifyDataErrorInfo` interface. It listens to any changes in the `ValidationContext` and invokes `INotifyDataErrorInfo` events. 
 
 ```cs
-public class IndeiTestViewModel : ReactiveValidationObject<IndeiTestViewModel>
+public class SampleViewModel : ReactiveValidationObject<SampleViewModel>
 {
     [Reactive]
-    public string Name { get; set; }
+    public string Name { get; set; } = string.Empty;
 
-    public IndeiTestViewModel()
+    public SampleViewModel()
     {
         this.ValidationRule(
             x => x.Name, 
