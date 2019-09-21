@@ -10,8 +10,14 @@ namespace ReactiveUI.Validation.Tests.Models
     {
         private string _name;
 
-        public IndeiTestViewModel() : base(ImmediateScheduler.Instance) { }
-        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IndeiTestViewModel"/> class.
+        /// </summary>
+        public IndeiTestViewModel()
+            : base(ImmediateScheduler.Instance)
+        {
+        }
+
         /// <summary>
         /// Gets or sets get the Name.
         /// </summary>

@@ -6,7 +6,7 @@ namespace ReactiveUI.Validation.Tests.Models
     public class IndeiTestView : IViewFor<IndeiTestViewModel>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TestView"/> class.
+        /// Initializes a new instance of the <see cref="IndeiTestView"/> class.
         /// </summary>
         /// <param name="viewModel">ViewModel instance of type <see cref="TestViewModel"/>.</param>
         public IndeiTestView(IndeiTestViewModel viewModel)

@@ -123,7 +123,7 @@ namespace ReactiveUI.Validation.Components
             var propertyName = property.Body.GetMemberInfo().ToString();
             return ContainsPropertyName(propertyName, exclusively);
         }
-        
+
         /// <summary>
         /// Determine if a property name is actually contained within this.
         /// </summary>

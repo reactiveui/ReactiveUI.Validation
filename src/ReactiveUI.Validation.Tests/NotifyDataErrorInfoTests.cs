@@ -13,7 +13,7 @@ namespace ReactiveUI.Validation.Tests
     public class NotifyDataErrorInfoTests
     {
         private const string NameShouldNotBeEmptyMessage = "Name shouldn't be empty.";
-        
+
         /// <summary>
         /// Verifies that the ErrorsChanged event fires on ViewModel initialization.
         /// </summary>
@@ -22,7 +22,7 @@ namespace ReactiveUI.Validation.Tests
         {
             var viewModel = new IndeiTestViewModel();
             var view = new IndeiTestView(viewModel);
-            
+
             var firstValidation = new BasePropertyValidation<IndeiTestViewModel, string>(
                 viewModel,
                 vm => vm.Name,
@@ -35,9 +35,9 @@ namespace ReactiveUI.Validation.Tests
 
             // Verify validation context behavior.
             Assert.False(viewModel.ValidationContext.IsValid);
-            Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
+            Assert.Single(viewModel.ValidationContext.Validations);
             Assert.Equal(NameShouldNotBeEmptyMessage, view.NameErrorLabel);
-            
+
             // Verify INotifyDataErrorInfo behavior.
             Assert.True(viewModel.HasErrors);
             Assert.Equal(NameShouldNotBeEmptyMessage, viewModel.GetErrors("Name").Cast<string>().First());
@@ -52,40 +52,40 @@ namespace ReactiveUI.Validation.Tests
         {
             var viewModel = new IndeiTestViewModel();
             var view = new IndeiTestView(viewModel);
-            
+
             var firstValidation = new BasePropertyValidation<IndeiTestViewModel, string>(
                 viewModel,
                 vm => vm.Name,
                 s => !string.IsNullOrEmpty(s),
                 NameShouldNotBeEmptyMessage);
-            
+
             viewModel.ValidationContext.Add(firstValidation);
             view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
             view.BindValidationEx(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
-            
+
             // Verify the initial state.
             Assert.True(viewModel.HasErrors);
             Assert.False(viewModel.ValidationContext.IsValid);
-            Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
+            Assert.Single(viewModel.ValidationContext.Validations);
             Assert.Equal(NameShouldNotBeEmptyMessage, viewModel.GetErrors("Name").Cast<string>().First());
             Assert.Equal(NameShouldNotBeEmptyMessage, view.NameErrorLabel);
 
             // Send INotifyPropertyChanged.
             viewModel.Name = "JoJo";
-            
+
             // Verify the changed state.
             Assert.False(viewModel.HasErrors);
             Assert.True(viewModel.ValidationContext.IsValid);
-            Assert.Equal(0, viewModel.GetErrors("Name").Cast<string>().Count());
+            Assert.Empty(viewModel.GetErrors("Name").Cast<string>());
             Assert.Empty(view.NameErrorLabel);
 
             // Send INotifyPropertyChanged.
             viewModel.Name = string.Empty;
-            
+
             // Verify the changed state.
             Assert.True(viewModel.HasErrors);
             Assert.False(viewModel.ValidationContext.IsValid);
-            Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
+            Assert.Single(viewModel.ValidationContext.Validations);
             Assert.Equal(NameShouldNotBeEmptyMessage, viewModel.GetErrors("Name").Cast<string>().First());
             Assert.Equal(NameShouldNotBeEmptyMessage, view.NameErrorLabel);
         }
@@ -97,10 +97,10 @@ namespace ReactiveUI.Validation.Tests
         public void ShouldFireErrorsChangedEventWhenValidationStateChanges()
         {
             var viewModel = new IndeiTestViewModel();
-            
+
             DataErrorsChangedEventArgs arguments = null;
             viewModel.ErrorsChanged += (sender, args) => arguments = args;
-            
+
             var firstValidation = new BasePropertyValidation<IndeiTestViewModel, string>(
                 viewModel,
                 vm => vm.Name,
@@ -108,17 +108,17 @@ namespace ReactiveUI.Validation.Tests
                 NameShouldNotBeEmptyMessage);
 
             viewModel.ValidationContext.Add(firstValidation);
-            
+
             Assert.True(viewModel.HasErrors);
             Assert.False(viewModel.ValidationContext.IsValid);
-            Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
-            Assert.Equal(1, viewModel.GetErrors("Name").Cast<string>().Count());
+            Assert.Single(viewModel.ValidationContext.Validations);
+            Assert.Single(viewModel.GetErrors("Name").Cast<string>());
             Assert.Null(arguments);
 
             viewModel.Name = "JoJo";
-            
+
             Assert.False(viewModel.HasErrors);
-            Assert.Equal(0, viewModel.GetErrors("Name").Cast<string>().Count());
+            Assert.Empty(viewModel.GetErrors("Name").Cast<string>());
             Assert.NotNull(arguments);
             Assert.Equal("Name", arguments.PropertyName);
         }
