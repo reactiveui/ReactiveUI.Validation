@@ -38,11 +38,8 @@ namespace ReactiveUI.Validation.Helpers
                 .Select(valid => !valid)
                 .ToProperty(this, x => x.HasErrors, scheduler: scheduler);
 
-            ValidationContext
-                .ValidationStatusChange
-                .CombineLatest(Changed, (_, change) => change.PropertyName)
-                .Where(name => name != nameof(HasErrors))
-                .Select(name => new DataErrorsChangedEventArgs(name))
+            ValidationContext.ValidationStatusChange
+                .Select(validity => new DataErrorsChangedEventArgs(string.Empty))
                 .Subscribe(args => ErrorsChanged?.Invoke(this, args));
         }
 

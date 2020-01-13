@@ -113,14 +113,13 @@ namespace ReactiveUI.Validation.Tests
             Assert.False(viewModel.ValidationContext.IsValid);
             Assert.Single(viewModel.ValidationContext.Validations);
             Assert.Single(viewModel.GetErrors("Name").Cast<string>());
-            Assert.Null(arguments);
 
             viewModel.Name = "JoJo";
 
             Assert.False(viewModel.HasErrors);
             Assert.Empty(viewModel.GetErrors("Name").Cast<string>());
             Assert.NotNull(arguments);
-            Assert.Equal("Name", arguments.PropertyName);
+            Assert.Equal(string.Empty, arguments.PropertyName);
         }
     }
 }
