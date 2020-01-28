@@ -18,7 +18,7 @@
         "readonly"
       ],
       "systemUsingDirectivesFirst": true,
-      "usingDirectivesPlacement": "outsideNameSpace"
+      "usingDirectivesPlacement": "outsideNamespace"
     },
     "maintainabilityRules": {
       "topLevelTypes": ["class"]
