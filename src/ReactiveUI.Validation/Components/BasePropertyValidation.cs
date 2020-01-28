@@ -20,11 +20,11 @@ namespace ReactiveUI.Validation.Components
 {
     /// <inheritdoc cref="ReactiveObject" />
     /// <inheritdoc cref="IDisposable" />
-    /// <inheritdoc cref="IValidationComponent" />
+    /// <inheritdoc cref="IPropertyValidationComponent{TViewModel}" />
     /// <summary>
     /// Base class for items which are used to build a <see cref="ReactiveUI.Validation.Contexts.ValidationContext" />.
     /// </summary>
-    public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IValidationComponent, IValidatesProperties<TViewModel>
+    public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent<TViewModel>
     {
         /// <summary>
         /// The current valid state.

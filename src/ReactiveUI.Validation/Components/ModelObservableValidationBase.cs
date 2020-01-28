@@ -17,7 +17,7 @@ using ReactiveUI.Validation.States;
 namespace ReactiveUI.Validation.Components
 {
     /// <inheritdoc cref="ReactiveObject" />
-    /// <inheritdoc cref="IValidationComponent" />
+    /// <inheritdoc cref="IPropertyValidationComponent{TViewModel}" />
     /// <inheritdoc cref="IDisposable" />
     /// <summary>
     /// More generic observable for determination of validity.
@@ -27,7 +27,7 @@ namespace ReactiveUI.Validation.Components
     /// passed through?
     /// Also, what about access to the view model to output the error message?.
     /// </remarks>
-    public abstract class ModelObservableValidationBase<TViewModel> : ReactiveObject, IValidationComponent, IDisposable, IValidatesProperties<TViewModel>
+    public abstract class ModelObservableValidationBase<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent<TViewModel>
     {
         private readonly ReplaySubject<ValidationState> _lastValidationStateSubject =
             new ReplaySubject<ValidationState>(1);

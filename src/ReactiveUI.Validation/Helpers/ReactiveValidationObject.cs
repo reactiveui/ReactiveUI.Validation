@@ -11,7 +11,7 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using ReactiveUI.Validation.Abstractions;
-using ReactiveUI.Validation.Components;
+using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
 
@@ -72,7 +72,7 @@ namespace ReactiveUI.Validation.Helpers
 
             var relatedPropertyValidations = ValidationContext
                 .Validations
-                .OfType<BasePropertyValidation<TViewModel>>()
+                .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(validation => validation.ContainsPropertyName(memberInfoName));
 
             return relatedPropertyValidations
