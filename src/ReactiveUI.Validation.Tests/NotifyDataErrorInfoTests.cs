@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Linq;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Tests.Models;
@@ -120,6 +121,43 @@ namespace ReactiveUI.Validation.Tests
             Assert.Empty(viewModel.GetErrors("Name").Cast<string>());
             Assert.NotNull(arguments);
             Assert.Equal(string.Empty, arguments.PropertyName);
+        }
+
+        /// <summary>
+        /// Using ModelObservableValidation with NotifyDataErrorInfo should return errors when associated property changes.
+        /// </summary>
+        [Fact]
+        public void ShouldDeliverErrorsWhenModelObservableValidationTriggers()
+        {
+            var viewModel = new IndeiTestViewModel();
+
+            string namesShouldMatchMessage = "names should match.";
+            var validation = new ModelObservableValidation<IndeiTestViewModel, string>(
+                viewModel,
+                vm => vm.OtherName,
+                vm => vm.WhenAnyValue(
+                        m => m.Name,
+                        m => m.OtherName,
+                        (n, on) => new { n, on })
+                    .Select(bothNames => bothNames.n == bothNames.on),
+                (_, isValid) => isValid ? string.Empty : namesShouldMatchMessage);
+
+            viewModel.ValidationContext.Add(validation);
+
+            Assert.False(viewModel.HasErrors);
+            Assert.True(viewModel.ValidationContext.IsValid);
+            Assert.Single(viewModel.ValidationContext.Validations);
+            Assert.Empty(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>());
+            Assert.Empty(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>());
+
+            viewModel.Name = "JoJo";
+            viewModel.OtherName = "NoNo";
+
+            Assert.True(viewModel.HasErrors);
+            Assert.Empty(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>());
+            Assert.Single(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>());
+            Assert.Single(validation.Text);
+            Assert.Equal(namesShouldMatchMessage, validation.Text.Single());
         }
     }
 }

@@ -104,6 +104,34 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
+        /// Setup a validation rule with a general observable indicating validity.
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelProperty">ViewModel property referenced in viewModelObservableProperty.</param>
+        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
+        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and viewModelObservableProperty values.</param>
+        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+        /// <remarks>
+        /// It should be noted that the observable should provide an initial value, otherwise that can result
+        /// in an inconsistent performance.
+        /// </remarks>
+        public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
+            this TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
+            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
+            Func<TViewModel, bool, string> messageFunc)
+            where TViewModel : ReactiveObject, IValidatableViewModel
+        {
+            var validation = new ModelObservableValidation<TViewModel, TViewModelProp>(viewModel, viewModelProperty, viewModelObservableProperty, messageFunc);
+
+            viewModel.ValidationContext.Add(validation);
+
+            return new ValidationHelper(validation);
+        }
+
+        /// <summary>
         /// Gets an observable for the validity of the ViewModel.
         /// </summary>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>

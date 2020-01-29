@@ -9,6 +9,7 @@ namespace ReactiveUI.Validation.Tests.Models
     public class IndeiTestViewModel : ReactiveValidationObject<IndeiTestViewModel>
     {
         private string _name;
+        private string _otherName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IndeiTestViewModel"/> class.
@@ -25,6 +26,15 @@ namespace ReactiveUI.Validation.Tests.Models
         {
             get => _name;
             set => this.RaiseAndSetIfChanged(ref _name, value);
+        }
+
+        /// <summary>
+        /// Gets or sets get the Name.
+        /// </summary>
+        public string OtherName
+        {
+            get => _otherName;
+            set => this.RaiseAndSetIfChanged(ref _otherName, value);
         }
     }
 }
