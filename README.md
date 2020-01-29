@@ -55,6 +55,15 @@ public class SampleViewModel : ReactiveObject, IValidatableViewModel
 }
 ```
 
+For more complex validations there is also the possibility to supply an `Observable<bool>` indicating whether the rule is valid or not. Thus you can combine multiple properties or incorporate other complex logic.
+
+```csharp
+            this.ValidationRule(
+                m => m.WhenAnyValue(m1 => m1.TextInput1, m1 => m1.TextInput2).Select(both => both.Item1 == both.Item2),
+                (vm, isValid) => isValid ? string.Empty : "Both inputs should be the same");
+
+```
+
 2. Add validation presentation to the View.
 
 ```csharp
@@ -136,6 +145,18 @@ public class SampleViewModel : ReactiveValidationObject<SampleViewModel>
 ```
 
 > **Note** The `Reactive` attribute is from the [ReactiveUI.Fody](https://reactiveui.net/docs/handbook/view-models/boilerplate-code) NuGet package.
+
+When using the `ValidationRule` overload that uses `Observable<bool>` for more complex scenarios please keep in mind to supply the property which the validation rule is targeting as the first argument. Otherwise it is not possible for `INotifyDataErrorInfo` to conclude which property the error message is for.
+
+```csharp
+            this.ValidationRule(
+                m => m.TextInput2,
+                m => m.WhenAnyValue(m1 => m1.TextInput1, m1 => m1.TextInput2).Select(both => both.Item1 == both.Item2),
+                (vm, isValid) => isValid ? string.Empty : "Both inputs should be the same");
+
+```
+
+
 
 ## Capabilities
 

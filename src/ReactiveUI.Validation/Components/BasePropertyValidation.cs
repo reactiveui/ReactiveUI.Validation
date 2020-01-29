@@ -20,11 +20,11 @@ namespace ReactiveUI.Validation.Components
 {
     /// <inheritdoc cref="ReactiveObject" />
     /// <inheritdoc cref="IDisposable" />
-    /// <inheritdoc cref="IValidationComponent" />
+    /// <inheritdoc cref="IPropertyValidationComponent{TViewModel}" />
     /// <summary>
     /// Base class for items which are used to build a <see cref="ReactiveUI.Validation.Contexts.ValidationContext" />.
     /// </summary>
-    public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IValidationComponent
+    public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent<TViewModel>
     {
         /// <summary>
         /// The current valid state.
@@ -32,7 +32,7 @@ namespace ReactiveUI.Validation.Components
         private readonly ReplaySubject<bool> _isValidSubject = new ReplaySubject<bool>(1);
 
         /// <summary>
-        /// The list of property names this validator.
+        /// The list of property names this validator is referencing.
         /// </summary>
         private readonly HashSet<string> _propertyNames = new HashSet<string>();
 
@@ -64,9 +64,7 @@ namespace ReactiveUI.Validation.Components
             _disposables.Add(_isValidSubject.Subscribe(v => _isValid = v));
         }
 
-        /// <summary>
-        /// Gets get the total number of properties referenced.
-        /// </summary>
+        /// <inheritdoc/>
         public int PropertyCount => _propertyNames.Count;
 
         /// <inheritdoc />
@@ -111,25 +109,14 @@ namespace ReactiveUI.Validation.Components
             GC.SuppressFinalize(this);
         }
 
-        /// <summary>
-        /// Determine if a property name is actually contained within this.
-        /// </summary>
-        /// <typeparam name="TProp">Any type.</typeparam>
-        /// <param name="property">ViewModel property.</param>
-        /// <param name="exclusively">Indicates if the property to find is unique.</param>
-        /// <returns>Returns true if it contains the property, otherwise false.</returns>
+        /// <inheritdoc/>
         public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
         {
             var propertyName = property.Body.GetMemberInfo().ToString();
             return ContainsPropertyName(propertyName, exclusively);
         }
 
-        /// <summary>
-        /// Determine if a property name is actually contained within this.
-        /// </summary>
-        /// <param name="propertyName">ViewModel property name.</param>
-        /// <param name="exclusively">Indicates if the property to find is unique.</param>
-        /// <returns>Returns true if it contains the property, otherwise false.</returns>
+        /// <inheritdoc/>
         public bool ContainsPropertyName(string propertyName, bool exclusively = false)
         {
             return exclusively
