@@ -60,25 +60,39 @@ namespace ReactiveUI.Validation.Helpers
         /// <inheritdoc />
         public virtual IEnumerable GetErrors(string propertyName)
         {
-            var memberInfoName = GetType()
+            //https://stackoverflow.com/questions/34993261/when-is-inotifydataerrorinfo-geterrors-called-with-null-vs-string-empty
+            return string.IsNullOrEmpty(propertyName) ?
+                SelectValidations()
+                    .SelectMany(validation => validation.Text)
+                    .ToArray() :
+                GetMemberInfoName(propertyName) is string memberInfoName && string.IsNullOrEmpty(memberInfoName) == false ?
+                    SelectValidations()
+                        .Where(validation => validation.ContainsPropertyName(memberInfoName))
+                        .SelectMany(validation => validation.Text)
+                        .ToArray() :
+                    Enumerable.Empty<string>();
+
+            IEnumerable<IPropertyValidationComponent<TViewModel>> SelectValidations() =>
+
+                ValidationContext
+                    .Validations
+                    .OfType<IPropertyValidationComponent<TViewModel>>()
+                    .Where(validation => !validation.IsValid);
+        }
+
+        public string GetMemberInfoName(string propertyName)
+        {
+            if (propertyMemberNameDictionary.ContainsKey(propertyName) == false)
+            {
+                propertyMemberNameDictionary.Add(propertyName, GetMemberInfoName());
+            }
+
+            return propertyMemberNameDictionary[propertyName];
+
+            string GetMemberInfoName() => GetType()
                 .GetMember(propertyName)
                 .FirstOrDefault()?
                 .ToString();
-
-            if (memberInfoName == null)
-            {
-                return Enumerable.Empty<string>();
-            }
-
-            var relatedPropertyValidations = ValidationContext
-                .Validations
-                .OfType<IPropertyValidationComponent<TViewModel>>()
-                .Where(validation => validation.ContainsPropertyName(memberInfoName));
-
-            return relatedPropertyValidations
-                .Where(validation => !validation.IsValid)
-                .SelectMany(validation => validation.Text)
-                .ToList();
         }
     }
 }
