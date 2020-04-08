@@ -24,7 +24,8 @@ namespace ReactiveUI.Validation.Helpers
     public abstract class ReactiveValidationObject<TViewModel> : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
     {
         private readonly ObservableAsPropertyHelper<bool> _hasErrors;
-
+        private readonly Dictionary<string, string> propertyMemberNameDictionary = new Dictionary<string, string>();
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="ReactiveValidationObject{TViewModel}"/> class.
         /// </summary>
@@ -60,7 +61,6 @@ namespace ReactiveUI.Validation.Helpers
         /// <inheritdoc />
         public virtual IEnumerable GetErrors(string propertyName)
         {
-            //https://stackoverflow.com/questions/34993261/when-is-inotifydataerrorinfo-geterrors-called-with-null-vs-string-empty
             return string.IsNullOrEmpty(propertyName) ?
                 SelectValidations()
                     .SelectMany(validation => validation.Text)
