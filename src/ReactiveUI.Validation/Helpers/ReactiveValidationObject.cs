@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Collections.Generic;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
