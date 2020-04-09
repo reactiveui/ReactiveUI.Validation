@@ -6,11 +6,11 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
-using System.Collections.Generic;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
@@ -25,8 +25,8 @@ namespace ReactiveUI.Validation.Helpers
     public abstract class ReactiveValidationObject<TViewModel> : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
     {
         private readonly ObservableAsPropertyHelper<bool> _hasErrors;
-        private readonly Dictionary<string, string> propertyMemberNameDictionary = new Dictionary<string, string>();
-        
+        private readonly Dictionary<string, string> _propertyMemberNameDictionary = new Dictionary<string, string>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ReactiveValidationObject{TViewModel}"/> class.
         /// </summary>
@@ -81,14 +81,14 @@ namespace ReactiveUI.Validation.Helpers
                     .Where(validation => !validation.IsValid);
         }
 
-        public string GetMemberInfoName(string propertyName)
+        private string GetMemberInfoName(string propertyName)
         {
-            if (propertyMemberNameDictionary.ContainsKey(propertyName) == false)
+            if (_propertyMemberNameDictionary.ContainsKey(propertyName) == false)
             {
-                propertyMemberNameDictionary.Add(propertyName, GetMemberInfoName());
+                _propertyMemberNameDictionary.Add(propertyName, GetMemberInfoName());
             }
 
-            return propertyMemberNameDictionary[propertyName];
+            return _propertyMemberNameDictionary[propertyName];
 
             string GetMemberInfoName() => GetType()
                 .GetMember(propertyName)
