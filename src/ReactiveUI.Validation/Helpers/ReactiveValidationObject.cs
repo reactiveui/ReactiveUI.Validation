@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -24,6 +25,7 @@ namespace ReactiveUI.Validation.Helpers
     public abstract class ReactiveValidationObject<TViewModel> : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
     {
         private readonly ObservableAsPropertyHelper<bool> _hasErrors;
+        private readonly Dictionary<string, string> _propertyMemberNameDictionary = new Dictionary<string, string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReactiveValidationObject{TViewModel}"/> class.
@@ -60,25 +62,38 @@ namespace ReactiveUI.Validation.Helpers
         /// <inheritdoc />
         public virtual IEnumerable GetErrors(string propertyName)
         {
-            var memberInfoName = GetType()
+            return string.IsNullOrEmpty(propertyName) ?
+                SelectValidations()
+                    .SelectMany(validation => validation.Text)
+                    .ToArray() :
+                GetMemberInfoName(propertyName) is string memberInfoName && string.IsNullOrEmpty(memberInfoName) == false ?
+                    SelectValidations()
+                        .Where(validation => validation.ContainsPropertyName(memberInfoName))
+                        .SelectMany(validation => validation.Text)
+                        .ToArray() :
+                    Enumerable.Empty<string>();
+
+            IEnumerable<IPropertyValidationComponent<TViewModel>> SelectValidations() =>
+
+                ValidationContext
+                    .Validations
+                    .OfType<IPropertyValidationComponent<TViewModel>>()
+                    .Where(validation => !validation.IsValid);
+        }
+
+        private string GetMemberInfoName(string propertyName)
+        {
+            if (_propertyMemberNameDictionary.ContainsKey(propertyName) == false)
+            {
+                _propertyMemberNameDictionary.Add(propertyName, GetMemberInfoName());
+            }
+
+            return _propertyMemberNameDictionary[propertyName];
+
+            string GetMemberInfoName() => GetType()
                 .GetMember(propertyName)
                 .FirstOrDefault()?
                 .ToString();
-
-            if (memberInfoName == null)
-            {
-                return Enumerable.Empty<string>();
-            }
-
-            var relatedPropertyValidations = ValidationContext
-                .Validations
-                .OfType<IPropertyValidationComponent<TViewModel>>()
-                .Where(validation => validation.ContainsPropertyName(memberInfoName));
-
-            return relatedPropertyValidations
-                .Where(validation => !validation.IsValid)
-                .SelectMany(validation => validation.Text)
-                .ToList();
         }
     }
 }
