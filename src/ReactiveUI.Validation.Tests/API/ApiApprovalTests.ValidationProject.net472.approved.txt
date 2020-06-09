@@ -1,4 +1,4 @@
-[assembly: System.Runtime.Versioning.TargetFrameworkAttribute(".NETFramework,Version=v4.6.1", FrameworkDisplayName=".NET Framework 4.6.1")]
+[assembly: System.Runtime.Versioning.TargetFramework(".NETFramework,Version=v4.6.1", FrameworkDisplayName=".NET Framework 4.6.1")]
 namespace ReactiveUI.Validation.Abstractions
 {
     public interface IValidatableViewModel
@@ -11,8 +11,8 @@ namespace ReactiveUI.Validation.Collections
     public class ValidationText : System.Collections.Generic.IEnumerable<string>, System.Collections.IEnumerable
     {
         public ValidationText() { }
-        public ValidationText(string text) { }
         public ValidationText(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Collections.ValidationText> validationTexts) { }
+        public ValidationText(string text) { }
         public int Count { get; }
         public string this[int index] { get; }
         public void Add(string text) { }
@@ -36,8 +36,8 @@ namespace ReactiveUI.Validation.Components.Abstractions
     public interface IValidatesProperties<TViewModel>
     {
         int PropertyCount { get; }
-        bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> propertyExpression, bool exclusively = False);
-        bool ContainsPropertyName(string propertyName, bool exclusively = False);
+        bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> propertyExpression, bool exclusively = false);
+        bool ContainsPropertyName(string propertyName, bool exclusively = false);
     }
     public interface IValidationComponent
     {
@@ -56,43 +56,43 @@ namespace ReactiveUI.Validation.Components
         public ReactiveUI.Validation.Collections.ValidationText Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.ValidationState> ValidationStatusChange { get; }
         protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
-        public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = False) { }
-        public bool ContainsPropertyName(string propertyName, bool exclusively = False) { }
+        public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = false) { }
+        public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
         protected abstract System.IObservable<ReactiveUI.Validation.States.ValidationState> GetValidationChangeObservable();
     }
     public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel>
     {
-        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Func<TViewModelProperty, bool> isValidFunc, string message) { }
         public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Func<TViewModelProperty, bool> isValidFunc, System.Func<TViewModelProperty, string> message) { }
         public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Func<TViewModelProperty, bool> isValidFunc, System.Func<TViewModelProperty, bool, string> messageFunc) { }
+        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Func<TViewModelProperty, bool> isValidFunc, string message) { }
         protected override void Dispose(bool disposing) { }
         protected override System.IObservable<ReactiveUI.Validation.States.ValidationState> GetValidationChangeObservable() { }
     }
     public abstract class ModelObservableValidationBase<TViewModel> : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, System.IDisposable
     {
-        public ModelObservableValidationBase(TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, string> messageFunc) { }
         protected ModelObservableValidationBase(TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, ReactiveUI.Validation.Collections.ValidationText> messageFunc) { }
+        public ModelObservableValidationBase(TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, string> messageFunc) { }
         public bool IsValid { get; }
         public int PropertyCount { get; }
         public ReactiveUI.Validation.Collections.ValidationText Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.ValidationState> ValidationStatusChange { get; }
         protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
-        public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = False) { }
-        public bool ContainsPropertyName(string propertyName, bool exclusively = False) { }
+        public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = false) { }
+        public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
     }
     public class ModelObservableValidation<TViewModel> : ReactiveUI.Validation.Components.ModelObservableValidationBase<TViewModel>
     {
-        public ModelObservableValidation(TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, string> messageFunc) { }
         public ModelObservableValidation(TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, ReactiveUI.Validation.Collections.ValidationText> messageFunc) { }
+        public ModelObservableValidation(TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, string> messageFunc) { }
     }
     public class ModelObservableValidation<TViewModel, TViewModelProp> : ReactiveUI.Validation.Components.ModelObservableValidationBase<TViewModel>
     {
-        public ModelObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, string> messageFunc) { }
         public ModelObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, ReactiveUI.Validation.Collections.ValidationText> messageFunc) { }
+        public ModelObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, string> messageFunc) { }
     }
 }
 namespace ReactiveUI.Validation.Contexts
@@ -117,48 +117,48 @@ namespace ReactiveUI.Validation.Exceptions
     {
         public MultipleValidationNotSupportedException() { }
         public MultipleValidationNotSupportedException(string propertyName) { }
-        public MultipleValidationNotSupportedException(string message, System.Exception innerException) { }
         public MultipleValidationNotSupportedException(params string[] propertyNames) { }
         protected MultipleValidationNotSupportedException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context) { }
+        public MultipleValidationNotSupportedException(string message, System.Exception innerException) { }
     }
 }
 namespace ReactiveUI.Validation.Extensions
 {
-    public class static SupportsValidationExtensions
+    public static class SupportsValidationExtensions
     {
         public static System.IObservable<bool> IsValid<TViewModel>(this TViewModel viewModel)
-            where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModelProp, bool> isPropertyValid, string message)
-            where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModelProp, bool> isPropertyValid, System.Func<TViewModelProp, string> message)
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel>(this TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> viewModelObservableProperty, System.Func<TViewModel, bool, string> messageFunc)
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModel, System.IObservable<bool>> viewModelObservableProperty, System.Func<TViewModel, bool, string> messageFunc)
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModelProp, bool> isPropertyValid, System.Func<TViewModelProp, string> message)
+            where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModelProp, bool> isPropertyValid, string message)
+            where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
     }
-    public class static ValidationContextExtensions
+    public static class ValidationContextExtensions
     {
-        public static ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel, TViewModelProperty> ResolveFor<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = True) { }
+        public static ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel, TViewModelProperty> ResolveFor<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
         public static ReactiveUI.Validation.TemplateGenerators.BasePropertyValidation<TViewModel, TProperty1, TProperty2> ResolveFor<TViewModel, TProperty1, TProperty2>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty2) { }
         public static ReactiveUI.Validation.TemplateGenerators.BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3> ResolveFor<TViewModel, TProperty1, TProperty2, TProperty3>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty3) { }
     }
-    public class static ValidationContextMultipleExtensions
+    public static class ValidationContextMultipleExtensions
     {
-        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel, TViewModelProperty>> ResolveForMultiple<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = True) { }
+        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel, TViewModelProperty>> ResolveForMultiple<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
         public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.TemplateGenerators.BasePropertyValidation<TViewModel, TProperty1, TProperty2>> ResolveForMultiple<TViewModel, TProperty1, TProperty2>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty2) { }
         public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.TemplateGenerators.BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>> ResolveForMultiple<TViewModel, TProperty1, TProperty2, TProperty3>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty3) { }
     }
-    public class static ViewForExtensions
+    public static class ViewForExtensions
     {
         public static System.IDisposable BindToDirect<TTarget, TValue>(System.IObservable<TValue> @this, TTarget target, System.Linq.Expressions.Expression viewExpression) { }
-        public static System.IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
-            where TView : ReactiveUI.IViewFor<TViewModel>
-            where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, ReactiveUI.Validation.Helpers.ValidationHelper>> viewModelHelperProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
+            where TView : ReactiveUI.IViewFor<TViewModel>
+            where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        public static System.IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static System.IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
@@ -206,8 +206,8 @@ namespace ReactiveUI.Validation.States
 {
     public sealed class ValidationState
     {
-        public ValidationState(bool isValid, string text, ReactiveUI.Validation.Components.Abstractions.IValidationComponent component) { }
         public ValidationState(bool isValid, ReactiveUI.Validation.Collections.ValidationText text, ReactiveUI.Validation.Components.Abstractions.IValidationComponent component) { }
+        public ValidationState(bool isValid, string text, ReactiveUI.Validation.Components.Abstractions.IValidationComponent component) { }
         public ReactiveUI.Validation.Components.Abstractions.IValidationComponent Component { get; }
         public bool IsValid { get; }
         public ReactiveUI.Validation.Collections.ValidationText Text { get; }
@@ -218,40 +218,40 @@ namespace ReactiveUI.Validation.TemplateGenerators
     public sealed class BasePropertyValidation<TViewModel, TProperty1, TProperty2> : ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel>
     {
         public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Func<System.ValueTuple<TProperty1, TProperty2>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2>, string> message) { }
-        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Func<System.ValueTuple<TProperty1, TProperty2>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2>, bool, string> messageFunc) { }
         public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Func<System.ValueTuple<TProperty1, TProperty2>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2>, bool, ReactiveUI.Validation.Collections.ValidationText> message) { }
+        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Func<System.ValueTuple<TProperty1, TProperty2>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2>, bool, string> messageFunc) { }
         protected override void Dispose(bool disposing) { }
         protected override System.IObservable<ReactiveUI.Validation.States.ValidationState> GetValidationChangeObservable() { }
     }
     public sealed class BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3> : ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel>
     {
         public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3>, string> message) { }
-        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3>, bool, string> messageFunc) { }
         public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3>, bool, ReactiveUI.Validation.Collections.ValidationText> message) { }
+        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3>, bool, string> messageFunc) { }
         protected override void Dispose(bool disposing) { }
         protected override System.IObservable<ReactiveUI.Validation.States.ValidationState> GetValidationChangeObservable() { }
     }
     public sealed class BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3, TProperty4> : ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel>
     {
         public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty4>> property4, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, string> message) { }
-        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty4>> property4, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool, string> messageFunc) { }
         public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty4>> property4, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool, ReactiveUI.Validation.Collections.ValidationText> message) { }
+        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty4>> property4, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4>, bool, string> messageFunc) { }
         protected override void Dispose(bool disposing) { }
         protected override System.IObservable<ReactiveUI.Validation.States.ValidationState> GetValidationChangeObservable() { }
     }
     public sealed class BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5> : ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel>
     {
         public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty4>> property4, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty5>> property5, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, string> message) { }
-        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty4>> property4, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty5>> property5, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool, string> messageFunc) { }
         public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty4>> property4, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty5>> property5, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool, ReactiveUI.Validation.Collections.ValidationText> message) { }
+        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty4>> property4, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty5>> property5, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5>, bool, string> messageFunc) { }
         protected override void Dispose(bool disposing) { }
         protected override System.IObservable<ReactiveUI.Validation.States.ValidationState> GetValidationChangeObservable() { }
     }
     public sealed class BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6> : ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel>
     {
         public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty4>> property4, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty5>> property5, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty6>> property6, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, string> message) { }
-        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty4>> property4, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty5>> property5, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty6>> property6, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool, string> messageFunc) { }
         public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty4>> property4, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty5>> property5, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty6>> property6, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool, ReactiveUI.Validation.Collections.ValidationText> message) { }
+        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> property1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> property2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> property3, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty4>> property4, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty5>> property5, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty6>> property6, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool> isValidFunc, System.Func<System.ValueTuple<TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6>, bool, string> messageFunc) { }
         protected override void Dispose(bool disposing) { }
         protected override System.IObservable<ReactiveUI.Validation.States.ValidationState> GetValidationChangeObservable() { }
     }
@@ -265,16 +265,16 @@ namespace ReactiveUI.Validation.ValidationBindings
     public sealed class ValidationBinding : ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding, System.IDisposable
     {
         public void Dispose() { }
-        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string> formatter = null, bool strict = True)
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Action<ReactiveUI.Validation.States.ValidationState, TOut> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter = null, bool strict = true)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Action<ReactiveUI.Validation.States.ValidationState, TOut> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter = null, bool strict = True)
-            where TView : ReactiveUI.IViewFor<TViewModel>
-            where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, ReactiveUI.Validation.Helpers.ValidationHelper>> viewModelHelperProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string> formatter = null)
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string> formatter = null, bool strict = true)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForValidationHelperProperty<TView, TViewModel, TOut>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, ReactiveUI.Validation.Helpers.ValidationHelper>> viewModelHelperProperty, System.Action<ReactiveUI.Validation.States.ValidationState, TOut> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter = null)
+            where TView : ReactiveUI.IViewFor<TViewModel>
+            where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, ReactiveUI.Validation.Helpers.ValidationHelper>> viewModelHelperProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string> formatter = null)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForViewModel<TView, TViewModel, TOut>(TView view, System.Action<TOut> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter)
@@ -287,10 +287,10 @@ namespace ReactiveUI.Validation.ValidationBindings
     public sealed class ValidationBindingEx : ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding, System.IDisposable
     {
         public void Dispose() { }
-        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string> formatter = null, bool strict = True)
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Action<System.Collections.Generic.IList<ReactiveUI.Validation.States.ValidationState>, System.Collections.Generic.IList<TOut>> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter = null, bool strict = true)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Action<System.Collections.Generic.IList<ReactiveUI.Validation.States.ValidationState>, System.Collections.Generic.IList<TOut>> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter = null, bool strict = True)
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string> formatter = null, bool strict = true)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
     }

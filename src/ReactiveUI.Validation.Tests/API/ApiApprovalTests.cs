@@ -56,7 +56,8 @@ namespace ReactiveUI.Validation.Tests.API
 
             var approvedPublicApi = File.ReadAllText(approvedFileName);
 
-            var receivedPublicApi = Filter(ApiGenerator.GeneratePublicApi(assembly));
+            var generatorOptions = new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "ReactiveUI.Validation" } };
+            var receivedPublicApi = Filter(ApiGenerator.GeneratePublicApi(assembly, generatorOptions));
 
             if (!string.Equals(receivedPublicApi, approvedPublicApi, StringComparison.InvariantCulture))
             {
