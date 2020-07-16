@@ -42,6 +42,7 @@ namespace ReactiveUI.Validation.Contexts
         private readonly ObservableAsPropertyHelper<IReadOnlyCollection<IValidationComponent>> _validations;
         private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
         private readonly ObservableAsPropertyHelper<bool> _isValid;
+        private readonly IScheduler _scheduler;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
         private bool _isActive;
@@ -52,7 +53,7 @@ namespace ReactiveUI.Validation.Contexts
         /// <param name="scheduler">Optional scheduler to use for the properties. Uses the main thread scheduler by default.</param>
         public ValidationContext(IScheduler scheduler = null)
         {
-            scheduler = scheduler ?? RxApp.MainThreadScheduler;
+            _scheduler = scheduler ?? RxApp.MainThreadScheduler;
 
             IObservable<IReadOnlyCollection<IValidationComponent>> validationChangedObservable = _validationSource
                 .Connect()
@@ -60,18 +61,18 @@ namespace ReactiveUI.Validation.Contexts
                 .StartWithEmpty();
 
             _validations = validationChangedObservable
-                .ToProperty(this, x => x.Validations, scheduler: scheduler)
+                .ToProperty(this, x => x.Validations, scheduler: _scheduler)
                 .DisposeWith(_disposables);
 
             _isValid = _validSubject
                 .StartWith(true)
-                .ToProperty(this, m => m.IsValid, scheduler: scheduler)
+                .ToProperty(this, m => m.IsValid, scheduler: _scheduler)
                 .DisposeWith(_disposables);
 
             _validationText = _validSubject
                 .StartWith(true)
                 .Select(_ => BuildText())
-                .ToProperty(this, m => m.Text, new ValidationText(), scheduler: scheduler)
+                .ToProperty(this, m => m.Text, new ValidationText(), scheduler: _scheduler)
                 .DisposeWith(_disposables);
 
             _validSubject
@@ -100,7 +101,7 @@ namespace ReactiveUI.Validation.Contexts
             get
             {
                 Activate();
-                return _validSubject.AsObservable();
+                return _validSubject.AsObservable().ObserveOn(_scheduler);
             }
         }
 
