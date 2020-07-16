@@ -52,11 +52,7 @@ namespace ReactiveUI.Validation.Contexts
         /// <param name="scheduler">Optional scheduler to use for the properties. Uses the main thread scheduler by default.</param>
         public ValidationContext(IScheduler scheduler = null)
         {
-#if NET_461 || NETSTANDARD
-            _scheduler = scheduler ?? RxApp.TaskpoolScheduler;
-#else
             _scheduler = scheduler ?? RxApp.MainThreadScheduler;
-#endif
             var validationChangedObservable = _validationSource.Connect();
 
             _isValid = _validSubject
