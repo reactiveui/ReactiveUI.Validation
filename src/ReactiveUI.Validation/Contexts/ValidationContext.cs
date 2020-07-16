@@ -54,9 +54,9 @@ namespace ReactiveUI.Validation.Contexts
         public ValidationContext(IScheduler scheduler = null)
         {
 #if NET_461 || NETSTANDARD
-            scheduler = scheduler ?? RxApp.TaskpoolScheduler;
+            _scheduler = scheduler ?? RxApp.TaskpoolScheduler;
 #else
-            scheduler = scheduler ?? RxApp.MainThreadScheduler;
+            _scheduler = scheduler ?? RxApp.MainThreadScheduler;
 #endif
             var validationChangedObservable = _validationSource.Connect();
 
