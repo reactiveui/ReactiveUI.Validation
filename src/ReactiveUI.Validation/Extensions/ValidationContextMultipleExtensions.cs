@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using ReactiveUI.Validation.Components;
+using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.TemplateGenerators;
 
@@ -28,14 +29,14 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
         /// <returns>Returns a <see cref="BasePropertyValidation{TViewModel}"/> object.</returns>
-        public static IEnumerable<BasePropertyValidation<TViewModel, TViewModelProperty>> ResolveForMultiple<TViewModel,
+        public static IEnumerable<IPropertyValidationComponent<TViewModel>> ResolveForMultiple<TViewModel,
             TViewModelProperty>(
             this ValidationContext context,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             bool strict = true)
         {
             var validations = context.Validations
-                .OfType<BasePropertyValidation<TViewModel, TViewModelProperty>>()
+                .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty, strict));
 
             return validations;
@@ -51,16 +52,16 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty1">First ViewModel property.</param>
         /// <param name="viewModelProperty2">Second ViewModel property.</param>
         /// <returns>Returns a <see cref="BasePropertyValidation{TViewModel}"/> object.</returns>
-        public static IEnumerable<BasePropertyValidation<TViewModel, TProperty1, TProperty2>> ResolveForMultiple<
+        public static IEnumerable<IPropertyValidationComponent<TViewModel>> ResolveForMultiple<
             TViewModel,
             TProperty1, TProperty2>(
             this ValidationContext context,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
-            Expression<Func<TViewModel, TProperty1>> viewModelProperty2)
+            Expression<Func<TViewModel, TProperty2>> viewModelProperty2)
         {
             var validations = context
                 .Validations
-                .OfType<BasePropertyValidation<TViewModel, TProperty1, TProperty2>>()
+                .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
                                                                    && v.PropertyCount == 2);
 
@@ -79,17 +80,17 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty2">Second ViewModel property.</param>
         /// <param name="viewModelProperty3">Third ViewModel property.</param>
         /// <returns>Returns a <see cref="BasePropertyValidation{TViewModel}"/> object.</returns>
-        public static IEnumerable<BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>>
+        public static IEnumerable<IPropertyValidationComponent<TViewModel>>
             ResolveForMultiple<
                 TViewModel, TProperty1, TProperty2, TProperty3>(
                 this ValidationContext context,
                 Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
-                Expression<Func<TViewModel, TProperty1>> viewModelProperty2,
-                Expression<Func<TViewModel, TProperty1>> viewModelProperty3)
+                Expression<Func<TViewModel, TProperty2>> viewModelProperty2,
+                Expression<Func<TViewModel, TProperty3>> viewModelProperty3)
         {
             var validations = context
                 .Validations
-                .OfType<BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>>()
+                .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
                                                                    && v.ContainsProperty(viewModelProperty3)
                                                                    && v.PropertyCount == 3);

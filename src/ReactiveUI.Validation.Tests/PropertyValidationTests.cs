@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using DynamicData.Alias;
 using ReactiveUI.Validation.Comparators;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Extensions;
@@ -170,6 +171,32 @@ namespace ReactiveUI.Validation.Tests
             Assert.NotEmpty(view.SourceError);
             Assert.Equal("Source text", view.SourceError);
             Assert.Equal("Destination text", view.DestinationError);
+        }
+
+        /// <summary>
+        /// Property validations backed by ModelObservableValidationBase should 
+        /// be bound to view as well as base property validations are. See:
+        /// https://github.com/reactiveui/ReactiveUI.Validation/issues/61
+        /// </summary>
+        [Fact]
+        public void ComplexValidationRulesShouldBeBoundToView()
+        {
+            const string errorMessage = "Both inputs should be the same";
+            var view = new TestView(new TestViewModel
+            {
+                Name = "Josuke Hikashikata", 
+                Name2 = "Jotaro Kujo"
+            });
+
+            view.ViewModel.ValidationRule(
+                m => m.Name,
+                m => m.WhenAnyValue(x => x.Name, x => x.Name2, (name, name2) => name == name2),
+                (vm, isValid) => isValid ? string.Empty : errorMessage);
+            
+            view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
+
+            Assert.NotEmpty(view.NameErrorLabel);
+            Assert.Equal(errorMessage, view.NameErrorLabel);
         }
 
         private static TestViewModel CreateDefaultValidModel()
