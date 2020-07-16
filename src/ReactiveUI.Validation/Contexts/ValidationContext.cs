@@ -54,13 +54,10 @@ namespace ReactiveUI.Validation.Contexts
         public ValidationContext(IScheduler scheduler = null)
         {
             _scheduler = scheduler ?? RxApp.MainThreadScheduler;
-
-            IObservable<IReadOnlyCollection<IValidationComponent>> validationChangedObservable = _validationSource
-                .Connect()
-                .ToCollection()
-                .StartWithEmpty();
+            var validationChangedObservable = _validationSource.Connect();
 
             _validations = validationChangedObservable
+                .ToCollection()
                 .ToProperty(this, x => x.Validations, scheduler: _scheduler)
                 .DisposeWith(_disposables);
 
@@ -82,6 +79,8 @@ namespace ReactiveUI.Validation.Contexts
                 .DisposeWith(_disposables);
 
             _validationConnectable = validationChangedObservable
+                .ToCollection()
+                .StartWithEmpty()
                 .Select(validations =>
                     validations
                         .Select(v => v.ValidationStatusChange)

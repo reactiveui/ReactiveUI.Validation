@@ -71,7 +71,6 @@ namespace ReactiveUI.Validation.Helpers
                             .ToArray();
 
             IEnumerable<IPropertyValidationComponent<TViewModel>> SelectValidations() =>
-
                 ValidationContext
                     .Validations
                     .OfType<IPropertyValidationComponent<TViewModel>>()

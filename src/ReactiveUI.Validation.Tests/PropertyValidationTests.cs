@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using DynamicData.Alias;
 using ReactiveUI.Validation.Comparators;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Extensions;
