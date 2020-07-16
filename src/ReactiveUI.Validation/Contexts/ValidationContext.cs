@@ -39,7 +39,6 @@ namespace ReactiveUI.Validation.Contexts
         private readonly ReplaySubject<bool> _validSubject = new ReplaySubject<bool>(1);
 
         private readonly IConnectableObservable<bool> _validationConnectable;
-        private readonly ObservableAsPropertyHelper<IReadOnlyCollection<IValidationComponent>> _validations;
         private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
         private readonly ObservableAsPropertyHelper<bool> _isValid;
         private readonly IScheduler _scheduler;
@@ -59,11 +58,6 @@ namespace ReactiveUI.Validation.Contexts
             _scheduler = scheduler ?? RxApp.MainThreadScheduler;
 #endif
             var validationChangedObservable = _validationSource.Connect();
-
-            _validations = validationChangedObservable
-                .ToCollection()
-                .ToProperty(this, x => x.Validations, scheduler: _scheduler)
-                .DisposeWith(_disposables);
 
             _isValid = _validSubject
                 .StartWith(true)
@@ -111,7 +105,7 @@ namespace ReactiveUI.Validation.Contexts
         /// <summary>
         /// Gets get the list of validations.
         /// </summary>
-        public IReadOnlyCollection<IValidationComponent> Validations => _validations.Value;
+        public IReadOnlyCollection<IValidationComponent> Validations => _validationSource.Items.ToList();
 
         /// <inheritdoc/>
         [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "Reviewed.")]
