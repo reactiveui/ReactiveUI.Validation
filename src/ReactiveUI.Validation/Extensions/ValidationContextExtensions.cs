@@ -44,7 +44,7 @@ namespace ReactiveUI.Validation.Extensions
 
             if (validations.Count > 1)
             {
-                throw new MultipleValidationNotSupportedException(viewModelProperty.Body.GetMemberInfo().Name);
+                throw new MultipleValidationNotSupportedException(viewModelProperty.Body.GetPropertyPath());
             }
 
             return validations[0];
@@ -81,8 +81,8 @@ namespace ReactiveUI.Validation.Extensions
             if (validations.Count > 1)
             {
                 throw new MultipleValidationNotSupportedException(
-                    viewModelProperty1.Body.GetMemberInfo().Name,
-                    viewModelProperty2.Body.GetMemberInfo().Name);
+                    viewModelProperty1.Body.GetPropertyPath(),
+                    viewModelProperty2.Body.GetPropertyPath());
             }
 
             return validations[0];
@@ -123,9 +123,9 @@ namespace ReactiveUI.Validation.Extensions
             if (validations.Count > 1)
             {
                 throw new MultipleValidationNotSupportedException(
-                    viewModelProperty1.Body.GetMemberInfo().Name,
-                    viewModelProperty2.Body.GetMemberInfo().Name,
-                    viewModelProperty3.Body.GetMemberInfo().Name);
+                    viewModelProperty1.Body.GetPropertyPath(),
+                    viewModelProperty2.Body.GetPropertyPath(),
+                    viewModelProperty3.Body.GetPropertyPath());
             }
 
             return validations[0];

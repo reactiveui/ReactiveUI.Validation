@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ReactiveUI.Validation.Comparators;
 using ReactiveUI.Validation.Components;
+using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.Tests.Models;
 using Xunit;
@@ -140,6 +141,35 @@ namespace ReactiveUI.Validation.Tests
             model.Name = testRoot;
 
             Assert.Equal("The value 'bon' is incorrect", validation.Text.ToSingleLine());
+        }
+
+        /// <summary>
+        /// Using 2 validation rules ending with the same property name should not
+        /// result in both properties having all the errors of both properties. See:
+        /// https://github.com/reactiveui/ReactiveUI.Validation/issues/60
+        /// </summary>
+        [Fact]
+        public void ErrorsWithTheSameLastPropertyShouldNotShareErrors()
+        {
+            var model = new SourceDestinationViewModel();
+            var view = new SourceDestinationView(model);
+
+            model.ValidationRule(
+                viewModel => viewModel.Source.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                "Source text");
+
+            model.ValidationRule(
+                viewModel => viewModel.Destination.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                "Destination text");
+
+            view.BindValidation(view.ViewModel, x => x.Source.Name, x => x.SourceError);
+            view.BindValidation(view.ViewModel, x => x.Destination.Name, x => x.DestinationError);
+            
+            Assert.NotEmpty(view.SourceError);
+            Assert.Equal("Source text", view.SourceError);
+            Assert.Equal("Destination text", view.DestinationError);
         }
 
         private static TestViewModel CreateDefaultValidModel()

@@ -14,6 +14,7 @@ using System.Reactive.Subjects;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Comparators;
 using ReactiveUI.Validation.Components.Abstractions;
+using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.States;
 
 namespace ReactiveUI.Validation.Components
@@ -112,7 +113,7 @@ namespace ReactiveUI.Validation.Components
         /// <inheritdoc/>
         public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
         {
-            var propertyName = property.Body.GetMemberInfo().ToString();
+            var propertyName = property.Body.GetPropertyPath();
             return ContainsPropertyName(propertyName, exclusively);
         }
 
@@ -131,7 +132,7 @@ namespace ReactiveUI.Validation.Components
         /// <param name="property">ViewModel property.</param>
         protected void AddProperty<TProp>(Expression<Func<TViewModel, TProp>> property)
         {
-            var propertyName = property.Body.GetMemberInfo().ToString();
+            var propertyName = property.Body.GetPropertyPath();
             _propertyNames.Add(propertyName);
         }
 
