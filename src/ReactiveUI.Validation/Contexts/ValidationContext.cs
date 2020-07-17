@@ -38,6 +38,7 @@ namespace ReactiveUI.Validation.Contexts
         private readonly ReplaySubject<ValidationState> _validationStatusChange = new ReplaySubject<ValidationState>(1);
         private readonly ReplaySubject<bool> _validSubject = new ReplaySubject<bool>(1);
 
+        private readonly ReadOnlyObservableCollection<IValidationComponent> _validations;
         private readonly IConnectableObservable<bool> _validationConnectable;
         private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
         private readonly ObservableAsPropertyHelper<bool> _isValid;
@@ -54,6 +55,12 @@ namespace ReactiveUI.Validation.Contexts
         {
             _scheduler = scheduler ?? RxApp.MainThreadScheduler;
             var validationChangedObservable = _validationSource.Connect();
+
+            validationChangedObservable
+                .ObserveOn(_scheduler)
+                .Bind(out _validations)
+                .Subscribe()
+                .DisposeWith(_disposables);
 
             _isValid = _validSubject
                 .StartWith(true)
@@ -101,7 +108,7 @@ namespace ReactiveUI.Validation.Contexts
         /// <summary>
         /// Gets get the list of validations.
         /// </summary>
-        public IReadOnlyCollection<IValidationComponent> Validations => _validationSource.Items.ToList();
+        public ReadOnlyObservableCollection<IValidationComponent> Validations => _validations;
 
         /// <inheritdoc/>
         [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "Reviewed.")]
@@ -162,6 +169,11 @@ namespace ReactiveUI.Validation.Contexts
             // Suppress finalization.
             GC.SuppressFinalize(this);
         }
+
+        /// <summary>
+        /// Immediately returns all available validation items.
+        /// </summary>
+        internal IEnumerable<IValidationComponent> GetValidationItems() => _validationSource.Items;
 
         /// <summary>
         /// Disposes of the managed resources.

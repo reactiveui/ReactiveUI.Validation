@@ -38,7 +38,8 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             bool strict = true)
         {
-            var validations = context.Validations
+            var validations = context
+                .GetValidationItems()
                 .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty, strict))
                 .ToList();
@@ -72,7 +73,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TProperty2>> viewModelProperty2)
         {
             var validations = context
-                .Validations
+                .GetValidationItems()
                 .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v =>
                     v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
@@ -113,7 +114,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TProperty3>> viewModelProperty3)
         {
             var validations = context
-                .Validations
+                .GetValidationItems()
                 .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v =>
                     v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)

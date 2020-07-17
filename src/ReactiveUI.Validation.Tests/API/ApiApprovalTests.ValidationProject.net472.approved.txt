@@ -104,7 +104,7 @@ namespace ReactiveUI.Validation.Contexts
         public ReactiveUI.Validation.Collections.ValidationText Text { get; }
         public System.IObservable<bool> Valid { get; }
         public System.IObservable<ReactiveUI.Validation.States.ValidationState> ValidationStatusChange { get; }
-        public System.Collections.Generic.IReadOnlyCollection<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> Validations { get; }
+        public System.Collections.ObjectModel.ReadOnlyObservableCollection<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> Validations { get; }
         public void Add(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation) { }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }

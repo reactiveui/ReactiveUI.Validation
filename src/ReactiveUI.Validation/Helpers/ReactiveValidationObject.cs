@@ -72,7 +72,7 @@ namespace ReactiveUI.Validation.Helpers
 
             IEnumerable<IPropertyValidationComponent<TViewModel>> SelectValidations() =>
                 ValidationContext
-                    .Validations
+                    .GetValidationItems()
                     .OfType<IPropertyValidationComponent<TViewModel>>()
                     .Where(validation => !validation.IsValid);
         }
