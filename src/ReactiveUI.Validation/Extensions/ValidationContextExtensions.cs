@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using System.Linq.Expressions;
 using ReactiveUI.Validation.Components;
+using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Exceptions;
 using ReactiveUI.Validation.TemplateGenerators;
@@ -32,19 +33,20 @@ namespace ReactiveUI.Validation.Extensions
         /// <exception cref="MultipleValidationNotSupportedException">
         /// Thrown if the ViewModel property has more than one validation associated.
         /// </exception>
-        public static BasePropertyValidation<TViewModel, TViewModelProperty> ResolveFor<TViewModel, TViewModelProperty>(
+        public static IPropertyValidationComponent<TViewModel> ResolveFor<TViewModel, TViewModelProperty>(
             this ValidationContext context,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             bool strict = true)
         {
-            var validations = context.Validations
-                .OfType<BasePropertyValidation<TViewModel, TViewModelProperty>>()
+            var validations = context
+                .GetValidationItems()
+                .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty, strict))
                 .ToList();
 
             if (validations.Count > 1)
             {
-                throw new MultipleValidationNotSupportedException(viewModelProperty.Body.GetMemberInfo().Name);
+                throw new MultipleValidationNotSupportedException(viewModelProperty.Body.GetPropertyPath());
             }
 
             return validations[0];
@@ -64,15 +66,15 @@ namespace ReactiveUI.Validation.Extensions
         /// <exception cref="MultipleValidationNotSupportedException">
         /// Thrown if the ViewModel property has more than one validation associated.
         /// </exception>
-        public static BasePropertyValidation<TViewModel, TProperty1, TProperty2> ResolveFor<TViewModel, TProperty1,
+        public static IPropertyValidationComponent<TViewModel> ResolveFor<TViewModel, TProperty1,
             TProperty2>(
             this ValidationContext context,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
-            Expression<Func<TViewModel, TProperty1>> viewModelProperty2)
+            Expression<Func<TViewModel, TProperty2>> viewModelProperty2)
         {
             var validations = context
-                .Validations
-                .OfType<BasePropertyValidation<TViewModel, TProperty1, TProperty2>>()
+                .GetValidationItems()
+                .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v =>
                     v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
                     && v.PropertyCount == 2)
@@ -81,8 +83,8 @@ namespace ReactiveUI.Validation.Extensions
             if (validations.Count > 1)
             {
                 throw new MultipleValidationNotSupportedException(
-                    viewModelProperty1.Body.GetMemberInfo().Name,
-                    viewModelProperty2.Body.GetMemberInfo().Name);
+                    viewModelProperty1.Body.GetPropertyPath(),
+                    viewModelProperty2.Body.GetPropertyPath());
             }
 
             return validations[0];
@@ -104,16 +106,16 @@ namespace ReactiveUI.Validation.Extensions
         /// <exception cref="MultipleValidationNotSupportedException">
         /// Thrown if the ViewModel property has more than one validation associated.
         /// </exception>
-        public static BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3> ResolveFor<TViewModel,
+        public static IPropertyValidationComponent<TViewModel> ResolveFor<TViewModel,
             TProperty1, TProperty2, TProperty3>(
             this ValidationContext context,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
-            Expression<Func<TViewModel, TProperty1>> viewModelProperty2,
-            Expression<Func<TViewModel, TProperty1>> viewModelProperty3)
+            Expression<Func<TViewModel, TProperty2>> viewModelProperty2,
+            Expression<Func<TViewModel, TProperty3>> viewModelProperty3)
         {
             var validations = context
-                .Validations
-                .OfType<BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>>()
+                .GetValidationItems()
+                .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v =>
                     v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
                                                            && v.ContainsProperty(viewModelProperty3)
@@ -123,9 +125,9 @@ namespace ReactiveUI.Validation.Extensions
             if (validations.Count > 1)
             {
                 throw new MultipleValidationNotSupportedException(
-                    viewModelProperty1.Body.GetMemberInfo().Name,
-                    viewModelProperty2.Body.GetMemberInfo().Name,
-                    viewModelProperty3.Body.GetMemberInfo().Name);
+                    viewModelProperty1.Body.GetPropertyPath(),
+                    viewModelProperty2.Body.GetPropertyPath(),
+                    viewModelProperty3.Body.GetPropertyPath());
             }
 
             return validations[0];

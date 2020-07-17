@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using ReactiveUI.Validation.Comparators;
 using ReactiveUI.Validation.Components;
+using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.Tests.Models;
 using Xunit;
@@ -140,6 +141,61 @@ namespace ReactiveUI.Validation.Tests
             model.Name = testRoot;
 
             Assert.Equal("The value 'bon' is incorrect", validation.Text.ToSingleLine());
+        }
+
+        /// <summary>
+        /// Using 2 validation rules ending with the same property name should not
+        /// result in both properties having all the errors of both properties. See:
+        /// https://github.com/reactiveui/ReactiveUI.Validation/issues/60
+        /// </summary>
+        [Fact]
+        public void ErrorsWithTheSameLastPropertyShouldNotShareErrors()
+        {
+            var model = new SourceDestinationViewModel();
+            var view = new SourceDestinationView(model);
+
+            model.ValidationRule(
+                viewModel => viewModel.Source.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                "Source text");
+
+            model.ValidationRule(
+                viewModel => viewModel.Destination.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                "Destination text");
+
+            view.BindValidation(view.ViewModel, x => x.Source.Name, x => x.SourceError);
+            view.BindValidation(view.ViewModel, x => x.Destination.Name, x => x.DestinationError);
+            
+            Assert.NotEmpty(view.SourceError);
+            Assert.Equal("Source text", view.SourceError);
+            Assert.Equal("Destination text", view.DestinationError);
+        }
+
+        /// <summary>
+        /// Property validations backed by ModelObservableValidationBase should 
+        /// be bound to view as well as base property validations are. See:
+        /// https://github.com/reactiveui/ReactiveUI.Validation/issues/61
+        /// </summary>
+        [Fact]
+        public void ComplexValidationRulesShouldBeBoundToView()
+        {
+            const string errorMessage = "Both inputs should be the same";
+            var view = new TestView(new TestViewModel
+            {
+                Name = "Josuke Hikashikata", 
+                Name2 = "Jotaro Kujo"
+            });
+
+            view.ViewModel.ValidationRule(
+                m => m.Name,
+                m => m.WhenAnyValue(x => x.Name, x => x.Name2, (name, name2) => name == name2),
+                (vm, isValid) => isValid ? string.Empty : errorMessage);
+            
+            view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
+
+            Assert.NotEmpty(view.NameErrorLabel);
+            Assert.Equal(errorMessage, view.NameErrorLabel);
         }
 
         private static TestViewModel CreateDefaultValidModel()

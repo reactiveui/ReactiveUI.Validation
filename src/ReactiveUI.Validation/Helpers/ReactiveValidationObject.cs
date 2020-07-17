@@ -25,7 +25,6 @@ namespace ReactiveUI.Validation.Helpers
     public abstract class ReactiveValidationObject<TViewModel> : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
     {
         private readonly ObservableAsPropertyHelper<bool> _hasErrors;
-        private readonly Dictionary<string, string> _propertyMemberNameDictionary = new Dictionary<string, string>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReactiveValidationObject{TViewModel}"/> class.
@@ -66,34 +65,16 @@ namespace ReactiveUI.Validation.Helpers
                 SelectValidations()
                     .SelectMany(validation => validation.Text)
                     .ToArray() :
-                GetMemberInfoName(propertyName) is string memberInfoName && string.IsNullOrEmpty(memberInfoName) == false ?
-                    SelectValidations()
-                        .Where(validation => validation.ContainsPropertyName(memberInfoName))
-                        .SelectMany(validation => validation.Text)
-                        .ToArray() :
-                    Enumerable.Empty<string>();
+                        SelectValidations()
+                            .Where(validation => validation.ContainsPropertyName(propertyName))
+                            .SelectMany(validation => validation.Text)
+                            .ToArray();
 
             IEnumerable<IPropertyValidationComponent<TViewModel>> SelectValidations() =>
-
                 ValidationContext
-                    .Validations
+                    .GetValidationItems()
                     .OfType<IPropertyValidationComponent<TViewModel>>()
                     .Where(validation => !validation.IsValid);
-        }
-
-        private string GetMemberInfoName(string propertyName)
-        {
-            if (_propertyMemberNameDictionary.ContainsKey(propertyName) == false)
-            {
-                _propertyMemberNameDictionary.Add(propertyName, GetMemberInfoName());
-            }
-
-            return _propertyMemberNameDictionary[propertyName];
-
-            string GetMemberInfoName() => GetType()
-                .GetMember(propertyName)
-                .FirstOrDefault()?
-                .ToString();
         }
     }
 }

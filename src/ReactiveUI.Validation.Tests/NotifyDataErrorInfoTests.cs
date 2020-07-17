@@ -159,5 +159,27 @@ namespace ReactiveUI.Validation.Tests
             Assert.Single(validation.Text);
             Assert.Equal(namesShouldMatchMessage, validation.Text.Single());
         }
+
+        /// <summary>
+        /// Verifies that validation rules of the same property do not duplicate.
+        /// Earlier they sometimes could, due to the .Connect() method misuse.
+        /// </summary>
+        [Fact]
+        public void ValidationRulesOfTheSamePropertyShouldNotDuplicate()
+        {
+            var viewModel = new IndeiTestViewModel();
+            viewModel.ValidationRule(
+                m => m.Name,
+                m => m != null,
+                "Name shouldn't be null.");
+            
+            viewModel.ValidationRule(
+                m => m.Name,
+                m => !string.IsNullOrWhiteSpace(m),
+                "Name shouldn't be white space.");
+
+            Assert.False(viewModel.ValidationContext.IsValid);
+            Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
+        }
     }
 }

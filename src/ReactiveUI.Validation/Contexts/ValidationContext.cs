@@ -5,6 +5,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -37,10 +38,11 @@ namespace ReactiveUI.Validation.Contexts
         private readonly ReplaySubject<ValidationState> _validationStatusChange = new ReplaySubject<ValidationState>(1);
         private readonly ReplaySubject<bool> _validSubject = new ReplaySubject<bool>(1);
 
-        private readonly IConnectableObservable<bool> _validationConnectable;
         private readonly ReadOnlyObservableCollection<IValidationComponent> _validations;
+        private readonly IConnectableObservable<bool> _validationConnectable;
         private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
         private readonly ObservableAsPropertyHelper<bool> _isValid;
+        private readonly IScheduler _scheduler;
 
         private CompositeDisposable _disposables = new CompositeDisposable();
         private bool _isActive;
@@ -51,38 +53,32 @@ namespace ReactiveUI.Validation.Contexts
         /// <param name="scheduler">Optional scheduler to use for the properties. Uses the main thread scheduler by default.</param>
         public ValidationContext(IScheduler scheduler = null)
         {
-#if NET_461 || NETSTANDARD
-            scheduler = scheduler ?? RxApp.TaskpoolScheduler;
-#else
-            scheduler = scheduler ?? RxApp.MainThreadScheduler;
-#endif
-
+            _scheduler = scheduler ?? RxApp.MainThreadScheduler;
             var validationChangedObservable = _validationSource.Connect();
 
-            // Connect SourceList to read only observable collection.
             validationChangedObservable
-                .ObserveOn(scheduler)
+                .ObserveOn(_scheduler)
                 .Bind(out _validations)
-                .Subscribe();
+                .Subscribe()
+                .DisposeWith(_disposables);
 
-            // Publish the current validation state.
-            _disposables.Add(_validSubject
+            _isValid = _validSubject
                 .StartWith(true)
-                .ToProperty(this, m => m.IsValid, out _isValid, scheduler: scheduler));
+                .ToProperty(this, m => m.IsValid, scheduler: _scheduler)
+                .DisposeWith(_disposables);
 
-            // When a change occurs in the validation state, publish the updated validation text.
-            _disposables.Add(_validSubject
+            _validationText = _validSubject
                 .StartWith(true)
                 .Select(_ => BuildText())
-                .ToProperty(this, m => m.Text, out _validationText, new ValidationText(), scheduler: scheduler));
+                .ToProperty(this, m => m.Text, new ValidationText(), scheduler: _scheduler)
+                .DisposeWith(_disposables);
 
-            // Publish the current validation state.
-            _disposables.Add(_validSubject
+            _validSubject
                 .Select(_ => new ValidationState(IsValid, BuildText(), this))
                 .Do(vc => _validationStatusChange.OnNext(vc))
-                .Subscribe());
+                .Subscribe()
+                .DisposeWith(_disposables);
 
-            // Observe the defined validations and whenever there is a change publish the current validation state.
             _validationConnectable = validationChangedObservable
                 .ToCollection()
                 .StartWithEmpty()
@@ -105,7 +101,7 @@ namespace ReactiveUI.Validation.Contexts
             get
             {
                 Activate();
-                return _validSubject.AsObservable();
+                return _validSubject.AsObservable().ObserveOn(_scheduler);
             }
         }
 
@@ -173,6 +169,11 @@ namespace ReactiveUI.Validation.Contexts
             // Suppress finalization.
             GC.SuppressFinalize(this);
         }
+
+        /// <summary>
+        /// Immediately returns all available validation items.
+        /// </summary>
+        internal IEnumerable<IValidationComponent> GetValidationItems() => _validationSource.Items;
 
         /// <summary>
         /// Disposes of the managed resources.

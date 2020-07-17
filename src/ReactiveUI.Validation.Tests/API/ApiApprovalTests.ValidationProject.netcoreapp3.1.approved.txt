@@ -113,6 +113,7 @@ namespace ReactiveUI.Validation.Contexts
 }
 namespace ReactiveUI.Validation.Exceptions
 {
+    [System.Serializable]
     public class MultipleValidationNotSupportedException : System.Exception
     {
         public MultipleValidationNotSupportedException() { }
@@ -139,15 +140,15 @@ namespace ReactiveUI.Validation.Extensions
     }
     public static class ValidationContextExtensions
     {
-        public static ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel, TViewModelProperty> ResolveFor<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
-        public static ReactiveUI.Validation.TemplateGenerators.BasePropertyValidation<TViewModel, TProperty1, TProperty2> ResolveFor<TViewModel, TProperty1, TProperty2>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty2) { }
-        public static ReactiveUI.Validation.TemplateGenerators.BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3> ResolveFor<TViewModel, TProperty1, TProperty2, TProperty3>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty3) { }
+        public static ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel> ResolveFor<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
+        public static ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel> ResolveFor<TViewModel, TProperty1, TProperty2>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> viewModelProperty2) { }
+        public static ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel> ResolveFor<TViewModel, TProperty1, TProperty2, TProperty3>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> viewModelProperty2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> viewModelProperty3) { }
     }
     public static class ValidationContextMultipleExtensions
     {
-        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel, TViewModelProperty>> ResolveForMultiple<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
-        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.TemplateGenerators.BasePropertyValidation<TViewModel, TProperty1, TProperty2>> ResolveForMultiple<TViewModel, TProperty1, TProperty2>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty2) { }
-        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.TemplateGenerators.BasePropertyValidation<TViewModel, TProperty1, TProperty2, TProperty3>> ResolveForMultiple<TViewModel, TProperty1, TProperty2, TProperty3>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty3) { }
+        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>> ResolveForMultiple<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
+        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>> ResolveForMultiple<TViewModel, TProperty1, TProperty2>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> viewModelProperty2) { }
+        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>> ResolveForMultiple<TViewModel, TProperty1, TProperty2, TProperty3>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> viewModelProperty2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> viewModelProperty3) { }
     }
     public static class ViewForExtensions
     {
