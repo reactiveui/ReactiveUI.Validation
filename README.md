@@ -1,7 +1,7 @@
-[![NuGet Stats](https://img.shields.io/nuget/v/reactiveui.validation.svg)](https://www.nuget.org/packages/reactiveui.validation) [![Build Status](https://dev.azure.com/dotnet/ReactiveUI/_apis/build/status/ReactiveUI.Validation-CI)](https://dev.azure.com/dotnet/ReactiveUI/_build/latest?definitionId=11)  [![Code Coverage](https://codecov.io/gh/reactiveui/ReactiveUI.Validation/branch/master/graph/badge.svg)](https://codecov.io/gh/reactiveui/ReactiveUI.Validation) [![#yourfirstpr](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](https://reactiveui.net/contribute) [![Downloads](https://img.shields.io/nuget/dt/reactiveui.validation.svg)](https://www.nuget.org/packages/reactiveui.validation) [![Slack](https://img.shields.io/badge/chat-slack-blue.svg)](https://reactiveui.net/slack)
+[![NuGet Stats](https://img.shields.io/nuget/v/reactiveui.validation.svg)](https://www.nuget.org/packages/reactiveui.validation) [![Build Status](https://dev.azure.com/dotnet/ReactiveUI/_apis/build/status/ReactiveUI.Validation-CI)](https://dev.azure.com/dotnet/ReactiveUI/_build/latest?definitionId=11)  [![Code Coverage](https://codecov.io/gh/reactiveui/ReactiveUI.Validation/branch/main/graph/badge.svg)](https://codecov.io/gh/reactiveui/ReactiveUI.Validation) [![#yourfirstpr](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](https://reactiveui.net/contribute) [![Downloads](https://img.shields.io/nuget/dt/reactiveui.validation.svg)](https://www.nuget.org/packages/reactiveui.validation) [![Slack](https://img.shields.io/badge/chat-slack-blue.svg)](https://reactiveui.net/slack)
 
 <a href="https://github.com/reactiveui/ReactiveUI.Validation">
-  <img width="140" heigth="140" src="https://github.com/reactiveui/ReactiveUI.Validation/blob/master/media/logo.png">
+  <img width="140" heigth="140" src="https://github.com/reactiveui/ReactiveUI.Validation/blob/main/media/logo.png">
 </a>
 
 # ReactiveUI.Validation
@@ -58,10 +58,9 @@ public class SampleViewModel : ReactiveObject, IValidatableViewModel
 For more complex validations there is also the possibility to supply an `Observable<bool>` indicating whether the rule is valid or not. Thus you can combine multiple properties or incorporate other complex logic.
 
 ```csharp
-            this.ValidationRule(
-                m => m.WhenAnyValue(m1 => m1.TextInput1, m1 => m1.TextInput2).Select(both => both.Item1 == both.Item2),
-                (vm, isValid) => isValid ? string.Empty : "Both inputs should be the same");
-
+this.ValidationRule(
+    vm => vm.WhenAnyValue(x => x.TextInput1, x => x.TextInput2, (input1, input2) => input1 == input2)
+    (vm, isValid) => isValid ? string.Empty : "Both inputs should be the same");
 ```
 
 2. Add validation presentation to the View.
@@ -86,7 +85,7 @@ public class SampleView : ReactiveContentPage<SampleViewModel>
 }
 ```
 
-> **Note** `Name` is an Entry and `NameError` is a Label (both are controls from the Xamarin.Forms library).
+> **Note** `Name` is an `Entry` and `NameError` is a `Label` (both are controls from the Xamarin.Forms library).
 
 ## Example with Android extensions
 
@@ -149,14 +148,12 @@ public class SampleViewModel : ReactiveValidationObject<SampleViewModel>
 When using the `ValidationRule` overload that uses `Observable<bool>` for more complex scenarios please keep in mind to supply the property which the validation rule is targeting as the first argument. Otherwise it is not possible for `INotifyDataErrorInfo` to conclude which property the error message is for.
 
 ```csharp
-            this.ValidationRule(
-                m => m.TextInput2,
-                m => m.WhenAnyValue(m1 => m1.TextInput1, m1 => m1.TextInput2).Select(both => both.Item1 == both.Item2),
-                (vm, isValid) => isValid ? string.Empty : "Both inputs should be the same");
 
+this.ValidationRule(
+    vm => vm.TextInput2,
+    vm => vm.WhenAnyValue(x => x.TextInput1, x => x.TextInput2, (input1, input2) => input1 == input2)
+    (vm, isValid) => isValid ? string.Empty : "Both inputs should be the same");
 ```
-
-
 
 ## Capabilities
 
