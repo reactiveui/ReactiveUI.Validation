@@ -1,10 +1,10 @@
-// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Helpers/ValidationHelper.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using ReactiveUI.Validation.Collections;
@@ -22,11 +22,13 @@ namespace ReactiveUI.Validation.Helpers
     {
         private readonly IValidationComponent _validation;
 
-        private ObservableAsPropertyHelper<bool> _isValid;
+        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed with the _disposables field.")]
+        private readonly ObservableAsPropertyHelper<bool> _isValid;
 
-        private ObservableAsPropertyHelper<ValidationText> _message;
+        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed with the _disposables field.")]
+        private readonly ObservableAsPropertyHelper<ValidationText> _message;
 
-        private CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationHelper"/> class.
@@ -34,8 +36,17 @@ namespace ReactiveUI.Validation.Helpers
         /// <param name="validation">Validation property.</param>
         public ValidationHelper(IValidationComponent validation)
         {
-            _validation = validation;
-            Setup();
+            _validation = validation ?? throw new ArgumentNullException(nameof(validation));
+
+            _isValid = _validation.ValidationStatusChange
+                .Select(v => v.IsValid)
+                .ToProperty(this, nameof(IsValid))
+                .DisposeWith(_disposables);
+
+            _message = _validation.ValidationStatusChange
+                .Select(v => v.Text)
+                .ToProperty<ValidationHelper, ValidationText>(this, nameof(Message))
+                .DisposeWith(_disposables);
         }
 
         /// <summary>
@@ -46,7 +57,7 @@ namespace ReactiveUI.Validation.Helpers
         /// <summary>
         /// Gets the current (optional) validation message.
         /// </summary>
-        public ValidationText Message => _message.Value;
+        public ValidationText? Message => _message.Value;
 
         /// <summary>
         /// Gets the observable for validation state changes.
@@ -72,16 +83,7 @@ namespace ReactiveUI.Validation.Helpers
             if (disposing)
             {
                 _disposables?.Dispose();
-                _disposables = null;
             }
-        }
-
-        private void Setup()
-        {
-            _disposables.Add(_validation.ValidationStatusChange.Select(v => v.IsValid)
-                .ToProperty(this, vm => vm.IsValid, out _isValid));
-            _disposables.Add(_validation.ValidationStatusChange.Select(v => v.Text)
-                .ToProperty(this, vm => vm.Message, out _message));
         }
     }
 }

@@ -1,8 +1,7 @@
-// <copyright file="ReactiveValidationObject.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections;
@@ -30,7 +29,7 @@ namespace ReactiveUI.Validation.Helpers
         /// Initializes a new instance of the <see cref="ReactiveValidationObject{TViewModel}"/> class.
         /// </summary>
         /// <param name="scheduler">Scheduler for OAPHs and for the the ValidationContext.</param>
-        protected ReactiveValidationObject(IScheduler scheduler = null)
+        protected ReactiveValidationObject(IScheduler? scheduler = null)
         {
             ValidationContext = new ValidationContext(scheduler);
 
@@ -45,7 +44,7 @@ namespace ReactiveUI.Validation.Helpers
         }
 
         /// <inheritdoc />
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         /// <inheritdoc />
         public bool HasErrors => _hasErrors.Value;

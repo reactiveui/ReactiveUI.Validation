@@ -1,8 +1,7 @@
-// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Extensions/SupportsValidationExtensions.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Linq.Expressions;
@@ -34,6 +33,26 @@ namespace ReactiveUI.Validation.Extensions
             string message)
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (isPropertyValid is null)
+            {
+                throw new ArgumentNullException(nameof(isPropertyValid));
+            }
+
+            if (string.IsNullOrEmpty(message))
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
             // We need to associate the ViewModel property
             // with something that can be easily looked up and bound to
             var propValidation = new BasePropertyValidation<TViewModel, TViewModelProp>(
@@ -64,6 +83,26 @@ namespace ReactiveUI.Validation.Extensions
             Func<TViewModelProp, string> message)
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (isPropertyValid is null)
+            {
+                throw new ArgumentNullException(nameof(isPropertyValid));
+            }
+
+            if (message is null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
             // We need to associate the ViewModel property
             // with something that can be easily looked up and bound to
             var propValidation = new BasePropertyValidation<TViewModel, TViewModelProp>(
@@ -95,6 +134,21 @@ namespace ReactiveUI.Validation.Extensions
             Func<TViewModel, bool, string> messageFunc)
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelObservableProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelObservableProperty));
+            }
+
+            if (messageFunc is null)
+            {
+                throw new ArgumentNullException(nameof(messageFunc));
+            }
+
             var validation =
                 new ModelObservableValidation<TViewModel>(viewModel, viewModelObservableProperty, messageFunc);
 
@@ -124,6 +178,26 @@ namespace ReactiveUI.Validation.Extensions
             Func<TViewModel, bool, string> messageFunc)
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (viewModelObservableProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelObservableProperty));
+            }
+
+            if (messageFunc is null)
+            {
+                throw new ArgumentNullException(nameof(messageFunc));
+            }
+
             var validation = new ModelObservableValidation<TViewModel, TViewModelProp>(viewModel, viewModelProperty, viewModelObservableProperty, messageFunc);
 
             viewModel.ValidationContext.Add(validation);
@@ -137,7 +211,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <param name="viewModel">ViewModel instance.</param>
         /// <returns>Returns true if the ValidationContext is valid, otherwise false.</returns>
-        public static IObservable<bool> IsValid<TViewModel>(this TViewModel viewModel)
+        public static IObservable<bool>? IsValid<TViewModel>(this TViewModel? viewModel)
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
             return viewModel?.ValidationContext.Valid;

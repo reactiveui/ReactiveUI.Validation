@@ -1,8 +1,7 @@
-// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Formatters/SingleLineFormatter.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Formatters.Abstractions;
@@ -15,13 +14,13 @@ namespace ReactiveUI.Validation.Formatters
     /// </summary>
     public class SingleLineFormatter : IValidationTextFormatter<string>
     {
-        private readonly string _separator;
+        private readonly string? _separator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SingleLineFormatter"/> class.
         /// </summary>
         /// <param name="separator">Separator string.</param>
-        public SingleLineFormatter(string separator = null)
+        public SingleLineFormatter(string? separator = null)
         {
             _separator = separator;
         }

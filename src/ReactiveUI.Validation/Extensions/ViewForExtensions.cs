@@ -1,8 +1,7 @@
-// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Extensions/ViewForExtensions.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Diagnostics.CodeAnalysis;
@@ -44,6 +43,21 @@ namespace ReactiveUI.Validation.Extensions
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
             return ValidationBindingEx.ForProperty(view, viewModelProperty, viewProperty);
         }
 
@@ -72,6 +86,21 @@ namespace ReactiveUI.Validation.Extensions
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
             return ValidationBinding.ForProperty(view, viewModelProperty, viewProperty);
         }
 
@@ -97,6 +126,16 @@ namespace ReactiveUI.Validation.Extensions
             where TViewModel : ReactiveObject, IValidatableViewModel
             where TView : IViewFor<TViewModel>
         {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
             return ValidationBinding.ForViewModel<TView, TViewModel, TViewProperty>(view, viewProperty);
         }
 
@@ -124,6 +163,21 @@ namespace ReactiveUI.Validation.Extensions
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelHelperProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelHelperProperty));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
             return ValidationBinding.ForValidationHelperProperty(view, viewModelHelperProperty, viewProperty);
         }
 
@@ -141,6 +195,16 @@ namespace ReactiveUI.Validation.Extensions
             TTarget target,
             Expression viewExpression)
         {
+            if (@this is null)
+            {
+                throw new ArgumentNullException(nameof(@this));
+            }
+
+            if (viewExpression is null)
+            {
+                throw new ArgumentNullException(nameof(viewExpression));
+            }
+
             var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo());
             if (viewExpression.GetParent().NodeType == ExpressionType.Parameter)
             {

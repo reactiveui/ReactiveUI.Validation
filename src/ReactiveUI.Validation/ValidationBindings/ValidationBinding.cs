@@ -1,12 +1,12 @@
-// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/ValidationBindings/ValidationBinding.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Linq.Expressions;
 using System.Reactive;
+using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using ReactiveUI.Validation.Abstractions;
@@ -24,7 +24,7 @@ namespace ReactiveUI.Validation.ValidationBindings
     /// <inheritdoc />
     public sealed class ValidationBinding : IValidationBinding
     {
-        private CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
         private ValidationBinding(IObservable<Unit> validationObservable)
         {
@@ -52,7 +52,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             TView view,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Expression<Func<TView, TViewProperty>> viewProperty,
-            IValidationTextFormatter<string> formatter = null,
+            IValidationTextFormatter<string>? formatter = null,
             bool strict = true)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
@@ -99,7 +99,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             TView view,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Action<ValidationState, TOut> action,
-            IValidationTextFormatter<TOut> formatter = null,
+            IValidationTextFormatter<TOut>? formatter = null,
             bool strict = true)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
@@ -143,7 +143,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             TView view,
             Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
             Expression<Func<TView, TViewProperty>> viewProperty,
-            IValidationTextFormatter<string> formatter = null)
+            IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
@@ -186,7 +186,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             TView view,
             Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
             Action<ValidationState, TOut> action,
-            IValidationTextFormatter<TOut> formatter = null)
+            IValidationTextFormatter<TOut>? formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
@@ -264,7 +264,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         public static IValidationBinding ForViewModel<TView, TViewModel, TViewProperty>(
             TView view,
             Expression<Func<TView, TViewProperty>> viewProperty,
-            IValidationTextFormatter<string> formatter = null)
+            IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
@@ -311,6 +311,11 @@ namespace ReactiveUI.Validation.ValidationBindings
             TTarget target,
             Expression<Func<TView, TViewProperty>> viewProperty)
         {
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
             var viewExpression = Reflection.Rewrite(viewProperty.Body);
 
             var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo());
@@ -344,7 +349,6 @@ namespace ReactiveUI.Validation.ValidationBindings
             if (disposing)
             {
                 _disposables?.Dispose();
-                _disposables = null;
             }
         }
     }

@@ -145,8 +145,7 @@ namespace ReactiveUI.Validation.Tests
 
         /// <summary>
         /// Using 2 validation rules ending with the same property name should not
-        /// result in both properties having all the errors of both properties. See:
-        /// https://github.com/reactiveui/ReactiveUI.Validation/issues/60
+        /// result in both properties having all the errors of both properties.
         /// </summary>
         [Fact]
         public void ErrorsWithTheSameLastPropertyShouldNotShareErrors()
@@ -166,16 +165,15 @@ namespace ReactiveUI.Validation.Tests
 
             view.BindValidation(view.ViewModel, x => x.Source.Name, x => x.SourceError);
             view.BindValidation(view.ViewModel, x => x.Destination.Name, x => x.DestinationError);
-            
-            Assert.NotEmpty(view.SourceError);
+
+            Assert.NotNull(view.SourceError);
             Assert.Equal("Source text", view.SourceError);
             Assert.Equal("Destination text", view.DestinationError);
         }
 
         /// <summary>
-        /// Property validations backed by ModelObservableValidationBase should 
-        /// be bound to view as well as base property validations are. See:
-        /// https://github.com/reactiveui/ReactiveUI.Validation/issues/61
+        /// Property validations backed by ModelObservableValidationBase should
+        /// be bound to view as well as base property validations are.
         /// </summary>
         [Fact]
         public void ComplexValidationRulesShouldBeBoundToView()
@@ -183,7 +181,7 @@ namespace ReactiveUI.Validation.Tests
             const string errorMessage = "Both inputs should be the same";
             var view = new TestView(new TestViewModel
             {
-                Name = "Josuke Hikashikata", 
+                Name = "Josuke Hikashikata",
                 Name2 = "Jotaro Kujo"
             });
 
@@ -191,7 +189,7 @@ namespace ReactiveUI.Validation.Tests
                 m => m.Name,
                 m => m.WhenAnyValue(x => x.Name, x => x.Name2, (name, name2) => name == name2),
                 (vm, isValid) => isValid ? string.Empty : errorMessage);
-            
+
             view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
 
             Assert.NotEmpty(view.NameErrorLabel);

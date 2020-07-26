@@ -1,8 +1,7 @@
-// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Extensions/ValidationContextMultipleExtensions.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
@@ -35,12 +34,20 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             bool strict = true)
         {
-            var validations = context
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            return context
                 .GetValidationItems()
                 .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty, strict));
-
-            return validations;
         }
 
         /// <summary>
@@ -60,13 +67,26 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
             Expression<Func<TViewModel, TProperty2>> viewModelProperty2)
         {
-            var validations = context
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (viewModelProperty1 is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty1));
+            }
+
+            if (viewModelProperty2 is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty2));
+            }
+
+            return context
                 .GetValidationItems()
                 .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
                                                                    && v.PropertyCount == 2);
-
-            return validations;
         }
 
         /// <summary>
@@ -89,14 +109,32 @@ namespace ReactiveUI.Validation.Extensions
                 Expression<Func<TViewModel, TProperty2>> viewModelProperty2,
                 Expression<Func<TViewModel, TProperty3>> viewModelProperty3)
         {
-            var validations = context
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (viewModelProperty1 is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty1));
+            }
+
+            if (viewModelProperty2 is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty2));
+            }
+
+            if (viewModelProperty3 is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty3));
+            }
+
+            return context
                 .GetValidationItems()
                 .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
                                                                    && v.ContainsProperty(viewModelProperty3)
                                                                    && v.PropertyCount == 3);
-
-            return validations;
         }
     }
 }

@@ -1,27 +1,41 @@
 {
-  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
-  "settings": {
-    "documentationRules": {
-      "companyName": ".NET Foundation",
-      "documentationCulture": "en-US",
-      "documentInterfaces": true,
-      "documentInternalElements": false,
-      "copyrightText": "Licensed to the .NET Foundation under one or more agreements.\nThe .NET Foundation licenses this file to you under the MIT license.\nSee the LICENSE file in the project root for more information.",
-      "xmlHeader": true
-    },
-    "orderingRules": {
-      "elementOrder": [
-        "kind",
-        "constant",
-        "accessibility",
-        "static",
-        "readonly"
-      ],
-      "systemUsingDirectivesFirst": true,
-      "usingDirectivesPlacement": "outsideNamespace"
-    },
-    "maintainabilityRules": {
-      "topLevelTypes": ["class"]
+    "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+    "settings": {
+        "indentation": {
+            "useTabs": false,
+            "indentationSize": 4
+        },
+        "documentationRules": {
+            "documentExposedElements": true,
+            "documentInternalElements": false,
+            "documentPrivateElements": false,
+            "documentInterfaces": true,
+            "documentPrivateFields": false,
+            "documentationCulture": "en-US",
+            "companyName": ".NET Foundation and Contributors",
+            "copyrightText": "Copyright (c) 2020 {companyName}. All rights reserved.\nLicensed to the .NET Foundation under one or more agreements.\nThe .NET Foundation licenses this file to you under the {licenseName} license.\nSee the {licenseFile} file in the project root for full license information.",
+            "variables": {
+                "licenseName": "MIT",
+                "licenseFile": "LICENSE"
+            },
+            "xmlHeader": false
+        },
+        "layoutRules": {
+            "newlineAtEndOfFile": "allow",
+            "allowConsecutiveUsings": true
+        },
+        "maintainabilityRules": {
+            "topLevelTypes": [
+                "class",
+                "interface",
+                "struct",
+                "enum",
+                "delegate"
+            ]
+        },
+        "orderingRules": {
+            "usingDirectivesPlacement": "outsideNamespace",
+            "systemUsingDirectivesFirst": true
+        },
     }
-  }
 }

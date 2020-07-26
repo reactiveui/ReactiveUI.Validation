@@ -1,8 +1,7 @@
-// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Contexts/ValidationContext.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
@@ -15,7 +14,6 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using DynamicData;
-using DynamicData.Aggregation;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.States;
@@ -32,6 +30,7 @@ namespace ReactiveUI.Validation.Contexts
     /// Contains all of the <see cref="ReactiveUI.Validation.Components.Abstractions.IValidationComponent" /> instances
     /// applicable to the view model.
     /// </remarks>
+    [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Field _disposables disposes the items.")]
     public class ValidationContext : ReactiveObject, IDisposable, IValidationComponent
     {
         private readonly SourceList<IValidationComponent> _validationSource = new SourceList<IValidationComponent>();
@@ -44,14 +43,14 @@ namespace ReactiveUI.Validation.Contexts
         private readonly ObservableAsPropertyHelper<bool> _isValid;
         private readonly IScheduler _scheduler;
 
-        private CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly CompositeDisposable _disposables = new CompositeDisposable();
         private bool _isActive;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationContext"/> class.
         /// </summary>
         /// <param name="scheduler">Optional scheduler to use for the properties. Uses the main thread scheduler by default.</param>
-        public ValidationContext(IScheduler scheduler = null)
+        public ValidationContext(IScheduler? scheduler = null)
         {
             _scheduler = scheduler ?? RxApp.MainThreadScheduler;
             var validationChangedObservable = _validationSource.Connect();
@@ -184,7 +183,6 @@ namespace ReactiveUI.Validation.Contexts
             if (disposing)
             {
                 _disposables?.Dispose();
-                _disposables = null;
             }
         }
 
@@ -206,8 +204,8 @@ namespace ReactiveUI.Validation.Contexts
         private ValidationText BuildText()
         {
             return new ValidationText(_validationSource.Items
-                .Where(p => !p.IsValid)
-                .Select(p => p.Text));
+                .Where(p => !p.IsValid && p.Text != null)
+                .Select(p => p.Text!));
         }
     }
 }

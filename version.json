@@ -1,16 +1,18 @@
 {
-  "version": "1.5",
-  "publicReleaseRefSpec": [
-    "^refs/heads/main$", // we release out of master
-    "^refs/heads/rel/\\d+\\.\\d+\\.\\d+" // we also release branches starting with rel/N.N.N
-  ],
-  "nugetPackageVersion":{
-    "semVer": 2
-  },
-  "cloudBuild": {
-    "setVersionVariables": true,
-    "buildNumber": {
-      "enabled": false
+    "version": "1.5",
+    "publicReleaseRefSpec": [
+        "^refs/heads/main$",
+        "^refs/heads/latest$",
+        "^refs/heads/preview/.*", // we release previews
+        "^refs/heads/rel/\\d+\\.\\d+\\.\\d+" // we also release branches starting with rel/N.N.N
+    ],
+    "nugetPackageVersion": {
+        "semVer": 2
+    },
+    "cloudBuild": {
+        "setVersionVariables": true,
+        "buildNumber": {
+            "enabled": false
+        }
     }
-  }
 }

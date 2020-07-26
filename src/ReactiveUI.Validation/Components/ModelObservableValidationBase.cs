@@ -1,11 +1,11 @@
-// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Components/ModelObservableValidationBase.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -30,6 +30,7 @@ namespace ReactiveUI.Validation.Components
     /// </remarks>
     public abstract class ModelObservableValidationBase<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent<TViewModel>
     {
+        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
         private readonly ReplaySubject<ValidationState> _lastValidationStateSubject =
             new ReplaySubject<ValidationState>(1);
 
@@ -41,13 +42,13 @@ namespace ReactiveUI.Validation.Components
         // the underlying connected observable for the validation change which is published
         private readonly IConnectableObservable<ValidationState> _validityConnectedObservable;
 
-        private CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
         private bool _isActive;
 
         private bool _isValid;
 
-        private ValidationText _text;
+        private ValidationText? _text;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ModelObservableValidationBase{TViewModel}"/> class.
@@ -89,7 +90,7 @@ namespace ReactiveUI.Validation.Components
         public int PropertyCount => _propertyNames.Count;
 
         /// <inheritdoc/>
-        public ValidationText Text
+        public ValidationText? Text
         {
             get
             {
@@ -131,6 +132,11 @@ namespace ReactiveUI.Validation.Components
         /// <inheritdoc/>
         public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
         {
+            if (property is null)
+            {
+                throw new ArgumentNullException(nameof(property));
+            }
+
             var propertyName = property.Body.GetPropertyPath();
             return ContainsPropertyName(propertyName, exclusively);
         }
@@ -152,7 +158,6 @@ namespace ReactiveUI.Validation.Components
             if (disposing)
             {
                 _disposables?.Dispose();
-                _disposables = null;
             }
         }
 
@@ -163,6 +168,11 @@ namespace ReactiveUI.Validation.Components
         /// <param name="property">ViewModel property.</param>
         protected void AddProperty<TProp>(Expression<Func<TViewModel, TProp>> property)
         {
+            if (property is null)
+            {
+                throw new ArgumentNullException(nameof(property));
+            }
+
             var propertyName = property.Body.GetPropertyPath();
             _propertyNames.Add(propertyName);
         }
