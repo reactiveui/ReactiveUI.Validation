@@ -1,8 +1,7 @@
-// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Components/BasePropertyValidation.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
@@ -11,6 +10,7 @@ using System.Linq.Expressions;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Comparators;
 using ReactiveUI.Validation.Components.Abstractions;
@@ -30,6 +30,7 @@ namespace ReactiveUI.Validation.Components
         /// <summary>
         /// The current valid state.
         /// </summary>
+        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
         private readonly ReplaySubject<bool> _isValidSubject = new ReplaySubject<bool>(1);
 
         /// <summary>
@@ -45,7 +46,7 @@ namespace ReactiveUI.Validation.Components
         /// <summary>
         /// The connected observable to kick off seeing <see cref="ValidationStatusChange" />.
         /// </summary>
-        private IConnectableObservable<ValidationState> _connectedChange;
+        private IConnectableObservable<ValidationState>? _connectedChange;
 
         private bool _isConnected;
 
@@ -54,7 +55,7 @@ namespace ReactiveUI.Validation.Components
         /// </summary>
         private bool _isValid;
 
-        private ValidationText _text;
+        private ValidationText? _text;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BasePropertyValidation{TViewModel}"/> class.
@@ -86,12 +87,18 @@ namespace ReactiveUI.Validation.Components
             get
             {
                 Activate();
+
+                if (_connectedChange == null)
+                {
+                    throw new InvalidOperationException("ConnectedChange observable has not been initialized properly.");
+                }
+
                 return _connectedChange;
             }
         }
 
         /// <inheritdoc/>
-        public ValidationText Text
+        public ValidationText? Text
         {
             get
             {
@@ -113,6 +120,11 @@ namespace ReactiveUI.Validation.Components
         /// <inheritdoc/>
         public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
         {
+            if (property is null)
+            {
+                throw new ArgumentNullException(nameof(property));
+            }
+
             var propertyName = property.Body.GetPropertyPath();
             return ContainsPropertyName(propertyName, exclusively);
         }
@@ -132,6 +144,11 @@ namespace ReactiveUI.Validation.Components
         /// <param name="property">ViewModel property.</param>
         protected void AddProperty<TProp>(Expression<Func<TViewModel, TProp>> property)
         {
+            if (property is null)
+            {
+                throw new ArgumentNullException(nameof(property));
+            }
+
             var propertyName = property.Body.GetPropertyPath();
             _propertyNames.Add(propertyName);
         }
@@ -151,7 +168,6 @@ namespace ReactiveUI.Validation.Components
             if (disposing)
             {
                 _disposables?.Dispose();
-                _disposables = null;
             }
         }
 
@@ -195,6 +211,7 @@ namespace ReactiveUI.Validation.Components
         /// <summary>
         /// The value calculated from the properties.
         /// </summary>
+        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
         private readonly ReplaySubject<TViewModelProperty> _valueSubject = new ReplaySubject<TViewModelProperty>(1);
 
         private CompositeDisposable _disposables = new CompositeDisposable();
@@ -308,7 +325,6 @@ namespace ReactiveUI.Validation.Components
             if (disposing)
             {
                 _disposables?.Dispose();
-                _disposables = null;
             }
         }
 

@@ -1,8 +1,7 @@
-// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/ValidationBindings/ValidationBindingEx.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections.Generic;
@@ -24,7 +23,7 @@ namespace ReactiveUI.Validation.ValidationBindings
     /// <inheritdoc />
     public sealed class ValidationBindingEx : IValidationBinding
     {
-        private CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
         private ValidationBindingEx(IObservable<Unit> validationObservable)
         {
@@ -49,11 +48,26 @@ namespace ReactiveUI.Validation.ValidationBindings
             TView view,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Expression<Func<TView, TViewProperty>> viewProperty,
-            IValidationTextFormatter<string> formatter = null,
+            IValidationTextFormatter<string>? formatter = null,
             bool strict = true)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
+            if (view is null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
             if (formatter == null)
             {
                 formatter = SingleLineFormatter.Default;
@@ -93,7 +107,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             TView view,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Action<IList<ValidationState>, IList<TOut>> action,
-            IValidationTextFormatter<TOut> formatter = null,
+            IValidationTextFormatter<TOut>? formatter = null,
             bool strict = true)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
@@ -173,7 +187,6 @@ namespace ReactiveUI.Validation.ValidationBindings
             if (disposing)
             {
                 _disposables?.Dispose();
-                _disposables = null;
             }
         }
     }

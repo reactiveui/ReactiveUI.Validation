@@ -1,8 +1,7 @@
-// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/Collections/ValidationText.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using System.Collections;
 using System.Collections.Generic;
@@ -38,6 +37,11 @@ namespace ReactiveUI.Validation.Collections
         /// <param name="validationTexts"><see cref="ValidationText"/> collection to be added into the text collection.</param>
         public ValidationText(IEnumerable<ValidationText> validationTexts)
         {
+            if (validationTexts is null)
+            {
+                throw new System.ArgumentNullException(nameof(validationTexts));
+            }
+
             foreach (var text in validationTexts)
             {
                 _texts.AddRange(text._texts);
@@ -89,7 +93,7 @@ namespace ReactiveUI.Validation.Collections
         /// </summary>
         /// <param name="separator">String separator.</param>
         /// <returns>Returns all the text collection separated by the separator.</returns>
-        public string ToSingleLine(string separator = ",")
+        public string ToSingleLine(string? separator = ",")
         {
             return string.Join(separator, _texts);
         }

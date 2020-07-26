@@ -172,7 +172,7 @@ namespace ReactiveUI.Validation.Tests
                 m => m.Name,
                 m => m != null,
                 "Name shouldn't be null.");
-            
+
             viewModel.ValidationRule(
                 m => m.Name,
                 m => !string.IsNullOrWhiteSpace(m),

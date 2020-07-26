@@ -1,8 +1,7 @@
-// <copyright file="ReactiveUI.Validation/src/ReactiveUI.Validation/States/ValidationState.cs" company=".NET Foundation">
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-// </copyright>
+// See the LICENSE file in the project root for full license information.
 
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
@@ -34,8 +33,8 @@ namespace ReactiveUI.Validation.States
         public ValidationState(bool isValid, ValidationText text, IValidationComponent component)
         {
             IsValid = isValid;
-            Text = text;
-            Component = component;
+            Text = text ?? throw new System.ArgumentNullException(nameof(text));
+            Component = component ?? throw new System.ArgumentNullException(nameof(component));
         }
 
         /// <summary>
