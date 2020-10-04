@@ -49,7 +49,7 @@ namespace ReactiveUI.Validation.Contexts
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationContext"/> class.
         /// </summary>
-        /// <param name="scheduler">Optional scheduler to use for the properties. Uses the main thread scheduler by default.</param>
+        /// <param name="scheduler">Optional scheduler to use for the properties. Uses the current thread scheduler by default.</param>
         public ValidationContext(IScheduler? scheduler = null)
         {
             scheduler ??= CurrentThreadScheduler.Instance;
