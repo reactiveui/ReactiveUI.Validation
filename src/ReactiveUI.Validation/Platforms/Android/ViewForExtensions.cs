@@ -99,7 +99,7 @@ namespace ReactiveUI.Validation.Platforms.Android
         public static IDisposable BindValidation<TView, TViewModel>(
             this TView view,
             TViewModel viewModel,
-            Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
+            Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
             TextInputLayout viewProperty)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
