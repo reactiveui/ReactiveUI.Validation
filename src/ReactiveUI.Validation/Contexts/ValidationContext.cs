@@ -42,7 +42,6 @@ namespace ReactiveUI.Validation.Contexts
         private readonly IConnectableObservable<bool> _validationConnectable;
         private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
         private readonly ObservableAsPropertyHelper<bool> _isValid;
-        private readonly IScheduler _scheduler;
 
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
         private bool _isActive;
@@ -53,10 +52,10 @@ namespace ReactiveUI.Validation.Contexts
         /// <param name="scheduler">Optional scheduler to use for the properties. Uses the main thread scheduler by default.</param>
         public ValidationContext(IScheduler? scheduler = null)
         {
-            _scheduler = scheduler ?? RxApp.MainThreadScheduler;
+            scheduler ??= CurrentThreadScheduler.Instance;
             _validationSource
                 .Connect()
-                .ObserveOn(_scheduler)
+                .ObserveOn(scheduler)
                 .Bind(out _validations)
                 .Subscribe()
                 .DisposeWith(_disposables);
@@ -75,13 +74,13 @@ namespace ReactiveUI.Validation.Contexts
 
             _isValid = _validSubject
                 .StartWith(true)
-                .ToProperty(this, m => m.IsValid)
+                .ToProperty(this, m => m.IsValid, scheduler: scheduler)
                 .DisposeWith(_disposables);
 
             _validationText = _validSubject
                 .StartWith(true)
                 .Select(_ => BuildText())
-                .ToProperty(this, m => m.Text, new ValidationText())
+                .ToProperty(this, m => m.Text, new ValidationText(), scheduler: scheduler)
                 .DisposeWith(_disposables);
 
             _validSubject
@@ -99,7 +98,7 @@ namespace ReactiveUI.Validation.Contexts
             get
             {
                 Activate();
-                return _validSubject.AsObservable().ObserveOn(_scheduler);
+                return _validSubject.AsObservable();
             }
         }
 
