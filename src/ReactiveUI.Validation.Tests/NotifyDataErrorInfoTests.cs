@@ -120,7 +120,7 @@ namespace ReactiveUI.Validation.Tests
             Assert.False(viewModel.HasErrors);
             Assert.Empty(viewModel.GetErrors("Name").Cast<string>());
             Assert.NotNull(arguments);
-            Assert.Equal(string.Empty, arguments.PropertyName);
+            Assert.Equal("Name", arguments.PropertyName);
         }
 
         /// <summary>
