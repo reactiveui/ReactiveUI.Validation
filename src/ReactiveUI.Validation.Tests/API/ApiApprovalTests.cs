@@ -10,6 +10,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using DiffEngine;
 using PublicApiGenerator;
 using ReactiveUI.Validation.ValidationBindings;
 using Shouldly;
@@ -62,7 +63,7 @@ namespace ReactiveUI.Validation.Tests.API
             if (!string.Equals(receivedPublicApi, approvedPublicApi, StringComparison.InvariantCulture))
             {
                 File.WriteAllText(receivedFileName, receivedPublicApi);
-                ShouldlyConfiguration.DiffTools.GetDiffTool().Open(receivedFileName, approvedFileName, true);
+                DiffRunner.Launch(receivedFileName, approvedFileName);
             }
 
             Assert.Equal(approvedPublicApi, receivedPublicApi);
