@@ -14,6 +14,7 @@ using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
+using ReactiveUI.Validation.States;
 
 namespace ReactiveUI.Validation.Helpers
 {
@@ -23,7 +24,7 @@ namespace ReactiveUI.Validation.Helpers
     /// <typeparam name="TViewModel">The parent view model.</typeparam>
     public abstract class ReactiveValidationObject<TViewModel> : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
     {
-        private readonly ObservableAsPropertyHelper<bool> _hasErrors;
+        private bool _hasErrors;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReactiveValidationObject{TViewModel}"/> class.
@@ -32,22 +33,18 @@ namespace ReactiveUI.Validation.Helpers
         protected ReactiveValidationObject(IScheduler? scheduler = null)
         {
             ValidationContext = new ValidationContext(scheduler);
-
-            _hasErrors = this
-                .IsValid()
-                .Select(valid => !valid)
-                .ToProperty(this, x => x.HasErrors, scheduler: scheduler);
-
-            ValidationContext.ValidationStatusChange
-                .Select(validity => new DataErrorsChangedEventArgs(string.Empty))
-                .Subscribe(args => ErrorsChanged?.Invoke(this, args));
+            ValidationContext.ValidationStatusChange.Subscribe(OnValidationStatusChange);
         }
 
         /// <inheritdoc />
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         /// <inheritdoc />
-        public bool HasErrors => _hasErrors.Value;
+        public bool HasErrors
+        {
+            get => _hasErrors;
+            private set => this.RaiseAndSetIfChanged(ref _hasErrors, value);
+        }
 
         /// <inheritdoc />
         public ValidationContext ValidationContext { get; }
@@ -70,10 +67,21 @@ namespace ReactiveUI.Validation.Helpers
                             .ToArray();
 
             IEnumerable<IPropertyValidationComponent<TViewModel>> SelectValidations() =>
-                ValidationContext
-                    .GetValidationItems()
+                ValidationContext.Validations
                     .OfType<IPropertyValidationComponent<TViewModel>>()
                     .Where(validation => !validation.IsValid);
+        }
+
+        /// <summary>
+        /// Updates the <see cref="HasErrors" /> property before raising <see cref="ErrorsChanged" />,
+        /// and then raises <see cref="ErrorsChanged" />. This behaviour is required by WPF, see:
+        /// https://stackoverflow.com/questions/24518520/ui-not-calling-inotifydataerrorinfo-geterrors/24837028.
+        /// </summary>
+        /// <param name="state">The state of an updated validation component.</param>
+        private void OnValidationStatusChange(ValidationState state)
+        {
+            HasErrors = !ValidationContext.GetIsValid();
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(string.Empty));
         }
     }
 }
