@@ -130,7 +130,7 @@ namespace ReactiveUI.Validation.Extensions
 {
     public static class SupportsValidationExtensions
     {
-        public static System.IObservable<bool>? IsValid<TViewModel>(this TViewModel? viewModel)
+        public static System.IObservable<bool> IsValid<TViewModel>(this TViewModel viewModel)
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel>(this TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> viewModelObservableProperty, System.Func<TViewModel, bool, string> messageFunc)
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
