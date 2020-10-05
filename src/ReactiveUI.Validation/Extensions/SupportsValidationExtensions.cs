@@ -211,10 +211,15 @@ namespace ReactiveUI.Validation.Extensions
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <param name="viewModel">ViewModel instance.</param>
         /// <returns>Returns true if the ValidationContext is valid, otherwise false.</returns>
-        public static IObservable<bool>? IsValid<TViewModel>(this TViewModel? viewModel)
+        public static IObservable<bool> IsValid<TViewModel>(this TViewModel viewModel)
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
-            return viewModel?.ValidationContext.Valid;
+            if (viewModel == null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            return viewModel.ValidationContext.Valid;
         }
     }
 }

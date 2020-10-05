@@ -66,7 +66,7 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Where(vm => vm != null)
                 .Select(
                     viewModel =>
-                        viewModel.ValidationContext
+                        viewModel!.ValidationContext
                             .ResolveFor(viewModelProperty, strict)
                             .ValidationStatusChange)
                 .Switch()
@@ -113,7 +113,7 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Where(vm => vm != null)
                 .Select(
                     viewModel =>
-                        viewModel.ValidationContext
+                        viewModel!.ValidationContext
                             .ResolveFor(viewModelProperty, strict)
                             .ValidationStatusChange)
                 .Switch()
@@ -141,7 +141,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// </exception>
         public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(
             TView view,
-            Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
+            Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
             Expression<Func<TView, TViewProperty>> viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
@@ -184,7 +184,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// </exception>
         public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TOut>(
             TView view,
-            Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
+            Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
             Action<ValidationState, TOut> action,
             IValidationTextFormatter<TOut>? formatter = null)
             where TView : IViewFor<TViewModel>
@@ -238,7 +238,7 @@ namespace ReactiveUI.Validation.ValidationBindings
 
             var vcObs = view.WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
-                .Select(vm => vm.ValidationContext.Text)
+                .Select(vm => vm!.ValidationContext.Text)
                 .Select(formatter.Format);
 
             var updateObs = vcObs.Do(action)
@@ -275,7 +275,7 @@ namespace ReactiveUI.Validation.ValidationBindings
 
             var vcObs = view.WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
-                .SelectMany(vm => vm.ValidationContext.ValidationStatusChange)
+                .SelectMany(vm => vm!.ValidationContext.ValidationStatusChange)
                 .Select(vc => formatter.Format(vc.Text));
 
             var updateObs = BindToView(vcObs, view, viewProperty)
@@ -311,6 +311,11 @@ namespace ReactiveUI.Validation.ValidationBindings
             TTarget target,
             Expression<Func<TView, TViewProperty>> viewProperty)
         {
+            if (target is null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
             if (viewProperty is null)
             {
                 throw new ArgumentNullException(nameof(viewProperty));
@@ -318,7 +323,7 @@ namespace ReactiveUI.Validation.ValidationBindings
 
             var viewExpression = Reflection.Rewrite(viewProperty.Body);
 
-            var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo());
+            var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo())!;
 
             if (viewExpression.GetParent().NodeType == ExpressionType.Parameter)
             {

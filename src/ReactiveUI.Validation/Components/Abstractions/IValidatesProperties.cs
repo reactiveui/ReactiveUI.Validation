@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace ReactiveUI.Validation.Components.Abstractions
@@ -18,6 +19,11 @@ namespace ReactiveUI.Validation.Components.Abstractions
         /// Gets the total number of properties referenced.
         /// </summary>
         int PropertyCount { get; }
+
+        /// <summary>
+        /// Gets the properties associated with this validation component.
+        /// </summary>
+        IEnumerable<string> Properties { get; }
 
         /// <summary>
         /// Determine if a property name is actually contained within this.

@@ -1,3 +1,9 @@
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
@@ -120,7 +126,7 @@ namespace ReactiveUI.Validation.Tests
             Assert.False(viewModel.HasErrors);
             Assert.Empty(viewModel.GetErrors("Name").Cast<string>());
             Assert.NotNull(arguments);
-            Assert.Equal(string.Empty, arguments.PropertyName);
+            Assert.Equal("Name", arguments.PropertyName);
         }
 
         /// <summary>
@@ -180,6 +186,46 @@ namespace ReactiveUI.Validation.Tests
 
             Assert.False(viewModel.ValidationContext.IsValid);
             Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
+        }
+
+        /// <summary>
+        /// Verifies that the <see cref="INotifyDataErrorInfo"/> events are published
+        /// according to the changes of the validated properties.
+        /// </summary>
+        [Fact]
+        public void ShouldSendPropertyChangeNotificationsForCorrectProperties()
+        {
+            var viewModel = new IndeiTestViewModel();
+            viewModel.ValidationRule(
+                m => m.Name,
+                m => m != null,
+                "Name shouldn't be null.");
+
+            viewModel.ValidationRule(
+                m => m.OtherName,
+                m => m != null,
+                "Other name shouldn't be null.");
+
+            Assert.Single(viewModel.GetErrors(nameof(viewModel.Name)));
+            Assert.Single(viewModel.GetErrors(nameof(viewModel.OtherName)));
+
+            var arguments = new List<DataErrorsChangedEventArgs>();
+            viewModel.ErrorsChanged += (sender, args) => arguments.Add(args);
+            viewModel.Name = "Josuke";
+            viewModel.OtherName = "Jotaro";
+
+            Assert.Equal(2, arguments.Count);
+            Assert.Equal(nameof(viewModel.Name), arguments[0].PropertyName);
+            Assert.Equal(nameof(viewModel.OtherName), arguments[1].PropertyName);
+            Assert.False(viewModel.HasErrors);
+
+            viewModel.Name = null;
+            viewModel.OtherName = null;
+
+            Assert.Equal(4, arguments.Count);
+            Assert.Equal(nameof(viewModel.Name), arguments[2].PropertyName);
+            Assert.Equal(nameof(viewModel.OtherName), arguments[3].PropertyName);
+            Assert.True(viewModel.HasErrors);
         }
     }
 }

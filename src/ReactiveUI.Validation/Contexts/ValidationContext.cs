@@ -14,6 +14,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using DynamicData;
+using DynamicData.Binding;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.States;
@@ -41,7 +42,6 @@ namespace ReactiveUI.Validation.Contexts
         private readonly IConnectableObservable<bool> _validationConnectable;
         private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
         private readonly ObservableAsPropertyHelper<bool> _isValid;
-        private readonly IScheduler _scheduler;
 
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
         private bool _isActive;
@@ -49,47 +49,45 @@ namespace ReactiveUI.Validation.Contexts
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationContext"/> class.
         /// </summary>
-        /// <param name="scheduler">Optional scheduler to use for the properties. Uses the main thread scheduler by default.</param>
+        /// <param name="scheduler">Optional scheduler to use for the properties. Uses the current thread scheduler by default.</param>
         public ValidationContext(IScheduler? scheduler = null)
         {
-            _scheduler = scheduler ?? RxApp.MainThreadScheduler;
-            var validationChangedObservable = _validationSource.Connect();
-
-            validationChangedObservable
-                .ObserveOn(_scheduler)
+            scheduler ??= CurrentThreadScheduler.Instance;
+            _validationSource
+                .Connect()
+                .ObserveOn(scheduler)
                 .Bind(out _validations)
                 .Subscribe()
                 .DisposeWith(_disposables);
 
-            _isValid = _validSubject
-                .StartWith(true)
-                .ToProperty(this, m => m.IsValid, scheduler: _scheduler)
-                .DisposeWith(_disposables);
-
-            _validationText = _validSubject
-                .StartWith(true)
-                .Select(_ => BuildText())
-                .ToProperty(this, m => m.Text, new ValidationText(), scheduler: _scheduler)
-                .DisposeWith(_disposables);
-
-            _validSubject
-                .Select(_ => new ValidationState(IsValid, BuildText(), this))
-                .Do(vc => _validationStatusChange.OnNext(vc))
-                .Subscribe()
-                .DisposeWith(_disposables);
-
-            _validationConnectable = validationChangedObservable
+            _validationConnectable = _validations
+                .ToObservableChangeSet()
                 .ToCollection()
                 .StartWithEmpty()
                 .Select(validations =>
                     validations
                         .Select(v => v.ValidationStatusChange)
-                        .Merge()
-                        .Select(_ => Unit.Default)
-                        .StartWith(Unit.Default))
+                        .Merge())
                 .Switch()
                 .Select(_ => GetIsValid())
                 .Multicast(_validSubject);
+
+            _isValid = _validSubject
+                .StartWith(true)
+                .ToProperty(this, m => m.IsValid, scheduler: scheduler)
+                .DisposeWith(_disposables);
+
+            _validationText = _validSubject
+                .StartWith(true)
+                .Select(_ => BuildText())
+                .ToProperty(this, m => m.Text, new ValidationText(), scheduler: scheduler)
+                .DisposeWith(_disposables);
+
+            _validSubject
+                .Select(_ => new ValidationState(IsValid, BuildText(), this))
+                .Do(_validationStatusChange.OnNext)
+                .Subscribe()
+                .DisposeWith(_disposables);
         }
 
         /// <summary>
@@ -100,7 +98,7 @@ namespace ReactiveUI.Validation.Contexts
             get
             {
                 Activate();
-                return _validSubject.AsObservable().ObserveOn(_scheduler);
+                return _validSubject.AsObservable();
             }
         }
 
@@ -144,20 +142,13 @@ namespace ReactiveUI.Validation.Contexts
         /// Adds a validation into the validations collection.
         /// </summary>
         /// <param name="validation">Validation component to be added into the collection.</param>
-        public void Add(IValidationComponent validation)
-        {
-            _validationSource.Add(validation);
-        }
+        public void Add(IValidationComponent validation) => _validationSource.Add(validation);
 
         /// <summary>
         /// Returns if the whole context is valid checking all the validations.
         /// </summary>
         /// <returns>Returns true if the <see cref="ValidationContext"/> is valid, otherwise false.</returns>
-        public bool GetIsValid()
-        {
-            var validations = _validationSource.Items.ToList();
-            return validations.Count == 0 || validations.All(v => v.IsValid);
-        }
+        public bool GetIsValid() => _validations.Count == 0 || _validations.All(v => v.IsValid);
 
         /// <inheritdoc/>
         public void Dispose()
@@ -168,11 +159,6 @@ namespace ReactiveUI.Validation.Contexts
             // Suppress finalization.
             GC.SuppressFinalize(this);
         }
-
-        /// <summary>
-        /// Immediately returns all available validation items.
-        /// </summary>
-        internal IEnumerable<IValidationComponent> GetValidationItems() => _validationSource.Items;
 
         /// <summary>
         /// Disposes of the managed resources.
@@ -200,12 +186,12 @@ namespace ReactiveUI.Validation.Contexts
         /// <summary>
         /// Build a list of the validation text for each invalid component.
         /// </summary>
-        /// <returns>Returns the <see cref="ValidationText"/> with all the error messages from the non valid components.</returns>
-        private ValidationText BuildText()
-        {
-            return new ValidationText(_validationSource.Items
+        /// <returns>
+        /// Returns the <see cref="ValidationText"/> with all the error messages from the non valid components.
+        /// </returns>
+        private ValidationText BuildText() =>
+            new ValidationText(_validations
                 .Where(p => !p.IsValid && p.Text != null)
                 .Select(p => p.Text!));
-        }
     }
 }

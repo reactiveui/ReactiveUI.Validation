@@ -10,7 +10,6 @@ using System.Linq.Expressions;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
-using ReactiveUI.Validation.TemplateGenerators;
 
 namespace ReactiveUI.Validation.Extensions
 {
@@ -45,7 +44,7 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return context
-                .GetValidationItems()
+                .Validations
                 .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty, strict));
         }
@@ -83,7 +82,7 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return context
-                .GetValidationItems()
+                .Validations
                 .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
                                                                    && v.PropertyCount == 2);
@@ -130,7 +129,7 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return context
-                .GetValidationItems()
+                .Validations
                 .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty1) && v.ContainsProperty(viewModelProperty2)
                                                                    && v.ContainsProperty(viewModelProperty3)

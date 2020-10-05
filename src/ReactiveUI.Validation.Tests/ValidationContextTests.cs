@@ -1,3 +1,9 @@
+// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
+// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for full license information.
+
+using System;
 using System.Reactive.Concurrency;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
@@ -218,6 +224,32 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
             Assert.NotEmpty(view.NameErrorLabel);
             Assert.Equal("Name should not be empty. Name2 should not be empty.", view.NameErrorLabel);
+        }
+
+        /// <summary>
+        /// Verifies that this.IsValid() extension method observes a
+        /// <see cref="ValidationContext"/> and emits new values.
+        /// </summary>
+        [Fact]
+        public void IsValidShouldNotifyOfValidityChange()
+        {
+            var viewModel = new TestViewModel { Name = string.Empty };
+            var nameValidation = new BasePropertyValidation<TestViewModel, string>(
+                viewModel,
+                viewModelProperty => viewModelProperty.Name,
+                s => !string.IsNullOrEmpty(s),
+                "Name should not be empty.");
+            viewModel.ValidationContext.Add(nameValidation);
+
+            var latestValidity = false;
+            viewModel.IsValid().Subscribe(isValid => latestValidity = isValid);
+            Assert.False(latestValidity);
+
+            viewModel.Name = "Jonathan";
+            Assert.True(latestValidity);
+
+            viewModel.Name = string.Empty;
+            Assert.False(latestValidity);
         }
     }
 }

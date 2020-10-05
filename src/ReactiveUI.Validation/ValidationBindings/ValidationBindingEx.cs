@@ -76,7 +76,8 @@ namespace ReactiveUI.Validation.ValidationBindings
             var vcObs = view.WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
                 .Select(
-                    viewModel => viewModel.ValidationContext
+                    viewModel => viewModel!
+                        .ValidationContext
                         .ResolveForMultiple(viewModelProperty, strict)
                         .Select(x => x.ValidationStatusChange)
                         .CombineLatest())
@@ -120,7 +121,8 @@ namespace ReactiveUI.Validation.ValidationBindings
             var vcObs = view.WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
                 .Select(
-                    viewModel => viewModel.ValidationContext
+                    viewModel => viewModel!
+                        .ValidationContext
                         .ResolveForMultiple(viewModelProperty, strict)
                         .Select(x => x.ValidationStatusChange)
                         .CombineLatest())
@@ -154,9 +156,14 @@ namespace ReactiveUI.Validation.ValidationBindings
             Expression<Func<TView, TViewProperty>> viewProperty)
             where TValue : List<string>
         {
+            if (target is null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
             var viewExpression = Reflection.Rewrite(viewProperty.Body);
 
-            var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo());
+            var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo())!;
 
             if (viewExpression.GetParent().NodeType == ExpressionType.Parameter)
             {

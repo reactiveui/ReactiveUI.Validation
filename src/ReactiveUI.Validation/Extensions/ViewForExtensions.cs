@@ -158,7 +158,7 @@ namespace ReactiveUI.Validation.Extensions
         public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
             this TView view,
             TViewModel viewModel,
-            Expression<Func<TViewModel, ValidationHelper>> viewModelHelperProperty,
+            Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
             Expression<Func<TView, TViewProperty>> viewProperty)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
@@ -200,12 +200,17 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(@this));
             }
 
+            if (target is null)
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
             if (viewExpression is null)
             {
                 throw new ArgumentNullException(nameof(viewExpression));
             }
 
-            var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo());
+            var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo())!;
             if (viewExpression.GetParent().NodeType == ExpressionType.Parameter)
             {
                 return @this.Subscribe(

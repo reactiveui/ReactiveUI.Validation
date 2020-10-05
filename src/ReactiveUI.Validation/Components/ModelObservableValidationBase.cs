@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -88,6 +89,9 @@ namespace ReactiveUI.Validation.Components
 
         /// <inheritdoc/>
         public int PropertyCount => _propertyNames.Count;
+
+        /// <inheritdoc/>
+        public IEnumerable<string> Properties => _propertyNames.AsEnumerable();
 
         /// <inheritdoc/>
         public ValidationText? Text
