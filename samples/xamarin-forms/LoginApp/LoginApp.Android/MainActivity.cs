@@ -27,7 +27,6 @@ namespace LoginApp.Droid
 
             base.OnCreate(savedInstanceState);
 
-            AppDomain.CurrentDomain.UnhandledException += (sender, args) => System.Diagnostics.Debug.Write(args);
             Xamarin.Forms.Forms.Init(this, savedInstanceState);
             UserDialogs.Init(() => this);
 
