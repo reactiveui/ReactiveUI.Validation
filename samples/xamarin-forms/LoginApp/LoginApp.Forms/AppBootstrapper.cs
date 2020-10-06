@@ -6,14 +6,14 @@
 
 using System;
 using Acr.UserDialogs;
+using LoginApp.Forms.Views;
 using LoginApp.ViewModels;
-using LoginApp.Views;
 using ReactiveUI;
 using ReactiveUI.XamForms;
 using Splat;
 using Xamarin.Forms;
 
-namespace LoginApp
+namespace LoginApp.Forms
 {
     /// <summary>
     /// The app bootstrapper which is used to register everything with the Splat service locator.

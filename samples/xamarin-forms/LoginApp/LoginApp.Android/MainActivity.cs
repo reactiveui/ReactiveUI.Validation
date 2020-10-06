@@ -8,6 +8,7 @@ using Acr.UserDialogs;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
+using LoginApp.Forms;
 
 namespace LoginApp.Droid
 {

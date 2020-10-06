@@ -5,13 +5,13 @@
 // </copyright>
 
 using System.Reactive.Disposables;
-using LoginApp.ViewModels.Abstractions;
+using LoginApp.ViewModels;
 using ReactiveUI;
 using ReactiveUI.XamForms;
 using Xamarin.Forms.PlatformConfiguration;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
-namespace LoginApp.Views
+namespace LoginApp.Forms.Views
 {
     /// <inheritdoc />
     /// <summary>

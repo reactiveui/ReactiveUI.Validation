@@ -1,4 +1,4 @@
-
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginApp.Android", "LoginApp.Android\LoginApp.Android.csproj", "{CA4F85FE-2FA5-44F3-A718-882E8E53F31B}"
@@ -8,6 +8,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginApp", "LoginApp\LoginApp.csproj", "{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Targets", "Targets", "{ECC07E3E-9E01-410F-A706-37FB5E0F6BEB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LoginApp.Forms", "LoginApp.Forms\LoginApp.Forms.csproj", "{F08E553A-B99B-49BF-A61D-B20C32E98B74}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,10 +71,27 @@ Global
 		{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFC}.Ad-Hoc|iPhone.Build.0 = Debug|Any CPU
 		{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFC}.AppStore|iPhone.ActiveCfg = Debug|Any CPU
 		{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFC}.AppStore|iPhone.Build.0 = Debug|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Release|iPhone.Build.0 = Release|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Ad-Hoc|iPhone.ActiveCfg = Debug|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.Ad-Hoc|iPhone.Build.0 = Debug|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.AppStore|iPhone.ActiveCfg = Debug|Any CPU
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74}.AppStore|iPhone.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{CA4F85FE-2FA5-44F3-A718-882E8E53F31B} = {ECC07E3E-9E01-410F-A706-37FB5E0F6BEB}
 		{BFB2CA00-73E2-4289-9F66-785DE6B7EA7C} = {ECC07E3E-9E01-410F-A706-37FB5E0F6BEB}
+		{F08E553A-B99B-49BF-A61D-B20C32E98B74} = {ECC07E3E-9E01-410F-A706-37FB5E0F6BEB}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		Policies = $0

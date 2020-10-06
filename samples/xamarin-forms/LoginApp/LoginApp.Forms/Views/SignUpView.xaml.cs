@@ -9,7 +9,7 @@ using LoginApp.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Validation.Extensions;
 
-namespace LoginApp.Views
+namespace LoginApp.Forms.Views
 {
     /// <inheritdoc />
     /// <summary>

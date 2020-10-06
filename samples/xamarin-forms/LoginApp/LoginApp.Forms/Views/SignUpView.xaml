@@ -2,9 +2,9 @@
 
 <ui:ContentPageBase x:TypeArguments="vms:SignUpViewModel" xmlns="http://xamarin.com/schemas/2014/forms"
                     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-                    xmlns:ui="clr-namespace:LoginApp.Views;assembly=LoginApp"
+                    xmlns:ui="clr-namespace:LoginApp.Forms.Views;assembly=LoginApp.Forms"
                     xmlns:vms="clr-namespace:LoginApp.ViewModels;assembly=LoginApp"
-                    x:Class="LoginApp.Views.SignUpView">
+                    x:Class="LoginApp.Forms.Views.SignUpView">
     <ContentPage.Content>
         <Grid Padding="{StaticResource OuterPadding}">
             <Grid.RowDefinitions>

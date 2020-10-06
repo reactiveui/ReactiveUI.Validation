@@ -7,7 +7,7 @@
 using ReactiveUI;
 using Splat;
 
-namespace LoginApp.ViewModels.Abstractions
+namespace LoginApp.ViewModels
 {
     /// <summary>
     /// A base for all the different view models used throughout the application.

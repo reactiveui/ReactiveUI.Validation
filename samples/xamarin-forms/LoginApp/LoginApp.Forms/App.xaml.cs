@@ -9,7 +9,7 @@ using Xamarin.Forms.Xaml;
 
 [assembly: XamlCompilation(XamlCompilationOptions.Compile)]
 
-namespace LoginApp
+namespace LoginApp.Forms
 {
     /// <inheritdoc />
     /// <summary>
