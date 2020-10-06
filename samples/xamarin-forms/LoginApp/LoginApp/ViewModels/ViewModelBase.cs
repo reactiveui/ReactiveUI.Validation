@@ -33,7 +33,7 @@ namespace LoginApp.ViewModels
         /// <summary>
         /// Gets or sets the screen used for routing operations.
         /// </summary>
-        public IScreen HostScreen { get; protected set; }
+        public IScreen HostScreen { get; }
 
         /// <summary>
         /// Gets the activator which contains context information for use in activation of the view model.

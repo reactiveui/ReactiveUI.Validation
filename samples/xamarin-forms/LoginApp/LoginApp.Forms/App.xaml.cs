@@ -23,9 +23,7 @@ namespace LoginApp.Forms
         public App()
         {
             InitializeComponent();
-
-            var unused = new AppBootstrapper();
-            MainPage = AppBootstrapper.CreateMainPage();
+            MainPage = new AppBootstrapper(this).CreateMainPage();
         }
 
         /// <inheritdoc/>

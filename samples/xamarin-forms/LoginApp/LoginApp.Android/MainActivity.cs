@@ -5,7 +5,6 @@
 // </copyright>
 
 using System;
-using Acr.UserDialogs;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
@@ -28,8 +27,6 @@ namespace LoginApp.Droid
             base.OnCreate(savedInstanceState);
 
             Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            UserDialogs.Init(() => this);
-
             LoadApplication(new App());
         }
     }

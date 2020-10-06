@@ -6,7 +6,7 @@
 
 using System;
 using System.Reactive;
-using Acr.UserDialogs;
+using LoginApp.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using ReactiveUI.Validation.Abstractions;
@@ -14,7 +14,7 @@ using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
 using Splat;
 
-// ReSharper disable UnusedAutoPropertyAccessor.Global due to ReactiveUI.Fody requirements.
+// ReSharper disable UnusedAutoPropertyAccessor.Global due to binding requirements.
 namespace LoginApp.ViewModels
 {
     /// <summary>
@@ -22,7 +22,6 @@ namespace LoginApp.ViewModels
     /// </summary>
     public class SignUpViewModel : ViewModelBase, IValidatableViewModel
     {
-        private readonly Func<string, bool> _isDefined = value => !string.IsNullOrEmpty(value);
         private readonly IUserDialogs _dialogs;
 
         /// <summary>
@@ -39,7 +38,7 @@ namespace LoginApp.ViewModels
 
             // Prints current validation errors
             this.WhenAnyValue(x => x.UserName, x => x.Password, x => x.ConfirmPassword)
-                .Subscribe(_ => this.Log().Debug(ValidationContext?.Text?.ToSingleLine()));
+                .Subscribe(_ => this.Log().Debug(ValidationContext.Text.ToSingleLine()));
         }
 
         /// <summary>
@@ -68,29 +67,24 @@ namespace LoginApp.ViewModels
         /// <inheritdoc />
         public ValidationContext ValidationContext { get; } = new ValidationContext();
 
-        private void SignUpImpl() => _dialogs.Toast("User created successfully.");
+        private void SignUpImpl() => _dialogs.ShowDialog("User created successfully.");
 
         private void CreateValidations()
         {
             this.ValidationRule(
                 vm => vm.UserName,
-                _isDefined,
+                value => !string.IsNullOrEmpty(value),
                 "UserName is required.");
 
             this.ValidationRule(
                 vm => vm.Password,
-                _isDefined,
+                value => !string.IsNullOrEmpty(value),
                 "Password is required.");
 
             this.ValidationRule(
                 vm => vm.ConfirmPassword,
-                _isDefined,
-                "Confirm password is required.");
-
-            this.ValidationRule(
-                vm => vm.ConfirmPassword,
-                confirmPassword => confirmPassword == Password,
-                "Passwords must match.");
+                value => !string.IsNullOrEmpty(value) && value == Password,
+                "Confirm password field is required, passwords must match.");
         }
     }
 }

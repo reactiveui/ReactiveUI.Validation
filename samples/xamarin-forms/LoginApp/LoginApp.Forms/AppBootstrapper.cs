@@ -5,13 +5,14 @@
 // </copyright>
 
 using System;
-using Acr.UserDialogs;
+using LoginApp.Forms.Services;
 using LoginApp.Forms.Views;
+using LoginApp.Services;
 using LoginApp.ViewModels;
 using ReactiveUI;
 using ReactiveUI.XamForms;
-using Splat;
 using Xamarin.Forms;
+using Splat;
 
 namespace LoginApp.Forms
 {
@@ -24,12 +25,14 @@ namespace LoginApp.Forms
         /// <summary>
         /// Initializes a new instance of the <see cref="AppBootstrapper"/> class.
         /// </summary>
-        public AppBootstrapper()
+        public AppBootstrapper(Application application)
         {
-            Router = new RoutingState();
-            RegisterViews();
-            RegisterDialogs();
-
+            // Register the dependencies.
+            Locator.CurrentMutable.RegisterConstant(this, typeof(IScreen));
+            Locator.CurrentMutable.Register(() => new SignUpView(), typeof(IViewFor<SignUpViewModel>));
+            Locator.CurrentMutable.Register(() => new XamarinUserDialogs(application), typeof(IUserDialogs));
+            
+            // Show the sample page.
             Router
                 .NavigateAndReset
                 .Execute(new SignUpViewModel())
@@ -39,29 +42,18 @@ namespace LoginApp.Forms
         /// <summary>
         /// Gets or sets the router which is used to navigate between views.
         /// </summary>
-        public RoutingState Router { get; protected set; }
+        public RoutingState Router { get; } = new RoutingState();
 
         /// <summary>
         /// Creates the first main page used within the application.
         /// </summary>
         /// <returns>The page generated.</returns>
-        public static Page CreateMainPage()
+        public Page CreateMainPage()
         {
             // NB: This returns the opening page that the platform-specific
             // boilerplate code will look for. It will know to find us because
             // we've registered our AppBootstrapScreen.
             return new RoutedViewHost();
-        }
-
-        private void RegisterViews()
-        {
-            Locator.CurrentMutable.RegisterConstant(this, typeof(IScreen));
-            Locator.CurrentMutable.Register(() => new SignUpView(), typeof(IViewFor<SignUpViewModel>));
-        }
-
-        private void RegisterDialogs()
-        {
-            Locator.CurrentMutable.Register(() => UserDialogs.Instance, typeof(IUserDialogs));
         }
     }
 }

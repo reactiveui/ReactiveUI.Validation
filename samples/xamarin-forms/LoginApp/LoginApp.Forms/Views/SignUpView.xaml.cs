@@ -28,10 +28,14 @@ namespace LoginApp.Forms.Views
         /// <inheritdoc />
         protected override void CreateBindings(CompositeDisposable disposables)
         {
-            this.Bind(ViewModel, x => x.UserName, x => x.UserName.Text).DisposeWith(disposables);
-            this.Bind(ViewModel, x => x.Password, x => x.Password.Text).DisposeWith(disposables);
-            this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPassword.Text).DisposeWith(disposables);
-            this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUp).DisposeWith(disposables);
+            this.Bind(ViewModel, x => x.UserName, x => x.UserName.Text)
+                .DisposeWith(disposables);
+            this.Bind(ViewModel, x => x.Password, x => x.Password.Text)
+                .DisposeWith(disposables);
+            this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPassword.Text)
+                .DisposeWith(disposables);
+            this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUp)
+                .DisposeWith(disposables);
 
             SetupValidationBindings(disposables);
         }
@@ -42,7 +46,7 @@ namespace LoginApp.Forms.Views
                 .DisposeWith(disposables);
             this.BindValidation(ViewModel, vm => vm.Password, view => view.PasswordErrorMessage.Text)
                 .DisposeWith(disposables);
-            this.BindValidationEx(ViewModel, vm => vm.ConfirmPassword, view => view.ConfirmPasswordErrorMessage.Text)
+            this.BindValidation(ViewModel, vm => vm.ConfirmPassword, view => view.ConfirmPasswordErrorMessage.Text)
                 .DisposeWith(disposables);
         }
     }
