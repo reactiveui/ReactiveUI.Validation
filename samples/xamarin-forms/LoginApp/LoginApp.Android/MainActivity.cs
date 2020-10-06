@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for more information.
 // </copyright>
 
+using System;
 using Acr.UserDialogs;
 using Android.App;
 using Android.Content.PM;
@@ -26,6 +27,7 @@ namespace LoginApp.Droid
 
             base.OnCreate(savedInstanceState);
 
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) => System.Diagnostics.Debug.Write(args);
             Xamarin.Forms.Forms.Init(this, savedInstanceState);
             UserDialogs.Init(() => this);
 

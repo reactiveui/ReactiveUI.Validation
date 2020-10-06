@@ -12,7 +12,7 @@ namespace LoginApp.ViewModels
     /// <summary>
     /// A base for all the different view models used throughout the application.
     /// </summary>
-    public abstract class ViewModelBase : ReactiveObject, IRoutableViewModel, ISupportsActivation
+    public abstract class ViewModelBase : ReactiveObject, IRoutableViewModel, IActivatableViewModel
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ViewModelBase"/> class.

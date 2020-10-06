@@ -42,7 +42,7 @@ namespace LoginApp.Forms.Views
                 .DisposeWith(disposables);
             this.BindValidation(ViewModel, vm => vm.Password, view => view.PasswordErrorMessage.Text)
                 .DisposeWith(disposables);
-            this.BindValidation(ViewModel, vm => vm.ConfirmPassword, view => view.ConfirmPasswordErrorMessage.Text)
+            this.BindValidationEx(ViewModel, vm => vm.ConfirmPassword, view => view.ConfirmPasswordErrorMessage.Text)
                 .DisposeWith(disposables);
         }
     }

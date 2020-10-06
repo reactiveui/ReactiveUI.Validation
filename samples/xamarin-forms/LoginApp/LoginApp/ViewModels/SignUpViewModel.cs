@@ -20,7 +20,7 @@ namespace LoginApp.ViewModels
     /// <summary>
     /// A view model which shows controls to create an account.
     /// </summary>
-    public class SignUpViewModel : ViewModelBase, ISupportsValidation
+    public class SignUpViewModel : ViewModelBase, IValidatableViewModel
     {
         private readonly Func<string, bool> _isDefined = value => !string.IsNullOrEmpty(value);
         private readonly IUserDialogs _dialogs;

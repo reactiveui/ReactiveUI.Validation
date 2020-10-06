@@ -10,12 +10,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Acr.UserDialogs" Version="7.0.4" />
-    <PackageReference Include="ReactiveUI" Version="9.11.3" />
-    <PackageReference Include="ReactiveUI.Fody" Version="9.11.3" />
-    <PackageReference Include="ReactiveUI.Validation" Version="1.0.3" />
-    <PackageReference Include="ReactiveUI.XamForms" Version="9.11.3" />
-    <PackageReference Include="Xamarin.Forms" Version="3.6.0.220655" />
+    <PackageReference Include="Acr.UserDialogs" Version="7.1.0.454" />
+    <PackageReference Include="ReactiveUI" Version="11.5.35" />
+    <PackageReference Include="ReactiveUI.Fody" Version="11.5.35" />
+    <PackageReference Include="ReactiveUI.Validation" Version="1.5.5" />
+    <PackageReference Include="ReactiveUI.XamForms" Version="11.5.35" />
+    <PackageReference Include="Xamarin.Forms" Version="4.7.0.1351" />
   </ItemGroup>
   
   <ItemGroup>
