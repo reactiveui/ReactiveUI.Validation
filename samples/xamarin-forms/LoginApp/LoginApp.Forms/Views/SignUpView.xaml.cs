@@ -8,6 +8,9 @@ using System.Reactive.Disposables;
 using LoginApp.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Validation.Extensions;
+using ReactiveUI.XamForms;
+using Xamarin.Forms.PlatformConfiguration;
+using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace LoginApp.Forms.Views
 {
@@ -15,7 +18,7 @@ namespace LoginApp.Forms.Views
     /// <summary>
     /// A page which contains controls about Sign Up an account.
     /// </summary>
-    public partial class SignUpView : ContentPageBase<SignUpViewModel>
+    public partial class SignUpView : ReactiveContentPage<SignUpViewModel>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SignUpView"/> class.
@@ -23,10 +26,15 @@ namespace LoginApp.Forms.Views
         public SignUpView()
         {
             InitializeComponent();
+            On<iOS>().SetUseSafeArea(true);
+            this.WhenActivated(disposables =>
+            {
+                SetupBindings(disposables);
+                SetupValidationBindings(disposables);
+            });
         }
 
-        /// <inheritdoc />
-        protected override void CreateBindings(CompositeDisposable disposables)
+        private void SetupBindings(CompositeDisposable disposables)
         {
             this.Bind(ViewModel, x => x.UserName, x => x.UserName.Text)
                 .DisposeWith(disposables);
@@ -36,8 +44,6 @@ namespace LoginApp.Forms.Views
                 .DisposeWith(disposables);
             this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUp)
                 .DisposeWith(disposables);
-
-            SetupValidationBindings(disposables);
         }
 
         private void SetupValidationBindings(CompositeDisposable disposables)

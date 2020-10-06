@@ -12,6 +12,7 @@ using ReactiveUI.Fody.Helpers;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
+using ReactiveUI.Validation.Helpers;
 using Splat;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global due to binding requirements.
@@ -20,7 +21,7 @@ namespace LoginApp.ViewModels
     /// <summary>
     /// A view model which shows controls to create an account.
     /// </summary>
-    public class SignUpViewModel : ViewModelBase, IValidatableViewModel
+    public class SignUpViewModel : ReactiveValidationObject<SignUpViewModel>, IRoutableViewModel, IActivatableViewModel
     {
         private readonly IUserDialogs _dialogs;
 
@@ -30,13 +31,15 @@ namespace LoginApp.ViewModels
         /// <param name="hostScreen">The screen used for routing purposes.</param>
         /// <param name="dialogs"><see cref="IUserDialogs"/> implementation to show dialogs.</param>
         public SignUpViewModel(IScreen hostScreen = null, IUserDialogs dialogs = null)
-            : base("Sign Up", hostScreen)
         {
             _dialogs = dialogs ?? Locator.Current.GetService<IUserDialogs>();
+            HostScreen = hostScreen ?? Locator.Current.GetService<IScreen>();
+            UrlPathSegment = "Sign Up";
+
             SignUp = ReactiveCommand.Create(SignUpImpl, this.IsValid());
             CreateValidations();
 
-            // Prints current validation errors
+            // Prints current validation errors.
             this.WhenAnyValue(x => x.UserName, x => x.Password, x => x.ConfirmPassword)
                 .Subscribe(_ => this.Log().Debug(ValidationContext.Text.ToSingleLine()));
         }
@@ -64,8 +67,20 @@ namespace LoginApp.ViewModels
         /// </summary>
         public ReactiveCommand<Unit, Unit> SignUp { get; }
 
-        /// <inheritdoc />
-        public ValidationContext ValidationContext { get; } = new ValidationContext();
+        /// <summary>
+        /// Gets the current page path.
+        /// </summary>
+        public string UrlPathSegment { get; }
+
+        /// <summary>
+        /// Gets or sets the screen used for routing operations.
+        /// </summary>
+        public IScreen HostScreen { get; }
+
+        /// <summary>
+        /// Gets the activator which contains context information for use in activation of the view model.
+        /// </summary>
+        public ViewModelActivator Activator { get; } = new ViewModelActivator();
 
         private void SignUpImpl() => _dialogs.ShowDialog("User created successfully.");
 
