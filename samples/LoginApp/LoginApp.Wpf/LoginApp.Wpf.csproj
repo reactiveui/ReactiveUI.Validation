@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>LoginApp.Wpf.Program</StartupObject>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWpf>true</UseWpf>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MahApps.Metro" Version="2.2.0" />
+    <PackageReference Include="ReactiveUI.WPF" Version="11.5.35" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LoginApp\LoginApp.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="App.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Views\SignUpView.xaml">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>
