@@ -96,9 +96,28 @@ namespace LoginApp.ViewModels
                 "Password is required.");
 
             this.ValidationRule(
+                vm => vm.Password,
+                value => value?.Length > 2,
+                "Password should be longer.");
+
+            this.ValidationRule(
                 vm => vm.ConfirmPassword,
-                value => !string.IsNullOrEmpty(value) && value == Password,
-                "Confirm password field is required, passwords must match.");
+                value => !string.IsNullOrEmpty(value),
+                "Confirm password field is required.");
+
+            IObservable<bool> passwordsMatch =
+                this.WhenAnyValue(
+                    x => x.Password,
+                    x => x.ConfirmPassword,
+                    (password, confirmation) =>
+                        !string.IsNullOrWhiteSpace(password) &&
+                        !string.IsNullOrWhiteSpace(confirmation) &&
+                        password == confirmation);
+
+            this.ValidationRule(
+                x => x.ConfirmPassword,
+                x => passwordsMatch,
+                (model, valid) => !valid ? "Passwords must match." : string.Empty);
         }
     }
 }

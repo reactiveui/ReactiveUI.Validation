@@ -4,13 +4,13 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive;
-using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using ReactiveUI.Validation.Abstractions;
-using ReactiveUI.Validation.Exceptions;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
@@ -34,7 +34,6 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <summary>
         /// Creates a binding between a ViewModel property and a view property.
         /// </summary>
-        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
@@ -42,12 +41,9 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="view">View instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property.</param>
-        /// <param name="formatter">Validation formatter.</param>
+        /// <param name="formatter">Validation formatter. Defaults to the <see cref="SingleLineFormatter"/>.</param>
         /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
         /// <returns>Returns a validation component.</returns>
-        /// <exception cref="MultipleValidationNotSupportedException">
-        /// Thrown if the ViewModel property has more than one validation associated.
-        /// </exception>
         public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(
             TView view,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
@@ -57,20 +53,37 @@ namespace ReactiveUI.Validation.ValidationBindings
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
-            if (formatter == null)
+            if (view is null)
             {
-                formatter = SingleLineFormatter.Default;
+                throw new ArgumentNullException(nameof(view));
             }
 
-            var vcObs = view.WhenAnyValue(v => v.ViewModel)
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
+            formatter ??= SingleLineFormatter.Default;
+
+            var vcObs = view
+                .WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
                 .Select(
-                    viewModel =>
-                        viewModel!.ValidationContext
-                            .ResolveFor(viewModelProperty, strict)
-                            .ValidationStatusChange)
+                    viewModel => viewModel!
+                        .ValidationContext
+                        .ResolveFor(viewModelProperty, strict)
+                        .Select(x => x.ValidationStatusChange)
+                        .CombineLatest())
                 .Switch()
-                .Select(vc => formatter.Format(vc.Text));
+                .Select(
+                    states => states
+                        .Select(state => formatter.Format(state.Text))
+                        .FirstOrDefault(msg => !string.IsNullOrEmpty(msg)) ?? string.Empty);
 
             var updateObs = BindToView(vcObs, view, viewProperty)
                 .Select(_ => Unit.Default);
@@ -81,7 +94,6 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <summary>
         /// Creates a binding from a specified ViewModel property to a provided action.
         /// </summary>
-        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
@@ -92,32 +104,52 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="formatter">Validation formatter.</param>
         /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
         /// <returns>Returns a validation component.</returns>
-        /// <exception cref="MultipleValidationNotSupportedException">
-        /// Thrown if the ViewModel property has more than one validation associated.
-        /// </exception>
         public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(
             TView view,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
-            Action<ValidationState, TOut> action,
-            IValidationTextFormatter<TOut>? formatter = null,
+            Action<IList<ValidationState>, IList<TOut>> action,
+            IValidationTextFormatter<TOut> formatter,
             bool strict = true)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
+            if (view is null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
             if (formatter == null)
             {
                 throw new ArgumentNullException(nameof(formatter));
             }
 
-            var vcObs = view.WhenAnyValue(v => v.ViewModel)
+            var vcObs = view
+                .WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
                 .Select(
-                    viewModel =>
-                        viewModel!.ValidationContext
-                            .ResolveFor(viewModelProperty, strict)
-                            .ValidationStatusChange)
+                    viewModel => viewModel!
+                        .ValidationContext
+                        .ResolveFor(viewModelProperty, strict)
+                        .Select(x => x.ValidationStatusChange)
+                        .CombineLatest())
                 .Switch()
-                .Select(vc => new { ValidationChange = vc, Formatted = formatter.Format(vc.Text) })
+                .Select(states => new
+                {
+                    ValidationChange = states,
+                    Formatted = states
+                        .Select(state => formatter.Format(state.Text))
+                        .ToList()
+                })
                 .Do(r => action(r.ValidationChange, r.Formatted))
                 .Select(_ => Unit.Default);
 
@@ -127,7 +159,6 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <summary>
         /// Creates a binding between a <see cref="ValidationHelper" /> and a specified View property.
         /// </summary>
-        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewProperty">View property type.</typeparam>
@@ -136,9 +167,6 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <param name="formatter">Validation formatter.</param>
         /// <returns>Returns a validation component.</returns>
-        /// <exception cref="MultipleValidationNotSupportedException">
-        /// Thrown if the ViewModel property has more than one validation associated.
-        /// </exception>
         public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(
             TView view,
             Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
@@ -147,17 +175,30 @@ namespace ReactiveUI.Validation.ValidationBindings
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
-            if (formatter == null)
+            if (view is null)
             {
-                formatter = SingleLineFormatter.Default;
+                throw new ArgumentNullException(nameof(view));
             }
 
-            var vcObs = view.WhenAnyValue(v => v.ViewModel)
+            if (viewModelHelperProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelHelperProperty));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
+            formatter ??= SingleLineFormatter.Default;
+
+            var vcObs = view
+                .WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
                 .Select(
-                    viewModel =>
-                        viewModel.WhenAnyValue(viewModelHelperProperty)
-                            .SelectMany(vy => vy.ValidationChanged))
+                    viewModel => viewModel
+                        .WhenAnyValue(viewModelHelperProperty)
+                        .SelectMany(vy => vy.ValidationChanged))
                 .Switch()
                 .Select(vc => formatter.Format(vc.Text));
 
@@ -170,7 +211,6 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <summary>
         /// Creates a binding from a <see cref="ValidationHelper" /> to a specified action.
         /// </summary>
-        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TOut">Action return type.</typeparam>
@@ -179,32 +219,46 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="action">Action to be executed.</param>
         /// <param name="formatter">Validation formatter.</param>
         /// <returns>Returns a validation component.</returns>
-        /// <exception cref="MultipleValidationNotSupportedException">
-        /// Thrown if the ViewModel property has more than one validation associated.
-        /// </exception>
         public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TOut>(
             TView view,
             Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
             Action<ValidationState, TOut> action,
-            IValidationTextFormatter<TOut>? formatter = null)
+            IValidationTextFormatter<TOut> formatter)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
-            if (formatter == null)
+            if (view is null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            if (viewModelHelperProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelHelperProperty));
+            }
+
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            if (formatter is null)
             {
                 throw new ArgumentNullException(nameof(formatter));
             }
 
-            var vcObs = view.WhenAnyValue(v => v.ViewModel)
+            var vcObs = view
+                .WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
                 .Select(
-                    viewModel =>
-                        viewModel.WhenAnyValue(viewModelHelperProperty)
-                            .SelectMany(vy => vy.ValidationChanged))
+                    viewModel => viewModel
+                        .WhenAnyValue(viewModelHelperProperty)
+                        .SelectMany(vy => vy.ValidationChanged))
                 .Switch()
                 .Select(vc => new { ValidationChange = vc, Formatted = formatter.Format(vc.Text) });
 
-            var updateObs = vcObs.Do(r => action(r.ValidationChange, r.Formatted))
+            var updateObs = vcObs
+                .Do(r => action(r.ValidationChange, r.Formatted))
                 .Select(_ => Unit.Default);
 
             return new ValidationBinding(updateObs);
@@ -213,7 +267,6 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <summary>
         /// Creates a binding between a ViewModel and a specified action.
         /// </summary>
-        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TOut">Action return type.</typeparam>
@@ -221,9 +274,6 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="action">Action to be executed.</param>
         /// <param name="formatter">Validation formatter.</param>
         /// <returns>Returns a validation component.</returns>
-        /// <exception cref="MultipleValidationNotSupportedException">
-        /// Thrown if the ViewModel property has more than one validation associated.
-        /// </exception>
         public static IValidationBinding ForViewModel<TView, TViewModel, TOut>(
             TView view,
             Action<TOut> action,
@@ -231,17 +281,29 @@ namespace ReactiveUI.Validation.ValidationBindings
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
-            if (formatter == null)
+            if (view is null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            if (formatter is null)
             {
                 throw new ArgumentNullException(nameof(formatter));
             }
 
-            var vcObs = view.WhenAnyValue(v => v.ViewModel)
+            var vcObs = view
+                .WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
                 .Select(vm => vm!.ValidationContext.Text)
                 .Select(formatter.Format);
 
-            var updateObs = vcObs.Do(action)
+            var updateObs = vcObs
+                .Do(action)
                 .Select(_ => Unit.Default);
 
             return new ValidationBinding(updateObs);
@@ -250,7 +312,6 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <summary>
         /// Creates a binding between a ViewModel and a View property.
         /// </summary>
-        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewProperty">View property type.</typeparam>
@@ -258,9 +319,6 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <param name="formatter">Validation formatter.</param>
         /// <returns>Returns a validation component.</returns>
-        /// <exception cref="MultipleValidationNotSupportedException">
-        /// Thrown if the ViewModel property has more than one validation associated.
-        /// </exception>
         public static IValidationBinding ForViewModel<TView, TViewModel, TViewProperty>(
             TView view,
             Expression<Func<TView, TViewProperty>> viewProperty,
@@ -268,12 +326,20 @@ namespace ReactiveUI.Validation.ValidationBindings
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
-            if (formatter == null)
+            if (view is null)
             {
-                formatter = SingleLineFormatter.Default;
+                throw new ArgumentNullException(nameof(view));
             }
 
-            var vcObs = view.WhenAnyValue(v => v.ViewModel)
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            formatter ??= SingleLineFormatter.Default;
+
+            var vcObs = view
+                .WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
                 .SelectMany(vm => vm!.ValidationContext.ValidationStatusChange)
                 .Select(vc => formatter.Format(vc.Text));
@@ -294,33 +360,19 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <summary>
         /// Creates a binding to a View property.
         /// </summary>
-        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewProperty">ViewModel type.</typeparam>
         /// <typeparam name="TTarget">Target type.</typeparam>
-        /// <typeparam name="TValue">Observable value type.</typeparam>
         /// <param name="valueChange">Observable value change.</param>
         /// <param name="target">Target instance.</param>
         /// <param name="viewProperty">View property.</param>
         /// <returns>Returns a validation component.</returns>
-        /// <exception cref="MultipleValidationNotSupportedException">
-        /// Thrown if the ViewModel property has more than one validation associated.
-        /// </exception>
-        private static IObservable<TValue> BindToView<TView, TViewProperty, TTarget, TValue>(
-            IObservable<TValue> valueChange,
+        private static IObservable<string> BindToView<TView, TViewProperty, TTarget>(
+            IObservable<string> valueChange,
             TTarget target,
             Expression<Func<TView, TViewProperty>> viewProperty)
+            where TTarget : notnull
         {
-            if (target is null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
-
-            if (viewProperty is null)
-            {
-                throw new ArgumentNullException(nameof(viewProperty));
-            }
-
             var viewExpression = Reflection.Rewrite(viewProperty.Body);
 
             var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo())!;
@@ -353,7 +405,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         {
             if (disposing)
             {
-                _disposables?.Dispose();
+                _disposables.Dispose();
             }
         }
     }

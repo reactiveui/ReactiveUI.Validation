@@ -9,7 +9,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using Android.Support.Design.Widget;
 using ReactiveUI.Validation.Abstractions;
-using ReactiveUI.Validation.Exceptions;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
@@ -25,7 +24,6 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <summary>
         /// Platform binding to the TextInputLayout.
         /// </summary>
-        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
         /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
@@ -34,9 +32,6 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-        /// <exception cref="MultipleValidationNotSupportedException">
-        /// Thrown if the ViewModel property has more than one validation associated.
-        /// </exception>
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty>(
             this TView view,
@@ -49,7 +44,7 @@ namespace ReactiveUI.Validation.Platforms.Android
             return ValidationBinding.ForProperty(
                 view,
                 viewModelProperty,
-                (_, errorText) => viewProperty.Error = errorText,
+                (_, errors) => viewProperty.Error = errors.FirstOrDefault(msg => !string.IsNullOrEmpty(msg)),
                 SingleLineFormatter.Default);
         }
 
@@ -65,6 +60,7 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        [Obsolete("This method is no longer required, BindValidation now supports multiple validations.")]
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty>(
             this TView view,
@@ -74,7 +70,7 @@ namespace ReactiveUI.Validation.Platforms.Android
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
-            return ValidationBindingEx.ForProperty(
+            return ValidationBinding.ForProperty(
                 view,
                 viewModelProperty,
                 (_, errors) => viewProperty.Error = errors.FirstOrDefault(msg => !string.IsNullOrEmpty(msg)),
@@ -84,7 +80,6 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <summary>
         /// Platform binding to the TextInputLayout.
         /// </summary>
-        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
         /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <param name="view">IViewFor instance.</param>
@@ -92,9 +87,6 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <param name="viewModelHelperProperty">ViewModel's ValidationHelper property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-        /// <exception cref="MultipleValidationNotSupportedException">
-        /// Thrown if the ViewModel property has more than one validation associated.
-        /// </exception>
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidation<TView, TViewModel>(
             this TView view,
