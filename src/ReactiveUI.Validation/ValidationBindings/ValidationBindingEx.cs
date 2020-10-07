@@ -180,7 +180,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             return bindInfo
                 .Where(x => x.host != null)
                 .Do(
-                    x => setter(x.host, x.val, viewExpression.GetArgumentsArray()),
+                    x => setter(x.host, x.val.FirstOrDefault(msg => !string.IsNullOrEmpty(msg)) ?? string.Empty, viewExpression.GetArgumentsArray()),
                     ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"))
                 .Select(v => v.val);
         }
