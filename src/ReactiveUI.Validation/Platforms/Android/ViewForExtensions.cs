@@ -9,7 +9,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using Android.Support.Design.Widget;
 using ReactiveUI.Validation.Abstractions;
-using ReactiveUI.Validation.Exceptions;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
