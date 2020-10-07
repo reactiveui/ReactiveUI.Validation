@@ -38,7 +38,7 @@ namespace ReactiveUI.Validation.Tests
 
             viewModel.ValidationContext.Add(firstValidation);
             view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
-            view.BindValidationEx(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
+            view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
             // Verify validation context behavior.
             Assert.False(viewModel.ValidationContext.IsValid);
@@ -68,7 +68,7 @@ namespace ReactiveUI.Validation.Tests
 
             viewModel.ValidationContext.Add(firstValidation);
             view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
-            view.BindValidationEx(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
+            view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
             // Verify the initial state.
             Assert.True(viewModel.HasErrors);

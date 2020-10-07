@@ -8,7 +8,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
 using ReactiveUI.Validation.Abstractions;
-using ReactiveUI.Validation.Exceptions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
 using Splat;
@@ -34,6 +33,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        [Obsolete("This method is no longer required, BindValidation now supports multiple validations.")]
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(
             this TView view,
@@ -58,7 +58,7 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(viewProperty));
             }
 
-            return ValidationBindingEx.ForProperty(view, viewModelProperty, viewProperty);
+            return ValidationBinding.ForProperty(view, viewModelProperty, viewProperty);
         }
 
         /// <summary>
@@ -74,9 +74,6 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-        /// <exception cref="MultipleValidationNotSupportedException">
-        /// Thrown if the ViewModel property has more than one validation associated.
-        /// </exception>
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(
             this TView view,
@@ -115,9 +112,6 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-        /// <exception cref="MultipleValidationNotSupportedException">
-        /// Thrown if the ViewModel property has more than one validation associated.
-        /// </exception>
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
             this TView view,
@@ -151,9 +145,6 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelHelperProperty">ViewModel's ValidationHelper property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-        /// <exception cref="MultipleValidationNotSupportedException">
-        /// Thrown if the ViewModel property has more than one validation associated.
-        /// </exception>
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
             this TView view,

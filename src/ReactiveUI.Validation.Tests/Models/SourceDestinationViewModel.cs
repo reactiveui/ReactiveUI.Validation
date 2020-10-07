@@ -6,7 +6,6 @@
 using System.Reactive.Concurrency;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Contexts;
-using ReactiveUI.Validation.Extensions;
 
 namespace ReactiveUI.Validation.Tests.Models
 {

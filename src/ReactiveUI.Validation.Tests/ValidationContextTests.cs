@@ -7,10 +7,8 @@ using System;
 using System.Reactive.Concurrency;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
-using ReactiveUI.Validation.Exceptions;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Tests.Models;
-using ReactiveUI.Validation.ValidationBindings;
 using Xunit;
 
 namespace ReactiveUI.Validation.Tests
@@ -112,28 +110,28 @@ namespace ReactiveUI.Validation.Tests
         }
 
         /// <summary>
-        /// Verifies that a View property cannot have more than one validation and throws a <see cref="MultipleValidationNotSupportedException"/>.
+        /// Verifies that two validations properties are correctly applied in a View property.
         /// </summary>
         [Fact]
-        public void TwoValidationPropertiesInSamePropertyThrowsExceptionTest()
+        public void ShouldSupportBindingTwoValidationsForOneProperty()
         {
-            const string validName = "valid";
             const int minimumLength = 5;
 
-            var viewModel = new TestViewModel { Name = validName };
+            var viewModel = new TestViewModel { Name = "some" };
             var view = new TestView(viewModel);
 
             var firstValidation = new BasePropertyValidation<TestViewModel, string>(
                 viewModel,
                 vm => vm.Name,
                 s => !string.IsNullOrEmpty(s),
-                s => $"Name {s} isn't valid");
+                "Name is required.");
 
+            var minimumLengthErrorMessage = $"Minimum length is {minimumLength}";
             var secondValidation = new BasePropertyValidation<TestViewModel, string>(
                 viewModel,
                 vm => vm.Name,
                 s => s.Length > minimumLength,
-                _ => $"Minimum length is {minimumLength}");
+                s => minimumLengthErrorMessage);
 
             // Add validations
             viewModel.ValidationContext.Add(firstValidation);
@@ -143,21 +141,47 @@ namespace ReactiveUI.Validation.Tests
             view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
 
             // View validations bindings
-            var ex = Assert.Throws<MultipleValidationNotSupportedException>(() =>
-            {
-                return view.BindValidation(
-                    view.ViewModel,
-                    vm => vm.Name,
-                    v => v.NameErrorLabel);
-            });
+            view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
+
+            viewModel.Name = "som";
 
             Assert.False(viewModel.ValidationContext.IsValid);
             Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
 
             // Checks if second validation error message is shown
-            var expectedError =
-                $"Property {nameof(viewModel.Name)} has more than one validation rule associated. Consider using {nameof(ValidationBindingEx)} methods.";
-            Assert.Equal(expectedError, ex.Message);
+            Assert.Equal(minimumLengthErrorMessage, view.NameErrorLabel);
+        }
+
+        /// <summary>
+        /// Verifies that two validations properties are correctly applied
+        /// in a View property given by a complex expression.
+        /// </summary>
+        [Fact]
+        public void ShouldSupportBindingTwoValidationsForOnePropertyToChainedViewProperties()
+        {
+            const int minimumLength = 5;
+            var minimumLengthErrorMessage = $"Minimum length is {minimumLength}";
+            var viewModel = new TestViewModel { Name = "some" };
+            var view = new TestView(viewModel);
+
+            // Define the validations.
+            viewModel.ValidationRule(
+                vm => vm.Name,
+                s => !string.IsNullOrEmpty(s),
+                "Name is required.");
+
+            viewModel.ValidationRule(
+                vm => vm.Name,
+                s => s.Length > minimumLength,
+                minimumLengthErrorMessage);
+
+            // Define view bindings.
+            view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+            view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorContainer.Text);
+
+            Assert.False(viewModel.ValidationContext.IsValid);
+            Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
+            Assert.Equal(minimumLengthErrorMessage, view.NameErrorContainer.Text);
         }
 
         /// <summary>
