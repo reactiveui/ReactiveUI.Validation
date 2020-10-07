@@ -57,5 +57,37 @@ namespace ReactiveUI.Validation.Tests
             // Checks if second validation error message is shown
             Assert.Equal(minimumLengthErrorMessage, view.NameErrorLabel);
         }
+
+        /// <summary>
+        /// Verifies that two validations properties are correctly applied
+        /// in a View property given by a complex expression.
+        /// </summary>
+        [Fact]
+        public void TwoValidationPropertiesInSamePropertyShouldSupportBindingToNestedControls()
+        {
+            const int minimumLength = 5;
+            var minimumLengthErrorMessage = $"Minimum length is {minimumLength}";
+            var viewModel = new TestViewModel { Name = "some" };
+            var view = new TestView(viewModel);
+
+            // Define the validations.
+            viewModel.ValidationRule(
+                vm => vm.Name,
+                s => !string.IsNullOrEmpty(s),
+                "Name is required.");
+
+            viewModel.ValidationRule(
+                vm => vm.Name,
+                s => s.Length > minimumLength,
+                minimumLengthErrorMessage);
+
+            // Define view bindings.
+            view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+            view.BindValidationEx(view.ViewModel, vm => vm.Name, v => v.NameErrorContainer.Text);
+
+            Assert.False(viewModel.ValidationContext.IsValid);
+            Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
+            Assert.Equal(minimumLengthErrorMessage, view.NameErrorContainer.Text);
+        }
     }
 }

@@ -43,5 +43,10 @@ namespace ReactiveUI.Validation.Tests.Models
         /// Gets or sets the NameError Label which emulates a Text property (eg. Entry in Xamarin.Forms).
         /// </summary>
         public string NameErrorLabel { get; set; }
+
+        /// <summary>
+        /// Gets the error label which is represented by a container.
+        /// </summary>
+        public TestControl NameErrorContainer { get; } = new TestControl();
     }
 }
