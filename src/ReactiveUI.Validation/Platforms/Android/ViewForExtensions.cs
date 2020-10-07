@@ -44,7 +44,7 @@ namespace ReactiveUI.Validation.Platforms.Android
             return ValidationBinding.ForProperty(
                 view,
                 viewModelProperty,
-                (_, errorText) => viewProperty.Error = errorText,
+                (_, errors) => viewProperty.Error = errors.FirstOrDefault(msg => !string.IsNullOrEmpty(msg)),
                 SingleLineFormatter.Default);
         }
 
