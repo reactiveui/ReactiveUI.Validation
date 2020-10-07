@@ -64,7 +64,6 @@ namespace ReactiveUI.Validation.Extensions
         /// <summary>
         /// Binds the specified ViewModel property validation to the View property.
         /// </summary>
-        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
         /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
@@ -104,7 +103,6 @@ namespace ReactiveUI.Validation.Extensions
         /// <summary>
         /// Binds the overall validation of a ViewModel to a specified View property.
         /// </summary>
-        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
         /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewProperty">View property type.</typeparam>
@@ -136,7 +134,6 @@ namespace ReactiveUI.Validation.Extensions
         /// <summary>
         /// Binds a <see cref="ValidationHelper" /> from a ViewModel to a specified View property.
         /// </summary>
-        /// <remarks>DOES NOT support multiple validations for the same property.</remarks>
         /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewProperty">View property type.</typeparam>
