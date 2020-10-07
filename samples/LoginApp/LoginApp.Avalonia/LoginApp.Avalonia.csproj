@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="0.9.10" />
+        <PackageReference Include="Avalonia.Desktop" Version="0.9.10" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="0.9.10" />
+        <PackageReference Include="Citrus.Avalonia" Version="1.2.6" />
+        <PackageReference Include="MessageBox.Avalonia" Version="0.9.6.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\LoginApp\LoginApp.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="**\*.xaml.cs">
+            <DependentUpon>%(Filename)</DependentUpon>
+        </Compile>
+        <EmbeddedResource Include="**\*.xaml">
+            <SubType>Designer</SubType>
+        </EmbeddedResource>
+        <Compile Update="Views\SignUpView.xaml.cs">
+            <DependentUpon>SignUpView.xaml</DependentUpon>
+        </Compile>
+    </ItemGroup>
+</Project>

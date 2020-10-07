@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Application xmlns="http://xamarin.com/schemas/2014/forms" xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="LoginApp.Forms.App">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Style x:Key="ErrorLabelStyle" TargetType="Label">
+                <Setter Property="TextColor" Value="Red" />
+                <Setter Property="Margin" Value="0, -10, 0, 0" />
+            </Style>
+            <OnPlatform x:Key="OuterPadding" x:TypeArguments="Thickness">
+                <On Platform="Android">16</On>
+                <On Platform="iOS">20</On>
+            </OnPlatform>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

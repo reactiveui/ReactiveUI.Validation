@@ -1,0 +1,46 @@
+﻿<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="LoginApp.Avalonia.Views.SignUpView"
+        Width="400" Height="500">
+    <StackPanel>
+        <Border Classes="Card">
+            <StackPanel>
+                <TextBlock Classes="Heading" Text="Sign Up" />
+                <TextBox Margin="0 10 0 0"
+                         Text="{Binding UserName}" 
+                         Watermark="Please, enter user name..."
+                         UseFloatingWatermark="True" />
+                <TextBlock x:Name="UserNameValidation" 
+                           Foreground="Red"
+                           FontSize="12" />
+                
+                <TextBox Margin="0 10 0 0"
+                         Text="{Binding Password}" 
+                         Watermark="Please, enter your password..."
+                         UseFloatingWatermark="True"
+                         PasswordChar="*" />
+                <TextBlock x:Name="PasswordValidation" 
+                           Foreground="Red"
+                           FontSize="12" />
+                
+                <TextBox Margin="0 10 0 0"
+                         Text="{Binding ConfirmPassword}" 
+                         Watermark="Please, confirm the password..."
+                         UseFloatingWatermark="True"
+                         PasswordChar="*" />
+                <TextBlock x:Name="ConfirmPasswordValidation"
+                           TextWrapping="Wrap"
+                           Foreground="Red"
+                           FontSize="12" />
+                
+                <Button Margin="0 10 0 5"
+                        Content="Sign up" 
+                        Command="{Binding SignUp}" />
+                <TextBlock x:Name="CompoundValidation"
+                           TextWrapping="Wrap"
+                           Foreground="Red"
+                           FontSize="12" />
+            </StackPanel>
+        </Border>
+    </StackPanel>
+</Window>

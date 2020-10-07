@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<xamForms:ReactiveContentPage 
+    x:TypeArguments="vms:SignUpViewModel" 
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vms="clr-namespace:LoginApp.ViewModels;assembly=LoginApp"
+    xmlns:xamForms="clr-namespace:ReactiveUI.XamForms;assembly=ReactiveUI.XamForms"
+    x:Class="LoginApp.Forms.Views.SignUpView">
+    <ContentPage.Content>
+        <Grid Padding="{StaticResource OuterPadding}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <StackLayout Grid.Row="0">
+                <Entry x:Name="UserName"
+                       Placeholder="User name" />
+                <Label x:Name="UserNameErrorMessage"
+                       Style="{StaticResource ErrorLabelStyle}"
+                       VerticalOptions="Start" />
+
+                <Entry x:Name="Password"
+                       Placeholder="Password"
+                       IsPassword="True" />
+                <Label x:Name="PasswordErrorMessage"
+                       Style="{StaticResource ErrorLabelStyle}"
+                       VerticalOptions="Start" />
+
+                <Entry x:Name="ConfirmPassword"
+                       Placeholder="Password confirmation"
+                       IsPassword="True" />
+                <Label x:Name="ConfirmPasswordErrorMessage"
+                       Style="{StaticResource ErrorLabelStyle}"
+                       VerticalOptions="Start" />
+            </StackLayout>
+
+            <Button Grid.Row="2" x:Name="SignUp" Text="Sign Up" />
+        </Grid>
+    </ContentPage.Content>
+</xamForms:ReactiveContentPage>
