@@ -47,19 +47,19 @@ namespace LoginApp.ViewModels
         /// Gets or sets the typed <see cref="UserName"/>.
         /// </summary>
         [Reactive]
-        public string UserName { get; set; }
+        public string UserName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the typed <see cref="Password"/>.
         /// </summary>
         [Reactive]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the typed <see cref="ConfirmPassword"/>.
         /// </summary>
         [Reactive]
-        public string ConfirmPassword { get; set; }
+        public string ConfirmPassword { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets a command which will create the account.
@@ -87,12 +87,12 @@ namespace LoginApp.ViewModels
         {
             this.ValidationRule(
                 vm => vm.UserName,
-                value => !string.IsNullOrEmpty(value),
+                value => !string.IsNullOrWhiteSpace(value),
                 "UserName is required.");
 
             this.ValidationRule(
                 vm => vm.Password,
-                value => !string.IsNullOrEmpty(value),
+                value => !string.IsNullOrWhiteSpace(value),
                 "Password is required.");
 
             this.ValidationRule(
@@ -102,7 +102,7 @@ namespace LoginApp.ViewModels
 
             this.ValidationRule(
                 vm => vm.ConfirmPassword,
-                value => !string.IsNullOrEmpty(value),
+                value => !string.IsNullOrWhiteSpace(value),
                 "Confirm password field is required.");
 
             IObservable<bool> passwordsMatch =
