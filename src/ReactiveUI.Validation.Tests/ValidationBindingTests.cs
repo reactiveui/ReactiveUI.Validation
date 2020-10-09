@@ -4,7 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Extensions;
+using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.Tests.Models;
 using Xunit;
@@ -276,6 +278,38 @@ namespace ReactiveUI.Validation.Tests
 
             Assert.True(view.IsNameValid);
             Assert.Empty(view.NameErrorLabel);
+        }
+
+        /// <summary>
+        /// Ensures that we allow to use custom formatters in bindings.
+        /// </summary>
+        [Fact]
+        public void ShouldAllowUsingCustomFormatters()
+        {
+            const string validationConstant = "View model is invalid.";
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+
+            view.ViewModel.ValidationRule(
+                vm => vm.Name,
+                s => !string.IsNullOrEmpty(s),
+                "Name should not be empty.");
+
+            view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+            view.BindValidation(view.ViewModel, v => v.NameErrorLabel, new ConstFormatter(validationConstant));
+
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.NotEmpty(view.NameErrorLabel);
+            Assert.Equal(validationConstant, view.NameErrorLabel);
+        }
+
+        private class ConstFormatter : IValidationTextFormatter<string>
+        {
+            private readonly string _text;
+
+            public ConstFormatter(string text) => _text = text;
+
+            public string Format(ValidationText validationText) => _text;
         }
     }
 }
