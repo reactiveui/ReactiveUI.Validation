@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <UseWindowsForms>true</UseWindowsForms>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="ReactiveUI.WinForms" Version="11.5.35" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\LoginApp\LoginApp.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="Views\SignUpView.cs">
+        <SubType>Form</SubType>
+      </Compile>
+    </ItemGroup>
+</Project>

@@ -1,0 +1,41 @@
+﻿<Page
+    x:Class="LoginApp.Uwp.Views.SignUpView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d" Width="500" Height="500">
+    <StackPanel Margin="15">
+        <TextBlock Text="Sign Up" />
+        <TextBox x:Name="UserNameTextBox" 
+                 PlaceholderText="Please, enter user name..."
+                 Margin="0 10 0 0" />
+        <TextBlock x:Name="UserNameErrorLabel" 
+                   Text="User name error label"
+                   Foreground="Red" />
+
+        <TextBox x:Name="PasswordTextBox" 
+                 PlaceholderText="Please, enter a password..."
+                 Margin="0 10 0 0" />
+        <TextBlock x:Name="PasswordErrorLabel" 
+                   Text="Password error label"
+                   Foreground="Red" />
+
+        <TextBox x:Name="ConfirmPasswordTextBox" 
+                 PlaceholderText="Please, confirm the password..."
+                 Margin="0 10 0 0" />
+        <TextBlock x:Name="ConfirmPasswordErrorLabel" 
+                   Text="Password confirmation error label"
+                   Foreground="Red" />
+
+        <Button x:Name="SignUpButton" 
+                Style="{StaticResource AccentButtonStyle}"
+                Content="Confirm and sign up"
+                Margin="0 10 0 0" />
+        <TextBlock x:Name="ErrorLabel" 
+                   Text="Error label"
+                   TextWrapping="Wrap"
+                   Foreground="Red" />
+    </StackPanel>
+</Page>
