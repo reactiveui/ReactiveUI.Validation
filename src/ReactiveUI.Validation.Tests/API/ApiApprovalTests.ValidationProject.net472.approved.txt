@@ -137,14 +137,16 @@ namespace ReactiveUI.Validation.Extensions
     }
     public static class ViewForExtensions
     {
+        [System.Obsolete("This method is a part of ReactiveUI internals and will be removed from ReactiveUI" +
+            ".Validation public API soon.")]
         public static System.IDisposable BindToDirect<TTarget, TValue>(System.IObservable<TValue> @this, TTarget target, System.Linq.Expressions.Expression viewExpression) { }
-        public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
+        public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel?, ReactiveUI.Validation.Helpers.ValidationHelper>> viewModelHelperProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
+        public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel?, ReactiveUI.Validation.Helpers.ValidationHelper>> viewModelHelperProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        public static System.IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
+        public static System.IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         [System.Obsolete("This method is no longer required, BindValidation now supports multiple validatio" +

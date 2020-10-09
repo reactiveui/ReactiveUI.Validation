@@ -8,6 +8,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
 using ReactiveUI.Validation.Abstractions;
+using ReactiveUI.Validation.Formatters;
+using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
 using Splat;
@@ -72,13 +74,15 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <param name="formatter">Validation formatter. Defaults to <see cref="SingleLineFormatter"/>.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(
             this TView view,
             TViewModel viewModel,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
-            Expression<Func<TView, TViewProperty>> viewProperty)
+            Expression<Func<TView, TViewProperty>> viewProperty,
+            IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
@@ -97,7 +101,7 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(viewProperty));
             }
 
-            return ValidationBinding.ForProperty(view, viewModelProperty, viewProperty);
+            return ValidationBinding.ForProperty(view, viewModelProperty, viewProperty, formatter);
         }
 
         /// <summary>
@@ -109,12 +113,14 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="view">IViewFor instance.</param>
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <param name="formatter">Validation formatter. Defaults to <see cref="SingleLineFormatter"/>.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
             this TView view,
             TViewModel viewModel,
-            Expression<Func<TView, TViewProperty>> viewProperty)
+            Expression<Func<TView, TViewProperty>> viewProperty,
+            IValidationTextFormatter<string>? formatter = null)
             where TViewModel : ReactiveObject, IValidatableViewModel
             where TView : IViewFor<TViewModel>
         {
@@ -128,7 +134,7 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(viewProperty));
             }
 
-            return ValidationBinding.ForViewModel<TView, TViewModel, TViewProperty>(view, viewProperty);
+            return ValidationBinding.ForViewModel<TView, TViewModel, TViewProperty>(view, viewProperty, formatter);
         }
 
         /// <summary>
@@ -141,13 +147,15 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelHelperProperty">ViewModel's ValidationHelper property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <param name="formatter">Validation formatter. Defaults to <see cref="SingleLineFormatter"/>.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
             this TView view,
             TViewModel viewModel,
             Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
-            Expression<Func<TView, TViewProperty>> viewProperty)
+            Expression<Func<TView, TViewProperty>> viewProperty,
+            IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
@@ -166,7 +174,7 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(viewProperty));
             }
 
-            return ValidationBinding.ForValidationHelperProperty(view, viewModelHelperProperty, viewProperty);
+            return ValidationBinding.ForValidationHelperProperty(view, viewModelHelperProperty, viewProperty, formatter);
         }
 
         /// <summary>
@@ -178,6 +186,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="target">Target instance.</param>
         /// <param name="viewExpression">Expression to discover View properties.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        [Obsolete("This method is a part of ReactiveUI internals and will be " +
+                  "removed from ReactiveUI.Validation public API soon.")]
         public static IDisposable BindToDirect<TTarget, TValue>(
             IObservable<TValue> @this,
             TTarget target,
