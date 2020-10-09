@@ -3,6 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.Tests.Models;
@@ -245,6 +246,35 @@ namespace ReactiveUI.Validation.Tests
 
             Assert.True(view.ViewModel.ValidationContext.IsValid);
             Assert.Single(view.ViewModel.ValidationContext.Validations);
+            Assert.Empty(view.NameErrorLabel);
+        }
+
+        /// <summary>
+        /// Verifies that the IsValid and Message properties of a
+        /// <see cref="ValidationHelper" /> produce change notifications.
+        /// </summary>
+        [Fact]
+        public void ShouldUpdateBindableValidationHelperIsValidProperty()
+        {
+            const string nameErrorMessage = "Name should not be empty.";
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+
+            view.ViewModel.NameRule = view
+                .ViewModel
+                .ValidationRule(
+                    viewModelProperty => viewModelProperty.Name,
+                    s => !string.IsNullOrEmpty(s),
+                    nameErrorMessage);
+
+            view.OneWayBind(view.ViewModel, vm => vm.NameRule.IsValid, v => v.IsNameValid);
+            view.OneWayBind(view.ViewModel, vm => vm.NameRule.Message, v => v.NameErrorLabel, s => s.ToSingleLine());
+
+            Assert.False(view.IsNameValid);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+
+            view.ViewModel.Name = "Bingo";
+
+            Assert.True(view.IsNameValid);
             Assert.Empty(view.NameErrorLabel);
         }
     }
