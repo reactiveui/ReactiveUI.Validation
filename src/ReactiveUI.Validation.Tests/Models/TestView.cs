@@ -45,6 +45,11 @@ namespace ReactiveUI.Validation.Tests.Models
         public string NameErrorLabel { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the form is valid.
+        /// </summary>
+        public bool IsNameValid { get; set; }
+
+        /// <summary>
         /// Gets the error label which is represented by a container.
         /// </summary>
         public TestControl NameErrorContainer { get; } = new TestControl();

@@ -178,6 +178,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="target">Target instance.</param>
         /// <param name="viewExpression">Expression to discover View properties.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        [Obsolete("This method is a part of ReactiveUI internals and will be " +
+                  "removed from ReactiveUI.Validation public API soon.")]
         public static IDisposable BindToDirect<TTarget, TValue>(
             IObservable<TValue> @this,
             TTarget target,
