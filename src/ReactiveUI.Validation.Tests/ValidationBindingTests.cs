@@ -4,10 +4,14 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Reactive.Concurrency;
 using ReactiveUI.Validation.Collections;
+using ReactiveUI.Validation.Components;
+using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
+using ReactiveUI.Validation.TemplateGenerators;
 using ReactiveUI.Validation.Tests.Models;
 using Xunit;
 
@@ -301,6 +305,38 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
             Assert.NotEmpty(view.NameErrorLabel);
             Assert.Equal(validationConstant, view.NameErrorLabel);
+        }
+
+        /// <summary>
+        /// Verifies that we support binding to a separate <see cref="ValidationContext" />
+        /// wrapped in the <see cref="ValidationHelper" /> bindable class.
+        /// </summary>
+        [Fact]
+        public void ShouldSupportBindingToValidationContextWrappedInValidationHelper()
+        {
+            const string nameValidationError = "Name should not be empty.";
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+            var outerContext = new ValidationContext(ImmediateScheduler.Instance);
+            var validation = new BasePropertyValidation<TestViewModel, string>(
+                view.ViewModel,
+                vm => vm.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                nameValidationError);
+
+            outerContext.Add(validation);
+            view.ViewModel.NameRule = new ValidationHelper(outerContext);
+
+            view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+            view.BindValidation(view.ViewModel, vm => vm.NameRule, v => v.NameErrorLabel);
+
+            Assert.False(view.ViewModel.NameRule.IsValid);
+            Assert.NotEmpty(view.NameErrorLabel);
+            Assert.Equal(nameValidationError, view.NameErrorLabel);
+
+            view.ViewModel.Name = "Jotaro";
+
+            Assert.True(view.ViewModel.NameRule.IsValid);
+            Assert.Empty(view.NameErrorLabel);
         }
 
         private class ConstFormatter : IValidationTextFormatter<string>
