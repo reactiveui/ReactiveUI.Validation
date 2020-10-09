@@ -177,5 +177,75 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal("Source text", view.SourceError);
             Assert.Equal("Destination text", view.DestinationError);
         }
+
+        /// <summary>
+        /// Verifies that we still support binding to <see cref="ValidationHelper" /> properties.
+        /// </summary>
+        [Fact]
+        public void ShouldSupportBindingValidationHelperProperties()
+        {
+            const string nameErrorMessage = "Name should not be empty.";
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+
+            view.ViewModel.NameRule = view
+                .ViewModel
+                .ValidationRule(
+                    viewModelProperty => viewModelProperty.Name,
+                    s => !string.IsNullOrEmpty(s),
+                    nameErrorMessage);
+
+            view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+            view.BindValidation(view.ViewModel, vm => vm.NameRule, v => v.NameErrorLabel);
+
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Single(view.ViewModel.ValidationContext.Validations);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+
+            view.ViewModel.Name = "Jonathan";
+
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.Empty(view.NameErrorLabel);
+
+            view.ViewModel.Name = string.Empty;
+
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+        }
+
+        /// <summary>
+        /// Verifies that bindings support model observable validations.
+        /// </summary>
+        [Fact]
+        public void ShouldSupportBindingModelObservableValidationHelperProperties()
+        {
+            const string namesShouldMatchMessage = "Names should match.";
+            var view = new TestView(new TestViewModel
+            {
+                Name = "Bingo",
+                Name2 = "Bongo"
+            });
+
+            view.ViewModel.NameRule = view
+                .ViewModel
+                .ValidationRule(
+                    vm => vm.Name2,
+                    vm => vm.WhenAnyValue(x => x.Name, x => x.Name2, (name, name2) => name == name2),
+                    (vm, valid) => valid ? string.Empty : namesShouldMatchMessage);
+
+            view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+            view.Bind(view.ViewModel, vm => vm.Name2, v => v.Name2Label);
+            view.BindValidation(view.ViewModel, vm => vm.NameRule, v => v.NameErrorLabel);
+
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Single(view.ViewModel.ValidationContext.Validations);
+            Assert.Equal(namesShouldMatchMessage, view.NameErrorLabel);
+
+            view.ViewModel.Name = "Bongo";
+            view.ViewModel.Name2 = "Bongo";
+
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.Single(view.ViewModel.ValidationContext.Validations);
+            Assert.Empty(view.NameErrorLabel);
+        }
     }
 }
