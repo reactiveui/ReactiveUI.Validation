@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using ReactiveUI.Validation.Comparators;
 using ReactiveUI.Validation.Components;
-using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.Tests.Models;
 using Xunit;
