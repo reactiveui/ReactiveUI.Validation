@@ -68,7 +68,8 @@ namespace ReactiveUI.Validation.ValidationBindings
                 throw new ArgumentNullException(nameof(viewProperty));
             }
 
-            formatter ??= SingleLineFormatter.Default;
+            formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+                          SingleLineFormatter.Default;
 
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
@@ -165,7 +166,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="view">View instance.</param>
         /// <param name="viewModelHelperProperty">ViewModel's ValidationHelper property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
-        /// <param name="formatter">Validation formatter.</param>
+        /// <param name="formatter">Validation formatter. Defaults to the <see cref="SingleLineFormatter"/>.</param>
         /// <returns>Returns a validation component.</returns>
         public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(
             TView view,
@@ -190,7 +191,8 @@ namespace ReactiveUI.Validation.ValidationBindings
                 throw new ArgumentNullException(nameof(viewProperty));
             }
 
-            formatter ??= SingleLineFormatter.Default;
+            formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+                          SingleLineFormatter.Default;
 
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
@@ -317,7 +319,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <typeparam name="TViewProperty">View property type.</typeparam>
         /// <param name="view">View instance.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
-        /// <param name="formatter">Validation formatter.</param>
+        /// <param name="formatter">Validation formatter. Defaults to the <see cref="SingleLineFormatter"/>.</param>
         /// <returns>Returns a validation component.</returns>
         public static IValidationBinding ForViewModel<TView, TViewModel, TViewProperty>(
             TView view,
@@ -336,7 +338,8 @@ namespace ReactiveUI.Validation.ValidationBindings
                 throw new ArgumentNullException(nameof(view));
             }
 
-            formatter ??= SingleLineFormatter.Default;
+            formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+                          SingleLineFormatter.Default;
 
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
