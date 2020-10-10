@@ -41,7 +41,11 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="view">View instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property.</param>
-        /// <param name="formatter">Validation formatter. Defaults to the <see cref="SingleLineFormatter"/>.</param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
         /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
         /// <returns>Returns a validation component.</returns>
         public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(
@@ -166,7 +170,11 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="view">View instance.</param>
         /// <param name="viewModelHelperProperty">ViewModel's ValidationHelper property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
-        /// <param name="formatter">Validation formatter. Defaults to the <see cref="SingleLineFormatter"/>.</param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
         /// <returns>Returns a validation component.</returns>
         public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(
             TView view,
@@ -319,7 +327,11 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <typeparam name="TViewProperty">View property type.</typeparam>
         /// <param name="view">View instance.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
-        /// <param name="formatter">Validation formatter. Defaults to the <see cref="SingleLineFormatter"/>.</param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
         /// <returns>Returns a validation component.</returns>
         public static IValidationBinding ForViewModel<TView, TViewModel, TViewProperty>(
             TView view,
