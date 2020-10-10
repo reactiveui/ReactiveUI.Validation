@@ -31,13 +31,31 @@ namespace ReactiveUI.Validation.Components
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property referenced in validityObservable.</param>
         /// <param name="validityObservable">Observable to define if the viewModel is valid or not.</param>
-        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and validityObservable values.</param>
+        /// <param name="message">Func to define the validation error message based on the viewModelProperty value.</param>
         public ModelObservableValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
             Func<TViewModel, IObservable<bool>> validityObservable,
-            Func<TViewModel, bool, string> messageFunc)
-            : this(viewModel, viewModelProperty, validityObservable, (vm, state) => new ValidationText(messageFunc(vm, state)))
+            string message)
+            : this(viewModel, viewModelProperty, validityObservable, (p, isValid) =>
+                new ValidationText(isValid ? string.Empty : message))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelObservableValidation{TViewModel, TProperty1}"/> class.
+        /// </summary>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelProperty">ViewModel property referenced in validityObservable.</param>
+        /// <param name="validityObservable">Observable to define if the viewModel is valid or not.</param>
+        /// <param name="message">Func to define the validation error message based on the viewModelProperty value.</param>
+        public ModelObservableValidation(
+            TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
+            Func<TViewModel, IObservable<bool>> validityObservable,
+            Func<TViewModel, string> message)
+            : this(viewModel, viewModelProperty, validityObservable, (p, isValid) =>
+                new ValidationText(isValid ? string.Empty : message(p)))
         {
         }
 
@@ -49,6 +67,23 @@ namespace ReactiveUI.Validation.Components
         /// <param name="validityObservable">Observable to define if the viewModel is valid or not.</param>
         /// <param name="messageFunc">Func to define the validation error message based on the viewModel and validityObservable values.</param>
         public ModelObservableValidation(
+            TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
+            Func<TViewModel, IObservable<bool>> validityObservable,
+            Func<TViewModel, bool, string> messageFunc)
+            : this(viewModel, viewModelProperty, validityObservable, (vm, state) =>
+                new ValidationText(messageFunc(vm, state)))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelObservableValidation{TViewModel, TProperty1}"/> class.
+        /// </summary>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelProperty">ViewModel property referenced in validityObservable.</param>
+        /// <param name="validityObservable">Observable to define if the viewModel is valid or not.</param>
+        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and validityObservable values.</param>
+        private ModelObservableValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
             Func<TViewModel, IObservable<bool>> validityObservable,
@@ -77,6 +112,36 @@ namespace ReactiveUI.Validation.Components
         /// </summary>
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="validityObservable">Observable to define if the viewModel is valid or not.</param>
+        /// <param name="message">Func to define the validation error message based on the viewModelProperty value.</param>
+        public ModelObservableValidation(
+            TViewModel viewModel,
+            Func<TViewModel, IObservable<bool>> validityObservable,
+            string message)
+            : this(viewModel, validityObservable, (p, isValid) =>
+                new ValidationText(isValid ? string.Empty : message))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelObservableValidation{TViewModel}"/> class.
+        /// </summary>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="validityObservable">Observable to define if the viewModel is valid or not.</param>
+        /// <param name="message">Func to define the validation error message based on the viewModelProperty value.</param>
+        public ModelObservableValidation(
+            TViewModel viewModel,
+            Func<TViewModel, IObservable<bool>> validityObservable,
+            Func<TViewModel, string> message)
+            : this(viewModel, validityObservable, (p, isValid) =>
+                new ValidationText(isValid ? string.Empty : message(p)))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ModelObservableValidation{TViewModel}"/> class.
+        /// </summary>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="validityObservable">Observable to define if the viewModel is valid or not.</param>
         /// <param name="messageFunc">Func to define the validation error message based on the viewModel and validityObservable values.</param>
         public ModelObservableValidation(
             TViewModel viewModel,
@@ -92,7 +157,7 @@ namespace ReactiveUI.Validation.Components
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="validityObservable">Observable to define if the viewModel is valid or not.</param>
         /// <param name="messageFunc">Func to define the validation error message based on the viewModel and validityObservable values.</param>
-        public ModelObservableValidation(
+        private ModelObservableValidation(
             TViewModel viewModel,
             Func<TViewModel, IObservable<bool>> validityObservable,
             Func<TViewModel, bool, ValidationText> messageFunc)
