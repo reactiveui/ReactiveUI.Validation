@@ -97,7 +97,9 @@ namespace ReactiveUI.Validation.ValidationBindings
         }
 
         /// <summary>
-        /// Creates a binding from a specified ViewModel property to a provided action.
+        /// Creates a binding from a specified ViewModel property to a provided action. Such action binding allows
+        /// to easily create new and more specialized platform-specific BindValidation extension methods like those
+        /// we have in <see cref="ViewForExtensions" /> targeting the Android platform.
         /// </summary>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
@@ -219,7 +221,9 @@ namespace ReactiveUI.Validation.ValidationBindings
         }
 
         /// <summary>
-        /// Creates a binding from a <see cref="ValidationHelper" /> to a specified action.
+        /// Creates a binding from a <see cref="ValidationHelper" /> to a specified action. Such action binding allows
+        /// to easily create new and more specialized platform-specific BindValidation extension methods like those
+        /// we have in <see cref="ViewForExtensions" /> targeting the Android platform.
         /// </summary>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
@@ -275,7 +279,9 @@ namespace ReactiveUI.Validation.ValidationBindings
         }
 
         /// <summary>
-        /// Creates a binding between a ViewModel and a specified action.
+        /// Creates a binding between a ViewModel and a specified action. Such action binding allows to easily create
+        /// new and more specialized platform-specific BindValidation extension methods like those we have in
+        /// <see cref="ViewForExtensions" /> targeting the Android platform.
         /// </summary>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>

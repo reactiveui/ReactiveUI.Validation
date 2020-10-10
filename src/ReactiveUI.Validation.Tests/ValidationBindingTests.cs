@@ -396,6 +396,33 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal(nameErrorMessage, view.NameErrorLabel);
         }
 
+        /// <summary>
+        /// Verifies that we support binding composite ViewModel validations to actions. This feature
+        /// is required for platform-specific extension methods implementation, e.g. the
+        /// <see cref="ViewForExtensions" /> for the Android Platform.
+        /// </summary>
+        [Fact]
+        public void ShouldSupportViewModelActionBindingRequiredForPlatformSpecificImplementations()
+        {
+            const string nameErrorMessage = "Name should not be empty.";
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+
+            view.ViewModel.ValidationRule(
+                vm => vm.Name,
+                s => !string.IsNullOrEmpty(s),
+                nameErrorMessage);
+
+            ValidationBinding.ForViewModel<TestView, TestViewModel, string>(
+                view,
+                errorText => view.NameErrorLabel = errorText,
+                SingleLineFormatter.Default);
+
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.NotEmpty(view.NameErrorLabel);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+        }
+
         private class ConstFormatter : IValidationTextFormatter<string>
         {
             private readonly string _text;
