@@ -3,10 +3,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Reactive.Disposables;
 using LoginApp.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Validation.Extensions;
+using ReactiveUI.Validation.Formatters;
 
 namespace LoginApp.Wpf.Views
 {
@@ -33,7 +35,7 @@ namespace LoginApp.Wpf.Views
                     .DisposeWith(disposables);
                 this.BindValidation(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordValidation.Text)
                     .DisposeWith(disposables);
-                this.BindValidation(ViewModel, x => x.CompoundValidation.Text)
+                this.BindValidation(ViewModel, x => x.CompoundValidation.Text, new SingleLineFormatter(Environment.NewLine))
                     .DisposeWith(disposables);
 
                 this.WhenAnyValue(x => x.UserNameValidation.Text, text => !string.IsNullOrWhiteSpace(text))
