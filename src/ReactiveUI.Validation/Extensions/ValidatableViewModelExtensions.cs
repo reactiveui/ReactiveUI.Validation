@@ -14,7 +14,7 @@ namespace ReactiveUI.Validation.Extensions
     /// <summary>
     /// Extensions methods associated to <see cref="IValidatableViewModel"/> instances.
     /// </summary>
-    public static class SupportsValidationExtensions
+    public static class ValidatableViewModelExtensions
     {
         /// <summary>
         /// Setup a validation rule for a specified ViewModel property with static error message.

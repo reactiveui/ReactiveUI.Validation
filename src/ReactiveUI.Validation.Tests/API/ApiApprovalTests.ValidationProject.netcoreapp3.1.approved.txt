@@ -118,7 +118,7 @@ namespace ReactiveUI.Validation.Contexts
 }
 namespace ReactiveUI.Validation.Extensions
 {
-    public static class SupportsValidationExtensions
+    public static class ValidatableViewModelExtensions
     {
         public static System.IObservable<bool> IsValid<TViewModel>(this TViewModel viewModel)
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
