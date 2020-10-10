@@ -3,14 +3,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Linq;
 using System.Reactive.Concurrency;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
+using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.Tests.Models;
+using ReactiveUI.Validation.ValidationBindings;
 using Xunit;
 
 namespace ReactiveUI.Validation.Tests
@@ -335,6 +338,62 @@ namespace ReactiveUI.Validation.Tests
 
             Assert.True(view.ViewModel.NameRule.IsValid);
             Assert.Empty(view.NameErrorLabel);
+        }
+
+        /// <summary>
+        /// Verifies that we support binding validations to actions. This feature is required for platform-specific
+        /// extension methods implementation, e.g. the <see cref="ViewForExtensions" /> for the Android Platform.
+        /// </summary>
+        [Fact]
+        public void ShouldSupportActionBindingRequiredForPlatformSpecificImplementations()
+        {
+            const string nameErrorMessage = "Name should not be empty.";
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+
+            view.ViewModel.ValidationRule(
+                vm => vm.Name,
+                s => !string.IsNullOrEmpty(s),
+                nameErrorMessage);
+
+            ValidationBinding.ForProperty<TestView, TestViewModel, string, string>(
+                view,
+                viewModel => viewModel.Name,
+                (_, errorText) => view.NameErrorLabel = errorText.FirstOrDefault(msg => !string.IsNullOrEmpty(msg)),
+                SingleLineFormatter.Default);
+
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.NotEmpty(view.NameErrorLabel);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+        }
+
+        /// <summary>
+        /// Verifies that we support binding <see cref="ValidationHelper"/> validations to actions. This feature
+        /// is required for platform-specific extension methods implementation, e.g. the
+        /// <see cref="ViewForExtensions" /> for the Android Platform.
+        /// </summary>
+        [Fact]
+        public void ShouldSupportValidationHelperActionBindingRequiredForPlatformSpecificImplementations()
+        {
+            const string nameErrorMessage = "Name should not be empty.";
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+            view.ViewModel.NameRule = view
+                .ViewModel
+                .ValidationRule(
+                    vm => vm.Name,
+                    s => !string.IsNullOrEmpty(s),
+                    nameErrorMessage);
+
+            ValidationBinding.ForValidationHelperProperty<TestView, TestViewModel, string>(
+                view,
+                viewModel => viewModel.NameRule,
+                (_, errorText) => view.NameErrorLabel = errorText,
+                SingleLineFormatter.Default);
+
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.NotEmpty(view.NameErrorLabel);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
         }
 
         private class ConstFormatter : IValidationTextFormatter<string>
