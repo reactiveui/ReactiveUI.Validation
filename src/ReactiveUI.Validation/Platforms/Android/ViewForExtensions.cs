@@ -33,7 +33,11 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
-        /// <param name="formatter">Validation formatter. Defaults to the <see cref="SingleLineFormatter"/>.</param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty>(
@@ -66,7 +70,11 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
-        /// <param name="formatter">Validation formatter. Defaults to the <see cref="SingleLineFormatter"/>.</param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
         [Obsolete("This method is no longer required, BindValidation now supports multiple validations.")]
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
@@ -98,7 +106,11 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelHelperProperty">ViewModel's ValidationHelper property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
-        /// <param name="formatter">Validation formatter. Defaults to the <see cref="SingleLineFormatter"/>.</param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidation<TView, TViewModel>(
