@@ -151,7 +151,7 @@ namespace ReactiveUI.Validation.Extensions
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         [System.Obsolete("This method is no longer required, BindValidation now supports multiple validatio" +
             "ns.")]
-        public static System.IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty)
+        public static System.IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
     }
