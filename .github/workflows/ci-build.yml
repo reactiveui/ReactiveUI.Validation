@@ -9,7 +9,7 @@ on:
 
 env:
   configuration: Release
-  productNamespacePrefix: "DynamicData"
+  productNamespacePrefix: "ReactiveUI.Validation"
 
 jobs:
   build:
@@ -27,6 +27,11 @@ jobs:
       with:
         dotnet-version: 3.1.x
 
+    - name: Use Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+        
     - name: NBGV
       id: nbgv
       uses: dotnet/nbgv@master
@@ -56,11 +61,12 @@ jobs:
       working-directory: artifacts/coverage
 
     - name: Upload Code Coverage
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-        directory: artifacts/coverage
-
+      run: |
+        npm install -g codecov
+        codecov
+      working-directory: artifacts/coverage
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     - name: Create NuGet Artifacts
       uses: actions/upload-artifact@master
       with:
@@ -82,7 +88,8 @@ jobs:
       with:
         name: nuget
 
-    - run: 'echo "$SIGN_CLIENT_CONFIG" > SignPackages.json'
+    - name: Save SignClient Configuration
+      run: 'echo "$SIGN_CLIENT_CONFIG" > SignPackages.json'
       shell: bash
       env:
         SSHSIGN_CLIENT_CONFIG_KEY: ${{secrets.SIGN_CLIENT_CONFIG}}
