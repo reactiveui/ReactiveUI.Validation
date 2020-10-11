@@ -117,7 +117,7 @@ namespace LoginApp.ViewModels
             this.ValidationRule(
                 x => x.ConfirmPassword,
                 x => passwordsMatch,
-                (model, valid) => !valid ? "Passwords must match." : string.Empty);
+                "Passwords must match.");
         }
     }
 }
