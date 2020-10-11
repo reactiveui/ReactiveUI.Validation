@@ -28,7 +28,7 @@ namespace ReactiveUI.Validation.Tests
             var v = new ModelObservableValidation<TestViewModel>(
                 model,
                 _ => validState.StartWith(true),
-                "broken");
+                (text, valid) => "broken");
 
             Assert.True(v.IsValid);
         }
@@ -46,7 +46,7 @@ namespace ReactiveUI.Validation.Tests
                 model,
                 state => state.Name,
                 _ => validState.StartWith(true),
-                "broken");
+                (text, valid) => "broken");
 
             Assert.True(v.IsValid);
         }
@@ -63,7 +63,7 @@ namespace ReactiveUI.Validation.Tests
             var v = new ModelObservableValidation<TestViewModel>(
                 model,
                 _ => validState,
-                "broken");
+                (text, valid) => "broken");
 
             validState.OnNext(false);
             validState.OnNext(true);
@@ -86,7 +86,7 @@ namespace ReactiveUI.Validation.Tests
                 model,
                 state => state.Name,
                 _ => validState,
-                "broken");
+                (text, valid) => "broken");
 
             validState.OnNext(false);
             validState.OnNext(true);
