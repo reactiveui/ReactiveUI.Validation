@@ -23,13 +23,30 @@ namespace ReactiveUI.Validation.Tests
         public void InitialValidStateIsCorrectTest()
         {
             var model = new TestViewModel { Name = "name", Name2 = "name2" };
-
             var validState = new Subject<bool>();
 
             var v = new ModelObservableValidation<TestViewModel>(
                 model,
                 _ => validState.StartWith(true),
-                (_, __) => "broken");
+                (text, valid) => "broken");
+
+            Assert.True(v.IsValid);
+        }
+
+        /// <summary>
+        /// Verifies if the initial state is True.
+        /// </summary>
+        [Fact]
+        public void InitialValidStateOfPropertyValidationIsCorrectTest()
+        {
+            var model = new TestViewModel { Name = "name", Name2 = "name2" };
+            var validState = new Subject<bool>();
+
+            var v = new ModelObservableValidation<TestViewModel, string>(
+                model,
+                state => state.Name,
+                _ => validState.StartWith(true),
+                (text, valid) => "broken");
 
             Assert.True(v.IsValid);
         }
@@ -41,13 +58,35 @@ namespace ReactiveUI.Validation.Tests
         public void ObservableToInvalidTest()
         {
             var model = new TestViewModel { Name = "name", Name2 = "name2" };
-
             var validState = new ReplaySubject<bool>(1);
 
             var v = new ModelObservableValidation<TestViewModel>(
                 model,
                 _ => validState,
-                (_, __) => "broken");
+                (text, valid) => "broken");
+
+            validState.OnNext(false);
+            validState.OnNext(true);
+            validState.OnNext(false);
+
+            Assert.False(v.IsValid);
+            Assert.Equal("broken", v.Text.ToSingleLine());
+        }
+
+        /// <summary>
+        /// Verifies if the observable returns invalid.
+        /// </summary>
+        [Fact]
+        public void ObservableToInvalidOfPropertyValidationTest()
+        {
+            var model = new TestViewModel { Name = "name", Name2 = "name2" };
+            var validState = new ReplaySubject<bool>(1);
+
+            var v = new ModelObservableValidation<TestViewModel, string>(
+                model,
+                state => state.Name,
+                _ => validState,
+                (text, valid) => "broken");
 
             validState.OnNext(false);
             validState.OnNext(true);
