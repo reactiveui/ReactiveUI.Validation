@@ -63,9 +63,10 @@ jobs:
     - name: Upload Code Coverage
       run: |
         npm install -g codecov
-        codecov --token ${{ secrets.CODECOV_TOKEN }}
+        codecov
       working-directory: artifacts/coverage
-
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
     - name: Create NuGet Artifacts
       uses: actions/upload-artifact@master
       with:
