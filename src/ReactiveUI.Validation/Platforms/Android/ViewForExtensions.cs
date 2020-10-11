@@ -10,8 +10,10 @@ using System.Linq.Expressions;
 using Android.Support.Design.Widget;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Formatters;
+using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
+using Splat;
 
 namespace ReactiveUI.Validation.Platforms.Android
 {
@@ -31,21 +33,30 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty>(
             this TView view,
             TViewModel viewModel,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
-            TextInputLayout viewProperty)
+            TextInputLayout viewProperty,
+            IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
+            formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+                          SingleLineFormatter.Default;
+
             return ValidationBinding.ForProperty(
                 view,
                 viewModelProperty,
                 (_, errors) => viewProperty.Error = errors.FirstOrDefault(msg => !string.IsNullOrEmpty(msg)),
-                SingleLineFormatter.Default);
+                formatter);
         }
 
         /// <summary>
@@ -59,6 +70,11 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
         [Obsolete("This method is no longer required, BindValidation now supports multiple validations.")]
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
@@ -66,15 +82,19 @@ namespace ReactiveUI.Validation.Platforms.Android
             this TView view,
             TViewModel viewModel,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
-            TextInputLayout viewProperty)
+            TextInputLayout viewProperty,
+            IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
+            formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+                          SingleLineFormatter.Default;
+
             return ValidationBinding.ForProperty(
                 view,
                 viewModelProperty,
                 (_, errors) => viewProperty.Error = errors.FirstOrDefault(msg => !string.IsNullOrEmpty(msg)),
-                SingleLineFormatter.Default);
+                formatter);
         }
 
         /// <summary>
@@ -86,21 +106,30 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelHelperProperty">ViewModel's ValidationHelper property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidation<TView, TViewModel>(
             this TView view,
             TViewModel viewModel,
             Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
-            TextInputLayout viewProperty)
+            TextInputLayout viewProperty,
+            IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : ReactiveObject, IValidatableViewModel
         {
+            formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+                          SingleLineFormatter.Default;
+
             return ValidationBinding.ForValidationHelperProperty(
                 view,
                 viewModelHelperProperty,
                 (_, errorText) => viewProperty.Error = errorText,
-                SingleLineFormatter.Default);
+                formatter);
         }
     }
 }

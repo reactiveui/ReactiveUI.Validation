@@ -41,7 +41,11 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="view">View instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property.</param>
-        /// <param name="formatter">Validation formatter. Defaults to the <see cref="SingleLineFormatter"/>.</param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
         /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
         /// <returns>Returns a validation component.</returns>
         public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(
@@ -68,7 +72,8 @@ namespace ReactiveUI.Validation.ValidationBindings
                 throw new ArgumentNullException(nameof(viewProperty));
             }
 
-            formatter ??= SingleLineFormatter.Default;
+            formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+                          SingleLineFormatter.Default;
 
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
@@ -92,7 +97,9 @@ namespace ReactiveUI.Validation.ValidationBindings
         }
 
         /// <summary>
-        /// Creates a binding from a specified ViewModel property to a provided action.
+        /// Creates a binding from a specified ViewModel property to a provided action. Such action binding allows
+        /// to easily create new and more specialized platform-specific BindValidation extension methods like those
+        /// we have in <see cref="ViewForExtensions" /> targeting the Android platform.
         /// </summary>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
@@ -165,7 +172,11 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <param name="view">View instance.</param>
         /// <param name="viewModelHelperProperty">ViewModel's ValidationHelper property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
-        /// <param name="formatter">Validation formatter.</param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
         /// <returns>Returns a validation component.</returns>
         public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(
             TView view,
@@ -190,7 +201,8 @@ namespace ReactiveUI.Validation.ValidationBindings
                 throw new ArgumentNullException(nameof(viewProperty));
             }
 
-            formatter ??= SingleLineFormatter.Default;
+            formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+                          SingleLineFormatter.Default;
 
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
@@ -209,7 +221,9 @@ namespace ReactiveUI.Validation.ValidationBindings
         }
 
         /// <summary>
-        /// Creates a binding from a <see cref="ValidationHelper" /> to a specified action.
+        /// Creates a binding from a <see cref="ValidationHelper" /> to a specified action. Such action binding allows
+        /// to easily create new and more specialized platform-specific BindValidation extension methods like those
+        /// we have in <see cref="ViewForExtensions" /> targeting the Android platform.
         /// </summary>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
@@ -265,7 +279,9 @@ namespace ReactiveUI.Validation.ValidationBindings
         }
 
         /// <summary>
-        /// Creates a binding between a ViewModel and a specified action.
+        /// Creates a binding between a ViewModel and a specified action. Such action binding allows to easily create
+        /// new and more specialized platform-specific BindValidation extension methods like those we have in
+        /// <see cref="ViewForExtensions" /> targeting the Android platform.
         /// </summary>
         /// <typeparam name="TView">ViewFor of ViewModel type.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
@@ -317,7 +333,11 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <typeparam name="TViewProperty">View property type.</typeparam>
         /// <param name="view">View instance.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
-        /// <param name="formatter">Validation formatter.</param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
         /// <returns>Returns a validation component.</returns>
         public static IValidationBinding ForViewModel<TView, TViewModel, TViewProperty>(
             TView view,
@@ -336,7 +356,8 @@ namespace ReactiveUI.Validation.ValidationBindings
                 throw new ArgumentNullException(nameof(view));
             }
 
-            formatter ??= SingleLineFormatter.Default;
+            formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+                          SingleLineFormatter.Default;
 
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
