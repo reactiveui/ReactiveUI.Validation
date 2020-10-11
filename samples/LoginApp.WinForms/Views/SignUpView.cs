@@ -3,12 +3,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Reactive.Disposables;
 using System.Windows.Forms;
 using LoginApp.ViewModels;
 using LoginApp.WinForms.Services;
 using ReactiveUI;
 using ReactiveUI.Validation.Extensions;
+using ReactiveUI.Validation.Formatters;
 
 namespace LoginApp.WinForms.Views
 {
@@ -42,7 +44,7 @@ namespace LoginApp.WinForms.Views
 
                 this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUpButton)
                     .DisposeWith(disposables);
-                this.BindValidation(ViewModel, x => x.ErrorLabel.Text)
+                this.BindValidation(ViewModel, x => x.ErrorLabel.Text, new SingleLineFormatter(Environment.NewLine))
                     .DisposeWith(disposables);
             });
         }
