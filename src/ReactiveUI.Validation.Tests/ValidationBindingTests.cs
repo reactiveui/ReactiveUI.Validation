@@ -147,7 +147,7 @@ namespace ReactiveUI.Validation.Tests
             view.ViewModel.ValidationRule(
                 m => m.Name,
                 m => m.WhenAnyValue(x => x.Name, x => x.Name2, (name, name2) => name == name2),
-                (vm, isValid) => isValid ? string.Empty : errorMessage);
+                errorMessage);
 
             view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
 
@@ -235,7 +235,7 @@ namespace ReactiveUI.Validation.Tests
                 .ValidationRule(
                     vm => vm.Name2,
                     vm => vm.WhenAnyValue(x => x.Name, x => x.Name2, (name, name2) => name == name2),
-                    (vm, valid) => valid ? string.Empty : namesShouldMatchMessage);
+                    namesShouldMatchMessage);
 
             view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
             view.Bind(view.ViewModel, vm => vm.Name2, v => v.Name2Label);
@@ -334,6 +334,56 @@ namespace ReactiveUI.Validation.Tests
             view.ViewModel.Name = "Jotaro";
 
             Assert.True(view.ViewModel.NameRule.IsValid);
+            Assert.Empty(view.NameErrorLabel);
+        }
+
+        /// <summary>
+        /// Verifies that we support various validation rule overloads.
+        /// </summary>
+        [Fact]
+        public void ShouldSupportObservableValidationRuleOverloads()
+        {
+            var view = new TestView(new TestViewModel
+            {
+                Name = "Foo",
+                Name2 = "Bar"
+            });
+
+            var namesAreEqual = view
+                .ViewModel
+                .WhenAnyValue(
+                    state => state.Name,
+                    state => state.Name2,
+                    (name, name2) => name == name2);
+
+            view.ViewModel.ValidationRule(
+                state => state.Name,
+                state => namesAreEqual,
+                state => $"{state.Name} != {state.Name2}.");
+
+            view.ViewModel.ValidationRule(
+                state => state.Name2,
+                state => namesAreEqual,
+                state => $"{state.Name2} != {state.Name}.");
+
+            view.ViewModel.ValidationRule(
+                state => namesAreEqual,
+                "Names should be equal.");
+
+            view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+            view.Bind(view.ViewModel, x => x.Name2, x => x.Name2Label);
+            view.BindValidation(view.ViewModel, x => x.NameErrorLabel);
+
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(3, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.NotEmpty(view.NameErrorLabel);
+            Assert.Equal("Foo != Bar. Bar != Foo. Names should be equal.", view.NameErrorLabel);
+
+            view.ViewModel.Name = "Foo";
+            view.ViewModel.Name2 = "Foo";
+
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(3, view.ViewModel.ValidationContext.Validations.Count);
             Assert.Empty(view.NameErrorLabel);
         }
 
