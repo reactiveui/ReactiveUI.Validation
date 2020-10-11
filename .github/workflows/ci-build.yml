@@ -66,13 +66,6 @@ jobs:
         codecov --token ${{ secrets.CODECOV_TOKEN }}
       working-directory: artifacts/coverage
 
-    - name: Upload Code Coverage
-      uses: codecov/codecov-action@v1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }} # not required for public repos
-        directory: artifacts/coverage
-        flags: unittests
-
     - name: Create NuGet Artifacts
       uses: actions/upload-artifact@master
       with:
