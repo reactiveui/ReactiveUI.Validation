@@ -9,7 +9,7 @@ on:
 
 env:
   configuration: Release
-  productNamespacePrefix: "DynamicData"
+  productNamespacePrefix: "ReactiveUI.Validation"
 
 jobs:
   build:
