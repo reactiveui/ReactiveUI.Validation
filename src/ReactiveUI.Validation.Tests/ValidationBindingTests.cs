@@ -373,20 +373,24 @@ namespace ReactiveUI.Validation.Tests
                 state => namesAreEqual,
                 "Names should be equal.");
 
+            view.ViewModel.ValidationRule(
+                state => namesAreEqual,
+                state => $"{state.Name} should equal {state.Name2}.");
+
             view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
             view.Bind(view.ViewModel, x => x.Name2, x => x.Name2Label);
             view.BindValidation(view.ViewModel, x => x.NameErrorLabel);
 
             Assert.False(view.ViewModel.ValidationContext.IsValid);
-            Assert.Equal(3, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.Equal(4, view.ViewModel.ValidationContext.Validations.Count);
             Assert.NotEmpty(view.NameErrorLabel);
-            Assert.Equal("Foo != Bar. Bar != Foo. Names should be equal.", view.NameErrorLabel);
+            Assert.Equal("Foo != Bar. Bar != Foo. Names should be equal. Foo should equal Bar.", view.NameErrorLabel);
 
             view.ViewModel.Name = "Foo";
             view.ViewModel.Name2 = "Foo";
 
             Assert.True(view.ViewModel.ValidationContext.IsValid);
-            Assert.Equal(3, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.Equal(4, view.ViewModel.ValidationContext.Validations.Count);
             Assert.Empty(view.NameErrorLabel);
         }
 
