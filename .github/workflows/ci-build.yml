@@ -92,7 +92,7 @@ jobs:
       run: 'echo "$SIGN_CLIENT_CONFIG" > SignPackages.json'
       shell: bash
       env:
-        SSHSIGN_CLIENT_CONFIG_KEY: ${{secrets.SIGN_CLIENT_CONFIG}}
+        SIGN_CLIENT_CONFIG: ${{secrets.SIGN_CLIENT_CONFIG}}
 
     - name: Sign NuGet Packages
       uses: glennawatson/signclient@v1
