@@ -35,13 +35,14 @@ namespace ReactiveUI.Validation.Helpers
         protected ReactiveValidationObject(IScheduler? scheduler = null)
         {
             ValidationContext = new ValidationContext(scheduler);
+            var initial = new ValidationState(true, string.Empty, ValidationContext);
             ValidationContext.Validations
                 .ToObservableChangeSet()
                 .ToCollection()
                 .Select(components => components
                     .Select(component => component.ValidationStatusChange)
                     .Merge()
-                    .StartWith(new ValidationState(true, string.Empty, ValidationContext)))
+                    .StartWith(initial))
                 .Switch()
                 .Subscribe(OnValidationStatusChange);
         }
