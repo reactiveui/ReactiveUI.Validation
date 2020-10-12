@@ -506,6 +506,36 @@ namespace ReactiveUI.Validation.Tests
             Assert.Empty(view.NameErrorLabel);
         }
 
+        /// <summary>
+        /// Verifies that we detach and dispose the disposable validations once the
+        /// <see cref="ValidationHelper"/> is disposed. Also, here we ensure that
+        /// the property change subscriptions are unsubscribed.
+        /// </summary>
+        [Fact]
+        public void ShouldDetachAndDisposeTheComponentWhenValidationHelperDisposes()
+        {
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+            var helper = view
+                .ViewModel
+                .ValidationRule(
+                    viewModel => viewModel.Name,
+                    name => !string.IsNullOrWhiteSpace(name),
+                    "Name shouldn't be empty.");
+
+            view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+            view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.NotEmpty(view.NameErrorLabel);
+
+            helper.Dispose();
+
+            Assert.Equal(0, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.Empty(view.NameErrorLabel);
+        }
+
         private class ConstFormatter : IValidationTextFormatter<string>
         {
             private readonly string _text;
