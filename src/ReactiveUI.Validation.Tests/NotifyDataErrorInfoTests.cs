@@ -251,16 +251,17 @@ namespace ReactiveUI.Validation.Tests
 
             Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
             Assert.False(view.ViewModel.ValidationContext.IsValid);
-            Assert.Equal(2, arguments.Count);
-            Assert.Equal(string.Empty, arguments[0].PropertyName);
-            Assert.Equal(nameof(view.ViewModel.Name), arguments[1].PropertyName);
+            Assert.True(view.ViewModel.HasErrors);
+            Assert.Equal(1, arguments.Count);
+            Assert.Equal(nameof(view.ViewModel.Name), arguments[0].PropertyName);
 
             helper.Dispose();
 
             Assert.Equal(0, view.ViewModel.ValidationContext.Validations.Count);
             Assert.True(view.ViewModel.ValidationContext.IsValid);
-            Assert.Equal(3, arguments.Count);
-            Assert.Equal(string.Empty, arguments[2].PropertyName);
+            Assert.False(view.ViewModel.HasErrors);
+            Assert.Equal(2, arguments.Count);
+            Assert.Equal(nameof(view.ViewModel.Name), arguments[1].PropertyName);
         }
     }
 }

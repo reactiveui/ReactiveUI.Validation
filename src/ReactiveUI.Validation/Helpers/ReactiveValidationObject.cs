@@ -25,6 +25,7 @@ namespace ReactiveUI.Validation.Helpers
     /// <typeparam name="TViewModel">The parent view model.</typeparam>
     public abstract class ReactiveValidationObject<TViewModel> : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
     {
+        private readonly HashSet<string> _mentionedPropertyNames = new HashSet<string>();
         private bool _hasErrors;
 
         /// <summary>
@@ -95,18 +96,30 @@ namespace ReactiveUI.Validation.Helpers
         /// event, and then raises the <see cref="ErrorsChanged" /> event. This behaviour is required by WPF, see:
         /// https://stackoverflow.com/questions/24518520/ui-not-calling-inotifydataerrorinfo-geterrors/24837028.
         /// </summary>
+        /// <remarks>
+        /// WPF doesn't understand string.Empty as an argument for the <see cref="ErrorsChanged"/>
+        /// event, so we are sending <see cref="ErrorsChanged"/> notifications for every saved property.
+        /// This is required for e.g. cases when a <see cref="IValidationComponent"/> is disposed and
+        /// detached from the <see cref="ValidationContext"/>, and we'd like to mark all invalid
+        /// properties as valid (because the thing that validates them no longer exists).
+        /// </remarks>
         private void OnValidationStatusChange(ValidationState state)
         {
             HasErrors = !ValidationContext.GetIsValid();
-            if (state.Component is IPropertyValidationComponent<TViewModel> propertyValidationComponent &&
-                propertyValidationComponent.PropertyCount == 1)
+            if (state.Component is IPropertyValidationComponent<TViewModel> propertyValidationComponent)
             {
-                var propertyName = propertyValidationComponent.Properties.First();
-                RaiseErrorsChanged(propertyName);
+                foreach (var propertyName in propertyValidationComponent.Properties)
+                {
+                    RaiseErrorsChanged(propertyName);
+                    _mentionedPropertyNames.Add(propertyName);
+                }
             }
             else
             {
-                RaiseErrorsChanged();
+                foreach (var propertyName in _mentionedPropertyNames)
+                {
+                    RaiseErrorsChanged(propertyName);
+                }
             }
         }
     }
