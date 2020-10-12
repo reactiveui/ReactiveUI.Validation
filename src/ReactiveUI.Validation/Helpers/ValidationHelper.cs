@@ -20,33 +20,28 @@ namespace ReactiveUI.Validation.Helpers
     /// </summary>
     public class ValidationHelper : ReactiveObject, IDisposable
     {
-        private readonly IValidationComponent _validation;
-
-        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed with the _disposables field.")]
-        private readonly ObservableAsPropertyHelper<bool> _isValid;
-
-        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed with the _disposables field.")]
         private readonly ObservableAsPropertyHelper<ValidationText> _message;
-
-        private readonly CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly ObservableAsPropertyHelper<bool> _isValid;
+        private readonly IValidationComponent _validation;
+        private readonly IDisposable? _cleanup;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationHelper"/> class.
         /// </summary>
         /// <param name="validation">Validation property.</param>
-        public ValidationHelper(IValidationComponent validation)
+        /// <param name="cleanup">The disposable to dispose when the helper is disposed.</param>
+        public ValidationHelper(IValidationComponent validation, IDisposable? cleanup = null)
         {
             _validation = validation ?? throw new ArgumentNullException(nameof(validation));
+            _cleanup = cleanup;
 
             _isValid = _validation.ValidationStatusChange
                 .Select(v => v.IsValid)
-                .ToProperty(this, nameof(IsValid))
-                .DisposeWith(_disposables);
+                .ToProperty(this, nameof(IsValid));
 
             _message = _validation.ValidationStatusChange
                 .Select(v => v.Text)
-                .ToProperty<ValidationHelper, ValidationText>(this, nameof(Message))
-                .DisposeWith(_disposables);
+                .ToProperty(this, nameof(Message));
         }
 
         /// <summary>
@@ -82,7 +77,9 @@ namespace ReactiveUI.Validation.Helpers
         {
             if (disposing)
             {
-                _disposables?.Dispose();
+                _isValid.Dispose();
+                _message.Dispose();
+                _cleanup?.Dispose();
             }
         }
     }
