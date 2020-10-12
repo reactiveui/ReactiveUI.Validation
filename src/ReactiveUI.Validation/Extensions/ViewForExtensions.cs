@@ -66,7 +66,7 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(viewProperty));
             }
 
-            return ValidationBinding.ForProperty(view, viewModelProperty, viewProperty);
+            return ValidationBinding.ForProperty(view, viewModelProperty, viewProperty, formatter);
         }
 
         /// <summary>
