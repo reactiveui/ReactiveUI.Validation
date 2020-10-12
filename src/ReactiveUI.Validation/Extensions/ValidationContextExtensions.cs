@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
+using DynamicData;
 using DynamicData.Binding;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Components.Abstractions;
@@ -49,8 +50,8 @@ namespace ReactiveUI.Validation.Extensions
             return context
                 .Validations
                 .ToObservableChangeSet()
-                .Select(changes => context
-                    .Validations
+                .ToCollection()
+                .Select(validations => validations
                     .OfType<IPropertyValidationComponent<TViewModel>>()
                     .Where(validation => validation.ContainsProperty(viewModelProperty, strict))
                     .Select(validation => validation.ValidationStatusChange)
