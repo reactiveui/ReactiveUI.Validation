@@ -47,7 +47,7 @@ namespace ReactiveUI.Validation.Platforms.Android
             TextInputLayout viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
             formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
                           SingleLineFormatter.Default;
@@ -85,7 +85,7 @@ namespace ReactiveUI.Validation.Platforms.Android
             TextInputLayout viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
             formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
                           SingleLineFormatter.Default;
@@ -120,7 +120,7 @@ namespace ReactiveUI.Validation.Platforms.Android
             TextInputLayout viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
             formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
                           SingleLineFormatter.Default;

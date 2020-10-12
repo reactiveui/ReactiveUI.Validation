@@ -49,7 +49,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TView, TViewProperty>> viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
             {
@@ -94,7 +94,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TView, TViewProperty>> viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
             {
@@ -135,7 +135,7 @@ namespace ReactiveUI.Validation.Extensions
             TViewModel viewModel,
             Expression<Func<TView, TViewProperty>> viewProperty,
             IValidationTextFormatter<string>? formatter = null)
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : class, IReactiveObject, IValidatableViewModel
             where TView : IViewFor<TViewModel>
         {
             if (viewModel is null)
@@ -175,7 +175,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TView, TViewProperty>> viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
             {
