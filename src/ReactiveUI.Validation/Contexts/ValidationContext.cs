@@ -67,7 +67,9 @@ namespace ReactiveUI.Validation.Contexts
                 .Select(validations =>
                     validations
                         .Select(v => v.ValidationStatusChange)
-                        .Merge())
+                        .Merge()
+                        .Select(_ => Unit.Default)
+                        .StartWith(Unit.Default))
                 .Switch()
                 .Select(_ => GetIsValid())
                 .Multicast(_validSubject);
