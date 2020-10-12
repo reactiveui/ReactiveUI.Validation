@@ -8,10 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using DynamicData;
-using DynamicData.Binding;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters;
@@ -26,12 +23,9 @@ namespace ReactiveUI.Validation.ValidationBindings
     /// <inheritdoc />
     public sealed class ValidationBinding : IValidationBinding
     {
-        private readonly CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly IDisposable _disposable;
 
-        private ValidationBinding(IObservable<Unit> validationObservable)
-        {
-            _disposables.Add(validationObservable.Subscribe());
-        }
+        private ValidationBinding(IObservable<Unit> bindingObservable) => _disposable = bindingObservable.Subscribe();
 
         /// <summary>
         /// Creates a binding between a ViewModel property and a view property.
@@ -137,15 +131,10 @@ namespace ReactiveUI.Validation.ValidationBindings
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
-                .SelectMany(viewModel => viewModel!.ValidationContext.ObserveFor(viewModelProperty, strict))
-                .Select(states => new
-                {
-                    ValidationChange = states,
-                    Formatted = states
-                        .Select(state => formatter.Format(state.Text))
-                        .ToList()
-                })
-                .Do(r => action(r.ValidationChange, r.Formatted))
+                .SelectMany(vm => vm!.ValidationContext.ObserveFor(viewModelProperty, strict))
+                .Do(states => action(states, states
+                    .Select(state => formatter.Format(state.Text))
+                    .ToList()))
                 .Select(_ => Unit.Default);
 
             return new ValidationBinding(vcObs);
@@ -255,13 +244,10 @@ namespace ReactiveUI.Validation.ValidationBindings
                         .WhenAnyValue(viewModelHelperProperty)
                         .SelectMany(vy => vy.ValidationChanged))
                 .Switch()
-                .Select(vc => new { ValidationChange = vc, Formatted = formatter.Format(vc.Text) });
-
-            var updateObs = vcObs
-                .Do(r => action(r.ValidationChange, r.Formatted))
+                .Do(state => action(state, formatter.Format(state.Text)))
                 .Select(_ => Unit.Default);
 
-            return new ValidationBinding(updateObs);
+            return new ValidationBinding(vcObs);
         }
 
         /// <summary>
@@ -301,14 +287,10 @@ namespace ReactiveUI.Validation.ValidationBindings
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
-                .Select(vm => vm!.ValidationContext.Text)
-                .Select(formatter.Format);
-
-            var updateObs = vcObs
-                .Do(action)
+                .Do(vm => action(formatter.Format(vm!.ValidationContext.Text)))
                 .Select(_ => Unit.Default);
 
-            return new ValidationBinding(updateObs);
+            return new ValidationBinding(vcObs);
         }
 
         /// <summary>
@@ -352,7 +334,6 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Select(vc => formatter.Format(vc.Text));
 
             var updateObs = BindToView(vcObs, view, viewProperty);
-
             return new ValidationBinding(updateObs);
         }
 
@@ -411,7 +392,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         {
             if (disposing)
             {
-                _disposables.Dispose();
+                _disposable.Dispose();
             }
         }
     }
