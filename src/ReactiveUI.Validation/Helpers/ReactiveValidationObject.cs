@@ -39,7 +39,8 @@ namespace ReactiveUI.Validation.Helpers
                 .ToCollection()
                 .Select(components => components
                     .Select(component => component.ValidationStatusChange)
-                    .Merge())
+                    .Merge()
+                    .StartWith(new ValidationState(true, string.Empty, ValidationContext)))
                 .Switch()
                 .Subscribe(OnValidationStatusChange);
         }
