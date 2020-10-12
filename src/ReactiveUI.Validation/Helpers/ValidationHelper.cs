@@ -41,7 +41,7 @@ namespace ReactiveUI.Validation.Helpers
 
             _message = _validation.ValidationStatusChange
                 .Select(v => v.Text)
-                .ToProperty(this, nameof(Message));
+                .ToProperty<ValidationHelper, ValidationText>(this, nameof(Message));
         }
 
         /// <summary>
