@@ -148,8 +148,15 @@ namespace ReactiveUI.Validation.Extensions
     }
     public static class ValidationContextExtensions
     {
+        public static System.IObservable<System.Collections.Generic.IList<ReactiveUI.Validation.States.ValidationState>> ObserveFor<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
+        [System.Obsolete("Since we support adding and removing validation rules dynamically, consider using" +
+            " either the ObserveFor extension method, or BindValidation.")]
         public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
+        [System.Obsolete("Since we support adding and removing validation rules dynamically, consider using" +
+            " either the ObserveFor extension method, or BindValidation.")]
         public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TProperty1, TProperty2>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> viewModelProperty2) { }
+        [System.Obsolete("Since we support adding and removing validation rules dynamically, consider using" +
+            " either the ObserveFor extension method, or BindValidation.")]
         public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TProperty1, TProperty2, TProperty3>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> viewModelProperty2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> viewModelProperty3) { }
     }
     public static class ViewForExtensions

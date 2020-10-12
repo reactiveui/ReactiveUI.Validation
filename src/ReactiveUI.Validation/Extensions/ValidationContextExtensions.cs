@@ -68,6 +68,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
         /// <returns>Returns a collection of <see cref="BasePropertyValidation{TViewModel}"/> objects.</returns>
+        [Obsolete("Since we support adding and removing validation rules dynamically, consider " +
+                  "using either the ObserveFor extension method, or BindValidation.")]
         public static IEnumerable<IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TViewModelProperty>(
             this ValidationContext context,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
@@ -99,6 +101,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty1">First ViewModel property.</param>
         /// <param name="viewModelProperty2">Second ViewModel property.</param>
         /// <returns>Returns a collection of <see cref="BasePropertyValidation{TViewModel}"/> objects.</returns>
+        [Obsolete("Since we support adding and removing validation rules dynamically, consider " +
+                  "using either the ObserveFor extension method, or BindValidation.")]
         public static IEnumerable<IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TProperty1,
             TProperty2>(
             this ValidationContext context,
@@ -140,6 +144,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty2">Second ViewModel property.</param>
         /// <param name="viewModelProperty3">Third ViewModel property.</param>
         /// <returns>Returns a collection of <see cref="BasePropertyValidation{TViewModel}"/> objects.</returns>
+        [Obsolete("Since we support adding and removing validation rules dynamically, consider " +
+                  "using either the ObserveFor extension method, or BindValidation.")]
         public static IEnumerable<IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel,
             TProperty1, TProperty2, TProperty3>(
             this ValidationContext context,
