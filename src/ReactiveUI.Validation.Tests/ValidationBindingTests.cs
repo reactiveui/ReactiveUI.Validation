@@ -477,6 +477,35 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal(nameErrorMessage, view.NameErrorLabel);
         }
 
+        /// <summary>
+        /// Verifies that we support creating validation rules from interfaces, and also
+        /// bindings to <see cref="IViewFor" /> with interface as type argument.
+        /// </summary>
+        [Fact]
+        public void ShouldSupportBindingToInterfaces()
+        {
+            const string nameErrorMessage = "Name shouldn't be empty.";
+            var view = new SampleView(new SampleViewModel());
+
+            view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                nameErrorMessage);
+
+            view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+            view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
+
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.NotEmpty(view.NameErrorLabel);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+
+            view.ViewModel.Name = "Saitama";
+
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.Empty(view.NameErrorLabel);
+        }
+
         private class ConstFormatter : IValidationTextFormatter<string>
         {
             private readonly string _text;

@@ -31,7 +31,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
             Func<TViewModelProp, bool> isPropertyValid,
             string message)
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
             {
@@ -80,7 +80,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
             Func<TViewModelProp, bool> isPropertyValid,
             Func<TViewModelProp, string> message)
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
             {
@@ -130,7 +130,7 @@ namespace ReactiveUI.Validation.Extensions
             this TViewModel viewModel,
             Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
             string message)
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
             {
@@ -170,7 +170,7 @@ namespace ReactiveUI.Validation.Extensions
             this TViewModel viewModel,
             Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
             Func<TViewModel, string> messageFunc)
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
             {
@@ -212,7 +212,7 @@ namespace ReactiveUI.Validation.Extensions
             this TViewModel viewModel,
             Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
             Func<TViewModel, bool, string> messageFunc)
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
             {
@@ -255,7 +255,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
             Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
             string message)
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
             {
@@ -303,7 +303,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
             Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
             Func<TViewModel, string> messageFunc)
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
             {
@@ -353,7 +353,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
             Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
             Func<TViewModel, bool, string> messageFunc)
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
             {
@@ -389,7 +389,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModel">ViewModel instance.</param>
         /// <returns>Returns true if the ValidationContext is valid, otherwise false.</returns>
         public static IObservable<bool> IsValid<TViewModel>(this TViewModel viewModel)
-            where TViewModel : ReactiveObject, IValidatableViewModel
+            where TViewModel : IReactiveObject, IValidatableViewModel
         {
             if (viewModel == null)
             {
