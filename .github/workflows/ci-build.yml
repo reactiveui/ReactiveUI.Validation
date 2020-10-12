@@ -43,7 +43,7 @@ jobs:
       working-directory: src
       
     - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      uses: microsoft/setup-msbuild@v1
 
     - name: Build
       run: msbuild /t:build,pack /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
@@ -95,7 +95,7 @@ jobs:
         SSHSIGN_CLIENT_CONFIG_KEY: ${{secrets.SIGN_CLIENT_CONFIG}}
 
     - name: Sign NuGet Packages
-      uses: glennawatson/signclient@main
+      uses: glennawatson/signclient@v1
       with:
         input-files: '**/*.nupkg'
         sign-client-secret: ${{ secrets.SIGN_CLIENT_SECRET }}
