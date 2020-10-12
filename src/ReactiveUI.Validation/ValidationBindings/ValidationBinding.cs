@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+using DynamicData.Binding;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters;
@@ -81,9 +82,18 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Select(
                     viewModel => viewModel!
                         .ValidationContext
-                        .ResolveFor(viewModelProperty, strict)
-                        .Select(x => x.ValidationStatusChange)
-                        .CombineLatest())
+                        .Validations
+                        .ToObservableChangeSet()
+                        .Select(_ => viewModel
+                            .ValidationContext
+                            .ResolveFor(viewModelProperty, strict)
+                            .Select(x => x.ValidationStatusChange)
+                            .CombineLatest()
+                            .StartWith(new[]
+                            {
+                                new ValidationState(true, string.Empty, viewModel.ValidationContext)
+                            }))
+                        .Merge())
                 .Switch()
                 .Select(
                     states => states
