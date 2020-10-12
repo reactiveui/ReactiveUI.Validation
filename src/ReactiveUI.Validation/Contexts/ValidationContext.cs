@@ -148,7 +148,13 @@ namespace ReactiveUI.Validation.Contexts
         /// Removes a validation from the validations collection.
         /// </summary>
         /// <param name="validation">Validation component to be removed from the collection.</param>
-        public void Remove(IValidationComponent validation) => _validationSource.Remove(validation);
+        public void Remove(IValidationComponent validation) => _validationSource.Edit(list =>
+        {
+            if (list.Contains(validation))
+            {
+                list.Remove(validation);
+            }
+        });
 
         /// <summary>
         /// Returns if the whole context is valid checking all the validations.

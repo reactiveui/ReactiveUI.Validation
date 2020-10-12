@@ -114,6 +114,7 @@ namespace ReactiveUI.Validation.Contexts
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
         public bool GetIsValid() { }
+        public void Remove(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation) { }
     }
 }
 namespace ReactiveUI.Validation.Extensions
@@ -201,7 +202,7 @@ namespace ReactiveUI.Validation.Helpers
     }
     public class ValidationHelper : ReactiveUI.ReactiveObject, System.IDisposable
     {
-        public ValidationHelper(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation) { }
+        public ValidationHelper(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation, System.IDisposable? cleanup = null) { }
         public bool IsValid { get; }
         public ReactiveUI.Validation.Collections.ValidationText? Message { get; }
         public System.IObservable<ReactiveUI.Validation.States.ValidationState> ValidationChanged { get; }
