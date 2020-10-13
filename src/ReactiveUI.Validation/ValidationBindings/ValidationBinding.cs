@@ -287,7 +287,8 @@ namespace ReactiveUI.Validation.ValidationBindings
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
                 .Where(vm => vm != null)
-                .Do(vm => action(formatter.Format(vm!.ValidationContext.Text)))
+                .SelectMany(vm => vm!.ValidationContext.ValidationStatusChange)
+                .Do(state => action(formatter.Format(state.Text)))
                 .Select(_ => Unit.Default);
 
             return new ValidationBinding(vcObs);
