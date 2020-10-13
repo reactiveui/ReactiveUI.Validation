@@ -515,40 +515,34 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void ShouldDetachAndDisposeTheComponentWhenValidationHelperDisposes()
         {
+            const string nameErrorMessage = "Name shouldn't be empty.";
+            const string name2ErrorMessage = "Name shouldn't be empty.";
             var view = new TestView(new TestViewModel { Name = string.Empty });
+            var nameRule = view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                nameErrorMessage);
 
-            var nameRule = view
-                .ViewModel
-                .ValidationRule(
-                    viewModel => viewModel.Name,
-                    name => !string.IsNullOrWhiteSpace(name),
-                    "Name is empty.");
-
-            var name2Rule = view
-                .ViewModel
-                .ValidationRule(
-                    viewModel => viewModel.Name2,
-                    name => !string.IsNullOrWhiteSpace(name),
-                    "Name2 is empty.");
+            var name2Rule = view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name2,
+                name => !string.IsNullOrWhiteSpace(name),
+                name2ErrorMessage);
 
             view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
             view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
             view.BindValidation(view.ViewModel, x => x.Name2, x => x.Name2ErrorLabel);
-            view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
 
             Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
             Assert.False(view.ViewModel.ValidationContext.IsValid);
-            Assert.Equal("Name is empty.", view.NameErrorLabel);
-            Assert.Equal("Name2 is empty.", view.Name2ErrorLabel);
-            Assert.Equal("Name is empty. Name2 is empty.", view.NameErrorContainer.Text);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+            Assert.Equal(name2ErrorMessage, view.Name2ErrorLabel);
 
             nameRule.Dispose();
 
             Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
             Assert.False(view.ViewModel.ValidationContext.IsValid);
             Assert.Empty(view.NameErrorLabel);
-            Assert.Equal("Name2 is empty.", view.Name2ErrorLabel);
-            Assert.Equal("Name2 is empty.", view.NameErrorContainer.Text);
+            Assert.Equal(name2ErrorMessage, view.Name2ErrorLabel);
 
             name2Rule.Dispose();
 
@@ -556,18 +550,63 @@ namespace ReactiveUI.Validation.Tests
             Assert.True(view.ViewModel.ValidationContext.IsValid);
             Assert.Empty(view.NameErrorLabel);
             Assert.Empty(view.Name2ErrorLabel);
-            Assert.Empty(view.NameErrorContainer.Text);
 
-            view.ViewModel
-                .ValidationRule(
-                    viewModel => viewModel.Name,
-                    name => !string.IsNullOrWhiteSpace(name),
-                    "Name is empty.");
+            view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                nameErrorMessage);
 
             Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
             Assert.False(view.ViewModel.ValidationContext.IsValid);
-            Assert.Equal("Name is empty.", view.NameErrorLabel);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
             Assert.Empty(view.Name2ErrorLabel);
+        }
+
+        /// <summary>
+        /// Verifies that we support binding to view model validity in a reactive fashion,
+        /// e.g. when one disposes of a <see cref="ValidationHelper"/>, the view model
+        /// validity should recalculate.
+        /// </summary>
+        [Fact]
+        public void ShouldUpdateViewModelValidityWhenValidationHelpersDetach()
+        {
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+            var nameRule = view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                "Name is empty.");
+
+            var name2Rule = view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name2,
+                name => !string.IsNullOrWhiteSpace(name),
+                "Name2 is empty.");
+
+            view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+            view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
+
+            Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal("Name is empty. Name2 is empty.", view.NameErrorContainer.Text);
+
+            nameRule.Dispose();
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal("Name2 is empty.", view.NameErrorContainer.Text);
+
+            name2Rule.Dispose();
+
+            Assert.Equal(0, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.Empty(view.NameErrorContainer.Text);
+
+            view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                "Name is empty.");
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
             Assert.Equal("Name is empty.", view.NameErrorContainer.Text);
         }
 
