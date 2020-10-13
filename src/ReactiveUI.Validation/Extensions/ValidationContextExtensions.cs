@@ -7,9 +7,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reactive.Linq;
+using DynamicData;
+using DynamicData.Binding;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.States;
 
 namespace ReactiveUI.Validation.Extensions
 {
@@ -19,6 +23,44 @@ namespace ReactiveUI.Validation.Extensions
     public static class ValidationContextExtensions
     {
         /// <summary>
+        /// Resolves the <see cref="ValidationState"/> for a specified property in a reactive fashion.
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
+        /// <param name="context">ValidationContext instance.</param>
+        /// <param name="viewModelProperty">ViewModel property.</param>
+        /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
+        /// <returns>Returns a collection of <see cref="BasePropertyValidation{TViewModel}"/> objects.</returns>
+        public static IObservable<IList<ValidationState>> ObserveFor<TViewModel, TViewModelProperty>(
+            this ValidationContext context,
+            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
+            bool strict = true)
+        {
+            if (context is null)
+            {
+                throw new ArgumentNullException(nameof(context));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            var initial = new[] { new ValidationState(true, string.Empty, context) };
+            return context
+                .Validations
+                .ToObservableChangeSet()
+                .ToCollection()
+                .Select(validations => validations
+                    .OfType<IPropertyValidationComponent<TViewModel>>()
+                    .Where(validation => validation.ContainsProperty(viewModelProperty, strict))
+                    .Select(validation => validation.ValidationStatusChange)
+                    .CombineLatest()
+                    .StartWith(initial))
+                .Switch();
+        }
+
+        /// <summary>
         /// Resolves the property valuation for a specified property.
         /// </summary>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
@@ -27,6 +69,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
         /// <returns>Returns a collection of <see cref="BasePropertyValidation{TViewModel}"/> objects.</returns>
+        [Obsolete("Since we support adding and removing validation rules dynamically, consider " +
+                  "using either the ObserveFor extension method, or BindValidation.")]
         public static IEnumerable<IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TViewModelProperty>(
             this ValidationContext context,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
@@ -58,6 +102,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty1">First ViewModel property.</param>
         /// <param name="viewModelProperty2">Second ViewModel property.</param>
         /// <returns>Returns a collection of <see cref="BasePropertyValidation{TViewModel}"/> objects.</returns>
+        [Obsolete("Since we support adding and removing validation rules dynamically, consider " +
+                  "using either the ObserveFor extension method, or BindValidation.")]
         public static IEnumerable<IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TProperty1,
             TProperty2>(
             this ValidationContext context,
@@ -99,6 +145,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty2">Second ViewModel property.</param>
         /// <param name="viewModelProperty3">Third ViewModel property.</param>
         /// <returns>Returns a collection of <see cref="BasePropertyValidation{TViewModel}"/> objects.</returns>
+        [Obsolete("Since we support adding and removing validation rules dynamically, consider " +
+                  "using either the ObserveFor extension method, or BindValidation.")]
         public static IEnumerable<IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel,
             TProperty1, TProperty2, TProperty3>(
             this ValidationContext context,

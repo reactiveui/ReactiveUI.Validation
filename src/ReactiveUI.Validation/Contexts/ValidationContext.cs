@@ -67,7 +67,9 @@ namespace ReactiveUI.Validation.Contexts
                 .Select(validations =>
                     validations
                         .Select(v => v.ValidationStatusChange)
-                        .Merge())
+                        .Merge()
+                        .Select(_ => Unit.Default)
+                        .StartWith(Unit.Default))
                 .Switch()
                 .Select(_ => GetIsValid())
                 .Multicast(_validSubject);
@@ -143,6 +145,18 @@ namespace ReactiveUI.Validation.Contexts
         /// </summary>
         /// <param name="validation">Validation component to be added into the collection.</param>
         public void Add(IValidationComponent validation) => _validationSource.Add(validation);
+
+        /// <summary>
+        /// Removes a validation from the validations collection.
+        /// </summary>
+        /// <param name="validation">Validation component to be removed from the collection.</param>
+        public void Remove(IValidationComponent validation) => _validationSource.Edit(list =>
+        {
+            if (list.Contains(validation))
+            {
+                list.Remove(validation);
+            }
+        });
 
         /// <summary>
         /// Returns if the whole context is valid checking all the validations.

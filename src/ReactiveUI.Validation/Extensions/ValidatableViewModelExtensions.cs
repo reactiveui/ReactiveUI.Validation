@@ -5,8 +5,11 @@
 
 using System;
 using System.Linq.Expressions;
+using System.Reactive.Disposables;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Components;
+using ReactiveUI.Validation.Components.Abstractions;
+using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Helpers;
 
 namespace ReactiveUI.Validation.Extensions
@@ -53,16 +56,11 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(message));
             }
 
-            // We need to associate the ViewModel property
-            // with something that can be easily looked up and bound to
-            var propValidation = new BasePropertyValidation<TViewModel, TViewModelProp>(
-                viewModel,
-                viewModelProperty,
-                isPropertyValid,
-                message);
-
-            viewModel.ValidationContext.Add(propValidation);
-            return new ValidationHelper(propValidation);
+            // We need to associate the ViewModel property with
+            // something that can be easily looked up and bound to.
+            return viewModel.RegisterValidation(
+                new BasePropertyValidation<TViewModel, TViewModelProp>(
+                    viewModel, viewModelProperty, isPropertyValid, message));
         }
 
         /// <summary>
@@ -102,16 +100,9 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(message));
             }
 
-            // We need to associate the ViewModel property
-            // with something that can be easily looked up and bound to
-            var propValidation = new BasePropertyValidation<TViewModel, TViewModelProp>(
-                viewModel,
-                viewModelProperty,
-                isPropertyValid,
-                message);
-
-            viewModel.ValidationContext.Add(propValidation);
-            return new ValidationHelper(propValidation);
+            return viewModel.RegisterValidation(
+                new BasePropertyValidation<TViewModel, TViewModelProp>(
+                    viewModel, viewModelProperty, isPropertyValid, message));
         }
 
         /// <summary>
@@ -147,11 +138,9 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(message));
             }
 
-            var validation = new ModelObservableValidation<TViewModel>(
-                viewModel, viewModelObservableProperty, message);
-
-            viewModel.ValidationContext.Add(validation);
-            return new ValidationHelper(validation);
+            return viewModel.RegisterValidation(
+                new ModelObservableValidation<TViewModel>(
+                    viewModel, viewModelObservableProperty, message));
         }
 
         /// <summary>
@@ -187,11 +176,9 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(messageFunc));
             }
 
-            var validation = new ModelObservableValidation<TViewModel>(
-                viewModel, viewModelObservableProperty, messageFunc);
-
-            viewModel.ValidationContext.Add(validation);
-            return new ValidationHelper(validation);
+            return viewModel.RegisterValidation(
+                new ModelObservableValidation<TViewModel>(
+                    viewModel, viewModelObservableProperty, messageFunc));
         }
 
         /// <summary>
@@ -229,11 +216,9 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(messageFunc));
             }
 
-            var validation = new ModelObservableValidation<TViewModel>(
-                viewModel, viewModelObservableProperty, messageFunc);
-
-            viewModel.ValidationContext.Add(validation);
-            return new ValidationHelper(validation);
+            return viewModel.RegisterValidation(
+                new ModelObservableValidation<TViewModel>(
+                    viewModel, viewModelObservableProperty, messageFunc));
         }
 
         /// <summary>
@@ -277,11 +262,9 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(message));
             }
 
-            var validation = new ModelObservableValidation<TViewModel, TViewModelProp>(
-                viewModel, viewModelProperty, viewModelObservableProperty, message);
-
-            viewModel.ValidationContext.Add(validation);
-            return new ValidationHelper(validation);
+            return viewModel.RegisterValidation(
+                new ModelObservableValidation<TViewModel, TViewModelProp>(
+                    viewModel, viewModelProperty, viewModelObservableProperty, message));
         }
 
         /// <summary>
@@ -325,11 +308,9 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(messageFunc));
             }
 
-            var validation = new ModelObservableValidation<TViewModel, TViewModelProp>(
-                viewModel, viewModelProperty, viewModelObservableProperty, messageFunc);
-
-            viewModel.ValidationContext.Add(validation);
-            return new ValidationHelper(validation);
+            return viewModel.RegisterValidation(
+                new ModelObservableValidation<TViewModel, TViewModelProp>(
+                    viewModel, viewModelProperty, viewModelObservableProperty, messageFunc));
         }
 
         /// <summary>
@@ -375,11 +356,9 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(messageFunc));
             }
 
-            var validation = new ModelObservableValidation<TViewModel, TViewModelProp>(
-                viewModel, viewModelProperty, viewModelObservableProperty, messageFunc);
-
-            viewModel.ValidationContext.Add(validation);
-            return new ValidationHelper(validation);
+            return viewModel.RegisterValidation(
+                new ModelObservableValidation<TViewModel, TViewModelProp>(
+                    viewModel, viewModelProperty, viewModelObservableProperty, messageFunc));
         }
 
         /// <summary>
@@ -397,6 +376,29 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return viewModel.ValidationContext.Valid;
+        }
+
+        /// <summary>
+        /// Registers an <see cref="IValidationComponent"/> into the <see cref="ValidationContext"/>
+        /// of the specified <see cref="IValidatableViewModel"/>. Disposes and removes the
+        /// <see cref="IValidationComponent"/> from the <see cref="ValidationContext"/> when the
+        /// <see cref="ValidationHelper"/> is disposed.
+        /// </summary>
+        /// <param name="viewModel">The validatable view model holding a reference to the context.</param>
+        /// <param name="validation">The disposable validation component to register into the context.</param>
+        /// <typeparam name="TValidationComponent">The disposable validation component type.</typeparam>
+        /// <returns>The bindable validation helper holding the disposable.</returns>
+        private static ValidationHelper RegisterValidation<TValidationComponent>(
+            this IValidatableViewModel viewModel,
+            TValidationComponent validation)
+            where TValidationComponent : IValidationComponent, IDisposable
+        {
+            viewModel.ValidationContext.Add(validation);
+            return new ValidationHelper(validation, Disposable.Create(() =>
+            {
+                viewModel.ValidationContext.Remove(validation);
+                validation.Dispose();
+            }));
         }
     }
 }

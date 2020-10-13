@@ -15,6 +15,7 @@ namespace ReactiveUI.Validation.Tests.Models
     /// </summary>
     public class TestViewModel : ReactiveObject, IValidatableViewModel
     {
+        private ValidationHelper _nameRule;
         private string _name;
         private string _name2;
 
@@ -39,7 +40,11 @@ namespace ReactiveUI.Validation.Tests.Models
         /// <summary>
         /// Gets or sets the rule of Name property.
         /// </summary>
-        public ValidationHelper NameRule { get; set; }
+        public ValidationHelper NameRule
+        {
+            get => _nameRule;
+            set => this.RaiseAndSetIfChanged(ref _nameRule, value);
+        }
 
         /// <inheritdoc/>
         public ValidationContext ValidationContext { get; } = new ValidationContext(ImmediateScheduler.Instance);

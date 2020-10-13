@@ -16,21 +16,27 @@ namespace ReactiveUI.Validation.Tests
     /// </summary>
     public class ModelObservableTests
     {
+        private readonly ISubject<bool> _validState = new ReplaySubject<bool>(1);
+        private readonly TestViewModel _validModel = new TestViewModel
+        {
+            Name = "name",
+            Name2 = "name2"
+        };
+
         /// <summary>
         /// Verifies if the initial state is True.
         /// </summary>
         [Fact]
         public void InitialValidStateIsCorrectTest()
         {
-            var model = new TestViewModel { Name = "name", Name2 = "name2" };
-            var validState = new Subject<bool>();
+            _validState.OnNext(true);
 
-            var v = new ModelObservableValidation<TestViewModel>(
-                model,
-                _ => validState.StartWith(true),
+            var validation = new ModelObservableValidation<TestViewModel>(
+                _validModel,
+                _ => _validState,
                 (text, valid) => "broken");
 
-            Assert.True(v.IsValid);
+            Assert.True(validation.IsValid);
         }
 
         /// <summary>
@@ -39,16 +45,15 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void InitialValidStateOfPropertyValidationIsCorrectTest()
         {
-            var model = new TestViewModel { Name = "name", Name2 = "name2" };
-            var validState = new Subject<bool>();
+            _validState.OnNext(true);
 
-            var v = new ModelObservableValidation<TestViewModel, string>(
-                model,
+            var propertyValidation = new ModelObservableValidation<TestViewModel, string>(
+                _validModel,
                 state => state.Name,
-                _ => validState.StartWith(true),
+                _ => _validState,
                 (text, valid) => "broken");
 
-            Assert.True(v.IsValid);
+            Assert.True(propertyValidation.IsValid);
         }
 
         /// <summary>
@@ -57,20 +62,17 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void ObservableToInvalidTest()
         {
-            var model = new TestViewModel { Name = "name", Name2 = "name2" };
-            var validState = new ReplaySubject<bool>(1);
-
-            var v = new ModelObservableValidation<TestViewModel>(
-                model,
-                _ => validState,
+            var validation = new ModelObservableValidation<TestViewModel>(
+                _validModel,
+                _ => _validState,
                 (text, valid) => "broken");
 
-            validState.OnNext(false);
-            validState.OnNext(true);
-            validState.OnNext(false);
+            _validState.OnNext(false);
+            _validState.OnNext(true);
+            _validState.OnNext(false);
 
-            Assert.False(v.IsValid);
-            Assert.Equal("broken", v.Text.ToSingleLine());
+            Assert.False(validation.IsValid);
+            Assert.Equal("broken", validation.Text?.ToSingleLine());
         }
 
         /// <summary>
@@ -79,21 +81,77 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void ObservableToInvalidOfPropertyValidationTest()
         {
-            var model = new TestViewModel { Name = "name", Name2 = "name2" };
-            var validState = new ReplaySubject<bool>(1);
-
-            var v = new ModelObservableValidation<TestViewModel, string>(
-                model,
+            var propertyValidation = new ModelObservableValidation<TestViewModel, string>(
+                _validModel,
                 state => state.Name,
-                _ => validState,
+                _ => _validState,
                 (text, valid) => "broken");
 
-            validState.OnNext(false);
-            validState.OnNext(true);
-            validState.OnNext(false);
+            _validState.OnNext(false);
+            _validState.OnNext(true);
+            _validState.OnNext(false);
 
-            Assert.False(v.IsValid);
-            Assert.Equal("broken", v.Text.ToSingleLine());
+            Assert.False(propertyValidation.IsValid);
+            Assert.Equal("broken", propertyValidation.Text?.ToSingleLine());
+        }
+
+        /// <summary>
+        /// Verifies that a call to Dispose disconnects the underlying observable
+        /// of a <see cref="ModelObservableValidation{TViewModel}"/>.
+        /// </summary>
+        [Fact]
+        public void DisposeShouldStopTrackingTheObservable()
+        {
+            var validation = new ModelObservableValidation<TestViewModel>(
+                _validModel,
+                _ => _validState,
+                (text, valid) => "broken");
+
+            _validState.OnNext(true);
+
+            Assert.True(validation.IsValid);
+
+            _validState.OnNext(false);
+
+            Assert.False(validation.IsValid);
+
+            validation.Dispose();
+
+            _validState.OnNext(true);
+            _validState.OnNext(false);
+            _validState.OnNext(true);
+
+            Assert.False(validation.IsValid);
+        }
+
+        /// <summary>
+        /// Verifies that a call to Dispose disconnects the underlying observable
+        /// of a <see cref="ModelObservableValidation{TViewModel,TViewModelProp}"/>.
+        /// </summary>
+        [Fact]
+        public void DisposeShouldStopTrackingThePropertyValidationObservable()
+        {
+            var validation = new ModelObservableValidation<TestViewModel, string>(
+                _validModel,
+                state => state.Name,
+                _ => _validState,
+                (text, valid) => "broken");
+
+            _validState.OnNext(true);
+
+            Assert.True(validation.IsValid);
+
+            _validState.OnNext(false);
+
+            Assert.False(validation.IsValid);
+
+            validation.Dispose();
+
+            _validState.OnNext(true);
+            _validState.OnNext(false);
+            _validState.OnNext(true);
+
+            Assert.False(validation.IsValid);
         }
     }
 }

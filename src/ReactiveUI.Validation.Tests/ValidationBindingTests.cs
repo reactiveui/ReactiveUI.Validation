@@ -5,6 +5,7 @@
 
 using System.Linq;
 using System.Reactive.Concurrency;
+using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
@@ -478,8 +479,8 @@ namespace ReactiveUI.Validation.Tests
         }
 
         /// <summary>
-        /// Verifies that we support creating validation rules from interfaces, and also
-        /// bindings to <see cref="IViewFor" /> with interface as type argument.
+        /// Verifies that we support creating validation rules from interfaces, and also support
+        /// creating bindings to <see cref="IViewFor" /> with interface supplied as a type argument.
         /// </summary>
         [Fact]
         public void ShouldSupportBindingToInterfaces()
@@ -504,6 +505,151 @@ namespace ReactiveUI.Validation.Tests
 
             Assert.True(view.ViewModel.ValidationContext.IsValid);
             Assert.Empty(view.NameErrorLabel);
+        }
+
+        /// <summary>
+        /// Verifies that we detach and dispose the disposable validations once the
+        /// <see cref="ValidationHelper"/> is disposed. Also, here we ensure that
+        /// the property change subscriptions are unsubscribed.
+        /// </summary>
+        [Fact]
+        public void ShouldDetachAndDisposeTheComponentWhenValidationHelperDisposes()
+        {
+            const string nameErrorMessage = "Name shouldn't be empty.";
+            const string name2ErrorMessage = "Name shouldn't be empty.";
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+            var nameRule = view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                nameErrorMessage);
+
+            var name2Rule = view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name2,
+                name => !string.IsNullOrWhiteSpace(name),
+                name2ErrorMessage);
+
+            view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+            view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
+            view.BindValidation(view.ViewModel, x => x.Name2, x => x.Name2ErrorLabel);
+
+            Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+            Assert.Equal(name2ErrorMessage, view.Name2ErrorLabel);
+
+            nameRule.Dispose();
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Empty(view.NameErrorLabel);
+            Assert.Equal(name2ErrorMessage, view.Name2ErrorLabel);
+
+            name2Rule.Dispose();
+
+            Assert.Equal(0, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.Empty(view.NameErrorLabel);
+            Assert.Empty(view.Name2ErrorLabel);
+
+            view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                nameErrorMessage);
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+            Assert.Empty(view.Name2ErrorLabel);
+        }
+
+        /// <summary>
+        /// Verifies that we support binding to view model validity in a reactive fashion,
+        /// e.g. when one disposes of a <see cref="ValidationHelper"/>, the view model
+        /// validity should recalculate.
+        /// </summary>
+        [Fact]
+        public void ShouldUpdateViewModelValidityWhenValidationHelpersDetach()
+        {
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+            var nameRule = view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                "Name is empty.");
+
+            var name2Rule = view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name2,
+                name => !string.IsNullOrWhiteSpace(name),
+                "Name2 is empty.");
+
+            view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+            view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
+
+            Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal("Name is empty. Name2 is empty.", view.NameErrorContainer.Text);
+
+            nameRule.Dispose();
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal("Name2 is empty.", view.NameErrorContainer.Text);
+
+            name2Rule.Dispose();
+
+            Assert.Equal(0, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.Empty(view.NameErrorContainer.Text);
+
+            view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                "Name is empty.");
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal("Name is empty.", view.NameErrorContainer.Text);
+        }
+
+        /// <summary>
+        /// Verifies that we update the binding to <see cref="ValidationHelper"/> property when that
+        /// property sends <see cref="IReactiveNotifyPropertyChanged{TSender}"/> notifications.
+        /// </summary>
+        [Fact]
+        public void ShouldUpdateValidationHelperBindingOnPropertyChange()
+        {
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+
+            const string nameErrorMessage = "Name shouldn't be empty.";
+            view.ViewModel.NameRule = view.ViewModel
+                .ValidationRule(
+                    viewModel => viewModel.Name,
+                    name => !string.IsNullOrWhiteSpace(name),
+                    nameErrorMessage);
+
+            view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+            view.BindValidation(view.ViewModel, x => x.NameRule, x => x.NameErrorLabel);
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+
+            view.ViewModel.NameRule.Dispose();
+            view.ViewModel.NameRule = null;
+
+            Assert.Equal(0, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.Empty(view.NameErrorLabel);
+
+            const string secretMessage = "This is the secret message.";
+            view.ViewModel.NameRule = view.ViewModel
+                .ValidationRule(
+                    viewModel => viewModel.Name,
+                    name => !string.IsNullOrWhiteSpace(name),
+                    secretMessage);
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(secretMessage, view.NameErrorLabel);
         }
 
         private class ConstFormatter : IValidationTextFormatter<string>

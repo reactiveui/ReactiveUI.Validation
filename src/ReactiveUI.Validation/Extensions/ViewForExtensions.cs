@@ -66,7 +66,7 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(viewProperty));
             }
 
-            return ValidationBinding.ForProperty(view, viewModelProperty, viewProperty);
+            return ValidationBinding.ForProperty(view, viewModelProperty, viewProperty, formatter);
         }
 
         /// <summary>
@@ -135,8 +135,8 @@ namespace ReactiveUI.Validation.Extensions
             TViewModel viewModel,
             Expression<Func<TView, TViewProperty>> viewProperty,
             IValidationTextFormatter<string>? formatter = null)
-            where TViewModel : class, IReactiveObject, IValidatableViewModel
             where TView : IViewFor<TViewModel>
+            where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
             {

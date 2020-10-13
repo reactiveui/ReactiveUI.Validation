@@ -3,12 +3,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Extensions;
+using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.Tests.Models;
 using Xunit;
 
@@ -226,6 +228,40 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal(nameof(viewModel.Name), arguments[2].PropertyName);
             Assert.Equal(nameof(viewModel.OtherName), arguments[3].PropertyName);
             Assert.True(viewModel.HasErrors);
+        }
+
+        /// <summary>
+        /// Verifies that we detach and dispose the disposable validations once the
+        /// <see cref="ValidationHelper"/> is disposed. Also, here we ensure that
+        /// the property change subscriptions are unsubscribed.
+        /// </summary>
+        [Fact]
+        public void ShouldDetachAndDisposeTheComponentWhenValidationHelperDisposes()
+        {
+            var view = new IndeiTestView(new IndeiTestViewModel { Name = string.Empty });
+            var arguments = new List<DataErrorsChangedEventArgs>();
+            view.ViewModel.ErrorsChanged += (sender, args) => arguments.Add(args);
+
+            var helper = view
+                .ViewModel
+                .ValidationRule(
+                    viewModel => viewModel.Name,
+                    name => !string.IsNullOrWhiteSpace(name),
+                    "Name shouldn't be empty.");
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.True(view.ViewModel.HasErrors);
+            Assert.Equal(1, arguments.Count);
+            Assert.Equal(nameof(view.ViewModel.Name), arguments[0].PropertyName);
+
+            helper.Dispose();
+
+            Assert.Equal(0, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.False(view.ViewModel.HasErrors);
+            Assert.Equal(2, arguments.Count);
+            Assert.Equal(nameof(view.ViewModel.Name), arguments[1].PropertyName);
         }
     }
 }
