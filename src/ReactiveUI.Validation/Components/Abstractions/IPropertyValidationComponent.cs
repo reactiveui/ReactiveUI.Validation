@@ -3,13 +3,24 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System.Diagnostics.CodeAnalysis;
+
 namespace ReactiveUI.Validation.Components.Abstractions
 {
     /// <summary>
-    /// a component specifically validating one or more properties.
+    /// A component specifically validating one or more typed properties.
     /// </summary>
     /// <typeparam name="TViewModel">The validation target.</typeparam>
-    public interface IPropertyValidationComponent<TViewModel> : IValidationComponent, IValidatesProperties<TViewModel>
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:FileHeaderFileNameDocumentationMustMatchTypeName", Justification = "Same type just generic.")]
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same type just generic.")]
+    public interface IPropertyValidationComponent<TViewModel> : IPropertyValidationComponent, IValidatesProperties<TViewModel>
+    {
+    }
+
+    /// <summary>
+    /// A component specifically validating one or more untyped properties.
+    /// </summary>
+    public interface IPropertyValidationComponent : IValidationComponent, IValidatesProperties
     {
     }
 }
