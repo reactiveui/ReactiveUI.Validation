@@ -5,7 +5,6 @@
 
 using System.Linq;
 using System.Reactive.Concurrency;
-using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
@@ -150,7 +149,7 @@ namespace ReactiveUI.Validation.Tests
 
             view.ViewModel.ValidationRule(
                 m => m.Name,
-                m => m.WhenAnyValue(x => x.Name, x => x.Name2, (name, name2) => name == name2),
+                view.ViewModel.WhenAnyValue(x => x.Name, x => x.Name2, (name, name2) => name == name2),
                 errorMessage);
 
             view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
@@ -238,7 +237,7 @@ namespace ReactiveUI.Validation.Tests
                 .ViewModel
                 .ValidationRule(
                     vm => vm.Name2,
-                    vm => vm.WhenAnyValue(x => x.Name, x => x.Name2, (name, name2) => name == name2),
+                    view.ViewModel.WhenAnyValue(x => x.Name, x => x.Name2, (name, name2) => name == name2),
                     namesShouldMatchMessage);
 
             view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
