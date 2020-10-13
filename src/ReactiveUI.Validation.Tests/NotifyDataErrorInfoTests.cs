@@ -138,20 +138,14 @@ namespace ReactiveUI.Validation.Tests
         {
             var viewModel = new IndeiTestViewModel();
 
-            string namesShouldMatchMessage = "names should match.";
-            var validation = new ObservableValidation<IndeiTestViewModel, bool, string>(
-                viewModel,
+            const string namesShouldMatchMessage = "names should match.";
+            viewModel.ValidationRule(
                 vm => vm.OtherName,
-                viewModel
-                    .WhenAnyValue(
-                        m => m.Name,
-                        m => m.OtherName,
-                        (n, on) => new { n, on })
-                    .Select(bothNames => bothNames.n == bothNames.on),
-                isValid => isValid,
+                viewModel.WhenAnyValue(
+                    m => m.Name,
+                    m => m.OtherName,
+                    (name, other) => name == other),
                 namesShouldMatchMessage);
-
-            viewModel.ValidationContext.Add(validation);
 
             Assert.False(viewModel.HasErrors);
             Assert.True(viewModel.ValidationContext.IsValid);
@@ -165,8 +159,8 @@ namespace ReactiveUI.Validation.Tests
             Assert.True(viewModel.HasErrors);
             Assert.Empty(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>());
             Assert.Single(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>());
-            Assert.Single(validation.Text);
-            Assert.Equal(namesShouldMatchMessage, validation.Text.Single());
+            Assert.Single(viewModel.ValidationContext.Text);
+            Assert.Equal(namesShouldMatchMessage, viewModel.ValidationContext.Text.Single());
         }
 
         /// <summary>
