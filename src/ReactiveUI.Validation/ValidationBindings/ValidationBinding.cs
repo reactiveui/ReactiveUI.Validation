@@ -187,7 +187,9 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Select(
                     viewModel => viewModel
                         .WhenAnyValue(viewModelHelperProperty)
-                        .SelectMany(vy => vy.ValidationChanged))
+                        .SelectMany(helper => helper != null
+                            ? helper.ValidationChanged
+                            : Observable.Return(new ValidationState(true, string.Empty, viewModel!.ValidationContext))))
                 .Switch()
                 .Select(vc => formatter.Format(vc.Text));
 
@@ -242,7 +244,9 @@ namespace ReactiveUI.Validation.ValidationBindings
                 .Select(
                     viewModel => viewModel
                         .WhenAnyValue(viewModelHelperProperty)
-                        .SelectMany(vy => vy.ValidationChanged))
+                        .SelectMany(helper => helper != null
+                            ? helper.ValidationChanged
+                            : Observable.Return(new ValidationState(true, string.Empty, viewModel!.ValidationContext))))
                 .Switch()
                 .Do(state => action(state, formatter.Format(state.Text)))
                 .Select(_ => Unit.Default);

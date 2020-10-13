@@ -610,6 +610,48 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal("Name is empty.", view.NameErrorContainer.Text);
         }
 
+        /// <summary>
+        /// Verifies that we update the binding to <see cref="ValidationHelper"/> property when that
+        /// property sends <see cref="IReactiveNotifyPropertyChanged{TSender}"/> notifications.
+        /// </summary>
+        [Fact]
+        public void ShouldUpdateValidationHelperBindingOnPropertyChange()
+        {
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+
+            const string nameErrorMessage = "Name shouldn't be empty.";
+            view.ViewModel.NameRule = view.ViewModel
+                .ValidationRule(
+                    viewModel => viewModel.Name,
+                    name => !string.IsNullOrWhiteSpace(name),
+                    nameErrorMessage);
+
+            view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+            view.BindValidation(view.ViewModel, x => x.NameRule, x => x.NameErrorLabel);
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+
+            view.ViewModel.NameRule.Dispose();
+            view.ViewModel.NameRule = null;
+
+            Assert.Equal(0, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.Empty(view.NameErrorLabel);
+
+            const string secretMessage = "This is the secret message.";
+            view.ViewModel.NameRule = view.ViewModel
+                .ValidationRule(
+                    viewModel => viewModel.Name,
+                    name => !string.IsNullOrWhiteSpace(name),
+                    secretMessage);
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Equal(secretMessage, view.NameErrorLabel);
+        }
+
         private class ConstFormatter : IValidationTextFormatter<string>
         {
             private readonly string _text;
