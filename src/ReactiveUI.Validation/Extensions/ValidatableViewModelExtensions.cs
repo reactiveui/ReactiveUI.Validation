@@ -107,7 +107,7 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Setup a validation rule with a general observable indicating validity.
+        /// Setup a validation rule with a general observable indicating validity and a static error message.
         /// </summary>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <param name="viewModel">ViewModel instance.</param>
@@ -148,7 +148,8 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Setup a validation rule with a general observable indicating validity.
+        /// Setup a validation rule with a general observable indicating validity with a dynamic
+        /// validation function and a dynamic context-aware error message.
         /// </summary>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TValue">Validation observable type.</typeparam>
@@ -194,7 +195,8 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Setup a validation rule with a general observable indicating validity.
+        /// Setup a validation rule with a general observable indicating validity and a static error message
+        /// for the given view model property.
         /// </summary>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
@@ -244,7 +246,8 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Setup a validation rule with a general observable indicating validity.
+        /// Setup a validation rule with a general observable indicating validity with a dynamic
+        /// validation function and a dynamic context-aware error message for the given view model property.
         /// </summary>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
