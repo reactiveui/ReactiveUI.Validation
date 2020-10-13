@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
 using ReactiveUI.Validation.Abstractions;
@@ -325,6 +326,7 @@ namespace ReactiveUI.Validation.Extensions
         /// It should be noted that the observable should provide an initial value, otherwise that can result
         /// in an inconsistent performance.
         /// </remarks>
+        [ExcludeFromCodeCoverage]
         [Obsolete("Use the overload accepting just IObservable<bool> instead of Func<TViewModel, IObservable<bool>>")]
         public static ValidationHelper ValidationRule<TViewModel>(
             this TViewModel viewModel,
@@ -367,6 +369,7 @@ namespace ReactiveUI.Validation.Extensions
         /// It should be noted that the observable should provide an initial value, otherwise that can result
         /// in an inconsistent performance.
         /// </remarks>
+        [ExcludeFromCodeCoverage]
         [Obsolete("Use the overload accepting just IObservable<bool> instead of Func<TViewModel, IObservable<bool>>")]
         public static ValidationHelper ValidationRule<TViewModel>(
             this TViewModel viewModel,
@@ -409,6 +412,7 @@ namespace ReactiveUI.Validation.Extensions
         /// It should be noted that the observable should provide an initial value, otherwise that can result
         /// in an inconsistent performance.
         /// </remarks>
+        [ExcludeFromCodeCoverage]
         [Obsolete("This overload is planned for future removal. Consider using either the overload that accepts a " +
                   "Func<TViewModel, string> as the messageFunc parameter, or the overload that accepts a string.")]
         public static ValidationHelper ValidationRule<TViewModel>(
@@ -454,6 +458,7 @@ namespace ReactiveUI.Validation.Extensions
         /// It should be noted that the observable should provide an initial value, otherwise that can result
         /// in an inconsistent performance.
         /// </remarks>
+        [ExcludeFromCodeCoverage]
         [Obsolete("Use the overload accepting just IObservable<bool> instead of Func<TViewModel, IObservable<bool>>")]
         public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
             this TViewModel viewModel,
@@ -505,6 +510,7 @@ namespace ReactiveUI.Validation.Extensions
         /// It should be noted that the observable should provide an initial value, otherwise that can result
         /// in an inconsistent performance.
         /// </remarks>
+        [ExcludeFromCodeCoverage]
         [Obsolete("Use the overload accepting just IObservable<bool> instead of Func<TViewModel, IObservable<bool>>")]
         public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
             this TViewModel viewModel,
@@ -556,6 +562,7 @@ namespace ReactiveUI.Validation.Extensions
         /// It should be noted that the observable should provide an initial value, otherwise that can result
         /// in an inconsistent performance.
         /// </remarks>
+        [ExcludeFromCodeCoverage]
         [Obsolete("This overload is planned for future removal. Consider using either the overload that accepts a " +
                   "Func<TViewModel, string> as the messageFunc parameter, or the overload that accepts a string.")]
         public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
