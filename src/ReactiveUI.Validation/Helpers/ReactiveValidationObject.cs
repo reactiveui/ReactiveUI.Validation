@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -20,16 +21,34 @@ using ReactiveUI.Validation.States;
 namespace ReactiveUI.Validation.Helpers
 {
     /// <summary>
-    /// Base class for ReactiveObjects that support INotifyDataErrorInfo validation.
+    /// Base class for ReactiveObjects that support <see cref="INotifyDataErrorInfo"/> validation.
     /// </summary>
     /// <typeparam name="TViewModel">The parent view model.</typeparam>
-    public abstract class ReactiveValidationObject<TViewModel> : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
+    [Obsolete("The type parameters are no longer required. Use the non-generic version of ReactiveValidationObject.")]
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:FileHeaderFileNameDocumentationMustMatchTypeName", Justification = "Same class just generic.")]
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just generic.")]
+    public abstract class ReactiveValidationObject<TViewModel> : ReactiveValidationObject
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ReactiveValidationObject{TViewModel}"/> class.
+        /// </summary>
+        /// <param name="scheduler">Scheduler for OAPHs and for the the ValidationContext.</param>
+        protected ReactiveValidationObject(IScheduler? scheduler = null)
+            : base(scheduler)
+        {
+        }
+    }
+
+    /// <summary>
+    /// Base class for ReactiveObjects that support <see cref="INotifyDataErrorInfo"/> validation.
+    /// </summary>
+    public abstract class ReactiveValidationObject : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
     {
         private readonly HashSet<string> _mentionedPropertyNames = new HashSet<string>();
         private bool _hasErrors;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ReactiveValidationObject{TViewModel}"/> class.
+        /// Initializes a new instance of the <see cref="ReactiveValidationObject"/> class.
         /// </summary>
         /// <param name="scheduler">Scheduler for OAPHs and for the the ValidationContext.</param>
         protected ReactiveValidationObject(IScheduler? scheduler = null)
@@ -87,9 +106,9 @@ namespace ReactiveUI.Validation.Helpers
         /// Selects validation components that are invalid.
         /// </summary>
         /// <returns>Returns the invalid property validations.</returns>
-        private IEnumerable<IPropertyValidationComponent<TViewModel>> SelectInvalidPropertyValidations() =>
+        private IEnumerable<IPropertyValidationComponent> SelectInvalidPropertyValidations() =>
             ValidationContext.Validations
-                .OfType<IPropertyValidationComponent<TViewModel>>()
+                .OfType<IPropertyValidationComponent>()
                 .Where(validation => !validation.IsValid);
 
         /// <summary>
@@ -107,7 +126,7 @@ namespace ReactiveUI.Validation.Helpers
         private void OnValidationStatusChange(ValidationState state)
         {
             HasErrors = !ValidationContext.GetIsValid();
-            if (state.Component is IPropertyValidationComponent<TViewModel> propertyValidationComponent)
+            if (state.Component is IPropertyValidationComponent propertyValidationComponent)
             {
                 foreach (var propertyName in propertyValidationComponent.Properties)
                 {

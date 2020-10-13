@@ -20,7 +20,7 @@ namespace LoginApp.ViewModels
     /// <summary>
     /// A view model which shows controls to create an account.
     /// </summary>
-    public class SignUpViewModel : ReactiveValidationObject<SignUpViewModel>, IRoutableViewModel, IActivatableViewModel
+    public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IActivatableViewModel
     {
         private readonly IUserDialogs _dialogs;
 
