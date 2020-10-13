@@ -115,10 +115,7 @@ namespace LoginApp.ViewModels
             this.ValidationRule(
                 vm => vm.ConfirmPassword,
                 passwordsObservable,
-                state =>
-                    !string.IsNullOrWhiteSpace(state.Password) &&
-                    !string.IsNullOrWhiteSpace(state.Confirmation) &&
-                    state.Password == state.Confirmation,
+                state => state.Password == state.Confirmation,
                 state => $"Passwords must match: {state.Password} != {state.Confirmation}");
         }
     }
