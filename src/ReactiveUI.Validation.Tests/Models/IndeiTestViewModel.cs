@@ -11,7 +11,7 @@ namespace ReactiveUI.Validation.Tests.Models
     /// <summary>
     /// Mocked ViewModel for INotifyDataErrorInfo testing.
     /// </summary>
-    public class IndeiTestViewModel : ReactiveValidationObject<IndeiTestViewModel>
+    public class IndeiTestViewModel : ReactiveValidationObject
     {
         private string _name;
         private string _otherName;

@@ -11,7 +11,7 @@ namespace ReactiveUI.Validation.Tests.Models
     /// <summary>
     /// Sample view model that implements <see cref="ISampleViewModel" />.
     /// </summary>
-    public class SampleViewModel : ReactiveValidationObject<SampleViewModel>, ISampleViewModel
+    public class SampleViewModel : ReactiveValidationObject, ISampleViewModel
     {
         private string _name;
 
