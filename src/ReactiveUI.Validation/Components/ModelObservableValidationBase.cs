@@ -35,37 +35,14 @@ namespace ReactiveUI.Validation.Components
         private readonly ReplaySubject<ValidationState> _lastValidationStateSubject =
             new ReplaySubject<ValidationState>(1);
 
-        /// <summary>
-        /// The list of property names this validator is referencing.
-        /// </summary>
         private readonly HashSet<string> _propertyNames = new HashSet<string>();
-
-        // the underlying connected observable for the validation change which is published
         private readonly IConnectableObservable<ValidationState> _validityConnectedObservable;
-
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
-
         private bool _isActive;
-
         private bool _isValid;
-
         private ValidationText? _text;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ModelObservableValidationBase{TViewModel}"/> class.
-        /// </summary>
-        /// <param name="viewModel">ViewModel instance.</param>
-        /// <param name="validityObservable">Func to define if the viewModel is valid or not.</param>
-        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and validityObservable values.</param>
-        public ModelObservableValidationBase(
-            TViewModel viewModel,
-            Func<TViewModel, IObservable<bool>> validityObservable,
-            Func<TViewModel, bool, string> messageFunc)
-            : this(viewModel, validityObservable, (vm, state) => new ValidationText(messageFunc(vm, state)))
-        {
-        }
-
-        /// <summary>
+            /// <summary>
         /// Initializes a new instance of the <see cref="ModelObservableValidationBase{TViewModel}"/> class.
         /// </summary>
         /// <param name="viewModel">ViewModel instance.</param>
@@ -76,13 +53,17 @@ namespace ReactiveUI.Validation.Components
             Func<TViewModel, IObservable<bool>> validityObservable,
             Func<TViewModel, bool, ValidationText> messageFunc)
         {
-            _disposables.Add(_lastValidationStateSubject.Do(s =>
-            {
-                _isValid = s.IsValid;
-                _text = s.Text;
-            }).Subscribe());
+            _lastValidationStateSubject
+                .Do(state =>
+                {
+                    _isValid = state.IsValid;
+                    _text = state.Text;
+                })
+                .Subscribe()
+                .DisposeWith(_disposables);
 
-            _validityConnectedObservable = Observable.Defer(() => validityObservable(viewModel))
+            _validityConnectedObservable = Observable
+                .Defer(() => validityObservable(viewModel))
                 .Select(v => new ValidationState(v, messageFunc(viewModel, v), this))
                 .Multicast(_lastValidationStateSubject);
         }
@@ -161,7 +142,7 @@ namespace ReactiveUI.Validation.Components
         {
             if (disposing)
             {
-                _disposables?.Dispose();
+                _disposables.Dispose();
             }
         }
 
