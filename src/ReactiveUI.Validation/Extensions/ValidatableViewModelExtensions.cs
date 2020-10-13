@@ -139,8 +139,11 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return viewModel.RegisterValidation(
-                new ModelObservableValidation<TViewModel>(
-                    viewModel, viewModelObservableProperty, message));
+                new ObservableValidation<TViewModel, bool>(
+                    viewModel,
+                    viewModelObservableProperty(viewModel),
+                    validity => validity,
+                    message));
         }
 
         /// <summary>
@@ -177,8 +180,11 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return viewModel.RegisterValidation(
-                new ModelObservableValidation<TViewModel>(
-                    viewModel, viewModelObservableProperty, messageFunc));
+                new ObservableValidation<TViewModel, bool>(
+                    viewModel,
+                    viewModelObservableProperty(viewModel),
+                    (vm, state) => state,
+                    (vm, state) => messageFunc(vm)));
         }
 
         /// <summary>
@@ -217,8 +223,11 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return viewModel.RegisterValidation(
-                new ModelObservableValidation<TViewModel>(
-                    viewModel, viewModelObservableProperty, messageFunc));
+                new ObservableValidation<TViewModel, bool>(
+                    viewModel,
+                    viewModelObservableProperty(viewModel),
+                    (vm, validity) => validity,
+                    (vm, state, isValid) => messageFunc(vm, isValid)));
         }
 
         /// <summary>
@@ -263,8 +272,12 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return viewModel.RegisterValidation(
-                new ModelObservableValidation<TViewModel, TViewModelProp>(
-                    viewModel, viewModelProperty, viewModelObservableProperty, message));
+                new ObservableValidation<TViewModel, bool, TViewModelProp>(
+                    viewModel,
+                    viewModelProperty,
+                    viewModelObservableProperty(viewModel),
+                    validity => validity,
+                    message));
         }
 
         /// <summary>
@@ -309,8 +322,12 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return viewModel.RegisterValidation(
-                new ModelObservableValidation<TViewModel, TViewModelProp>(
-                    viewModel, viewModelProperty, viewModelObservableProperty, messageFunc));
+                new ObservableValidation<TViewModel, bool, TViewModelProp>(
+                    viewModel,
+                    viewModelProperty,
+                    viewModelObservableProperty(viewModel),
+                    (vm, validity) => validity,
+                    (vm, state) => messageFunc(vm)));
         }
 
         /// <summary>
@@ -357,8 +374,12 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return viewModel.RegisterValidation(
-                new ModelObservableValidation<TViewModel, TViewModelProp>(
-                    viewModel, viewModelProperty, viewModelObservableProperty, messageFunc));
+                new ObservableValidation<TViewModel, bool, TViewModelProp>(
+                    viewModel,
+                    viewModelProperty,
+                    viewModelObservableProperty(viewModel),
+                    (vm, validity) => validity,
+                    (vm, state, validity) => messageFunc(vm, validity)));
         }
 
         /// <summary>
