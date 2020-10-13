@@ -105,19 +105,18 @@ namespace LoginApp.ViewModels
                 value => !string.IsNullOrWhiteSpace(value),
                 "Confirm password field is required.");
 
-            IObservable<bool> passwordsMatch =
+            var passwordsObservable =
                 this.WhenAnyValue(
                     x => x.Password,
                     x => x.ConfirmPassword,
                     (password, confirmation) =>
-                        !string.IsNullOrWhiteSpace(password) &&
-                        !string.IsNullOrWhiteSpace(confirmation) &&
-                        password == confirmation);
+                        new { Password = password, Confirmation = confirmation });
 
             this.ValidationRule(
-                x => x.ConfirmPassword,
-                x => passwordsMatch,
-                "Passwords must match.");
+                vm => vm.ConfirmPassword,
+                passwordsObservable,
+                state => state.Password == state.Confirmation,
+                state => $"Passwords must match: {state.Password} != {state.Confirmation}");
         }
     }
 }

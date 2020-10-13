@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
 using ReactiveUI.Validation.Abstractions;
@@ -106,11 +107,11 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
-        /// Setup a validation rule with a general observable indicating validity.
+        /// Setup a validation rule with a general observable indicating validity and a static error message.
         /// </summary>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <param name="viewModel">ViewModel instance.</param>
-        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
+        /// <param name="validationObservable">Observable to define if the viewModel is valid or not.</param>
         /// <param name="message">Validation error message.</param>
         /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
         /// <remarks>
@@ -119,7 +120,7 @@ namespace ReactiveUI.Validation.Extensions
         /// </remarks>
         public static ValidationHelper ValidationRule<TViewModel>(
             this TViewModel viewModel,
-            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
+            IObservable<bool> validationObservable,
             string message)
             where TViewModel : IReactiveObject, IValidatableViewModel
         {
@@ -128,9 +129,9 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(viewModel));
             }
 
-            if (viewModelObservableProperty is null)
+            if (validationObservable is null)
             {
-                throw new ArgumentNullException(nameof(viewModelObservableProperty));
+                throw new ArgumentNullException(nameof(validationObservable));
             }
 
             if (message is null)
@@ -139,26 +140,33 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return viewModel.RegisterValidation(
-                new ModelObservableValidation<TViewModel>(
-                    viewModel, viewModelObservableProperty, message));
+                new ObservableValidation<TViewModel, bool>(
+                    viewModel,
+                    validationObservable,
+                    validity => validity,
+                    message));
         }
 
         /// <summary>
-        /// Setup a validation rule with a general observable indicating validity.
+        /// Setup a validation rule with a general observable indicating validity with a dynamic
+        /// validation function and a dynamic context-aware error message.
         /// </summary>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TValue">Validation observable type.</typeparam>
         /// <param name="viewModel">ViewModel instance.</param>
-        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
-        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and viewModelObservableProperty values.</param>
+        /// <param name="validationObservable">Observable to define if the viewModel is valid or not.</param>
+        /// <param name="isValidFunc">Func to define if the value emitted by the observable is valid.</param>
+        /// <param name="messageFunc">Func to define the validation error message based on the observable value.</param>
         /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
         /// <remarks>
         /// It should be noted that the observable should provide an initial value, otherwise that can result
         /// in an inconsistent performance.
         /// </remarks>
-        public static ValidationHelper ValidationRule<TViewModel>(
+        public static ValidationHelper ValidationRule<TViewModel, TValue>(
             this TViewModel viewModel,
-            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
-            Func<TViewModel, string> messageFunc)
+            IObservable<TValue> validationObservable,
+            Func<TValue, bool> isValidFunc,
+            Func<TValue, string> messageFunc)
             where TViewModel : IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
@@ -166,9 +174,14 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(viewModel));
             }
 
-            if (viewModelObservableProperty is null)
+            if (validationObservable is null)
             {
-                throw new ArgumentNullException(nameof(viewModelObservableProperty));
+                throw new ArgumentNullException(nameof(validationObservable));
+            }
+
+            if (isValidFunc is null)
+            {
+                throw new ArgumentNullException(nameof(isValidFunc));
             }
 
             if (messageFunc is null)
@@ -177,58 +190,19 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return viewModel.RegisterValidation(
-                new ModelObservableValidation<TViewModel>(
-                    viewModel, viewModelObservableProperty, messageFunc));
+                new ObservableValidation<TViewModel, TValue>(
+                    viewModel, validationObservable, isValidFunc, messageFunc));
         }
 
         /// <summary>
-        /// Setup a validation rule with a general observable indicating validity.
-        /// </summary>
-        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
-        /// <param name="viewModel">ViewModel instance.</param>
-        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
-        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and viewModelObservableProperty values.</param>
-        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
-        /// <remarks>
-        /// It should be noted that the observable should provide an initial value, otherwise that can result
-        /// in an inconsistent performance.
-        /// </remarks>
-        [Obsolete("This overload is planned for future removal. Consider using either the overload that accepts a " +
-                  "Func<TViewModel, string> as the messageFunc parameter, or the overload that accepts a string.")]
-        public static ValidationHelper ValidationRule<TViewModel>(
-            this TViewModel viewModel,
-            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
-            Func<TViewModel, bool, string> messageFunc)
-            where TViewModel : IReactiveObject, IValidatableViewModel
-        {
-            if (viewModel is null)
-            {
-                throw new ArgumentNullException(nameof(viewModel));
-            }
-
-            if (viewModelObservableProperty is null)
-            {
-                throw new ArgumentNullException(nameof(viewModelObservableProperty));
-            }
-
-            if (messageFunc is null)
-            {
-                throw new ArgumentNullException(nameof(messageFunc));
-            }
-
-            return viewModel.RegisterValidation(
-                new ModelObservableValidation<TViewModel>(
-                    viewModel, viewModelObservableProperty, messageFunc));
-        }
-
-        /// <summary>
-        /// Setup a validation rule with a general observable indicating validity.
+        /// Setup a validation rule with a general observable indicating validity and a static error message
+        /// for the given view model property.
         /// </summary>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property referenced in viewModelObservableProperty.</param>
-        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
+        /// <param name="viewModelObservable">Observable to define if the viewModel is valid or not.</param>
         /// <param name="message">Validation error message.</param>
         /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
         /// <remarks>
@@ -238,7 +212,7 @@ namespace ReactiveUI.Validation.Extensions
         public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
             this TViewModel viewModel,
             Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
-            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
+            IObservable<bool> viewModelObservable,
             string message)
             where TViewModel : IReactiveObject, IValidatableViewModel
         {
@@ -252,9 +226,9 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(viewModelProperty));
             }
 
-            if (viewModelObservableProperty is null)
+            if (viewModelObservable is null)
             {
-                throw new ArgumentNullException(nameof(viewModelObservableProperty));
+                throw new ArgumentNullException(nameof(viewModelObservable));
             }
 
             if (message is null)
@@ -263,29 +237,37 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return viewModel.RegisterValidation(
-                new ModelObservableValidation<TViewModel, TViewModelProp>(
-                    viewModel, viewModelProperty, viewModelObservableProperty, message));
+                new ObservableValidation<TViewModel, bool, TViewModelProp>(
+                    viewModel,
+                    viewModelProperty,
+                    viewModelObservable,
+                    validity => validity,
+                    message));
         }
 
         /// <summary>
-        /// Setup a validation rule with a general observable indicating validity.
+        /// Setup a validation rule with a general observable indicating validity with a dynamic
+        /// validation function and a dynamic context-aware error message for the given view model property.
         /// </summary>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
+        /// <typeparam name="TValue">Validation observable type.</typeparam>
         /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property referenced in viewModelObservableProperty.</param>
-        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
-        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and viewModelObservableProperty values.</param>
+        /// <param name="viewModelObservable">Observable to define if the viewModel is valid or not.</param>
+        /// <param name="isValidFunc">Func to define if the value emitted by the observable is valid.</param>
+        /// <param name="messageFunc">Func to define the validation error message based on the observable value.</param>
         /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
         /// <remarks>
         /// It should be noted that the observable should provide an initial value, otherwise that can result
         /// in an inconsistent performance.
         /// </remarks>
-        public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
+        public static ValidationHelper ValidationRule<TViewModel, TViewModelProp, TValue>(
             this TViewModel viewModel,
             Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
-            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
-            Func<TViewModel, string> messageFunc)
+            IObservable<TValue> viewModelObservable,
+            Func<TValue, bool> isValidFunc,
+            Func<TValue, string> messageFunc)
             where TViewModel : IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)
@@ -298,9 +280,14 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(viewModelProperty));
             }
 
-            if (viewModelObservableProperty is null)
+            if (viewModelObservable is null)
             {
-                throw new ArgumentNullException(nameof(viewModelObservableProperty));
+                throw new ArgumentNullException(nameof(viewModelObservable));
+            }
+
+            if (isValidFunc is null)
+            {
+                throw new ArgumentNullException(nameof(isValidFunc));
             }
 
             if (messageFunc is null)
@@ -309,56 +296,8 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return viewModel.RegisterValidation(
-                new ModelObservableValidation<TViewModel, TViewModelProp>(
-                    viewModel, viewModelProperty, viewModelObservableProperty, messageFunc));
-        }
-
-        /// <summary>
-        /// Setup a validation rule with a general observable indicating validity.
-        /// </summary>
-        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
-        /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
-        /// <param name="viewModel">ViewModel instance.</param>
-        /// <param name="viewModelProperty">ViewModel property referenced in viewModelObservableProperty.</param>
-        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
-        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and viewModelObservableProperty values.</param>
-        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
-        /// <remarks>
-        /// It should be noted that the observable should provide an initial value, otherwise that can result
-        /// in an inconsistent performance.
-        /// </remarks>
-        [Obsolete("This overload is planned for future removal. Consider using either the overload that accepts a " +
-                  "Func<TViewModel, string> as the messageFunc parameter, or the overload that accepts a string.")]
-        public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
-            this TViewModel viewModel,
-            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
-            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
-            Func<TViewModel, bool, string> messageFunc)
-            where TViewModel : IReactiveObject, IValidatableViewModel
-        {
-            if (viewModel is null)
-            {
-                throw new ArgumentNullException(nameof(viewModel));
-            }
-
-            if (viewModelProperty is null)
-            {
-                throw new ArgumentNullException(nameof(viewModelProperty));
-            }
-
-            if (viewModelObservableProperty is null)
-            {
-                throw new ArgumentNullException(nameof(viewModelObservableProperty));
-            }
-
-            if (messageFunc is null)
-            {
-                throw new ArgumentNullException(nameof(messageFunc));
-            }
-
-            return viewModel.RegisterValidation(
-                new ModelObservableValidation<TViewModel, TViewModelProp>(
-                    viewModel, viewModelProperty, viewModelObservableProperty, messageFunc));
+                new ObservableValidation<TViewModel, TValue, TViewModelProp>(
+                    viewModel, viewModelProperty, viewModelObservable, isValidFunc, messageFunc));
         }
 
         /// <summary>
@@ -376,6 +315,293 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return viewModel.ValidationContext.Valid;
+        }
+
+        /// <summary>
+        /// Setup a validation rule with a general observable indicating validity.
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
+        /// <param name="message">Validation error message.</param>
+        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+        /// <remarks>
+        /// It should be noted that the observable should provide an initial value, otherwise that can result
+        /// in an inconsistent performance.
+        /// </remarks>
+        [ExcludeFromCodeCoverage]
+        [Obsolete("Use the overload accepting just IObservable<bool> instead of Func<TViewModel, IObservable<bool>>")]
+        public static ValidationHelper ValidationRule<TViewModel>(
+            this TViewModel viewModel,
+            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
+            string message)
+            where TViewModel : IReactiveObject, IValidatableViewModel
+        {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelObservableProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelObservableProperty));
+            }
+
+            if (message is null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            return viewModel.RegisterValidation(
+                new ObservableValidation<TViewModel, bool>(
+                    viewModel,
+                    viewModelObservableProperty(viewModel),
+                    validity => validity,
+                    message));
+        }
+
+        /// <summary>
+        /// Setup a validation rule with a general observable indicating validity.
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
+        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and viewModelObservableProperty values.</param>
+        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+        /// <remarks>
+        /// It should be noted that the observable should provide an initial value, otherwise that can result
+        /// in an inconsistent performance.
+        /// </remarks>
+        [ExcludeFromCodeCoverage]
+        [Obsolete("Use the overload accepting just IObservable<bool> instead of Func<TViewModel, IObservable<bool>>")]
+        public static ValidationHelper ValidationRule<TViewModel>(
+            this TViewModel viewModel,
+            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
+            Func<TViewModel, string> messageFunc)
+            where TViewModel : IReactiveObject, IValidatableViewModel
+        {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelObservableProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelObservableProperty));
+            }
+
+            if (messageFunc is null)
+            {
+                throw new ArgumentNullException(nameof(messageFunc));
+            }
+
+            return viewModel.RegisterValidation(
+                new ObservableValidation<TViewModel, bool>(
+                    viewModel,
+                    viewModelObservableProperty(viewModel),
+                    (vm, state) => state,
+                    (vm, state) => messageFunc(vm)));
+        }
+
+        /// <summary>
+        /// Setup a validation rule with a general observable indicating validity.
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
+        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and viewModelObservableProperty values.</param>
+        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+        /// <remarks>
+        /// It should be noted that the observable should provide an initial value, otherwise that can result
+        /// in an inconsistent performance.
+        /// </remarks>
+        [ExcludeFromCodeCoverage]
+        [Obsolete("This overload is planned for future removal. Consider using either the overload that accepts a " +
+                  "Func<TViewModel, string> as the messageFunc parameter, or the overload that accepts a string.")]
+        public static ValidationHelper ValidationRule<TViewModel>(
+            this TViewModel viewModel,
+            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
+            Func<TViewModel, bool, string> messageFunc)
+            where TViewModel : IReactiveObject, IValidatableViewModel
+        {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelObservableProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelObservableProperty));
+            }
+
+            if (messageFunc is null)
+            {
+                throw new ArgumentNullException(nameof(messageFunc));
+            }
+
+            return viewModel.RegisterValidation(
+                new ObservableValidation<TViewModel, bool>(
+                    viewModel,
+                    viewModelObservableProperty(viewModel),
+                    (vm, validity) => validity,
+                    (vm, state, isValid) => messageFunc(vm, isValid)));
+        }
+
+        /// <summary>
+        /// Setup a validation rule with a general observable indicating validity.
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelProperty">ViewModel property referenced in viewModelObservableProperty.</param>
+        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
+        /// <param name="message">Validation error message.</param>
+        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+        /// <remarks>
+        /// It should be noted that the observable should provide an initial value, otherwise that can result
+        /// in an inconsistent performance.
+        /// </remarks>
+        [ExcludeFromCodeCoverage]
+        [Obsolete("Use the overload accepting just IObservable<bool> instead of Func<TViewModel, IObservable<bool>>")]
+        public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
+            this TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
+            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
+            string message)
+            where TViewModel : IReactiveObject, IValidatableViewModel
+        {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (viewModelObservableProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelObservableProperty));
+            }
+
+            if (message is null)
+            {
+                throw new ArgumentNullException(nameof(message));
+            }
+
+            return viewModel.RegisterValidation(
+                new ObservableValidation<TViewModel, bool, TViewModelProp>(
+                    viewModel,
+                    viewModelProperty,
+                    viewModelObservableProperty(viewModel),
+                    validity => validity,
+                    message));
+        }
+
+        /// <summary>
+        /// Setup a validation rule with a general observable indicating validity.
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelProperty">ViewModel property referenced in viewModelObservableProperty.</param>
+        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
+        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and viewModelObservableProperty values.</param>
+        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+        /// <remarks>
+        /// It should be noted that the observable should provide an initial value, otherwise that can result
+        /// in an inconsistent performance.
+        /// </remarks>
+        [ExcludeFromCodeCoverage]
+        [Obsolete("Use the overload accepting just IObservable<bool> instead of Func<TViewModel, IObservable<bool>>")]
+        public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
+            this TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
+            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
+            Func<TViewModel, string> messageFunc)
+            where TViewModel : IReactiveObject, IValidatableViewModel
+        {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (viewModelObservableProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelObservableProperty));
+            }
+
+            if (messageFunc is null)
+            {
+                throw new ArgumentNullException(nameof(messageFunc));
+            }
+
+            return viewModel.RegisterValidation(
+                new ObservableValidation<TViewModel, bool, TViewModelProp>(
+                    viewModel,
+                    viewModelProperty,
+                    viewModelObservableProperty(viewModel),
+                    (vm, validity) => validity,
+                    (vm, state) => messageFunc(vm)));
+        }
+
+        /// <summary>
+        /// Setup a validation rule with a general observable indicating validity.
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelProperty">ViewModel property referenced in viewModelObservableProperty.</param>
+        /// <param name="viewModelObservableProperty">Func to define if the viewModel is valid or not.</param>
+        /// <param name="messageFunc">Func to define the validation error message based on the viewModel and viewModelObservableProperty values.</param>
+        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+        /// <remarks>
+        /// It should be noted that the observable should provide an initial value, otherwise that can result
+        /// in an inconsistent performance.
+        /// </remarks>
+        [ExcludeFromCodeCoverage]
+        [Obsolete("This overload is planned for future removal. Consider using either the overload that accepts a " +
+                  "Func<TViewModel, string> as the messageFunc parameter, or the overload that accepts a string.")]
+        public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
+            this TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
+            Func<TViewModel, IObservable<bool>> viewModelObservableProperty,
+            Func<TViewModel, bool, string> messageFunc)
+            where TViewModel : IReactiveObject, IValidatableViewModel
+        {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (viewModelObservableProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelObservableProperty));
+            }
+
+            if (messageFunc is null)
+            {
+                throw new ArgumentNullException(nameof(messageFunc));
+            }
+
+            return viewModel.RegisterValidation(
+                new ObservableValidation<TViewModel, bool, TViewModelProp>(
+                    viewModel,
+                    viewModelProperty,
+                    viewModelObservableProperty(viewModel),
+                    (vm, validity) => validity,
+                    (vm, state, validity) => messageFunc(vm, validity)));
         }
 
         /// <summary>

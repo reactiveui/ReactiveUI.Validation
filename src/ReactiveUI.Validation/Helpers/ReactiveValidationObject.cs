@@ -24,6 +24,7 @@ namespace ReactiveUI.Validation.Helpers
     /// Base class for ReactiveObjects that support <see cref="INotifyDataErrorInfo"/> validation.
     /// </summary>
     /// <typeparam name="TViewModel">The parent view model.</typeparam>
+    [ExcludeFromCodeCoverage]
     [Obsolete("The type parameters are no longer required. Use the non-generic version of ReactiveValidationObject.")]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:FileHeaderFileNameDocumentationMustMatchTypeName", Justification = "Same class just generic.")]
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just generic.")]

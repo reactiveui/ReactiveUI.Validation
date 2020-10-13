@@ -3,7 +3,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -139,18 +138,14 @@ namespace ReactiveUI.Validation.Tests
         {
             var viewModel = new IndeiTestViewModel();
 
-            string namesShouldMatchMessage = "names should match.";
-            var validation = new ModelObservableValidation<IndeiTestViewModel, string>(
-                viewModel,
+            const string namesShouldMatchMessage = "names should match.";
+            viewModel.ValidationRule(
                 vm => vm.OtherName,
-                vm => vm.WhenAnyValue(
-                        m => m.Name,
-                        m => m.OtherName,
-                        (n, on) => new { n, on })
-                    .Select(bothNames => bothNames.n == bothNames.on),
-                (_, isValid) => isValid ? string.Empty : namesShouldMatchMessage);
-
-            viewModel.ValidationContext.Add(validation);
+                viewModel.WhenAnyValue(
+                    m => m.Name,
+                    m => m.OtherName,
+                    (name, other) => name == other),
+                namesShouldMatchMessage);
 
             Assert.False(viewModel.HasErrors);
             Assert.True(viewModel.ValidationContext.IsValid);
@@ -164,8 +159,8 @@ namespace ReactiveUI.Validation.Tests
             Assert.True(viewModel.HasErrors);
             Assert.Empty(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>());
             Assert.Single(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>());
-            Assert.Single(validation.Text);
-            Assert.Equal(namesShouldMatchMessage, validation.Text.Single());
+            Assert.Single(viewModel.ValidationContext.Text);
+            Assert.Equal(namesShouldMatchMessage, viewModel.ValidationContext.Text.Single());
         }
 
         /// <summary>

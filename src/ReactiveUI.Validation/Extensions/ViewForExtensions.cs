@@ -40,6 +40,7 @@ namespace ReactiveUI.Validation.Extensions
         /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
         /// </param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        [ExcludeFromCodeCoverage]
         [Obsolete("This method is no longer required, BindValidation now supports multiple validations.")]
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
         public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(
@@ -204,6 +205,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="target">Target instance.</param>
         /// <param name="viewExpression">Expression to discover View properties.</param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        [ExcludeFromCodeCoverage]
         [Obsolete("This method is a part of ReactiveUI internals and will be " +
                   "removed from ReactiveUI.Validation public API soon.")]
         public static IDisposable BindToDirect<TTarget, TValue>(

@@ -3,7 +3,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Tests.Models;
@@ -12,7 +11,8 @@ using Xunit;
 namespace ReactiveUI.Validation.Tests
 {
     /// <summary>
-    /// Tests for <see cref="ModelObservableValidation{TViewModel}"/>.
+    /// Tests for the generic <see cref="ObservableValidation{TViewModel, TValue}"/> and for
+    /// <see cref="ObservableValidation{TViewModel,TValue,TProp}"/> as well.
     /// </summary>
     public class ModelObservableTests
     {
@@ -31,10 +31,11 @@ namespace ReactiveUI.Validation.Tests
         {
             _validState.OnNext(true);
 
-            var validation = new ModelObservableValidation<TestViewModel>(
+            var validation = new ObservableValidation<TestViewModel, bool>(
                 _validModel,
-                _ => _validState,
-                (text, valid) => "broken");
+                _validState,
+                valid => valid,
+                "broken");
 
             Assert.True(validation.IsValid);
         }
@@ -47,11 +48,12 @@ namespace ReactiveUI.Validation.Tests
         {
             _validState.OnNext(true);
 
-            var propertyValidation = new ModelObservableValidation<TestViewModel, string>(
+            var propertyValidation = new ObservableValidation<TestViewModel, bool, string>(
                 _validModel,
                 state => state.Name,
-                _ => _validState,
-                (text, valid) => "broken");
+                _validState,
+                valid => valid,
+                "broken");
 
             Assert.True(propertyValidation.IsValid);
         }
@@ -62,10 +64,11 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void ObservableToInvalidTest()
         {
-            var validation = new ModelObservableValidation<TestViewModel>(
+            var validation = new ObservableValidation<TestViewModel, bool>(
                 _validModel,
-                _ => _validState,
-                (text, valid) => "broken");
+                _validState,
+                valid => valid,
+                "broken");
 
             _validState.OnNext(false);
             _validState.OnNext(true);
@@ -81,11 +84,12 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void ObservableToInvalidOfPropertyValidationTest()
         {
-            var propertyValidation = new ModelObservableValidation<TestViewModel, string>(
+            var propertyValidation = new ObservableValidation<TestViewModel, bool, string>(
                 _validModel,
                 state => state.Name,
-                _ => _validState,
-                (text, valid) => "broken");
+                _validState,
+                valid => valid,
+                "broken");
 
             _validState.OnNext(false);
             _validState.OnNext(true);
@@ -97,15 +101,16 @@ namespace ReactiveUI.Validation.Tests
 
         /// <summary>
         /// Verifies that a call to Dispose disconnects the underlying observable
-        /// of a <see cref="ModelObservableValidation{TViewModel}"/>.
+        /// of a <see cref="ObservableValidation{TViewModel,TValue}"/>.
         /// </summary>
         [Fact]
         public void DisposeShouldStopTrackingTheObservable()
         {
-            var validation = new ModelObservableValidation<TestViewModel>(
+            var validation = new ObservableValidation<TestViewModel, bool>(
                 _validModel,
-                _ => _validState,
-                (text, valid) => "broken");
+                _validState,
+                validity => validity,
+                "broken");
 
             _validState.OnNext(true);
 
@@ -126,16 +131,17 @@ namespace ReactiveUI.Validation.Tests
 
         /// <summary>
         /// Verifies that a call to Dispose disconnects the underlying observable
-        /// of a <see cref="ModelObservableValidation{TViewModel,TViewModelProp}"/>.
+        /// of a <see cref="ObservableValidation{TViewModel,TValue,TProp}"/>.
         /// </summary>
         [Fact]
         public void DisposeShouldStopTrackingThePropertyValidationObservable()
         {
-            var validation = new ModelObservableValidation<TestViewModel, string>(
+            var validation = new ObservableValidation<TestViewModel, bool, string>(
                 _validModel,
                 state => state.Name,
-                _ => _validState,
-                (text, valid) => "broken");
+                _validState,
+                validity => validity,
+                "broken");
 
             _validState.OnNext(true);
 

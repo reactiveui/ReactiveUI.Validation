@@ -76,6 +76,7 @@ namespace ReactiveUI.Validation.Platforms.Android
         /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
         /// </param>
         /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
+        [ExcludeFromCodeCoverage]
         [Obsolete("This method is no longer required, BindValidation now supports multiple validations.")]
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty>(
