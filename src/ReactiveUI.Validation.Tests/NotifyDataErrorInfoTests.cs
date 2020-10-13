@@ -3,7 +3,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -140,15 +139,17 @@ namespace ReactiveUI.Validation.Tests
             var viewModel = new IndeiTestViewModel();
 
             string namesShouldMatchMessage = "names should match.";
-            var validation = new ModelObservableValidation<IndeiTestViewModel, string>(
+            var validation = new ObservableValidation<IndeiTestViewModel, bool, string>(
                 viewModel,
                 vm => vm.OtherName,
-                vm => vm.WhenAnyValue(
+                viewModel
+                    .WhenAnyValue(
                         m => m.Name,
                         m => m.OtherName,
                         (n, on) => new { n, on })
                     .Select(bothNames => bothNames.n == bothNames.on),
-                (_, isValid) => isValid ? string.Empty : namesShouldMatchMessage);
+                isValid => isValid,
+                namesShouldMatchMessage);
 
             viewModel.ValidationContext.Add(validation);
 

@@ -30,6 +30,7 @@ namespace ReactiveUI.Validation.Components
     /// passed through?
     /// Also, what about access to the view model to output the error message?.
     /// </remarks>
+    [Obsolete("Consider using ObservableValidation<TViewModel, bool, TViewModelProp> instead.")]
     public class ModelObservableValidation<TViewModel, TViewModelProp> : ModelObservableValidationBase<TViewModel>
     {
         /// <summary>
@@ -111,6 +112,7 @@ namespace ReactiveUI.Validation.Components
     /// <remarks>
     /// for backwards compatibility, validated properties are not explicitly defined, so we don't really know what's inside the validityObservable.
     /// </remarks>
+    [Obsolete("Consider using ObservableValidation<TViewModel, bool> instead.")]
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just different generic parameters.")]
     public class ModelObservableValidation<TViewModel> : ModelObservableValidationBase<TViewModel>
     {
@@ -184,6 +186,7 @@ namespace ReactiveUI.Validation.Components
     /// passed through?
     /// Also, what about access to the view model to output the error message?.
     /// </remarks>
+    [Obsolete("Consider using ObservableValidation<TViewModel, bool> instead.")]
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just an abstract one.")]
     public abstract class ModelObservableValidationBase<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent<TViewModel>
     {
