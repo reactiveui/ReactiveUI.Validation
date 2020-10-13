@@ -5,6 +5,7 @@
 
 using System.Linq;
 using System.Reactive.Concurrency;
+using System.Reactive.Linq;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
@@ -357,24 +358,27 @@ namespace ReactiveUI.Validation.Tests
                 .WhenAnyValue(
                     state => state.Name,
                     state => state.Name2,
-                    (name, name2) => name == name2);
+                    (name, name2) => new { Name = name, Name2 = name2 });
 
             view.ViewModel.ValidationRule(
                 state => state.Name,
-                state => namesAreEqual,
+                namesAreEqual,
+                state => state.Name == state.Name2,
                 state => $"{state.Name} != {state.Name2}.");
 
             view.ViewModel.ValidationRule(
                 state => state.Name2,
-                state => namesAreEqual,
+                namesAreEqual,
+                state => state.Name == state.Name2,
                 state => $"{state.Name2} != {state.Name}.");
 
             view.ViewModel.ValidationRule(
-                state => namesAreEqual,
+                namesAreEqual.Select(names => names.Name == names.Name2),
                 "Names should be equal.");
 
             view.ViewModel.ValidationRule(
-                state => namesAreEqual,
+                namesAreEqual,
+                state => state.Name == state.Name2,
                 state => $"{state.Name} should equal {state.Name2}.");
 
             view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
