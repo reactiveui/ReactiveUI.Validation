@@ -17,7 +17,7 @@ namespace ReactiveUI.Validation.Tests
     /// Tests for the generic <see cref="ObservableValidation{TViewModel, TValue}"/> and for
     /// <see cref="ObservableValidation{TViewModel,TValue,TProp}"/> as well.
     /// </summary>
-    public class ModelObservableTests
+    public class ObservableValidationTests
     {
         private readonly ISubject<bool> _validState = new ReplaySubject<bool>(1);
         private readonly TestViewModel _validModel = new TestViewModel
