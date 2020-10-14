@@ -5,7 +5,15 @@
     <StackPanel>
         <Border Classes="Card">
             <StackPanel>
-                <TextBlock Classes="Heading" Text="Sign Up" />
+                <Grid ColumnDefinitions="Auto, *">
+                    <TextBlock Grid.Column="0" Classes="Heading" Text="Sign Up" />
+                    <Ellipse Grid.Column="1"
+                             Width="5" Height="5"
+                             HorizontalAlignment="Left"
+                             VerticalAlignment="Center"
+                             IsVisible="{Binding IsBusy}"
+                             Fill="Red" Margin="7 7 5 3" />
+                </Grid>
                 <TextBox Margin="0 10 0 0"
                          Text="{Binding UserName}" 
                          Watermark="Please, enter user name..."
