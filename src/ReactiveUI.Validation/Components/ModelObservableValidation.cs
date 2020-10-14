@@ -190,7 +190,7 @@ namespace ReactiveUI.Validation.Components
     [ExcludeFromCodeCoverage]
     [Obsolete("Consider using ObservableValidation<TViewModel, bool> instead.")]
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just an abstract one.")]
-    public abstract class ModelObservableValidationBase<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent
+    public abstract class ModelObservableValidationBase<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent, IPropertyValidationComponent<TViewModel>
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
         private readonly ReplaySubject<ValidationState> _lastValidationStateSubject = new ReplaySubject<ValidationState>(1);
@@ -274,6 +274,7 @@ namespace ReactiveUI.Validation.Components
         }
 
         /// <inheritdoc/>
+        [Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidationComponent.")]
         public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
         {
             if (property is null)

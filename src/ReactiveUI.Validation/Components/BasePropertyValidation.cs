@@ -25,7 +25,7 @@ namespace ReactiveUI.Validation.Components
     /// <summary>
     /// Base class for items which are used to build a <see cref="ReactiveUI.Validation.Contexts.ValidationContext" />.
     /// </summary>
-    public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent
+    public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent, IPropertyValidationComponent<TViewModel>
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
         private readonly ReplaySubject<bool> _isValidSubject = new ReplaySubject<bool>(1);
@@ -100,6 +100,7 @@ namespace ReactiveUI.Validation.Components
         }
 
         /// <inheritdoc/>
+        [Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidationComponent.")]
         public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
         {
             if (property is null)
