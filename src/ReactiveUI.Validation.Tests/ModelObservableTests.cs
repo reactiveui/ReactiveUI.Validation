@@ -179,7 +179,9 @@ namespace ReactiveUI.Validation.Tests
                     "Name shouldn't be empty.");
 
             Assert.True(component.ContainsProperty<TestViewModel, string>(model => model.Name));
+            Assert.True(component.ContainsProperty<TestViewModel, string>(model => model.Name, true));
             Assert.False(component.ContainsProperty<TestViewModel, string>(model => model.Name2));
+            Assert.False(component.ContainsProperty<TestViewModel, string>(model => model.Name2, true));
             Assert.Throws<ArgumentNullException>(() => component.ContainsProperty<TestViewModel, string>(null!));
         }
     }
