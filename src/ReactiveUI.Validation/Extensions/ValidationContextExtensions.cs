@@ -73,7 +73,7 @@ namespace ReactiveUI.Validation.Extensions
         [ExcludeFromCodeCoverage]
         [Obsolete("Since we support adding and removing validation rules dynamically, consider " +
                   "using either the ObserveFor extension method, or BindValidation.")]
-        public static IEnumerable<IPropertyValidationComponent> ResolveFor<TViewModel, TViewModelProperty>(
+        public static IEnumerable<IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TViewModelProperty>(
             this ValidationContext context,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             bool strict = true)
@@ -90,7 +90,7 @@ namespace ReactiveUI.Validation.Extensions
 
             return context
                 .Validations
-                .OfType<IPropertyValidationComponent>()
+                .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty, strict));
         }
 
@@ -107,7 +107,7 @@ namespace ReactiveUI.Validation.Extensions
         [ExcludeFromCodeCoverage]
         [Obsolete("Since we support adding and removing validation rules dynamically, consider " +
                   "using either the ObserveFor extension method, or BindValidation.")]
-        public static IEnumerable<IPropertyValidationComponent> ResolveFor<TViewModel, TProperty1,
+        public static IEnumerable<IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TProperty1,
             TProperty2>(
             this ValidationContext context,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
@@ -130,7 +130,7 @@ namespace ReactiveUI.Validation.Extensions
 
             return context
                 .Validations
-                .OfType<IPropertyValidationComponent>()
+                .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty1) &&
                             v.ContainsProperty(viewModelProperty2) &&
                             v.PropertyCount == 2);
@@ -151,7 +151,7 @@ namespace ReactiveUI.Validation.Extensions
         [ExcludeFromCodeCoverage]
         [Obsolete("Since we support adding and removing validation rules dynamically, consider " +
                   "using either the ObserveFor extension method, or BindValidation.")]
-        public static IEnumerable<IPropertyValidationComponent> ResolveFor<TViewModel,
+        public static IEnumerable<IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel,
             TProperty1, TProperty2, TProperty3>(
             this ValidationContext context,
             Expression<Func<TViewModel, TProperty1>> viewModelProperty1,
@@ -180,7 +180,7 @@ namespace ReactiveUI.Validation.Extensions
 
             return context
                 .Validations
-                .OfType<IPropertyValidationComponent>()
+                .OfType<IPropertyValidationComponent<TViewModel>>()
                 .Where(v => v.ContainsProperty(viewModelProperty1) &&
                             v.ContainsProperty(viewModelProperty2) &&
                             v.ContainsProperty(viewModelProperty3) &&
