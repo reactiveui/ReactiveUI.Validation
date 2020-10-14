@@ -274,6 +274,7 @@ namespace ReactiveUI.Validation.Components
         }
 
         /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
         [Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidationComponent.")]
         public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
         {
