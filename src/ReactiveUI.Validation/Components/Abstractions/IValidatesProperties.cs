@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
-using ReactiveUI.Validation.Extensions;
 
 namespace ReactiveUI.Validation.Components.Abstractions
 {
@@ -27,6 +26,7 @@ namespace ReactiveUI.Validation.Components.Abstractions
         /// <param name="propertyExpression">ViewModel property.</param>
         /// <param name="exclusively">Indicates if the property to find is unique.</param>
         /// <returns>Returns true if it contains the property, otherwise false.</returns>
+        [ExcludeFromCodeCoverage]
         [Obsolete("Consider using the non-generic version of an IValidatesProperties.")]
         bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> propertyExpression, bool exclusively = false);
     }

@@ -5,6 +5,8 @@
 
 using System.Reactive.Subjects;
 using ReactiveUI.Validation.Components;
+using ReactiveUI.Validation.Components.Abstractions;
+using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Tests.Models;
 using Xunit;
 
@@ -158,6 +160,30 @@ namespace ReactiveUI.Validation.Tests
             _validState.OnNext(true);
 
             Assert.False(validation.IsValid);
+        }
+
+        /// <summary>
+        /// Verifies that we support resolving properties by expressions.
+        /// </summary>
+        [Fact]
+        public void ShouldResolveTypedProperties()
+        {
+            var viewModel = new TestViewModel { Name = string.Empty };
+            IPropertyValidationComponent propertyValidation =
+                new ObservableValidation<TestViewModel, string, string>(
+                    viewModel,
+                    model => model.Name,
+                    viewModel.WhenAnyValue(x => x.Name),
+                    state => !string.IsNullOrWhiteSpace(state),
+                    "Name shouldn't be empty.");
+
+            var containsNameProperty = propertyValidation
+                .ContainsProperty<TestViewModel, string>(model => model.Name);
+            Assert.True(containsNameProperty);
+
+            var containsName2Property = propertyValidation
+                .ContainsProperty<TestViewModel, string>(model => model.Name2);
+            Assert.False(containsName2Property);
         }
     }
 }
