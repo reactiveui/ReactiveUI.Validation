@@ -185,6 +185,8 @@ this.ValidationRule(
 
 ## Capabilities
 
+In essence, ReactiveUI.Validation is a relatively simple model of the `ValidationContext` containing a list of `IValidationComponent` instances. An `IValidationComponent` provides an observable for `ValidationState`. Whenever validation state changes (either a transition of validity) or `ValidationText` changes, then a new value is pushed out.
+
 1. Rules can be composed of single or multiple properties along with more generic Observables.
 2. Validation text can encapsulate both valid and invalid states.
 3. Binding can occur to either a View or an action.
@@ -215,8 +217,6 @@ var formatter = new ConstFormatter("The input is invalid.");
 this.BindValidation(ViewModel, x => x.ErrorLabel.Text, formatter)
     .DisposeWith(disposables);
 ```
-
-In essence, it's a relatively simple model of the `ValidationContext` containing a list of `IValidationComponent` instances. An `IValidationComponent` provides an observable for `ValidationState`. Whenever validation state changes (either a transition of validity) or `ValidationText` changes, then a new value is pushed out.
 
 ## Feedback
 
