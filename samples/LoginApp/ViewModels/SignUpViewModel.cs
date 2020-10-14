@@ -94,7 +94,7 @@ namespace LoginApp.ViewModels
                 vm => vm.UserName,
                 usernameValidated.Merge(usernameDirty),
                 state => state.IsValid,
-                state => $"Server response: {state.ErrorMessage}");
+                state => $"Server says: {state.ErrorMessage}");
 
             _isBusy = usernameValidated
                 .Select(message => false)
@@ -151,9 +151,9 @@ namespace LoginApp.ViewModels
         {
             await Task.Delay(TimeSpan.FromSeconds(0.5));
             return username.Length < 2
-                ? ValidationResult.Error("User name is too short.")
+                ? ValidationResult.Error("The name is too short.")
                 : username.Any(letter => !char.IsLetter(letter))
-                    ? ValidationResult.Error("User name should contain only letters.")
+                    ? ValidationResult.Error("Only letters allowed.")
                     : ValidationResult.Success();
         }
 
