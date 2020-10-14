@@ -44,6 +44,7 @@ namespace ReactiveUI.Validation.Components.Abstractions
     [System.Obsolete("Consider using the non-generic version of an IValidatesProperties.")]
     public interface IValidatesProperties<TViewModel> : ReactiveUI.Validation.Components.Abstractions.IValidatesProperties
     {
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Obsolete("Consider using the non-generic version of an IValidatesProperties.")]
         bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> propertyExpression, bool exclusively = false);
     }
