@@ -4,17 +4,17 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
 using LoginApp.Services;
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using ReactiveUI.Validation.Abstractions;
-using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Helpers;
 using Splat;
 
-// ReSharper disable UnusedAutoPropertyAccessor.Global due to binding requirements.
 namespace LoginApp.ViewModels
 {
     /// <summary>
@@ -22,6 +22,7 @@ namespace LoginApp.ViewModels
     /// </summary>
     public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IActivatableViewModel
     {
+        private readonly ObservableAsPropertyHelper<bool> _isBusy;
         private readonly IUserDialogs _dialogs;
 
         /// <summary>
@@ -33,14 +34,72 @@ namespace LoginApp.ViewModels
         {
             _dialogs = dialogs ?? Locator.Current.GetService<IUserDialogs>();
             HostScreen = hostScreen ?? Locator.Current.GetService<IScreen>();
-            UrlPathSegment = "Sign Up";
-
             SignUp = ReactiveCommand.Create(SignUpImpl, this.IsValid());
-            CreateValidations();
 
-            // Prints current validation errors.
-            this.WhenAnyValue(x => x.UserName, x => x.Password, x => x.ConfirmPassword)
-                .Subscribe(_ => this.Log().Debug(ValidationContext.Text.ToSingleLine()));
+            // These are the basic property validation rules that accept a property selector,
+            // listen to the changes of that property, and execute the validation function
+            // when the selected property changes.
+
+            this.ValidationRule(
+                vm => vm.UserName,
+                name => !string.IsNullOrWhiteSpace(name),
+                "UserName is required.");
+
+            this.ValidationRule(
+                vm => vm.Password,
+                password => !string.IsNullOrWhiteSpace(password),
+                "Password is required.");
+
+            this.ValidationRule(
+                vm => vm.Password,
+                password => password?.Length > 2,
+                password => $"Password should be longer, current length: {password.Length}");
+
+            this.ValidationRule(
+                vm => vm.ConfirmPassword,
+                confirmation => !string.IsNullOrWhiteSpace(confirmation),
+                "Confirm password field is required.");
+
+            // Here we construct an IObservable<bool> that defines a complex validation rule
+            // based on multiple properties. We associate this IObservable<bool> with the
+            // 'ConfirmPassword' property via a call to the ValidationRule extension method.
+
+            IObservable<bool> passwordsObservable =
+                this.WhenAnyValue(
+                    x => x.Password,
+                    x => x.ConfirmPassword,
+                    (password, confirmation) =>
+                        password == confirmation);
+
+            this.ValidationRule(
+                vm => vm.ConfirmPassword,
+                passwordsObservable,
+                "Passwords must match.");
+
+            // Here we pass a complex IObservable<TState> to the ValidationRule. That observable
+            // emits an empty string when UserName is valid, and emits a non-empty when UserName
+            // is either invalid, or just changed and hasn't been validated yet.
+
+            IObservable<ValidationResult> usernameValidated =
+                this.WhenAnyValue(x => x.UserName)
+                    .Throttle(TimeSpan.FromSeconds(0.7), RxApp.TaskpoolScheduler)
+                    .SelectMany(ValidateNameImpl)
+                    .ObserveOn(RxApp.MainThreadScheduler);
+
+            IObservable<ValidationResult> usernameDirty =
+                this.WhenAnyValue(x => x.UserName)
+                    .Select(name => ValidationResult.Error("Please wait..."));
+
+            this.ValidationRule(
+                vm => vm.UserName,
+                usernameValidated.Merge(usernameDirty),
+                state => state.IsValid,
+                state => $"Server response: {state.ErrorMessage}");
+
+            _isBusy = usernameValidated
+                .Select(message => false)
+                .Merge(usernameDirty.Select(message => true))
+                .ToProperty(this, x => x.IsBusy);
         }
 
         /// <summary>
@@ -62,6 +121,11 @@ namespace LoginApp.ViewModels
         public string ConfirmPassword { get; set; } = string.Empty;
 
         /// <summary>
+        /// Gets a value indicating whether the form is currently validating asynchronously.
+        /// </summary>
+        public bool IsBusy => _isBusy.Value;
+
+        /// <summary>
         /// Gets a command which will create the account.
         /// </summary>
         public ReactiveCommand<Unit, Unit> SignUp { get; }
@@ -69,7 +133,7 @@ namespace LoginApp.ViewModels
         /// <summary>
         /// Gets the current page path.
         /// </summary>
-        public string UrlPathSegment { get; }
+        public string UrlPathSegment { get; } = "Sign Up";
 
         /// <summary>
         /// Gets or sets the screen used for routing operations.
@@ -83,40 +147,30 @@ namespace LoginApp.ViewModels
 
         private void SignUpImpl() => _dialogs.ShowDialog("User created successfully.");
 
-        private void CreateValidations()
+        private static async Task<ValidationResult> ValidateNameImpl(string username)
         {
-            this.ValidationRule(
-                vm => vm.UserName,
-                value => !string.IsNullOrWhiteSpace(value),
-                "UserName is required.");
+            await Task.Delay(TimeSpan.FromSeconds(0.5));
+            return username.Length < 2
+                ? ValidationResult.Error("User name is too short.")
+                : username.Any(letter => !char.IsLetter(letter))
+                    ? ValidationResult.Error("User name should contain only letters.")
+                    : ValidationResult.Success();
+        }
 
-            this.ValidationRule(
-                vm => vm.Password,
-                value => !string.IsNullOrWhiteSpace(value),
-                "Password is required.");
+        private class ValidationResult
+        {
+            public bool IsValid { get; }
+            public string ErrorMessage { get; }
 
-            this.ValidationRule(
-                vm => vm.Password,
-                value => value?.Length > 2,
-                "Password should be longer.");
+            private ValidationResult(bool isValid, string errorMessage)
+            {
+                IsValid = isValid;
+                ErrorMessage = errorMessage;
+            }
 
-            this.ValidationRule(
-                vm => vm.ConfirmPassword,
-                value => !string.IsNullOrWhiteSpace(value),
-                "Confirm password field is required.");
+            public static ValidationResult Success() => new ValidationResult(true, string.Empty);
 
-            var passwordsObservable =
-                this.WhenAnyValue(
-                    x => x.Password,
-                    x => x.ConfirmPassword,
-                    (password, confirmation) =>
-                        new { Password = password, Confirmation = confirmation });
-
-            this.ValidationRule(
-                vm => vm.ConfirmPassword,
-                passwordsObservable,
-                state => state.Password == state.Confirmation,
-                state => $"Passwords must match: {state.Password} != {state.Confirmation}");
+            public static ValidationResult Error(string error) => new ValidationResult(false, error);
         }
     }
 }

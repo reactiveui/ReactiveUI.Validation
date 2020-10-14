@@ -36,6 +36,8 @@
                 <Button Margin="0 10 0 5"
                         Content="Sign up" 
                         Command="{Binding SignUp}" />
+                <ProgressBar IsIndeterminate="True"
+                             IsVisible="{Binding IsBusy}" />
                 <TextBlock x:Name="CompoundValidation"
                            TextWrapping="Wrap"
                            Foreground="Red"
