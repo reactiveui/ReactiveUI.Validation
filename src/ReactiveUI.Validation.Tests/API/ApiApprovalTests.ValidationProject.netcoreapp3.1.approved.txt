@@ -65,6 +65,7 @@ namespace ReactiveUI.Validation.Components
         public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.ValidationState> ValidationStatusChange { get; }
         protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidat" +
             "ionComponent.")]
         public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = false) { }
@@ -92,6 +93,7 @@ namespace ReactiveUI.Validation.Components
         public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.ValidationState> ValidationStatusChange { get; }
         protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidat" +
             "ionComponent.")]
         public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = false) { }
@@ -124,6 +126,7 @@ namespace ReactiveUI.Validation.Components
         public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.ValidationState> ValidationStatusChange { get; }
         protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidat" +
             "ionComponent.")]
         public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = false) { }
@@ -226,15 +229,15 @@ namespace ReactiveUI.Validation.Extensions
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Obsolete("Since we support adding and removing validation rules dynamically, consider using" +
             " either the ObserveFor extension method, or BindValidation.")]
-        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent> ResolveFor<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
+        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Obsolete("Since we support adding and removing validation rules dynamically, consider using" +
             " either the ObserveFor extension method, or BindValidation.")]
-        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent> ResolveFor<TViewModel, TProperty1, TProperty2>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> viewModelProperty2) { }
+        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TProperty1, TProperty2>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> viewModelProperty2) { }
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Obsolete("Since we support adding and removing validation rules dynamically, consider using" +
             " either the ObserveFor extension method, or BindValidation.")]
-        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent> ResolveFor<TViewModel, TProperty1, TProperty2, TProperty3>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> viewModelProperty2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> viewModelProperty3) { }
+        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TProperty1, TProperty2, TProperty3>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> viewModelProperty2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> viewModelProperty3) { }
     }
     public static class ViewForExtensions
     {
