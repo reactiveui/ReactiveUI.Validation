@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 
 namespace ReactiveUI.Validation.Components.Abstractions
 {
+    /*
     /// <summary>
     /// Interface marking a validation component that validates specific typed properties.
     /// </summary>
@@ -27,6 +28,7 @@ namespace ReactiveUI.Validation.Components.Abstractions
         /// <returns>Returns true if it contains the property, otherwise false.</returns>
         bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> propertyExpression, bool exclusively = false);
     }
+    */
 
     /// <summary>
     /// Interface marking a validation component that validates specific untyped properties.

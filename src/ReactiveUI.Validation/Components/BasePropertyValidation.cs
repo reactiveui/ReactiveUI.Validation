@@ -22,11 +22,10 @@ namespace ReactiveUI.Validation.Components
 {
     /// <inheritdoc cref="ReactiveObject" />
     /// <inheritdoc cref="IDisposable" />
-    /// <inheritdoc cref="IPropertyValidationComponent{TViewModel}" />
     /// <summary>
     /// Base class for items which are used to build a <see cref="ReactiveUI.Validation.Contexts.ValidationContext" />.
     /// </summary>
-    public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent<TViewModel>
+    public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
         private readonly ReplaySubject<bool> _isValidSubject = new ReplaySubject<bool>(1);

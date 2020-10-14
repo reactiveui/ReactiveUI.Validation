@@ -7,6 +7,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace ReactiveUI.Validation.Components.Abstractions
 {
+    /*
     /// <summary>
     /// A component specifically validating one or more typed properties.
     /// </summary>
@@ -16,6 +17,7 @@ namespace ReactiveUI.Validation.Components.Abstractions
     public interface IPropertyValidationComponent<TViewModel> : IPropertyValidationComponent, IValidatesProperties<TViewModel>
     {
     }
+    */
 
     /// <summary>
     /// A component specifically validating one or more untyped properties.
