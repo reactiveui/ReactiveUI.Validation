@@ -3,8 +3,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Reactive.Subjects;
 using ReactiveUI.Validation.Components;
+using ReactiveUI.Validation.Components.Abstractions;
+using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Tests.Models;
 using Xunit;
 
@@ -14,7 +17,7 @@ namespace ReactiveUI.Validation.Tests
     /// Tests for the generic <see cref="ObservableValidation{TViewModel, TValue}"/> and for
     /// <see cref="ObservableValidation{TViewModel,TValue,TProp}"/> as well.
     /// </summary>
-    public class ModelObservableTests
+    public class ObservableValidationTests
     {
         private readonly ISubject<bool> _validState = new ReplaySubject<bool>(1);
         private readonly TestViewModel _validModel = new TestViewModel
@@ -158,6 +161,28 @@ namespace ReactiveUI.Validation.Tests
             _validState.OnNext(true);
 
             Assert.False(validation.IsValid);
+        }
+
+        /// <summary>
+        /// Verifies that we support resolving properties by expressions.
+        /// </summary>
+        [Fact]
+        public void ShouldResolveTypedProperties()
+        {
+            var viewModel = new TestViewModel { Name = string.Empty };
+            IPropertyValidationComponent component =
+                new ObservableValidation<TestViewModel, string, string>(
+                    viewModel,
+                    model => model.Name,
+                    viewModel.WhenAnyValue(x => x.Name),
+                    state => !string.IsNullOrWhiteSpace(state),
+                    "Name shouldn't be empty.");
+
+            Assert.True(component.ContainsProperty<TestViewModel, string>(model => model.Name));
+            Assert.True(component.ContainsProperty<TestViewModel, string>(model => model.Name, true));
+            Assert.False(component.ContainsProperty<TestViewModel, string>(model => model.Name2));
+            Assert.False(component.ContainsProperty<TestViewModel, string>(model => model.Name2, true));
+            Assert.Throws<ArgumentNullException>(() => component.ContainsProperty<TestViewModel, string>(null!));
         }
     }
 }

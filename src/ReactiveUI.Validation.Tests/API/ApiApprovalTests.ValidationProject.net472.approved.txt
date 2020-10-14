@@ -33,6 +33,7 @@ namespace ReactiveUI.Validation.Comparators
 namespace ReactiveUI.Validation.Components.Abstractions
 {
     public interface IPropertyValidationComponent : ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidationComponent { }
+    [System.Obsolete("Consider using the non-generic version of an IPropertyValidationComponent.")]
     public interface IPropertyValidationComponent<TViewModel> : ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidationComponent { }
     public interface IValidatesProperties
     {
@@ -40,8 +41,11 @@ namespace ReactiveUI.Validation.Components.Abstractions
         int PropertyCount { get; }
         bool ContainsPropertyName(string propertyName, bool exclusively = false);
     }
+    [System.Obsolete("Consider using the non-generic version of an IValidatesProperties.")]
     public interface IValidatesProperties<TViewModel> : ReactiveUI.Validation.Components.Abstractions.IValidatesProperties
     {
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        [System.Obsolete("Consider using the non-generic version of an IValidatesProperties.")]
         bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> propertyExpression, bool exclusively = false);
     }
     public interface IValidationComponent
@@ -62,6 +66,9 @@ namespace ReactiveUI.Validation.Components
         public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.ValidationState> ValidationStatusChange { get; }
         protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        [System.Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidat" +
+            "ionComponent.")]
         public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = false) { }
         public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
         public void Dispose() { }
@@ -87,6 +94,9 @@ namespace ReactiveUI.Validation.Components
         public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.ValidationState> ValidationStatusChange { get; }
         protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        [System.Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidat" +
+            "ionComponent.")]
         public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = false) { }
         public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
         public void Dispose() { }
@@ -117,6 +127,9 @@ namespace ReactiveUI.Validation.Components
         public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.ValidationState> ValidationStatusChange { get; }
         protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        [System.Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidat" +
+            "ionComponent.")]
         public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = false) { }
         public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
         public void Dispose() { }
@@ -206,6 +219,10 @@ namespace ReactiveUI.Validation.Extensions
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp, TValue>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.IObservable<TValue> viewModelObservable, System.Func<TValue, bool> isValidFunc, System.Func<TValue, string> messageFunc)
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+    }
+    public static class ValidatesPropertiesExtensions
+    {
+        public static bool ContainsProperty<TViewModel, TProp>(this ReactiveUI.Validation.Components.Abstractions.IValidatesProperties validatesProperties, System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> propertyExpression, bool exclusively = false) { }
     }
     public static class ValidationContextExtensions
     {

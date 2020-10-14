@@ -14,6 +14,7 @@ namespace ReactiveUI.Validation.Components.Abstractions
     /// Interface marking a validation component that validates specific typed properties.
     /// </summary>
     /// <typeparam name="TViewModel">The validation target.</typeparam>
+    [Obsolete("Consider using the non-generic version of an IValidatesProperties.")]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:FileHeaderFileNameDocumentationMustMatchTypeName", Justification = "Same type just generic.")]
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same type just generic.")]
     public interface IValidatesProperties<TViewModel> : IValidatesProperties
@@ -25,6 +26,8 @@ namespace ReactiveUI.Validation.Components.Abstractions
         /// <param name="propertyExpression">ViewModel property.</param>
         /// <param name="exclusively">Indicates if the property to find is unique.</param>
         /// <returns>Returns true if it contains the property, otherwise false.</returns>
+        [ExcludeFromCodeCoverage]
+        [Obsolete("Consider using the non-generic version of an IValidatesProperties.")]
         bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> propertyExpression, bool exclusively = false);
     }
 

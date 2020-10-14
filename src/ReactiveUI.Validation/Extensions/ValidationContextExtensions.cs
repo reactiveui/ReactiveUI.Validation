@@ -53,7 +53,7 @@ namespace ReactiveUI.Validation.Extensions
                 .ToObservableChangeSet()
                 .ToCollection()
                 .Select(validations => validations
-                    .OfType<IPropertyValidationComponent<TViewModel>>()
+                    .OfType<IPropertyValidationComponent>()
                     .Where(validation => validation.ContainsProperty(viewModelProperty, strict))
                     .Select(validation => validation.ValidationStatusChange)
                     .CombineLatest()
