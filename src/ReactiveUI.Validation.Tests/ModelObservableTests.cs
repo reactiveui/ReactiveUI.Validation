@@ -3,6 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Reactive.Subjects;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Components.Abstractions;
@@ -169,7 +170,7 @@ namespace ReactiveUI.Validation.Tests
         public void ShouldResolveTypedProperties()
         {
             var viewModel = new TestViewModel { Name = string.Empty };
-            IPropertyValidationComponent propertyValidation =
+            IPropertyValidationComponent component =
                 new ObservableValidation<TestViewModel, string, string>(
                     viewModel,
                     model => model.Name,
@@ -177,13 +178,9 @@ namespace ReactiveUI.Validation.Tests
                     state => !string.IsNullOrWhiteSpace(state),
                     "Name shouldn't be empty.");
 
-            var containsNameProperty = propertyValidation
-                .ContainsProperty<TestViewModel, string>(model => model.Name);
-            Assert.True(containsNameProperty);
-
-            var containsName2Property = propertyValidation
-                .ContainsProperty<TestViewModel, string>(model => model.Name2);
-            Assert.False(containsName2Property);
+            Assert.True(component.ContainsProperty<TestViewModel, string>(model => model.Name));
+            Assert.False(component.ContainsProperty<TestViewModel, string>(model => model.Name2));
+            Assert.Throws<ArgumentNullException>(() => component.ContainsProperty<TestViewModel, string>(null!));
         }
     }
 }
