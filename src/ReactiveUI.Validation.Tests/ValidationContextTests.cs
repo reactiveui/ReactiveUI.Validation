@@ -134,5 +134,36 @@ namespace ReactiveUI.Validation.Tests
             viewModel.Name = string.Empty;
             Assert.False(latestValidity);
         }
+
+        /// <summary>
+        /// Ensures that the ClearValidationRules extension method works.
+        /// </summary>
+        [Fact]
+        public void ShouldClearAttachedValidationRules()
+        {
+            var viewModel = new TestViewModel { Name = string.Empty };
+            var nameValidation = new BasePropertyValidation<TestViewModel, string>(
+                viewModel,
+                viewModelProperty => viewModelProperty.Name,
+                s => !string.IsNullOrEmpty(s),
+                "Name should not be empty.");
+
+            var name2Validation = new BasePropertyValidation<TestViewModel, string>(
+                viewModel,
+                viewModelProperty => viewModelProperty.Name2,
+                s => !string.IsNullOrEmpty(s),
+                "Name2 should not be empty.");
+
+            viewModel.ValidationContext.Add(nameValidation);
+            viewModel.ValidationContext.Add(name2Validation);
+            Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
+            Assert.False(viewModel.ValidationContext.IsValid);
+            Assert.NotEmpty(viewModel.ValidationContext.Text);
+
+            viewModel.ClearValidationRules();
+            Assert.Equal(0, viewModel.ValidationContext.Validations.Count);
+            Assert.True(viewModel.ValidationContext.IsValid);
+            Assert.Empty(viewModel.ValidationContext.Text);
+        }
     }
 }
