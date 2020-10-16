@@ -335,6 +335,7 @@ namespace ReactiveUI.Validation.States
     }
     public class ValidationState : ReactiveUI.Validation.States.IValidationState
     {
+        public static readonly ReactiveUI.Validation.States.ValidationState Valid;
         public ValidationState(bool isValid, ReactiveUI.Validation.Collections.ValidationText text) { }
         public ValidationState(bool isValid, string text) { }
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
