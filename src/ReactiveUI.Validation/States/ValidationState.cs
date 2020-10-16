@@ -16,6 +16,11 @@ namespace ReactiveUI.Validation.States
     public class ValidationState : IValidationState
     {
         /// <summary>
+        /// Indicates a valid state.
+        /// </summary>
+        public static readonly ValidationState Valid = new ValidationState(true, string.Empty);
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ValidationState"/> class.
         /// </summary>
         /// <param name="isValid">Determines if the property is valid or not.</param>

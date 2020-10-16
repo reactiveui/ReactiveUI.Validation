@@ -47,7 +47,7 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(viewModelProperty));
             }
 
-            var initial = new[] { new ValidationState(true, string.Empty, context) };
+            var initial = new[] { ValidationState.Valid };
             return context
                 .Validations
                 .ToObservableChangeSet()
