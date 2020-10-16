@@ -92,7 +92,7 @@ IObservable<IValidationState> usernameNotEmpty =
     this.WhenAnyValue(x => x.UserName)
         .Select(name => string.IsNullOrEmpty(name) 
             ? new ValidationState(false, "The username must not be empty")
-            : new ValidationState(true, string.Empty));
+            : ValidationState.Valid);
 
 this.ValidationRule(vm => vm.UserName, usernameNotEmpty);
 ```
