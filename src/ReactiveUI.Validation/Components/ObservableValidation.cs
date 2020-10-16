@@ -393,6 +393,22 @@ namespace ReactiveUI.Validation.Components
                 : _propertyNames.Contains(propertyName);
 
         /// <summary>
+        /// Adds a property to the list of properties which this validation is associated with.
+        /// </summary>
+        /// <typeparam name="TProp">Any type.</typeparam>
+        /// <param name="property">ViewModel property.</param>
+        public void AddProperty<TProp>(Expression<Func<TViewModel, TProp>> property)
+        {
+            if (property is null)
+            {
+                throw new ArgumentNullException(nameof(property));
+            }
+
+            var propertyName = property.Body.GetPropertyPath();
+            _propertyNames.Add(propertyName);
+        }
+
+        /// <summary>
         /// Disposes of the managed resources.
         /// </summary>
         /// <param name="disposing">
@@ -404,22 +420,6 @@ namespace ReactiveUI.Validation.Components
             {
                 _disposables.Dispose();
             }
-        }
-
-        /// <summary>
-        /// Adds a property to the list of this which this validation is associated with.
-        /// </summary>
-        /// <typeparam name="TProp">Any type.</typeparam>
-        /// <param name="property">ViewModel property.</param>
-        protected void AddProperty<TProp>(Expression<Func<TViewModel, TProp>> property)
-        {
-            if (property is null)
-            {
-                throw new ArgumentNullException(nameof(property));
-            }
-
-            var propertyName = property.Body.GetPropertyPath();
-            _propertyNames.Add(propertyName);
         }
 
         private void Activate()
