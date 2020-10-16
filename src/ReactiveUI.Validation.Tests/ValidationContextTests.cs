@@ -137,6 +137,7 @@ namespace ReactiveUI.Validation.Tests
 
         /// <summary>
         /// Ensures that the ClearValidationRules extension method works.
+        /// Also verifies that the ClearValidationRules extension method is idempotent.
         /// </summary>
         [Fact]
         public void ShouldClearAttachedValidationRules()
@@ -156,11 +157,19 @@ namespace ReactiveUI.Validation.Tests
 
             viewModel.ValidationContext.Add(nameValidation);
             viewModel.ValidationContext.Add(name2Validation);
+
             Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
             Assert.False(viewModel.ValidationContext.IsValid);
             Assert.NotEmpty(viewModel.ValidationContext.Text);
 
             viewModel.ClearValidationRules();
+
+            Assert.Equal(0, viewModel.ValidationContext.Validations.Count);
+            Assert.True(viewModel.ValidationContext.IsValid);
+            Assert.Empty(viewModel.ValidationContext.Text);
+
+            viewModel.ClearValidationRules();
+
             Assert.Equal(0, viewModel.ValidationContext.Validations.Count);
             Assert.True(viewModel.ValidationContext.IsValid);
             Assert.Empty(viewModel.ValidationContext.Text);
@@ -168,6 +177,7 @@ namespace ReactiveUI.Validation.Tests
 
         /// <summary>
         /// Ensures that the ClearValidationRules extension method accepting an expression works.
+        /// Also verifies that the ClearValidationRules extension method is idempotent.
         /// </summary>
         [Fact]
         public void ShouldClearAttachedValidationRulesForTheGivenProperty()
@@ -188,11 +198,21 @@ namespace ReactiveUI.Validation.Tests
 
             viewModel.ValidationContext.Add(nameValidation);
             viewModel.ValidationContext.Add(name2Validation);
+
             Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
             Assert.False(viewModel.ValidationContext.IsValid);
             Assert.NotEmpty(viewModel.ValidationContext.Text);
+            Assert.Throws<ArgumentNullException>(() => viewModel.ClearValidationRules<TestViewModel, string>(null!));
 
             viewModel.ClearValidationRules(x => x.Name);
+
+            Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
+            Assert.False(viewModel.ValidationContext.IsValid);
+            Assert.NotEmpty(viewModel.ValidationContext.Text);
+            Assert.Equal(name2ErrorMessage, viewModel.ValidationContext.Text.ToSingleLine());
+
+            viewModel.ClearValidationRules(x => x.Name);
+
             Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
             Assert.False(viewModel.ValidationContext.IsValid);
             Assert.NotEmpty(viewModel.ValidationContext.Text);
