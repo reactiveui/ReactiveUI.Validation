@@ -13,6 +13,7 @@ using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Helpers;
+using ReactiveUI.Validation.States;
 using Splat;
 
 namespace LoginApp.ViewModels
@@ -80,21 +81,21 @@ namespace LoginApp.ViewModels
             // emits an empty string when UserName is valid, and emits a non-empty when UserName
             // is either invalid, or just changed and hasn't been validated yet.
 
-            IObservable<ValidationResult> usernameValidated =
+            IObservable<ValidationState> usernameValidated =
                 this.WhenAnyValue(x => x.UserName)
                     .Throttle(TimeSpan.FromSeconds(0.7), RxApp.TaskpoolScheduler)
                     .SelectMany(ValidateNameImpl)
                     .ObserveOn(RxApp.MainThreadScheduler);
 
-            IObservable<ValidationResult> usernameDirty =
+            IObservable<ValidationState> usernameDirty =
                 this.WhenAnyValue(x => x.UserName)
-                    .Select(name => ValidationResult.Error("Please wait..."));
+                    .Select(name => new ValidationState(false, "Please wait..."));
 
             this.ValidationRule(
                 vm => vm.UserName,
                 usernameValidated.Merge(usernameDirty),
                 state => state.IsValid,
-                state => $"Server says: {state.ErrorMessage}");
+                state => $"Server says: {state.Text.ToSingleLine()}");
 
             _isBusy = usernameValidated
                 .Select(message => false)
@@ -147,30 +148,14 @@ namespace LoginApp.ViewModels
 
         private void SignUpImpl() => _dialogs.ShowDialog("User created successfully.");
 
-        private static async Task<ValidationResult> ValidateNameImpl(string username)
+        private static async Task<ValidationState> ValidateNameImpl(string username)
         {
             await Task.Delay(TimeSpan.FromSeconds(0.5));
             return username.Length < 2
-                ? ValidationResult.Error("The name is too short.")
+                ? new ValidationState(false, "The name is too short.")
                 : username.Any(letter => !char.IsLetter(letter))
-                    ? ValidationResult.Error("Only letters allowed.")
-                    : ValidationResult.Success();
-        }
-
-        private class ValidationResult
-        {
-            public bool IsValid { get; }
-            public string ErrorMessage { get; }
-
-            private ValidationResult(bool isValid, string errorMessage)
-            {
-                IsValid = isValid;
-                ErrorMessage = errorMessage;
-            }
-
-            public static ValidationResult Success() => new ValidationResult(true, string.Empty);
-
-            public static ValidationResult Error(string error) => new ValidationResult(false, error);
+                    ? new ValidationState(false, "Only letters allowed.")
+                    : new ValidationState(true, string.Empty);
         }
     }
 }
