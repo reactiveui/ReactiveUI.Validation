@@ -168,6 +168,7 @@ namespace ReactiveUI.Validation.Tests
             Assert.True(viewModel.ValidationContext.IsValid);
             Assert.Empty(viewModel.ValidationContext.Text);
 
+            // Verify that the method is idempotent.
             viewModel.ClearValidationRules();
 
             Assert.Equal(0, viewModel.ValidationContext.Validations.Count);
@@ -211,6 +212,7 @@ namespace ReactiveUI.Validation.Tests
             Assert.NotEmpty(viewModel.ValidationContext.Text);
             Assert.Equal(name2ErrorMessage, viewModel.ValidationContext.Text.ToSingleLine());
 
+            // Verify that the method is idempotent.
             viewModel.ClearValidationRules(x => x.Name);
 
             Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
