@@ -24,7 +24,8 @@ namespace ReactiveUI.Validation.Components
     /// A validation component that is based on an <see cref="IObservable{T}"/>. Validates a single property.
     /// Though in the passed observable more properties can be referenced via a call to WhenAnyValue.
     /// </summary>
-    public sealed class ObservableValidation<TViewModel, TValue, TProp> : ObservableValidation<TViewModel>
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just different generic parameters.")]
+    public sealed class ObservableValidation<TViewModel, TValue, TProp> : ObservableValidation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue,TProp}"/> class.
@@ -148,7 +149,7 @@ namespace ReactiveUI.Validation.Components
     /// A validation component that is based on an <see cref="IObservable{T}"/>.
     /// </summary>
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just different generic parameters.")]
-    public sealed class ObservableValidation<TViewModel, TValue> : ObservableValidation<TViewModel>
+    public sealed class ObservableValidation<TViewModel, TValue> : ObservableValidation
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.
@@ -262,7 +263,7 @@ namespace ReactiveUI.Validation.Components
     [ExcludeFromCodeCoverage]
     [Obsolete("This class is going to be removed in future versions. Consider using ObservableValidation<TViewModel> as a base class.")]
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just different generic parameters.")]
-    public abstract class ObservableValidationBase<TViewModel, TValue> : ObservableValidation<TViewModel>, IPropertyValidationComponent<TViewModel>
+    public abstract class ObservableValidationBase<TViewModel, TValue> : ObservableValidation, IPropertyValidationComponent<TViewModel>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ObservableValidationBase{TViewModel,TValue}"/> class.
@@ -308,7 +309,7 @@ namespace ReactiveUI.Validation.Components
     /// A validation component that is based on an <see cref="IObservable{T}"/>.
     /// </summary>
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just different generic parameters.")]
-    public class ObservableValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent
+    public class ObservableValidation : ReactiveObject, IDisposable, IPropertyValidationComponent
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
         private readonly ReplaySubject<IValidationState> _isValidSubject = new ReplaySubject<IValidationState>(1);
@@ -320,7 +321,7 @@ namespace ReactiveUI.Validation.Components
         private ValidationText? _text;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel}"/> class.
+        /// Initializes a new instance of the <see cref="ObservableValidation"/> class.
         /// </summary>
         /// <param name="observable">Observable that updates the view model property validity.</param>
         public ObservableValidation(IObservable<IValidationState> observable)
@@ -395,16 +396,15 @@ namespace ReactiveUI.Validation.Components
         /// <summary>
         /// Adds a property to the list of properties which this validation is associated with.
         /// </summary>
-        /// <typeparam name="TProp">Any type.</typeparam>
-        /// <param name="property">ViewModel property.</param>
-        public void AddProperty<TProp>(Expression<Func<TViewModel, TProp>> property)
+        /// <param name="propertyExpression">ViewModel property lambda expression.</param>
+        public void AddProperty(LambdaExpression propertyExpression)
         {
-            if (property is null)
+            if (propertyExpression is null)
             {
-                throw new ArgumentNullException(nameof(property));
+                throw new ArgumentNullException(nameof(propertyExpression));
             }
 
-            var propertyName = property.Body.GetPropertyPath();
+            var propertyName = propertyExpression.Body.GetPropertyPath();
             _propertyNames.Add(propertyName);
         }
 
