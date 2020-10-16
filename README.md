@@ -86,6 +86,17 @@ this.ValidationRule(
     state => $"Passwords must match: {state.Password} != {state.Confirmation}");
 ```
 
+Finally, you can directly supply any state that implements `IValidationState`; or you can use the `ValidationState` base class which already implements the interface.  As the resulting object is stored directly against the context without further transformation, this can be the most performant approach:
+```csharp
+IObservable<IValidationState> usernameNotEmpty =
+    this.WhenAnyValue(x => x.UserName)
+        .Select(name => string.IsNullOrEmpty(name) 
+            ? new ValidationState(false, "The username must not be empty")
+            : new ValidationState(true, string.Empty));
+
+this.ValidationRule(vm => vm.UserName, usernameNotEmpty);
+```
+
 2. Add validation presentation to the View.
 
 ```csharp
@@ -174,7 +185,7 @@ public class SampleViewModel : ReactiveValidationObject
 }
 ```
 
-When using the `ValidationRule` overload that uses `IObservable<bool>` for more complex scenarios please keep in mind to supply the property which the validation rule is targeting as the first argument. Otherwise it is not possible for `INotifyDataErrorInfo` to conclude which property the error message is for.
+When using the `ValidationRule` overload that uses `IObservable<bool>` for more complex scenarios please remember to supply the property which the validation rule is targeting as the first argument. Otherwise it is not possible for `INotifyDataErrorInfo` to conclude which property the error message is for.
 
 ```csharp
 this.ValidationRule(
