@@ -81,21 +81,19 @@ namespace LoginApp.ViewModels
             // emits an empty string when UserName is valid, and emits a non-empty when UserName
             // is either invalid, or just changed and hasn't been validated yet.
 
-            IObservable<ValidationState> usernameValidated =
+            IObservable<IValidationState> usernameValidated =
                 this.WhenAnyValue(x => x.UserName)
                     .Throttle(TimeSpan.FromSeconds(0.7), RxApp.TaskpoolScheduler)
                     .SelectMany(ValidateNameImpl)
                     .ObserveOn(RxApp.MainThreadScheduler);
 
-            IObservable<ValidationState> usernameDirty =
+            IObservable<IValidationState> usernameDirty =
                 this.WhenAnyValue(x => x.UserName)
                     .Select(name => new ValidationState(false, "Please wait..."));
 
             this.ValidationRule(
                 vm => vm.UserName,
-                usernameValidated.Merge(usernameDirty),
-                state => state.IsValid,
-                state => $"Server says: {state.Text.ToSingleLine()}");
+                usernameValidated.Merge(usernameDirty));
 
             _isBusy = usernameValidated
                 .Select(message => false)
@@ -148,7 +146,7 @@ namespace LoginApp.ViewModels
 
         private void SignUpImpl() => _dialogs.ShowDialog("User created successfully.");
 
-        private static async Task<ValidationState> ValidateNameImpl(string username)
+        private static async Task<IValidationState> ValidateNameImpl(string username)
         {
             await Task.Delay(TimeSpan.FromSeconds(0.5));
             return username.Length < 2
