@@ -197,7 +197,7 @@ namespace ReactiveUI.Validation.Tests
             var arguments = new List<IValidationState>();
             var component = new ObservableValidation(stream);
             component.ValidationStatusChange.Subscribe(arguments.Add);
-            stream.OnNext(new ValidationState(true, string.Empty));
+            stream.OnNext(ValidationState.Valid);
 
             Assert.True(component.IsValid);
             Assert.Empty(component.Text!.ToSingleLine());
