@@ -134,5 +134,91 @@ namespace ReactiveUI.Validation.Tests
             viewModel.Name = string.Empty;
             Assert.False(latestValidity);
         }
+
+        /// <summary>
+        /// Ensures that the ClearValidationRules extension method works.
+        /// Also verifies that the ClearValidationRules extension method is idempotent.
+        /// </summary>
+        [Fact]
+        public void ShouldClearAttachedValidationRules()
+        {
+            var viewModel = new TestViewModel { Name = string.Empty };
+            var nameValidation = new BasePropertyValidation<TestViewModel, string>(
+                viewModel,
+                viewModelProperty => viewModelProperty.Name,
+                s => !string.IsNullOrEmpty(s),
+                "Name should not be empty.");
+
+            var name2Validation = new BasePropertyValidation<TestViewModel, string>(
+                viewModel,
+                viewModelProperty => viewModelProperty.Name2,
+                s => !string.IsNullOrEmpty(s),
+                "Name2 should not be empty.");
+
+            viewModel.ValidationContext.Add(nameValidation);
+            viewModel.ValidationContext.Add(name2Validation);
+
+            Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
+            Assert.False(viewModel.ValidationContext.IsValid);
+            Assert.NotEmpty(viewModel.ValidationContext.Text);
+
+            viewModel.ClearValidationRules();
+
+            Assert.Equal(0, viewModel.ValidationContext.Validations.Count);
+            Assert.True(viewModel.ValidationContext.IsValid);
+            Assert.Empty(viewModel.ValidationContext.Text);
+
+            // Verify that the method is idempotent.
+            viewModel.ClearValidationRules();
+
+            Assert.Equal(0, viewModel.ValidationContext.Validations.Count);
+            Assert.True(viewModel.ValidationContext.IsValid);
+            Assert.Empty(viewModel.ValidationContext.Text);
+        }
+
+        /// <summary>
+        /// Ensures that the ClearValidationRules extension method accepting an expression works.
+        /// Also verifies that the ClearValidationRules extension method is idempotent.
+        /// </summary>
+        [Fact]
+        public void ShouldClearAttachedValidationRulesForTheGivenProperty()
+        {
+            var viewModel = new TestViewModel { Name = string.Empty };
+            var nameValidation = new BasePropertyValidation<TestViewModel, string>(
+                viewModel,
+                viewModelProperty => viewModelProperty.Name,
+                s => !string.IsNullOrEmpty(s),
+                "Name should not be empty.");
+
+            const string name2ErrorMessage = "Name2 should not be empty.";
+            var name2Validation = new BasePropertyValidation<TestViewModel, string>(
+                viewModel,
+                viewModelProperty => viewModelProperty.Name2,
+                s => !string.IsNullOrEmpty(s),
+                name2ErrorMessage);
+
+            viewModel.ValidationContext.Add(nameValidation);
+            viewModel.ValidationContext.Add(name2Validation);
+
+            Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
+            Assert.False(viewModel.ValidationContext.IsValid);
+            Assert.NotEmpty(viewModel.ValidationContext.Text);
+            Assert.Throws<ArgumentNullException>(() => viewModel.ClearValidationRules<TestViewModel, string>(null!));
+
+            viewModel.ClearValidationRules(x => x.Name);
+
+            Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
+            Assert.False(viewModel.ValidationContext.IsValid);
+            Assert.NotEmpty(viewModel.ValidationContext.Text);
+            Assert.Equal(name2ErrorMessage, viewModel.ValidationContext.Text.ToSingleLine());
+
+            // Verify that the method is idempotent.
+            viewModel.ClearValidationRules(x => x.Name);
+
+            Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
+            Assert.False(viewModel.ValidationContext.IsValid);
+            Assert.NotEmpty(viewModel.ValidationContext.Text);
+            Assert.Equal(name2ErrorMessage, viewModel.ValidationContext.Text.ToSingleLine());
+        }
     }
 }

@@ -167,12 +167,17 @@ namespace ReactiveUI.Validation.Contexts
         protected virtual void Dispose(bool disposing) { }
         public bool GetIsValid() { }
         public void Remove(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation) { }
+        public void RemoveMany(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> validations) { }
     }
 }
 namespace ReactiveUI.Validation.Extensions
 {
     public static class ValidatableViewModelExtensions
     {
+        public static void ClearValidationRules<TViewModel>(this TViewModel viewModel)
+            where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        public static void ClearValidationRules<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty)
+            where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static System.IObservable<bool> IsValid<TViewModel>(this TViewModel viewModel)
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
