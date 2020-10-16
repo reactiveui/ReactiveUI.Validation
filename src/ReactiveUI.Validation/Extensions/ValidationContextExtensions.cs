@@ -24,7 +24,7 @@ namespace ReactiveUI.Validation.Extensions
     public static class ValidationContextExtensions
     {
         /// <summary>
-        /// Resolves the <see cref="ValidationState"/> for a specified property in a reactive fashion.
+        /// Resolves the <see cref="IValidationState"/> for a specified property in a reactive fashion.
         /// </summary>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
@@ -32,7 +32,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
         /// <returns>Returns a collection of <see cref="BasePropertyValidation{TViewModel}"/> objects.</returns>
-        public static IObservable<IList<ValidationState>> ObserveFor<TViewModel, TViewModelProperty>(
+        public static IObservable<IList<IValidationState>> ObserveFor<TViewModel, TViewModelProperty>(
             this ValidationContext context,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             bool strict = true)

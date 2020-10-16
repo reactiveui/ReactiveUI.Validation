@@ -31,7 +31,7 @@ namespace ReactiveUI.Validation.Components
         private readonly ReplaySubject<bool> _isValidSubject = new ReplaySubject<bool>(1);
         private readonly HashSet<string> _propertyNames = new HashSet<string>();
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
-        private IConnectableObservable<ValidationState>? _connectedChange;
+        private IConnectableObservable<IValidationState>? _connectedChange;
         private bool _isConnected;
         private bool _isValid;
         private ValidationText? _text;
@@ -64,7 +64,7 @@ namespace ReactiveUI.Validation.Components
         /// <summary>
         /// Gets the public mechanism indicating that the validation state has changed.
         /// </summary>
-        public IObservable<ValidationState> ValidationStatusChange
+        public IObservable<IValidationState> ValidationStatusChange
         {
             get
             {
@@ -140,8 +140,8 @@ namespace ReactiveUI.Validation.Components
         /// <summary>
         /// Get the validation change observable, implemented by concrete classes.
         /// </summary>
-        /// <returns>Returns the <see cref="ValidationState"/> collection.</returns>
-        protected abstract IObservable<ValidationState> GetValidationChangeObservable();
+        /// <returns>Returns the <see cref="IValidationState"/> collection.</returns>
+        protected abstract IObservable<IValidationState> GetValidationChangeObservable();
 
         /// <summary>
         /// Disposes of the managed resources.
@@ -279,7 +279,7 @@ namespace ReactiveUI.Validation.Components
         /// Get the validation change observable.
         /// </summary>
         /// <returns></returns>
-        protected override IObservable<ValidationState> GetValidationChangeObservable()
+        protected override IObservable<IValidationState> GetValidationChangeObservable()
         {
             Activate();
             return _valueSubject

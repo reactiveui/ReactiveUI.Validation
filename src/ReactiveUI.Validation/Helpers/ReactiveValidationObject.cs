@@ -55,14 +55,15 @@ namespace ReactiveUI.Validation.Helpers
         protected ReactiveValidationObject(IScheduler? scheduler = null)
         {
             ValidationContext = new ValidationContext(scheduler);
-            var initial = new ValidationState(true, string.Empty, ValidationContext);
             ValidationContext.Validations
                 .ToObservableChangeSet()
                 .ToCollection()
                 .Select(components => components
-                    .Select(component => component.ValidationStatusChange)
+                    .Select(component => component
+                        .ValidationStatusChange
+                        .Select(_ => component))
                     .Merge()
-                    .StartWith(initial))
+                    .StartWith(ValidationContext))
                 .Switch()
                 .Subscribe(OnValidationStatusChange);
         }
@@ -124,10 +125,10 @@ namespace ReactiveUI.Validation.Helpers
         /// detached from the <see cref="ValidationContext"/>, and we'd like to mark all invalid
         /// properties as valid (because the thing that validates them no longer exists).
         /// </remarks>
-        private void OnValidationStatusChange(ValidationState state)
+        private void OnValidationStatusChange(IValidationComponent component)
         {
             HasErrors = !ValidationContext.GetIsValid();
-            if (state.Component is IPropertyValidationComponent propertyValidationComponent)
+            if (component is IPropertyValidationComponent propertyValidationComponent)
             {
                 foreach (var propertyName in propertyValidationComponent.Properties)
                 {

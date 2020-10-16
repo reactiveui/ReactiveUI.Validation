@@ -119,7 +119,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         private (TProperty1, TProperty2) LastValue { get; set; }
 
         /// <inheritdoc/>
-        protected override IObservable<ValidationState> GetValidationChangeObservable()
+        protected override IObservable<IValidationState> GetValidationChangeObservable()
         {
             Activate();
 
@@ -265,7 +265,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         private (TProperty1, TProperty2, TProperty3) LastValue { get; set; }
 
         /// <inheritdoc/>
-        protected override IObservable<ValidationState> GetValidationChangeObservable()
+        protected override IObservable<IValidationState> GetValidationChangeObservable()
         {
             Activate();
 
@@ -420,7 +420,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         private (TProperty1, TProperty2, TProperty3, TProperty4) LastValue { get; set; }
 
         /// <inheritdoc/>
-        protected override IObservable<ValidationState> GetValidationChangeObservable()
+        protected override IObservable<IValidationState> GetValidationChangeObservable()
         {
             Activate();
 
@@ -584,7 +584,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         private (TProperty1, TProperty2, TProperty3, TProperty4, TProperty5) LastValue { get; set; }
 
         /// <inheritdoc/>
-        protected override IObservable<ValidationState> GetValidationChangeObservable()
+        protected override IObservable<IValidationState> GetValidationChangeObservable()
         {
             Activate();
 
@@ -757,7 +757,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         private (TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6) LastValue { get; set; }
 
         /// <inheritdoc/>
-        protected override IObservable<ValidationState> GetValidationChangeObservable()
+        protected override IObservable<IValidationState> GetValidationChangeObservable()
         {
             Activate();
 

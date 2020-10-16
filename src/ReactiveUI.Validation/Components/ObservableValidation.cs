@@ -24,7 +24,7 @@ namespace ReactiveUI.Validation.Components
     /// A validation component that is based on an <see cref="IObservable{T}"/>. Validates a single property.
     /// Though in the passed observable more properties can be referenced via a call to WhenAnyValue.
     /// </summary>
-    public sealed class ObservableValidation<TViewModel, TValue, TProp> : ObservableValidationBase<TViewModel, TValue>
+    public sealed class ObservableValidation<TViewModel, TValue, TProp> : ObservableValidation<TViewModel>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue,TProp}"/> class.
@@ -133,7 +133,12 @@ namespace ReactiveUI.Validation.Components
             IObservable<TValue> observable,
             Func<TViewModel, TValue, bool> isValidFunc,
             Func<TViewModel, TValue, bool, ValidationText> messageFunc)
-            : base(viewModel, observable, isValidFunc, messageFunc) =>
+            : base(observable.Select(value =>
+            {
+                var isValid = isValidFunc(viewModel, value);
+                var message = messageFunc(viewModel, value, isValid);
+                return new ValidationState(isValid, message);
+            })) =>
             AddProperty(viewModelProperty);
     }
 
@@ -143,7 +148,7 @@ namespace ReactiveUI.Validation.Components
     /// A validation component that is based on an <see cref="IObservable{T}"/>.
     /// </summary>
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just different generic parameters.")]
-    public sealed class ObservableValidation<TViewModel, TValue> : ObservableValidationBase<TViewModel, TValue>
+    public sealed class ObservableValidation<TViewModel, TValue> : ObservableValidation<TViewModel>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.
@@ -239,7 +244,12 @@ namespace ReactiveUI.Validation.Components
             IObservable<TValue> observable,
             Func<TViewModel, TValue, bool> isValidFunc,
             Func<TViewModel, TValue, bool, ValidationText> messageFunc)
-            : base(viewModel, observable, isValidFunc, messageFunc)
+            : base(observable.Select(value =>
+            {
+                var isValid = isValidFunc(viewModel, value);
+                var message = messageFunc(viewModel, value, isValid);
+                return new ValidationState(isValid, message);
+            }))
         {
         }
     }
@@ -249,18 +259,11 @@ namespace ReactiveUI.Validation.Components
     /// <summary>
     /// A validation component that is based on an <see cref="IObservable{T}"/>.
     /// </summary>
+    [ExcludeFromCodeCoverage]
+    [Obsolete("This class is going to be removed in future versions. Consider using ObservableValidation<TViewModel> as a base class.")]
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just different generic parameters.")]
-    public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObject, IDisposable, IPropertyValidationComponent, IPropertyValidationComponent<TViewModel>
+    public abstract class ObservableValidationBase<TViewModel, TValue> : ObservableValidation<TViewModel>, IPropertyValidationComponent<TViewModel>
     {
-        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
-        private readonly ReplaySubject<ValidationState> _isValidSubject = new ReplaySubject<ValidationState>(1);
-        private readonly HashSet<string> _propertyNames = new HashSet<string>();
-        private readonly CompositeDisposable _disposables = new CompositeDisposable();
-        private readonly IConnectableObservable<ValidationState> _validityConnectedObservable;
-        private bool _isActive;
-        private bool _isValid;
-        private ValidationText? _text;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ObservableValidationBase{TViewModel,TValue}"/> class.
         /// </summary>
@@ -268,11 +271,59 @@ namespace ReactiveUI.Validation.Components
         /// <param name="observable">Observable that updates the view model property validity.</param>
         /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
         /// <param name="messageFunc">Func to define the validation error message.</param>
+        [ExcludeFromCodeCoverage]
+        [Obsolete("This class is going to be removed in future versions. Consider using ObservableValidation<TViewModel> as a base class.")]
         protected ObservableValidationBase(
             TViewModel viewModel,
             IObservable<TValue> observable,
             Func<TViewModel, TValue, bool> isValidFunc,
             Func<TViewModel, TValue, bool, ValidationText> messageFunc)
+            : base(observable.Select(value =>
+            {
+                var isValid = isValidFunc(viewModel, value);
+                var message = messageFunc(viewModel, value, isValid);
+                return new ValidationState(isValid, message);
+            }))
+        {
+        }
+
+        /// <inheritdoc/>
+        [ExcludeFromCodeCoverage]
+        [Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidationComponent.")]
+        public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
+        {
+            if (property is null)
+            {
+                throw new ArgumentNullException(nameof(property));
+            }
+
+            var propertyName = property.Body.GetPropertyPath();
+            return ContainsPropertyName(propertyName, exclusively);
+        }
+    }
+
+    /// <inheritdoc cref="ReactiveObject" />
+    /// <inheritdoc cref="IDisposable" />
+    /// <summary>
+    /// A validation component that is based on an <see cref="IObservable{T}"/>.
+    /// </summary>
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just different generic parameters.")]
+    public class ObservableValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent
+    {
+        [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
+        private readonly ReplaySubject<IValidationState> _isValidSubject = new ReplaySubject<IValidationState>(1);
+        private readonly HashSet<string> _propertyNames = new HashSet<string>();
+        private readonly CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly IConnectableObservable<IValidationState> _validityConnectedObservable;
+        private bool _isActive;
+        private bool _isValid;
+        private ValidationText? _text;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel}"/> class.
+        /// </summary>
+        /// <param name="observable">Observable that updates the view model property validity.</param>
+        public ObservableValidation(IObservable<IValidationState> observable)
         {
             _isValidSubject
                 .Do(state =>
@@ -285,15 +336,7 @@ namespace ReactiveUI.Validation.Components
 
             _validityConnectedObservable = Observable
                 .Defer(() => observable)
-                .Select(BuildValidationState)
                 .Multicast(_isValidSubject);
-
-            ValidationState BuildValidationState(TValue value)
-            {
-                var isValid = isValidFunc(viewModel, value);
-                var message = messageFunc(viewModel, value, isValid);
-                return new ValidationState(isValid, message, this);
-            }
         }
 
         /// <inheritdoc/>
@@ -323,7 +366,7 @@ namespace ReactiveUI.Validation.Components
         }
 
         /// <inheritdoc/>
-        public IObservable<ValidationState> ValidationStatusChange
+        public IObservable<IValidationState> ValidationStatusChange
         {
             get
             {
@@ -340,20 +383,6 @@ namespace ReactiveUI.Validation.Components
 
             // Suppress finalization.
             GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc/>
-        [ExcludeFromCodeCoverage]
-        [Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidationComponent.")]
-        public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
-        {
-            if (property is null)
-            {
-                throw new ArgumentNullException(nameof(property));
-            }
-
-            var propertyName = property.Body.GetPropertyPath();
-            return ContainsPropertyName(propertyName, exclusively);
         }
 
         /// <inheritdoc/>

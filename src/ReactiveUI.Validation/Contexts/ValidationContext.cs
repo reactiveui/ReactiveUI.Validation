@@ -35,7 +35,7 @@ namespace ReactiveUI.Validation.Contexts
     public class ValidationContext : ReactiveObject, IDisposable, IValidationComponent
     {
         private readonly SourceList<IValidationComponent> _validationSource = new SourceList<IValidationComponent>();
-        private readonly ReplaySubject<ValidationState> _validationStatusChange = new ReplaySubject<ValidationState>(1);
+        private readonly ReplaySubject<IValidationState> _validationStatusChange = new ReplaySubject<IValidationState>(1);
         private readonly ReplaySubject<bool> _validSubject = new ReplaySubject<bool>(1);
 
         private readonly ReadOnlyObservableCollection<IValidationComponent> _validations;
@@ -121,7 +121,7 @@ namespace ReactiveUI.Validation.Contexts
         }
 
         /// <inheritdoc />
-        public IObservable<ValidationState> ValidationStatusChange
+        public IObservable<IValidationState> ValidationStatusChange
         {
             get
             {
@@ -197,7 +197,7 @@ namespace ReactiveUI.Validation.Contexts
         {
             if (disposing)
             {
-                _disposables?.Dispose();
+                _disposables.Dispose();
             }
         }
 
