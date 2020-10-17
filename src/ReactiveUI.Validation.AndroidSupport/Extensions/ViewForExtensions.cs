@@ -15,7 +15,7 @@ using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
 using Splat;
 
-namespace ReactiveUI.Validation.Platforms.Android
+namespace ReactiveUI.Validation.Extensions
 {
     /// <summary>
     /// Android specific extensions methods associated to <see cref="IViewFor"/> instances.
