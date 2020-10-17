@@ -128,7 +128,7 @@ _disposables.Add(_valueSubject.Subscribe(v => LastValue = v));
         private (<#= String.Join(", ",templParams) #>) LastValue { get; set; }
 
         /// <inheritdoc/>
-        protected override IObservable<ValidationState> GetValidationChangeObservable()
+        protected override IObservable<IValidationState> GetValidationChangeObservable()
         {
             Activate();
 

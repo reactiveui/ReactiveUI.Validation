@@ -27,6 +27,6 @@ namespace ReactiveUI.Validation.Components.Abstractions
         /// <summary>
         /// Gets the observable for validation state changes.
         /// </summary>
-        IObservable<ValidationState> ValidationStatusChange { get; }
+        IObservable<IValidationState> ValidationStatusChange { get; }
     }
 }

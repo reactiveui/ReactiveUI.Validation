@@ -24,6 +24,7 @@ namespace ReactiveUI.Validation.Components
     /// A validation component that is based on an <see cref="IObservable{T}"/>. Validates a single property.
     /// Though in the passed observable more properties can be referenced via a call to WhenAnyValue.
     /// </summary>
+    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just different generic parameters.")]
     public sealed class ObservableValidation<TViewModel, TValue, TProp> : ObservableValidationBase<TViewModel, TValue>
     {
         /// <summary>
@@ -114,26 +115,19 @@ namespace ReactiveUI.Validation.Components
             IObservable<TValue> observable,
             Func<TViewModel, TValue, bool> isValidFunc,
             Func<TViewModel, TValue, bool, string> messageFunc)
-            : this(viewModel, viewModelProperty, observable, isValidFunc, (vm, value, isValid) =>
-                new ValidationText(messageFunc(vm, value, isValid)))
-        {
-        }
+            : base(viewModel, observable, isValidFunc, (vm, value, isValid) =>
+                new ValidationText(messageFunc(vm, value, isValid))) =>
+            AddProperty(viewModelProperty);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue,TProp}"/> class.
         /// </summary>
-        /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="observable">Observable that updates the view model property validity.</param>
-        /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
-        /// <param name="messageFunc">Func to define the validation error message.</param>
-        private ObservableValidation(
-            TViewModel viewModel,
+        public ObservableValidation(
             Expression<Func<TViewModel, TProp>> viewModelProperty,
-            IObservable<TValue> observable,
-            Func<TViewModel, TValue, bool> isValidFunc,
-            Func<TViewModel, TValue, bool, ValidationText> messageFunc)
-            : base(viewModel, observable, isValidFunc, messageFunc) =>
+            IObservable<IValidationState> observable)
+            : base(observable) =>
             AddProperty(viewModelProperty);
     }
 
@@ -222,7 +216,7 @@ namespace ReactiveUI.Validation.Components
             IObservable<TValue> observable,
             Func<TViewModel, TValue, bool> isValidFunc,
             Func<TViewModel, TValue, bool, string> messageFunc)
-            : this(viewModel, observable, isValidFunc, (vm, value, isValid) =>
+            : base(viewModel, observable, isValidFunc, (vm, value, isValid) =>
                 new ValidationText(messageFunc(vm, value, isValid)))
         {
         }
@@ -230,16 +224,9 @@ namespace ReactiveUI.Validation.Components
         /// <summary>
         /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.
         /// </summary>
-        /// <param name="viewModel">ViewModel instance.</param>
         /// <param name="observable">Observable that updates the view model property validity.</param>
-        /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
-        /// <param name="messageFunc">Func to define the validation error message.</param>
-        private ObservableValidation(
-            TViewModel viewModel,
-            IObservable<TValue> observable,
-            Func<TViewModel, TValue, bool> isValidFunc,
-            Func<TViewModel, TValue, bool, ValidationText> messageFunc)
-            : base(viewModel, observable, isValidFunc, messageFunc)
+        public ObservableValidation(IObservable<IValidationState> observable)
+            : base(observable)
         {
         }
     }
@@ -253,10 +240,10 @@ namespace ReactiveUI.Validation.Components
     public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObject, IDisposable, IPropertyValidationComponent, IPropertyValidationComponent<TViewModel>
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
-        private readonly ReplaySubject<ValidationState> _isValidSubject = new ReplaySubject<ValidationState>(1);
+        private readonly ReplaySubject<IValidationState> _isValidSubject = new ReplaySubject<IValidationState>(1);
         private readonly HashSet<string> _propertyNames = new HashSet<string>();
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
-        private readonly IConnectableObservable<ValidationState> _validityConnectedObservable;
+        private readonly IConnectableObservable<IValidationState> _validityConnectedObservable;
         private bool _isActive;
         private bool _isValid;
         private ValidationText? _text;
@@ -273,6 +260,20 @@ namespace ReactiveUI.Validation.Components
             IObservable<TValue> observable,
             Func<TViewModel, TValue, bool> isValidFunc,
             Func<TViewModel, TValue, bool, ValidationText> messageFunc)
+            : this(observable.Select(value =>
+            {
+                var isValid = isValidFunc(viewModel, value);
+                var message = messageFunc(viewModel, value, isValid);
+                return new ValidationState(isValid, message);
+            }))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ObservableValidationBase{TViewModel, TValue}"/> class.
+        /// </summary>
+        /// <param name="observable">Observable that updates the view model property validity.</param>
+        protected ObservableValidationBase(IObservable<IValidationState> observable)
         {
             _isValidSubject
                 .Do(state =>
@@ -285,15 +286,7 @@ namespace ReactiveUI.Validation.Components
 
             _validityConnectedObservable = Observable
                 .Defer(() => observable)
-                .Select(BuildValidationState)
                 .Multicast(_isValidSubject);
-
-            ValidationState BuildValidationState(TValue value)
-            {
-                var isValid = isValidFunc(viewModel, value);
-                var message = messageFunc(viewModel, value, isValid);
-                return new ValidationState(isValid, message, this);
-            }
         }
 
         /// <inheritdoc/>
@@ -323,7 +316,7 @@ namespace ReactiveUI.Validation.Components
         }
 
         /// <inheritdoc/>
-        public IObservable<ValidationState> ValidationStatusChange
+        public IObservable<IValidationState> ValidationStatusChange
         {
             get
             {

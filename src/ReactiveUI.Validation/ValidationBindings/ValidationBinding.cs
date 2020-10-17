@@ -102,7 +102,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(
             TView view,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
-            Action<IList<ValidationState>, IList<TOut>> action,
+            Action<IList<IValidationState>, IList<TOut>> action,
             IValidationTextFormatter<TOut> formatter,
             bool strict = true)
             where TView : IViewFor<TViewModel>
@@ -189,7 +189,7 @@ namespace ReactiveUI.Validation.ValidationBindings
                         .WhenAnyValue(viewModelHelperProperty)
                         .SelectMany(helper => helper != null
                             ? helper.ValidationChanged
-                            : Observable.Return(new ValidationState(true, string.Empty, viewModel!.ValidationContext))))
+                            : Observable.Return(ValidationState.Valid)))
                 .Switch()
                 .Select(vc => formatter.Format(vc.Text));
 
@@ -213,7 +213,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TOut>(
             TView view,
             Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
-            Action<ValidationState, TOut> action,
+            Action<IValidationState, TOut> action,
             IValidationTextFormatter<TOut> formatter)
             where TView : IViewFor<TViewModel>
             where TViewModel : class, IReactiveObject, IValidatableViewModel
@@ -246,7 +246,7 @@ namespace ReactiveUI.Validation.ValidationBindings
                         .WhenAnyValue(viewModelHelperProperty)
                         .SelectMany(helper => helper != null
                             ? helper.ValidationChanged
-                            : Observable.Return(new ValidationState(true, string.Empty, viewModel!.ValidationContext))))
+                            : Observable.Return(ValidationState.Valid)))
                 .Switch()
                 .Do(state => action(state, formatter.Format(state.Text)))
                 .Select(_ => Unit.Default);

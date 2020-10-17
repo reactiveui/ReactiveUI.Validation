@@ -11,18 +11,18 @@ namespace ReactiveUI.Validation.Comparators
 {
     /// <inheritdoc />
     /// <summary>
-    /// Utility class used to compare <see cref="ReactiveUI.Validation.States.ValidationState" /> instances.
+    /// Utility class used to compare <see cref="ReactiveUI.Validation.States.IValidationState" /> instances.
     /// </summary>
-    public class ValidationStateComparer : EqualityComparer<ValidationState>
+    public class ValidationStateComparer : EqualityComparer<IValidationState>
     {
         /// <summary>
-        /// Checks if two <see cref="ValidationState"/> objects are equals based on both
-        /// <see cref="ValidationState.IsValid"/> and <see cref="ValidationState.Component"/> properties.
+        /// Checks if two <see cref="IValidationState"/> objects are equals based on both
+        /// <see cref="IValidationState.IsValid"/> and <see cref="IValidationState.Text"/> properties.
         /// </summary>
-        /// <param name="x">Source <see cref="ValidationState"/> object.</param>
-        /// <param name="y">Target <see cref="ValidationState"/> object.</param>
+        /// <param name="x">Source <see cref="IValidationState"/> object.</param>
+        /// <param name="y">Target <see cref="IValidationState"/> object.</param>
         /// <returns>Returns true if both objects are equals, otherwise false.</returns>
-        public override bool Equals(ValidationState x, ValidationState y)
+        public override bool Equals(IValidationState x, IValidationState y)
         {
             if (x == null && y == null)
             {
@@ -34,12 +34,11 @@ namespace ReactiveUI.Validation.Comparators
                 return false;
             }
 
-            return x.IsValid == y.IsValid && x.Text.ToSingleLine() == y.Text.ToSingleLine()
-                                          && x.Component == y.Component;
+            return x.IsValid == y.IsValid && x.Text.ToSingleLine() == y.Text.ToSingleLine();
         }
 
         /// <inheritdoc />
-        public override int GetHashCode(ValidationState obj)
+        public override int GetHashCode(IValidationState obj)
         {
             if (obj == null)
             {

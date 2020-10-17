@@ -4,10 +4,12 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Reactive.Subjects;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Extensions;
+using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.Tests.Models;
 using Xunit;
 
@@ -183,6 +185,36 @@ namespace ReactiveUI.Validation.Tests
             Assert.False(component.ContainsProperty<TestViewModel, string>(model => model.Name2));
             Assert.False(component.ContainsProperty<TestViewModel, string>(model => model.Name2, true));
             Assert.Throws<ArgumentNullException>(() => component.ContainsProperty<TestViewModel, string>(null!));
+        }
+
+        /// <summary>
+        /// Verifies that we support the simplest possible observable-based validation component.
+        /// </summary>
+        [Fact]
+        public void ShouldSupportMinimalObservableValidation()
+        {
+            var stream = new Subject<IValidationState>();
+            var arguments = new List<IValidationState>();
+            var component = new ObservableValidation<TestViewModel, bool>(stream);
+            component.ValidationStatusChange.Subscribe(arguments.Add);
+            stream.OnNext(ValidationState.Valid);
+
+            Assert.True(component.IsValid);
+            Assert.Empty(component.Text!.ToSingleLine());
+            Assert.Single(arguments);
+
+            Assert.True(arguments[0].IsValid);
+            Assert.Empty(arguments[0].Text.ToSingleLine());
+
+            const string errorMessage = "Errors exist.";
+            stream.OnNext(new ValidationState(false, errorMessage));
+
+            Assert.False(component.IsValid);
+            Assert.Equal(errorMessage, component.Text.ToSingleLine());
+            Assert.Equal(2, arguments.Count);
+
+            Assert.False(arguments[1].IsValid);
+            Assert.Equal(errorMessage, arguments[1].Text.ToSingleLine());
         }
     }
 }

@@ -108,19 +108,19 @@ namespace ReactiveUI.Validation.Tests
 
             model.Name = testValue;
 
-            var changes = new List<ValidationState>();
+            var changes = new List<IValidationState>();
 
             validation.ValidationStatusChange.Subscribe(v => changes.Add(v));
 
             Assert.Equal("The value 'bongo' is incorrect", validation.Text.ToSingleLine());
             Assert.Single(changes);
-            Assert.Equal(new ValidationState(false, "The value 'bongo' is incorrect", validation), changes[0], new ValidationStateComparer());
+            Assert.Equal(new ValidationState(false, "The value 'bongo' is incorrect"), changes[0], new ValidationStateComparer());
 
             model.Name = testRoot;
 
             Assert.Equal("The value 'bon' is incorrect", validation.Text.ToSingleLine());
             Assert.Equal(2, changes.Count);
-            Assert.Equal(new ValidationState(false, "The value 'bon' is incorrect", validation), changes[1], new ValidationStateComparer());
+            Assert.Equal(new ValidationState(false, "The value 'bon' is incorrect"), changes[1], new ValidationStateComparer());
         }
 
         /// <summary>

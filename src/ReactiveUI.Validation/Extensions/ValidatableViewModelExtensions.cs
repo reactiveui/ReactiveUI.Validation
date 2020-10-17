@@ -13,6 +13,7 @@ using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Helpers;
+using ReactiveUI.Validation.States;
 
 namespace ReactiveUI.Validation.Extensions
 {
@@ -196,6 +197,37 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
+        /// Setup a validation rule with a general observable based on <see cref="IValidationState"/>.
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="validationObservable">Observable to define if the viewModel is valid or not.</param>
+        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+        /// <remarks>
+        /// It should be noted that the observable should provide an initial value, otherwise that can result
+        /// in an inconsistent performance.
+        /// </remarks>
+        public static ValidationHelper ValidationRule<TViewModel>(
+            this TViewModel viewModel,
+            IObservable<IValidationState> validationObservable)
+            where TViewModel : IReactiveObject, IValidatableViewModel
+        {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (validationObservable is null)
+            {
+                throw new ArgumentNullException(nameof(validationObservable));
+            }
+
+            return viewModel.RegisterValidation(
+                new ObservableValidation<TViewModel, bool>(
+                    validationObservable));
+        }
+
+        /// <summary>
         /// Setup a validation rule with a general observable indicating validity and a static error message
         /// for the given view model property.
         /// </summary>
@@ -299,6 +331,45 @@ namespace ReactiveUI.Validation.Extensions
             return viewModel.RegisterValidation(
                 new ObservableValidation<TViewModel, TValue, TViewModelProp>(
                     viewModel, viewModelProperty, viewModelObservable, isValidFunc, messageFunc));
+        }
+
+        /// <summary>
+        /// Setup a validation rule with a general observable based on <see cref="IValidationState"/>.
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelProperty">ViewModel property referenced in viewModelObservableProperty.</param>
+        /// <param name="validationObservable">Observable to define if the viewModel is valid or not.</param>
+        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+        /// <remarks>
+        /// It should be noted that the observable should provide an initial value, otherwise that can result
+        /// in an inconsistent performance.
+        /// </remarks>
+        public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
+            this TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
+            IObservable<IValidationState> validationObservable)
+            where TViewModel : IReactiveObject, IValidatableViewModel
+        {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (validationObservable is null)
+            {
+                throw new ArgumentNullException(nameof(validationObservable));
+            }
+
+            return viewModel.RegisterValidation(
+                new ObservableValidation<TViewModel, bool, TViewModelProp>(
+                    viewModelProperty, validationObservable));
         }
 
         /// <summary>

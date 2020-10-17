@@ -57,7 +57,7 @@ namespace ReactiveUI.Validation.Helpers
         /// <summary>
         /// Gets the observable for validation state changes.
         /// </summary>
-        public IObservable<ValidationState> ValidationChanged => _validation.ValidationStatusChange;
+        public IObservable<IValidationState> ValidationChanged => _validation.ValidationStatusChange;
 
         /// <inheritdoc/>
         public void Dispose()

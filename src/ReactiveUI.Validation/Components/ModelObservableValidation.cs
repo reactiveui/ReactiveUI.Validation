@@ -193,9 +193,9 @@ namespace ReactiveUI.Validation.Components
     public abstract class ModelObservableValidationBase<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent, IPropertyValidationComponent<TViewModel>
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
-        private readonly ReplaySubject<ValidationState> _lastValidationStateSubject = new ReplaySubject<ValidationState>(1);
+        private readonly ReplaySubject<IValidationState> _lastValidationStateSubject = new ReplaySubject<IValidationState>(1);
         private readonly HashSet<string> _propertyNames = new HashSet<string>();
-        private readonly IConnectableObservable<ValidationState> _validityConnectedObservable;
+        private readonly IConnectableObservable<IValidationState> _validityConnectedObservable;
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
         private bool _isActive;
         private bool _isValid;
@@ -254,7 +254,7 @@ namespace ReactiveUI.Validation.Components
         }
 
         /// <inheritdoc/>
-        public IObservable<ValidationState> ValidationStatusChange
+        public IObservable<IValidationState> ValidationStatusChange
         {
             get
             {

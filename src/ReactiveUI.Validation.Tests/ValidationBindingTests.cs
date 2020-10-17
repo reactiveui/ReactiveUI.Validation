@@ -3,9 +3,11 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
@@ -13,6 +15,7 @@ using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
+using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.Tests.Models;
 using ReactiveUI.Validation.ValidationBindings;
 using Xunit;
@@ -653,6 +656,62 @@ namespace ReactiveUI.Validation.Tests
             Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
             Assert.False(view.ViewModel.ValidationContext.IsValid);
             Assert.Equal(secretMessage, view.NameErrorLabel);
+        }
+
+        /// <summary>
+        /// Verifies that the ValidationRule(IValidationState) methods work.
+        /// </summary>
+        [Fact]
+        public void ShouldBindValidationRuleEmittingValidationStates()
+        {
+            const StringComparison comparison = StringComparison.InvariantCulture;
+            const string viewModelIsBlockedMessage = "View model is blocked.";
+            const string nameErrorMessage = "Name shouldn't be empty.";
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+            var isViewModelBlocked = new ReplaySubject<bool>(1);
+            isViewModelBlocked.OnNext(true);
+
+            view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name,
+                view.ViewModel.WhenAnyValue(
+                    vm => vm.Name,
+                    name => new CustomValidationState(
+                        !string.IsNullOrWhiteSpace(name),
+                        nameErrorMessage)));
+
+            view.ViewModel.ValidationRule(
+                isViewModelBlocked.Select(blocked =>
+                    new CustomValidationState(!blocked, viewModelIsBlockedMessage)));
+
+            view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+            view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
+            view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
+
+            Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Contains(nameErrorMessage, view.NameErrorLabel, comparison);
+            Assert.Contains(viewModelIsBlockedMessage, view.NameErrorContainer.Text, comparison);
+
+            view.ViewModel.Name = "Qwerty";
+            isViewModelBlocked.OnNext(false);
+
+            Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.DoesNotContain(nameErrorMessage, view.NameErrorLabel, comparison);
+            Assert.DoesNotContain(viewModelIsBlockedMessage, view.NameErrorContainer.Text, comparison);
+        }
+
+        private class CustomValidationState : IValidationState
+        {
+            public CustomValidationState(bool isValid, string message)
+            {
+                IsValid = isValid;
+                Text = new ValidationText(isValid ? string.Empty : message);
+            }
+
+            public ValidationText Text { get; }
+
+            public bool IsValid { get; }
         }
 
         private class ConstFormatter : IValidationTextFormatter<string>
