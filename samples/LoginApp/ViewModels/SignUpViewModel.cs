@@ -153,7 +153,7 @@ namespace LoginApp.ViewModels
                 ? new ValidationState(false, "The name is too short.")
                 : username.Any(letter => !char.IsLetter(letter))
                     ? new ValidationState(false, "Only letters allowed.")
-                    : new ValidationState(true, string.Empty);
+                    : ValidationState.Valid;
         }
     }
 }
