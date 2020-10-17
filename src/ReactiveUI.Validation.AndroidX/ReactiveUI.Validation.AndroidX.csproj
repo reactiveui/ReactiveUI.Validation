@@ -14,4 +14,8 @@
   <ItemGroup>
     <PackageReference Include="ReactiveUI" Version="11.*" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReactiveUI.Validation\ReactiveUI.Validation.csproj" />
+  </ItemGroup>
 </Project>
