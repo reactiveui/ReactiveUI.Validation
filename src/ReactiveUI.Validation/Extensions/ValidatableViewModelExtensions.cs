@@ -222,7 +222,9 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(validationObservable));
             }
 
-            return viewModel.RegisterValidation(new ObservableValidation(validationObservable));
+            return viewModel.RegisterValidation(
+                new ObservableValidation<TViewModel, bool>(
+                    validationObservable));
         }
 
         /// <summary>
@@ -365,9 +367,9 @@ namespace ReactiveUI.Validation.Extensions
                 throw new ArgumentNullException(nameof(validationObservable));
             }
 
-            var validation = new ObservableValidation(validationObservable);
-            validation.AddProperty(viewModelProperty);
-            return viewModel.RegisterValidation(validation);
+            return viewModel.RegisterValidation(
+                new ObservableValidation<TViewModel, bool, TViewModelProp>(
+                    viewModelProperty, validationObservable));
         }
 
         /// <summary>

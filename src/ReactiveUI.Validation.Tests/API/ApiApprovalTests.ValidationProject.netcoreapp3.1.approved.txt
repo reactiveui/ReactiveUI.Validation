@@ -118,43 +118,36 @@ namespace ReactiveUI.Validation.Components
         public ModelObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, string> messageFunc) { }
         public ModelObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModel, System.IObservable<bool>> validityObservable, string message) { }
     }
-    public class ObservableValidation : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, System.IDisposable
+    public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, System.IDisposable
     {
-        public ObservableValidation(System.IObservable<ReactiveUI.Validation.States.IValidationState> observable) { }
+        protected ObservableValidationBase(System.IObservable<ReactiveUI.Validation.States.IValidationState> observable) { }
+        protected ObservableValidationBase(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, bool, ReactiveUI.Validation.Collections.ValidationText> messageFunc) { }
         public bool IsValid { get; }
         public System.Collections.Generic.IEnumerable<string> Properties { get; }
         public int PropertyCount { get; }
         public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
-        public void AddProperty(System.Linq.Expressions.LambdaExpression propertyExpression) { }
-        public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
-        public void Dispose() { }
-        protected virtual void Dispose(bool disposing) { }
-    }
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    [System.Obsolete("This class is going to be removed in future versions. Consider using ObservableVa" +
-        "lidation<TViewModel> as a base class.")]
-    public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveUI.Validation.Components.ObservableValidation, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidationComponent
-    {
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("This class is going to be removed in future versions. Consider using ObservableVa" +
-            "lidation<TViewModel> as a base class.")]
-        protected ObservableValidationBase(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, bool, ReactiveUI.Validation.Collections.ValidationText> messageFunc) { }
+        protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidat" +
             "ionComponent.")]
         public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = false) { }
+        public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
+        public void Dispose() { }
+        protected virtual void Dispose(bool disposing) { }
     }
-    public sealed class ObservableValidation<TViewModel, TValue> : ReactiveUI.Validation.Components.ObservableValidation
+    public sealed class ObservableValidation<TViewModel, TValue> : ReactiveUI.Validation.Components.ObservableValidationBase<TViewModel, TValue>
     {
+        public ObservableValidation(System.IObservable<ReactiveUI.Validation.States.IValidationState> observable) { }
         public ObservableValidation(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TValue, bool> isValidFunc, System.Func<TValue, string> messageFunc) { }
         public ObservableValidation(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TValue, bool> isValidFunc, string message) { }
         public ObservableValidation(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, string> messageFunc) { }
         public ObservableValidation(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, bool, string> messageFunc) { }
         public ObservableValidation(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, string message) { }
     }
-    public sealed class ObservableValidation<TViewModel, TValue, TProp> : ReactiveUI.Validation.Components.ObservableValidation
+    public sealed class ObservableValidation<TViewModel, TValue, TProp> : ReactiveUI.Validation.Components.ObservableValidationBase<TViewModel, TValue>
     {
+        public ObservableValidation(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> viewModelProperty, System.IObservable<ReactiveUI.Validation.States.IValidationState> observable) { }
         public ObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> viewModelProperty, System.IObservable<TValue> observable, System.Func<TValue, bool> isValidFunc, System.Func<TValue, string> messageFunc) { }
         public ObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> viewModelProperty, System.IObservable<TValue> observable, System.Func<TValue, bool> isValidFunc, string message) { }
         public ObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> viewModelProperty, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, string> messageFunc) { }
