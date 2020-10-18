@@ -73,7 +73,7 @@
   <ItemGroup>
     <PackageReference Include="ReactiveUI" Version="11.5.35" />
     <PackageReference Include="ReactiveUI.AndroidX" Version="11.5.35" />
-    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.*" />
+    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.1.0.5-rc3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LoginApp\LoginApp.csproj">
