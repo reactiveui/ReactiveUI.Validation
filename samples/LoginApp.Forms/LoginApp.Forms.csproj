@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="ReactiveUI.XamForms" Version="11.5.35" />
-    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1451" />
+    <PackageReference Include="Xamarin.Forms" Version="4.7.*" />
   </ItemGroup>
   
   <ItemGroup>
