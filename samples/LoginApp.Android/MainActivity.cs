@@ -1,32 +1,53 @@
-﻿// Copyright (c) 2020 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for full license information.
-
-using System;
+﻿using System.Reactive.Disposables;
 using Android.App;
-using Android.Content.PM;
 using Android.OS;
-using LoginApp.Forms;
+using Android.Widget;
+using Google.Android.Material.TextField;
+using LoginApp.ViewModels;
+using ReactiveUI;
+using ReactiveUI.Validation.Extensions;
 
 namespace LoginApp.Droid
 {
-    /// <summary>
-    /// The main application activity.
-    /// </summary>
-    [Activity(Label = "LoginApp", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+    [Activity(Label = "LoginApp", Theme = "@style/AppTheme", MainLauncher = true)]
+    public class MainActivity : ReactiveActivity<SignUpViewModel>
     {
-        /// <inheritdoc/>
+        public TextInputLayout UsernameField { get; set; }
+        public TextInputLayout PasswordField { get; set; }
+        public TextInputLayout ConfirmPasswordField { get; set; }
+
+        public TextInputEditText Username { get; set; }
+        public TextInputEditText Password { get; set; }
+        public TextInputEditText ConfirmPassword { get; set; }
+        public Button SignUpButton { get; set; }
+        
         protected override void OnCreate(Bundle savedInstanceState)
         {
-            TabLayoutResource = Resource.Layout.Tabbar;
-            ToolbarResource = Resource.Layout.Toolbar;
-
             base.OnCreate(savedInstanceState);
+            SetContentView(Resource.Layout.activity_main);
+            ViewModel = new SignUpViewModel();
 
-            Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            LoadApplication(new App());
+            this.WireUpControls();
+            this.WhenActivated(disposables =>
+            {
+                // Bind the string properties and actions.
+                this.Bind(ViewModel, x => x.UserName, x => x.Username.Text)
+                    .DisposeWith(disposables);
+                this.Bind(ViewModel, x => x.Password, x => x.Password.Text)
+                    .DisposeWith(disposables);
+                this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPassword.Text)
+                    .DisposeWith(disposables);
+                this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUpButton)
+                    .DisposeWith(disposables);
+
+                // Bind the validations.
+                this.BindValidation(ViewModel, x => x.UserName, UsernameField)
+                    .DisposeWith(disposables);
+                this.BindValidation(ViewModel, x => x.Password, PasswordField)
+                    .DisposeWith(disposables);
+                this.BindValidation(ViewModel, x => x.ConfirmPassword, ConfirmPasswordField)
+                    .DisposeWith(disposables);
+            });
         }
     }
 }
