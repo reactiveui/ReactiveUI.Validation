@@ -19,6 +19,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\version.json = ..\version.json
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Validation.AndroidSupport", "ReactiveUI.Validation.AndroidSupport\ReactiveUI.Validation.AndroidSupport.csproj", "{B07A5CB1-3C9A-461D-B1A0-2AA642A50AF7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Validation.AndroidX", "ReactiveUI.Validation.AndroidX\ReactiveUI.Validation.AndroidX.csproj", "{27B18F38-BB9F-481F-A4F9-950F3B2CDA3D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{892D51D9-7A3F-4E66-A871-082A63D9BE05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{892D51D9-7A3F-4E66-A871-082A63D9BE05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{892D51D9-7A3F-4E66-A871-082A63D9BE05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B07A5CB1-3C9A-461D-B1A0-2AA642A50AF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B07A5CB1-3C9A-461D-B1A0-2AA642A50AF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B07A5CB1-3C9A-461D-B1A0-2AA642A50AF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B07A5CB1-3C9A-461D-B1A0-2AA642A50AF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27B18F38-BB9F-481F-A4F9-950F3B2CDA3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27B18F38-BB9F-481F-A4F9-950F3B2CDA3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27B18F38-BB9F-481F-A4F9-950F3B2CDA3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27B18F38-BB9F-481F-A4F9-950F3B2CDA3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

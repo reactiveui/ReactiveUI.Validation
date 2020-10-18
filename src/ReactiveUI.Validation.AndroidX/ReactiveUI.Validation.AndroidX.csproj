@@ -1,14 +1,18 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>MonoAndroid90;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;tizen40;netstandard2.0</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net461;uap10.0.17763</TargetFrameworks>
+    <TargetFramework>MonoAndroid90</TargetFramework>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.*" />
     <PackageReference Include="ReactiveUI" Version="11.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReactiveUI.Validation\ReactiveUI.Validation.csproj" />
   </ItemGroup>
 </Project>

@@ -7,7 +7,7 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
-using Android.Support.Design.Widget;
+using Google.Android.Material.TextField;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
@@ -15,7 +15,7 @@ using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
 using Splat;
 
-namespace ReactiveUI.Validation.Platforms.Android
+namespace ReactiveUI.Validation.Extensions
 {
     /// <summary>
     /// Android specific extensions methods associated to <see cref="IViewFor"/> instances.
