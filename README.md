@@ -6,19 +6,27 @@
 
 # ReactiveUI.Validation
 
-Validation for ReactiveUI based solutions, functioning in a reactive way. Based on [jcmm33's Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation).
+Validation for ReactiveUI based solutions, functioning in a reactive way. `ReactiveUI.Validation` was originally developed by [@jcmm33](https://github.com/jcmm33) as [Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation), and then refactored and updated by [Àlex Martínez Morón](https://github.com/alexmartinezm) and the [ReactiveUI Core Team](https://github.com/reactiveui/ReactiveUI#core-team). `ReactiveUI.Validation` supports all platforms, including .NET Framework, .NET Standard, .NET Core, MonoAndroid, AndroidX, Tizen, UAP, Xamarin.iOS, Xamarin.Mac, Xamarin.TVOS.
 
 ## NuGet Packages
 
-Install the following package into you class library and platform-specific project. ReactiveUI.Validation package supports all platforms, including .NET Framework, .NET Standard, .NET Core, MonoAndroid, Tizen, UAP, Xamarin.iOS, Xamarin.Mac, Xamarin.TVOS.
+Install the following package into you class library and into a platform-specific project.
 
-| Platform          | ReactiveUI Package                  | NuGet                |
-| ----------------- | ----------------------------------- | -------------------- |
-| Any               | [ReactiveUI.Validation][CoreDoc]    | [![CoreBadge]][Core] |
+| Platform           | ReactiveUI Package                               | NuGet                |
+| ------------------ | ------------------------------------------------ | -------------------- |
+| Any Platform       | [ReactiveUI.Validation][CoreDoc]                 | [![CoreBadge]][Core] |
+| AndroidX (Xamarin) | [ReactiveUI.Validation.AndroidX][DroDoc]         | [![DroXBadge]][DroX] |
+| Xamarin.Android    | [ReactiveUI.Validation.AndroidSupport][DroDoc]   | [![DroBadge]][Dro]   |
 
 [Core]: https://www.nuget.org/packages/ReactiveUI.Validation/
 [CoreBadge]: https://img.shields.io/nuget/v/ReactiveUI.Validation.svg
 [CoreDoc]: https://reactiveui.net/docs/handbook/user-input-validation/
+
+[Dro]: https://www.nuget.org/packages/ReactiveUI.Validation.AndroidSupport/
+[DroBadge]: https://img.shields.io/nuget/v/ReactiveUI.Validation.AndroidSupport.svg
+[DroDoc]: https://github.com/reactiveui/reactiveui.validation#example-with-android-extensions
+[DroX]: https://www.nuget.org/packages/ReactiveUI.Validation.AndroidX/
+[DroXBadge]: https://img.shields.io/nuget/v/ReactiveUI.Validation.AndroidX.svg
 
 ## How to Use
 
@@ -133,35 +141,39 @@ public class SampleView : ReactiveContentPage<SampleViewModel>
 
 ## Example with Android Extensions
 
-There are extensions methods for Xamarin.Android and its Material design control `TextInputLayout`. These extensions use internally the Error property from the `TextInputLayout` control, allowing you to implement a fully native behavior to showing validation errors. To use these extensions you must import `ReactiveUI.Validation.Platforms.Android`:
+There are extensions methods for Xamarin.Android and its Material design control `TextInputLayout`. These extensions use internally the `Error` property from the `TextInputLayout` control, allowing you to implement a fully native behavior to showing validation errors. To use these extensions you must import `ReactiveUI.Validation.Extensions` and install either `ReactiveUI.Validation.AndroidSupport` or `ReactiveUI.Validation.AndroidX`:
+
+```
+dotnet add package ReactiveUI.Validation.AndroidX
+```
+
+> **Note** In ReactiveUI.Validation **1.7 and lower**, the Android-specific extensions are available in [the main package](https://www.nuget.org/packages/reactiveui.validation) targeting `MonoAndroid90`, and you don't need to install `ReactiveUI.Validation.AndroidSupport`. In ReactiveUI.Validation **1.7 and lower**, add `using ReactiveUI.Validation.Platforms.Android` instead of `using ReactiveUI.Validation.Extensions`.
 
 ```csharp
 // This using directive makes Android-specific extensions available.
-using ReactiveUI.Validation.Platforms.Android;
+// Make sure to install either the ReactiveUI.Validation.AndroidSupport
+// package or the ReactiveUI.Validation.AndroidX package.
+using ReactiveUI.Validation.Extensions;
 
-namespace SampleApp.Activities
+public class SampleActivity : ReactiveAppCompatActivity<SampleViewModel>
 {
-    public class SampleActivity : ReactiveAppCompatActivity<SampleViewModel>
+    public TextInputEditText Name { get; set; }
+
+    public TextInputLayout NameLayout { get; set; }
+
+    protected override void OnCreate (Bundle bundle)
     {
-        public TextInputEditText Name { get; set; }
+        base.OnCreate(bundle);
+        SetContentView(Resource.Layout.Main);
 
-        public TextInputLayout NameLayout { get; set; }
+        // The WireUpControls method is a magic ReactiveUI utility method for Android, see:
+        // https://www.reactiveui.net/docs/handbook/data-binding/xamarin-android/wire-up-controls
+        this.WireUpControls();
+        this.Bind(ViewModel, vm => vm.Name, view => view.Name.Text);
 
-        protected override void OnCreate (Bundle bundle)
-        {
-            base.OnCreate(bundle);
-            SetContentView(Resource.Layout.Main);
-
-            // The WireUpControls method is a magic ReactiveUI utility method for Android, see:
-            // https://www.reactiveui.net/docs/handbook/data-binding/xamarin-android/wire-up-controls
-            this.WireUpControls();
-
-            this.Bind(ViewModel, vm => vm.Name, view => view.Name.Text);
-
-            // Bind any validations which reference the Name property 
-            // to the Error property of the TextInputLayout control.
-            this.BindValidation(ViewModel, vm => vm.Name, NameLayout);
-        }
+        // Bind any validations which reference the Name property 
+        // to the Error property of the TextInputLayout control.
+        this.BindValidation(ViewModel, vm => vm.Name, NameLayout);
     }
 }
 ```
@@ -237,11 +249,6 @@ this.BindValidation(ViewModel, x => x.ErrorLabel.Text, formatter)
 ## Feedback
 
 Please use [GitHub issues](https://github.com/reactiveui/ReactiveUI.Validation/issues) for questions, comments, or bug reports.
-
-## Authors
-
-* **jcmm33** - *Initial work* - [GitHub profile](https://github.com/jcmm33)
-* **Àlex Martínez Morón** - *Repository maintenance* - [GitHub profile](https://github.com/alexmartinezm)
 
 ## Contribute
 
