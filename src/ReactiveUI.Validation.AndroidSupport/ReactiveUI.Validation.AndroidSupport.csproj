@@ -2,13 +2,16 @@
 
   <PropertyGroup>
     <TargetFramework>MonoAndroid90</TargetFramework>
+    <PackageDescription>Provides ReactiveUI.Validation extensions for the Android Support Library</PackageDescription>
+    <PackageId>ReactiveUI.Validation.AndroidSupport</PackageId>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Xamarin.Android.Support.Design" Version="28.*" />
+    <PackageReference Include="Xamarin.Android.Support.Design" Version="27.*" />
+    <PackageReference Include="ReactiveUI.AndroidSupport" Version="11.*" />
     <PackageReference Include="ReactiveUI" Version="11.*" />
   </ItemGroup>
 
