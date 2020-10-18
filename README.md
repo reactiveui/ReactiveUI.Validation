@@ -190,7 +190,7 @@ public class SampleViewModel : ReactiveValidationObject
 }
 ```
 
-When using a `ValidationRule` overload that accept an observable, please remember to supply the property which the validation rule is targeting as the first argument. Otherwise it is not possible for `INotifyDataErrorInfo` to conclude which property the error message is for.
+When using a `ValidationRule` overload that accepts an observable, please remember to supply the property which the validation rule is targeting as the first argument. Otherwise it is not possible for `INotifyDataErrorInfo` to conclude which property the error message is for.
 
 ```csharp
 this.ValidationRule(
