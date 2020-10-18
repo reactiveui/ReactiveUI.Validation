@@ -53,7 +53,9 @@ public class SampleViewModel : ReactiveObject, IValidatableViewModel
 }
 ```
 
-For more complex validations there is also the possibility to supply an `IObservable<bool>` indicating whether the `ValidationRule` is valid or not. Thus you can combine multiple properties or incorporate other complex logic.
+For more complex validation scenarios there are several more overloads of the `ValidationRule` extension method that accept observables.  These allow validation to occur asynchronously, and allows complex chains of observables to be combined to produce validation results.
+
+The simplest accepts an `IObservable<bool>` where the observed boolean indicates whether the `ValidationRule` is valid or not.  The overload accepts a message which is used when the observable produces a `false` (_invalid_) result.
 
 ```csharp
 IObservable<bool> passwordsObservable =
@@ -68,7 +70,7 @@ this.ValidationRule(
     "Passwords must match.");
 ```
 
-Also, we support validations for arbitrary `IObservable<TState>` streams of events. The `ValidationRule` overload that works with `IObservable<TState>` gives you the ability to specify a custom validation function that depends on `TState`, and a custom error message function, responsible for formatting the `TState` object. This means your `IObservable<TState>` can even make a call to a API endpoint internally. The syntax for this looks as such:
+Any existing observables can be used to drive a `ValidationRule` using the extension method overload that accepts an arbitrary `IObservable<TState>` streams of events. The overload accepts a custom validation function that is supplied with the latest `TState`, and a custom error message function, responsible for formatting the latest `TState` object. The syntax for this looks as follows:
 
 ```csharp
 // IObservable<{ Password, Confirmation }>
@@ -85,8 +87,9 @@ this.ValidationRule(
     state => state.Password == state.Confirmation,
     state => $"Passwords must match: {state.Password} != {state.Confirmation}");
 ```
+> **Note** The function to extract a message (`messageFunc`) is only invoked if the function to establish validity (`isValidFunc`) returns `false`, otherwise the message is set to `string.Empty`.
 
-Finally, you can directly supply any state that implements `IValidationState`; or you can use the `ValidationState` base class which already implements the interface.  As the resulting object is stored directly against the context without further transformation, this can be the most performant approach:
+Finally, you can directly supply an observable that streams any object (or struct) that implements `IValidationState`; or you can use the `ValidationState` base class which already implements the interface.  As the resulting object is stored directly against the context without further transformation, this can be the most performant approach:
 ```csharp
 IObservable<IValidationState> usernameNotEmpty =
     this.WhenAnyValue(x => x.UserName)
@@ -96,6 +99,8 @@ IObservable<IValidationState> usernameNotEmpty =
 
 this.ValidationRule(vm => vm.UserName, usernameNotEmpty);
 ```
+
+> **Note** As a valid `ValidationState` does not really require a message, there is a singleton `ValidationState.Valid` property that you are encouraged to use to indicate a valid state whenever possible, to reduce memory allocations.
 
 2. Add validation presentation to the View.
 
@@ -185,7 +190,7 @@ public class SampleViewModel : ReactiveValidationObject
 }
 ```
 
-When using the `ValidationRule` overload that uses `IObservable<bool>` for more complex scenarios please remember to supply the property which the validation rule is targeting as the first argument. Otherwise it is not possible for `INotifyDataErrorInfo` to conclude which property the error message is for.
+When using a `ValidationRule` overload that accepts an observable, please remember to supply the property which the validation rule is targeting as the first argument. Otherwise it is not possible for `INotifyDataErrorInfo` to conclude which property the error message is for.
 
 ```csharp
 this.ValidationRule(
@@ -196,7 +201,7 @@ this.ValidationRule(
 
 ## Capabilities
 
-In essence, ReactiveUI.Validation is a relatively simple model of the `ValidationContext` containing a list of `IValidationComponent` instances. An `IValidationComponent` provides an observable for `ValidationState`. Whenever validation state changes (either a transition of validity) or `ValidationText` changes, then a new value is pushed out.
+In essence, ReactiveUI.Validation is a relatively simple model of the `ValidationContext` containing a list of `IValidationComponent` instances. An `IValidationComponent` provides an observable of `IValidationState`. Whenever validation state changes (either a transition of validity) or `ValidationText` changes, then a new value is pushed out.
 
 1. Rules can be composed of single or multiple properties along with more generic Observables.
 2. Validation text can encapsulate both valid and invalid states.
