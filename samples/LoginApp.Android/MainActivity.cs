@@ -5,7 +5,6 @@
 
 using System.Reactive.Disposables;
 using Android.App;
-using Android.Content;
 using Android.OS;
 using Android.Views.InputMethods;
 using Android.Widget;
