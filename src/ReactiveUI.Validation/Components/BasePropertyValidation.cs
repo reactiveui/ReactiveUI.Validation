@@ -221,7 +221,7 @@ namespace ReactiveUI.Validation.Components
             Func<TViewModelProperty, bool> isValidFunc,
             Func<TViewModelProperty, string> message)
             : this(viewModel, viewModelProperty, isValidFunc, (p, v) =>
-                v ? ValidationText.Empty : ValidationText.Create(message(p)))
+                v ? ValidationText.None : ValidationText.Create(message(p)))
         {
         }
 

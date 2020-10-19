@@ -11,6 +11,7 @@ namespace ReactiveUI.Validation.Collections
     public class ValidationText : System.Collections.Generic.IEnumerable<string>, System.Collections.IEnumerable
     {
         public static readonly ReactiveUI.Validation.Collections.ValidationText Empty;
+        public static readonly ReactiveUI.Validation.Collections.ValidationText None;
         [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
         [System.Obsolete("Calling the constructor is deprecated, please use ValidationText.Create() overloa" +
             "d instead.")]

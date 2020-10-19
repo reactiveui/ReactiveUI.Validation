@@ -17,9 +17,14 @@ namespace ReactiveUI.Validation.Collections
     public class ValidationText : IEnumerable<string>
     {
         /// <summary>
-        /// The empty validation text singleton instance, contains a single empty string.
+        /// The none validation text singleton instance contains no items.
         /// </summary>
-        public static readonly ValidationText Empty = new ValidationText(Array.Empty<string>());
+        public static readonly ValidationText None = new ValidationText(Array.Empty<string>());
+
+        /// <summary>
+        /// The empty validation text singleton instance contains single empty string.
+        /// </summary>
+        public static readonly ValidationText Empty = new ValidationText(new[] { string.Empty });
 
         // TODO When Add() & Clear() are obsolesced this should be made read-only.
         private /* readonly */ string[] _texts;
@@ -30,8 +35,8 @@ namespace ReactiveUI.Validation.Collections
         [ExcludeFromCodeCoverage]
         [Obsolete("Calling the constructor is deprecated, please use ValidationText.Create() overload instead.")]
         public ValidationText()
-            : this(Array.Empty<string>())
         {
+            _texts = Array.Empty<string>();
         }
 
         /// <summary>
@@ -41,8 +46,12 @@ namespace ReactiveUI.Validation.Collections
         [ExcludeFromCodeCoverage]
         [Obsolete("Calling the constructor is deprecated, please use ValidationText.Create(string) overload instead.")]
         public ValidationText(string text)
-        : this(new[] { text })
         {
+            _texts = text is null
+                ? None._texts
+                : text.Length < 1
+                    ? Empty._texts
+                    : new[] { text };
         }
 
         /// <summary>
@@ -52,8 +61,21 @@ namespace ReactiveUI.Validation.Collections
         [ExcludeFromCodeCoverage]
         [Obsolete("Calling the constructor is deprecated, please use ValidationText.Create(IEnumerable<ValidationText>) overload instead.")]
         public ValidationText(IEnumerable<ValidationText> validationTexts)
-            : this((validationTexts ?? throw new ArgumentNullException(nameof(validationTexts))).SelectMany(vt => vt._texts).ToArray())
         {
+            // Note _texts are already validated as not-null
+            _texts = (validationTexts ?? Array.Empty<ValidationText>())
+                .SelectMany(vt => vt._texts)
+                .ToArray();
+
+            // Re-use arrays when possible
+            if (_texts.Length < 1)
+            {
+                _texts = Array.Empty<string>();
+            }
+            else if (_texts.Length == 1 && _texts[0].Length < 1)
+            {
+                _texts = Empty._texts;
+            }
         }
 
         /// <summary>
@@ -62,15 +84,7 @@ namespace ReactiveUI.Validation.Collections
         /// <param name="texts">The array of texts.</param>
         private ValidationText(string[] texts)
         {
-            if (texts is null)
-            {
-                throw new ArgumentNullException(nameof(texts));
-            }
-
-            // TODO Can remove this check when public constructors are obsolesced as Create method already checks this.
-            _texts = texts.Length < 1
-                ? Array.Empty<string>()
-                : texts;
+            _texts = texts;
         }
 
         /// <summary>
@@ -85,28 +99,102 @@ namespace ReactiveUI.Validation.Collections
         public string this[int index] => _texts[index];
 
         /// <summary>
-        /// Combines multiple <see cref="ValidationText"/> instances into a single instance, or returns <see cref="Empty"/> if the enumeration is empty, or contains a single empty element.
+        /// Combines multiple <see cref="ValidationText"/> instances into a single instance, or returns <see cref="None"/> if the
+        /// enumeration is empty, or <see cref="Empty"/> if the enumeration only contains <see cref="string.Empty"/>.
         /// </summary>
         /// <param name="validationTexts">An enumeration of <see cref="ValidationText"/>.</param>
         /// <returns>A <see cref="ValidationText"/>.</returns>
-        public static ValidationText Create(IEnumerable<ValidationText> validationTexts) =>
-            Create(validationTexts.SelectMany(vt => vt._texts).ToArray());
+        public static ValidationText Create(IEnumerable<ValidationText> validationTexts)
+        {
+            // Note _texts are already validated as not-null
+            string[] texts = (validationTexts ?? Array.Empty<ValidationText>())
+                .SelectMany(vt => vt._texts)
+                .ToArray();
+
+            if (texts.Length < 1)
+            {
+                return None;
+            }
+
+            if (texts.Length == 1 && texts[0].Length < 1)
+            {
+                return Empty;
+            }
+
+            return new ValidationText(texts);
+        }
 
         /// <summary>
-        /// Combines multiple validation messages into a single instance, or returns <see cref="Empty"/> if the enumeration is empty, or contains a single empty element.
+        /// Combines multiple validation messages into a single instance, or returns <see cref="None"/> if the enumeration is empty, or only contains empty elements.
         /// </summary>
         /// <param name="validationTexts">An enumeration of validation messages.</param>
         /// <returns>A <see cref="ValidationText"/>.</returns>
-        public static ValidationText Create(IEnumerable<string> validationTexts) => Create(validationTexts.ToArray());
+        public static ValidationText Create(IEnumerable<string> validationTexts)
+        {
+            string[] texts = (validationTexts ?? Array.Empty<string>())
+                .Where(t => t != null)
+                .ToArray();
+
+            if (texts.Length < 1)
+            {
+                return None;
+            }
+
+            if (texts.Length == 1 && texts[0].Length < 1)
+            {
+                return Empty;
+            }
+
+            return new ValidationText(texts);
+        }
 
         /// <summary>
-        /// Combines multiple validation messages into a single instance, or returns <see cref="Empty"/> if the enumeration is empty, or contains a single empty element.
+        /// Combines multiple validation messages into a single instance, or returns <see cref="None"/> if the enumeration is empty, or contains a single empty element.
         /// </summary>
         /// <param name="validationTexts">An array of validation messages.</param>
         /// <returns>A <see cref="ValidationText"/>.</returns>
-        public static ValidationText Create(params string[] validationTexts) => validationTexts.Length < 1
-                ? Empty
-                : new ValidationText(validationTexts);
+        public static ValidationText Create(params string[] validationTexts)
+        {
+            if (validationTexts is null || validationTexts.Length < 1)
+            {
+                return None;
+            }
+
+            // Optimise code path for single item array.
+            if (validationTexts.Length == 1)
+            {
+                var text = validationTexts[0];
+                if (text is null)
+                {
+                    return None;
+                }
+
+                if (text.Length < 1)
+                {
+                    return Empty;
+                }
+
+                return new ValidationText(validationTexts);
+            }
+
+            // Ensure we have no null items in the multi-item array
+            if (validationTexts.Any(t => t is null))
+            {
+                // Strip nulls
+                validationTexts = validationTexts.Where(t => t != null).ToArray();
+                if (validationTexts.Length < 1)
+                {
+                    return None;
+                }
+
+                if (validationTexts[0].Length < 1)
+                {
+                    return Empty;
+                }
+            }
+
+            return new ValidationText(validationTexts);
+        }
 
         /// <inheritdoc/>
         public IEnumerator<string> GetEnumerator()

@@ -59,16 +59,14 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// </summary>
         private bool _connected;
 
-        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
-            Justification = "Generated dynamically with template.")]
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
             Expression<Func<TViewModel, TProperty2>> property2,
             Func<(TProperty1, TProperty2), bool> isValidFunc,
             Func<(TProperty1, TProperty2), string> message)
-            : this(viewModel, property1, property2, isValidFunc,
-                (p, v) => v ? ValidationText.Empty : ValidationText.Create(message(p)))
+            : this(viewModel, property1, property2, isValidFunc, (p, v) => v ? ValidationText.Empty : ValidationText.Create(message(p)))
         {
         }
 

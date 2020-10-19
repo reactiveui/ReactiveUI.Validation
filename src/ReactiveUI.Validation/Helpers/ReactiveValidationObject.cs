@@ -91,11 +91,11 @@ namespace ReactiveUI.Validation.Helpers
         public virtual IEnumerable GetErrors(string propertyName) =>
             string.IsNullOrEmpty(propertyName) ?
                 SelectInvalidPropertyValidations()
-                    .SelectMany(validation => validation.Text ?? ValidationText.Empty)
+                    .SelectMany(validation => validation.Text ?? ValidationText.None)
                     .ToArray() :
                 SelectInvalidPropertyValidations()
                     .Where(validation => validation.ContainsPropertyName(propertyName))
-                    .SelectMany(validation => validation.Text ?? ValidationText.Empty)
+                    .SelectMany(validation => validation.Text ?? ValidationText.None)
                     .ToArray();
 
         /// <summary>

@@ -82,7 +82,7 @@ namespace ReactiveUI.Validation.Contexts
             _validationText = _validSubject
                 .StartWith(true)
                 .Select(_ => BuildText())
-                .ToProperty(this, m => m.Text, ValidationText.Empty, scheduler: scheduler)
+                .ToProperty(this, m => m.Text, ValidationText.None, scheduler: scheduler)
                 .DisposeWith(_disposables);
 
             _validSubject

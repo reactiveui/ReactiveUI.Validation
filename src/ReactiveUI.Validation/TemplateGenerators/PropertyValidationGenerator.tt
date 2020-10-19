@@ -77,7 +77,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
     <# } #>
         Func<(<#=String.Join(", ",templParams)#>), bool> isValidFunc,<#Write("\r\n");#>
             Func<(<#=String.Join(", ",templParams)#>), string> message)
-            : this(viewModel, <#=String.Join(", ",valuePropertyParams)#>, isValidFunc, (p, v) => new ValidationText(v ? string.Empty : message(p)))
+            : this(viewModel, <#=String.Join(", ",valuePropertyParams)#>, isValidFunc, (p, v) => v ? ValidationText.Empty : ValidationText.Create(message(p)))
         {
         }
 
@@ -89,7 +89,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
     <# } #>
         Func<(<#=String.Join(", ",templParams) #>), bool> isValidFunc,
             Func<(<#=String.Join(", ",templParams)#>), bool, string> messageFunc)
-            : this(viewModel, <#=String.Join(", ",valuePropertyParams)#>, isValidFunc, (p, v) => new ValidationText(messageFunc(p, v)))
+            : this(viewModel, <#=String.Join(", ",valuePropertyParams)#>, isValidFunc, (p, v) => ValidationText.Create(messageFunc(p, v)))
         {
         }
 
