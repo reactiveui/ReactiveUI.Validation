@@ -6,6 +6,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace ReactiveUI.Validation.Collections
@@ -26,6 +27,7 @@ namespace ReactiveUI.Validation.Collections
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationText"/> class.
         /// </summary>
+        [ExcludeFromCodeCoverage]
         [Obsolete("Calling the constructor is deprecated, please use ValidationText.Create() overload instead.")]
         public ValidationText()
             : this(Array.Empty<string>())
@@ -36,6 +38,7 @@ namespace ReactiveUI.Validation.Collections
         /// Initializes a new instance of the <see cref="ValidationText"/> class.
         /// </summary>
         /// <param name="text">Text to be added in the collection.</param>
+        [ExcludeFromCodeCoverage]
         [Obsolete("Calling the constructor is deprecated, please use ValidationText.Create(string) overload instead.")]
         public ValidationText(string text)
         : this(new[] { text })
@@ -46,6 +49,7 @@ namespace ReactiveUI.Validation.Collections
         /// Initializes a new instance of the <see cref="ValidationText"/> class.
         /// </summary>
         /// <param name="validationTexts"><see cref="ValidationText"/> collection to be added into the text collection.</param>
+        [ExcludeFromCodeCoverage]
         [Obsolete("Calling the constructor is deprecated, please use ValidationText.Create(IEnumerable<ValidationText>) overload instead.")]
         public ValidationText(IEnumerable<ValidationText> validationTexts)
             : this((validationTexts ?? throw new ArgumentNullException(nameof(validationTexts))).SelectMany(vt => vt._texts).ToArray())
@@ -120,6 +124,7 @@ namespace ReactiveUI.Validation.Collections
         /// Adds a text to the collection.
         /// </summary>
         /// <param name="text">Text to be added in the collection.</param>
+        [ExcludeFromCodeCoverage]
         [Obsolete("ValidationText will be made immutable in future versions, please do not use the Add(string) method.")]
         public void Add(string text)
         {
@@ -129,6 +134,7 @@ namespace ReactiveUI.Validation.Collections
         /// <summary>
         /// Clear all texts.
         /// </summary>
+        [ExcludeFromCodeCoverage]
         [Obsolete("ValidationText will be made immutable in future versions, please do not use the Clear() method.")]
         public void Clear()
         {
