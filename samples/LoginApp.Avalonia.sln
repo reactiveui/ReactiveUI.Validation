@@ -8,11 +8,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\.editorconfig = ..\.editorconfig
 		..\.gitignore = ..\.gitignore
 		analyzers.ruleset = ..\src\analyzers.ruleset
-		Directory.build.props = ..\src\Directory.build.props
-		Directory.build.targets = ..\src\Directory.build.targets
-		global.json = ..\src\global.json
+		Directory.build.props = Directory.build.props
 		stylecop.json = ..\src\stylecop.json
-		..\version.json = ..\version.json
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LoginApp", "LoginApp\LoginApp.csproj", "{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFC}"
