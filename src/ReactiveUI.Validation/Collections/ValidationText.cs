@@ -243,7 +243,7 @@ namespace ReactiveUI.Validation.Collections
 
             if (ReferenceEquals(this, None))
             {
-                throw new InvalidOperationException("Adding to ValidationText.None is unsupported.");
+                throw new InvalidOperationException("Clearing ValidationText.None is unsupported.");
             }
 
             _texts = Array.Empty<string>();
