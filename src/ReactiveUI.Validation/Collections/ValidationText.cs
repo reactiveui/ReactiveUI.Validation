@@ -216,6 +216,16 @@ namespace ReactiveUI.Validation.Collections
         [Obsolete("ValidationText will be made immutable in future versions, please do not use the Add(string) method.")]
         public void Add(string text)
         {
+            if (ReferenceEquals(this, Empty))
+            {
+                throw new InvalidOperationException("Adding to ValidationText.Empty is unsupported.");
+            }
+
+            if (ReferenceEquals(this, None))
+            {
+                throw new InvalidOperationException("Adding to ValidationText.None is unsupported.");
+            }
+
             _texts = _texts.Concat(new[] { text }).ToArray();
         }
 
@@ -226,6 +236,16 @@ namespace ReactiveUI.Validation.Collections
         [Obsolete("ValidationText will be made immutable in future versions, please do not use the Clear() method.")]
         public void Clear()
         {
+            if (ReferenceEquals(this, Empty))
+            {
+                throw new InvalidOperationException("Adding to ValidationText.Empty is unsupported.");
+            }
+
+            if (ReferenceEquals(this, None))
+            {
+                throw new InvalidOperationException("Adding to ValidationText.None is unsupported.");
+            }
+
             _texts = Array.Empty<string>();
         }
 
