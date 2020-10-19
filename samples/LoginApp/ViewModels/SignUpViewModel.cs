@@ -40,7 +40,6 @@ namespace LoginApp.ViewModels
             // These are the basic property validation rules that accept a property selector,
             // listen to the changes of that property, and execute the validation function
             // when the selected property changes.
-
             this.ValidationRule(
                 vm => vm.UserName,
                 name => !string.IsNullOrWhiteSpace(name),
@@ -64,7 +63,6 @@ namespace LoginApp.ViewModels
             // Here we construct an IObservable<bool> that defines a complex validation rule
             // based on multiple properties. We associate this IObservable<bool> with the
             // 'ConfirmPassword' property via a call to the ValidationRule extension method.
-
             IObservable<bool> passwordsObservable =
                 this.WhenAnyValue(
                     x => x.Password,
@@ -80,7 +78,6 @@ namespace LoginApp.ViewModels
             // Here we pass a complex IObservable<TState> to the ValidationRule. That observable
             // emits an empty string when UserName is valid, and emits a non-empty when UserName
             // is either invalid, or just changed and hasn't been validated yet.
-
             IObservable<IValidationState> usernameValidated =
                 this.WhenAnyValue(x => x.UserName)
                     .Throttle(TimeSpan.FromSeconds(0.7), RxApp.TaskpoolScheduler)
@@ -135,7 +132,7 @@ namespace LoginApp.ViewModels
         public string UrlPathSegment { get; } = "Sign Up";
 
         /// <summary>
-        /// Gets or sets the screen used for routing operations.
+        /// Gets the screen used for routing operations.
         /// </summary>
         public IScreen HostScreen { get; }
 
@@ -144,16 +141,16 @@ namespace LoginApp.ViewModels
         /// </summary>
         public ViewModelActivator Activator { get; } = new ViewModelActivator();
 
-        private void SignUpImpl() => _dialogs.ShowDialog("User created successfully.");
-
         private static async Task<IValidationState> ValidateNameImpl(string username)
         {
-            await Task.Delay(TimeSpan.FromSeconds(0.5));
+            await Task.Delay(TimeSpan.FromSeconds(0.5)).ConfigureAwait(false);
             return username.Length < 2
                 ? new ValidationState(false, "The name is too short.")
                 : username.Any(letter => !char.IsLetter(letter))
                     ? new ValidationState(false, "Only letters allowed.")
                     : ValidationState.Valid;
         }
+
+        private void SignUpImpl() => _dialogs.ShowDialog("User created successfully.");
     }
 }
