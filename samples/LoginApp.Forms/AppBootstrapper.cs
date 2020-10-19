@@ -10,8 +10,8 @@ using LoginApp.Services;
 using LoginApp.ViewModels;
 using ReactiveUI;
 using ReactiveUI.XamForms;
-using Xamarin.Forms;
 using Splat;
+using Xamarin.Forms;
 
 namespace LoginApp.Forms
 {
@@ -24,13 +24,14 @@ namespace LoginApp.Forms
         /// <summary>
         /// Initializes a new instance of the <see cref="AppBootstrapper"/> class.
         /// </summary>
+        /// <param name="application">The Xamarin.Forms application instance.</param>
         public AppBootstrapper(Application application)
         {
             // Register the dependencies.
             Locator.CurrentMutable.RegisterConstant(this, typeof(IScreen));
             Locator.CurrentMutable.Register(() => new SignUpView(), typeof(IViewFor<SignUpViewModel>));
             Locator.CurrentMutable.Register(() => new XamarinUserDialogs(application), typeof(IUserDialogs));
-            
+
             // Show the sample page.
             Router
                 .NavigateAndReset
@@ -39,7 +40,7 @@ namespace LoginApp.Forms
         }
 
         /// <summary>
-        /// Gets or sets the router which is used to navigate between views.
+        /// Gets the router which is used to navigate between views.
         /// </summary>
         public RoutingState Router { get; } = new RoutingState();
 

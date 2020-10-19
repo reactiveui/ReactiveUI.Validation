@@ -5,7 +5,7 @@
 
 using UIKit;
 
-namespace LoginApp.Forms.iOS
+namespace LoginApp.Forms.IOS
 {
     /// <summary>
     /// Hosts the main application entry point for the application.
