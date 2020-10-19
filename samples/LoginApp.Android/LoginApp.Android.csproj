@@ -73,17 +73,11 @@
   <ItemGroup>
     <PackageReference Include="ReactiveUI" Version="11.5.35" />
     <PackageReference Include="ReactiveUI.AndroidX" Version="11.5.35" />
+    <PackageReference Include="ReactiveUI.Validation" Version="1.8.*" />
+    <PackageReference Include="ReactiveUI.Validation.AndroidX" Version="1.8.*" />
     <PackageReference Include="Xamarin.Google.Android.Material" Version="1.1.0.5-rc3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\ReactiveUI.Validation\ReactiveUI.Validation.csproj">
-      <Project>{A4B47D0D-AA6A-4698-A8FE-612ADE83BBF4}</Project>
-      <Name>ReactiveUI.Validation</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\src\ReactiveUI.Validation.AndroidX\ReactiveUI.Validation.AndroidX.csproj">
-      <Project>{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFD}</Project>
-      <Name>ReactiveUI.Validation.AndroidX</Name>
-    </ProjectReference>
     <ProjectReference Include="..\LoginApp\LoginApp.csproj">
       <Project>{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFC}</Project>
       <Name>LoginApp</Name>

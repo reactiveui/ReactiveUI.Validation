@@ -4,12 +4,12 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Reactive.Disposables;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using LoginApp.Uwp.Services;
 using LoginApp.ViewModels;
 using ReactiveUI;
 using ReactiveUI.Validation.Extensions;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace LoginApp.Uwp.Views
 {
@@ -24,7 +24,7 @@ namespace LoginApp.Uwp.Views
         // ReSharper disable once MemberCanBePrivate.Global due to MSDN recommendations.
         public static readonly DependencyProperty ViewModelProperty = DependencyProperty
             .Register(nameof(ViewModel), typeof(SignUpViewModel), typeof(SignUpView), null);
-        
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SignUpView"/> class.
         /// </summary>
@@ -74,6 +74,7 @@ namespace LoginApp.Uwp.Views
             set => SetValue(ViewModelProperty, value);
         }
 
+        /// <inheritdoc/>
         object IViewFor.ViewModel
         {
             get => ViewModel;

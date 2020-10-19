@@ -23,8 +23,5 @@
         <EmbeddedResource Include="**\*.xaml">
             <SubType>Designer</SubType>
         </EmbeddedResource>
-        <Compile Update="Views\SignUpView.xaml.cs">
-            <DependentUpon>SignUpView.xaml</DependentUpon>
-        </Compile>
     </ItemGroup>
 </Project>

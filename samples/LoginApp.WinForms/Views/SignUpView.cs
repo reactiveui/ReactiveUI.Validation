@@ -54,6 +54,7 @@ namespace LoginApp.WinForms.Views
         /// </summary>
         public SignUpViewModel ViewModel { get; set; } = new SignUpViewModel(null, new WindowsUserDialogs());
 
+        /// <inheritdoc />
         object IViewFor.ViewModel
         {
             get => ViewModel;

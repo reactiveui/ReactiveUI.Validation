@@ -7,7 +7,7 @@ using Foundation;
 using LoginApp.Forms;
 using UIKit;
 
-namespace LoginApp.Forms.iOS
+namespace LoginApp.Forms.IOS
 {
     /// <summary>
     /// The application delegate for the application.

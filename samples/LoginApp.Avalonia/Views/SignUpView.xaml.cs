@@ -21,11 +21,6 @@ namespace LoginApp.Avalonia.Views
     /// <inheritdoc />
     public class SignUpView : ReactiveWindow<SignUpViewModel>
     {
-        private TextBlock ConfirmPasswordValidation => this.FindControl<TextBlock>("ConfirmPasswordValidation");
-        private TextBlock UserNameValidation => this.FindControl<TextBlock>("UserNameValidation");
-        private TextBlock PasswordValidation => this.FindControl<TextBlock>("PasswordValidation");
-        private TextBlock CompoundValidation => this.FindControl<TextBlock>("CompoundValidation");
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SignUpView"/> class.
         /// </summary>
@@ -40,9 +35,19 @@ namespace LoginApp.Avalonia.Views
                     .DisposeWith(disposables);
                 this.BindValidation(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordValidation.Text)
                     .DisposeWith(disposables);
-                this.BindValidation(ViewModel, x => x.CompoundValidation.Text, new SingleLineFormatter(Environment.NewLine))
+
+                var newLineFormatter = new SingleLineFormatter(Environment.NewLine);
+                this.BindValidation(ViewModel, x => x.CompoundValidation.Text, newLineFormatter)
                     .DisposeWith(disposables);
             });
         }
+
+        private TextBlock ConfirmPasswordValidation => this.FindControl<TextBlock>("ConfirmPasswordValidation");
+
+        private TextBlock UserNameValidation => this.FindControl<TextBlock>("UserNameValidation");
+
+        private TextBlock PasswordValidation => this.FindControl<TextBlock>("PasswordValidation");
+
+        private TextBlock CompoundValidation => this.FindControl<TextBlock>("CompoundValidation");
     }
 }

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <xamForms:ReactiveContentPage 
     x:TypeArguments="vms:SignUpViewModel" 
     xmlns="http://xamarin.com/schemas/2014/forms"

@@ -13,10 +13,10 @@ using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 
 namespace LoginApp.Forms.Views
 {
-    /// <inheritdoc />
     /// <summary>
     /// A page which contains controls about Sign Up an account.
     /// </summary>
+    /// <inheritdoc />
     public partial class SignUpView : ReactiveContentPage<SignUpViewModel>
     {
         /// <summary>
@@ -28,31 +28,22 @@ namespace LoginApp.Forms.Views
             On<iOS>().SetUseSafeArea(true);
             this.WhenActivated(disposables =>
             {
-                SetupBindings(disposables);
-                SetupValidationBindings(disposables);
+                this.Bind(ViewModel, x => x.UserName, x => x.UserName.Text)
+                    .DisposeWith(disposables);
+                this.Bind(ViewModel, x => x.Password, x => x.Password.Text)
+                    .DisposeWith(disposables);
+                this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPassword.Text)
+                    .DisposeWith(disposables);
+                this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUp)
+                    .DisposeWith(disposables);
+
+                this.BindValidation(ViewModel, vm => vm.UserName, view => view.UserNameErrorMessage.Text)
+                    .DisposeWith(disposables);
+                this.BindValidation(ViewModel, vm => vm.Password, view => view.PasswordErrorMessage.Text)
+                    .DisposeWith(disposables);
+                this.BindValidation(ViewModel, vm => vm.ConfirmPassword, view => view.ConfirmPasswordErrorMessage.Text)
+                    .DisposeWith(disposables);
             });
-        }
-
-        private void SetupBindings(CompositeDisposable disposables)
-        {
-            this.Bind(ViewModel, x => x.UserName, x => x.UserName.Text)
-                .DisposeWith(disposables);
-            this.Bind(ViewModel, x => x.Password, x => x.Password.Text)
-                .DisposeWith(disposables);
-            this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPassword.Text)
-                .DisposeWith(disposables);
-            this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUp)
-                .DisposeWith(disposables);
-        }
-
-        private void SetupValidationBindings(CompositeDisposable disposables)
-        {
-            this.BindValidation(ViewModel, vm => vm.UserName, view => view.UserNameErrorMessage.Text)
-                .DisposeWith(disposables);
-            this.BindValidation(ViewModel, vm => vm.Password, view => view.PasswordErrorMessage.Text)
-                .DisposeWith(disposables);
-            this.BindValidation(ViewModel, vm => vm.ConfirmPassword, view => view.ConfirmPasswordErrorMessage.Text)
-                .DisposeWith(disposables);
         }
     }
 }

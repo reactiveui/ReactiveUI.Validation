@@ -149,6 +149,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.10" />
     <PackageReference Include="ReactiveUI" Version="11.5.35" />
+    <PackageReference Include="ReactiveUI.Validation" Version="1.8.*" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\SignUpView.xaml">
@@ -160,9 +161,6 @@
     <ProjectReference Include="..\LoginApp\LoginApp.csproj">
       <Project>{a4b47d0d-aa6a-4698-a8fe-612ade83bbfc}</Project>
       <Name>LoginApp</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\src\ReactiveUI.Validation\ReactiveUI.Validation.csproj">
-      <SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
