@@ -18,7 +18,7 @@ namespace ReactiveUI.Validation.Collections
         /// <summary>
         /// The empty validation text singleton instance, contains a single empty string.
         /// </summary>
-        public static readonly ValidationText Empty = new ValidationText(new[] { string.Empty });
+        public static readonly ValidationText Empty = new ValidationText(Array.Empty<string>());
 
         // TODO When Add() & Clear() are obsolesced this should be made read-only.
         private /* readonly */ string[] _texts;
@@ -28,7 +28,7 @@ namespace ReactiveUI.Validation.Collections
         /// </summary>
         [Obsolete("Calling the constructor is deprecated, please use ValidationText.Create() overload instead.")]
         public ValidationText()
-            : this(Empty._texts)
+            : this(Array.Empty<string>())
         {
         }
 
@@ -58,9 +58,14 @@ namespace ReactiveUI.Validation.Collections
         /// <param name="texts">The array of texts.</param>
         private ValidationText(string[] texts)
         {
+            if (texts is null)
+            {
+                throw new ArgumentNullException(nameof(texts));
+            }
+
             // TODO Can remove this check when public constructors are obsolesced as Create method already checks this.
-            _texts = texts.Length < 1 || (texts.Length == 1 && string.IsNullOrEmpty(texts[0]))
-                ? Empty._texts
+            _texts = texts.Length < 1
+                ? Array.Empty<string>()
                 : texts;
         }
 
@@ -95,8 +100,7 @@ namespace ReactiveUI.Validation.Collections
         /// </summary>
         /// <param name="validationTexts">An array of validation messages.</param>
         /// <returns>A <see cref="ValidationText"/>.</returns>
-        public static ValidationText Create(params string[] validationTexts) => validationTexts.Length < 1 ||
-            (validationTexts.Length == 1 && string.IsNullOrEmpty(validationTexts[0]))
+        public static ValidationText Create(params string[] validationTexts) => validationTexts.Length < 1
                 ? Empty
                 : new ValidationText(validationTexts);
 
@@ -128,7 +132,7 @@ namespace ReactiveUI.Validation.Collections
         [Obsolete("ValidationText will be made immutable in future versions, please do not use the Clear() method.")]
         public void Clear()
         {
-            _texts = Empty._texts;
+            _texts = Array.Empty<string>();
         }
 
         /// <summary>

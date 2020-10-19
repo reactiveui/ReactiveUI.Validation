@@ -64,7 +64,7 @@ namespace ReactiveUI.Validation.Components
             Func<TViewModel, IObservable<bool>> validityObservable,
             Func<TViewModel, string> message)
             : this(viewModel, viewModelProperty, validityObservable, (p, isValid) =>
-                isValid ? ValidationText.Empty : ValidationText.Create(message(p))))
+                isValid ? ValidationText.Empty : ValidationText.Create(message(p)))
         {
         }
 
