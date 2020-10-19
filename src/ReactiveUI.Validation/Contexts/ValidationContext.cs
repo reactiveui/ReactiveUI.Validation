@@ -82,7 +82,7 @@ namespace ReactiveUI.Validation.Contexts
             _validationText = _validSubject
                 .StartWith(true)
                 .Select(_ => BuildText())
-                .ToProperty(this, m => m.Text, new ValidationText(), scheduler: scheduler)
+                .ToProperty(this, m => m.Text, ValidationText.Empty, scheduler: scheduler)
                 .DisposeWith(_disposables);
 
             _validSubject
@@ -219,7 +219,7 @@ namespace ReactiveUI.Validation.Contexts
         /// Returns the <see cref="ValidationText"/> with all the error messages from the non valid components.
         /// </returns>
         private ValidationText BuildText() =>
-            new ValidationText(_validations
+            ValidationText.Create(_validations
                 .Where(p => !p.IsValid && p.Text != null)
                 .Select(p => p.Text!));
     }

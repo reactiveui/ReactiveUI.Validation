@@ -706,7 +706,7 @@ namespace ReactiveUI.Validation.Tests
             public CustomValidationState(bool isValid, string message)
             {
                 IsValid = isValid;
-                Text = new ValidationText(isValid ? string.Empty : message);
+                Text = isValid ? ValidationText.Empty : ValidationText.Create(message);
             }
 
             public ValidationText Text { get; }

@@ -204,9 +204,7 @@ namespace ReactiveUI.Validation.Components
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Func<TViewModelProperty, bool> isValidFunc,
             string message)
-            : this(viewModel, viewModelProperty, isValidFunc, (p, v) => new ValidationText(v
-                ? string.Empty
-                : message))
+            : this(viewModel, viewModelProperty, isValidFunc, (p, v) => v ? ValidationText.Empty : ValidationText.Create(message))
         {
         }
 
@@ -222,9 +220,8 @@ namespace ReactiveUI.Validation.Components
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Func<TViewModelProperty, bool> isValidFunc,
             Func<TViewModelProperty, string> message)
-            : this(viewModel, viewModelProperty, isValidFunc, (p, v) => new ValidationText(v
-                ? string.Empty
-                : message(p)))
+            : this(viewModel, viewModelProperty, isValidFunc, (p, v) =>
+                v ? ValidationText.Empty : ValidationText.Create(message(p)))
         {
         }
 
@@ -241,7 +238,7 @@ namespace ReactiveUI.Validation.Components
             Func<TViewModelProperty, bool> isValidFunc,
             Func<TViewModelProperty, bool, string> messageFunc)
             : this(viewModel, viewModelProperty, isValidFunc, (prop1, isValid) =>
-                new ValidationText(messageFunc(prop1, isValid)))
+                ValidationText.Create(messageFunc(prop1, isValid)))
         {
         }
 

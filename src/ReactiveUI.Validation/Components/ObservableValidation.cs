@@ -116,7 +116,7 @@ namespace ReactiveUI.Validation.Components
             Func<TViewModel, TValue, bool> isValidFunc,
             Func<TViewModel, TValue, bool, string> messageFunc)
             : base(viewModel, observable, isValidFunc, (vm, value, isValid) =>
-                new ValidationText(messageFunc(vm, value, isValid))) =>
+                ValidationText.Create(messageFunc(vm, value, isValid))) =>
             AddProperty(viewModelProperty);
 
         /// <summary>
@@ -217,7 +217,7 @@ namespace ReactiveUI.Validation.Components
             Func<TViewModel, TValue, bool> isValidFunc,
             Func<TViewModel, TValue, bool, string> messageFunc)
             : base(viewModel, observable, isValidFunc, (vm, value, isValid) =>
-                new ValidationText(messageFunc(vm, value, isValid)))
+                ValidationText.Create(messageFunc(vm, value, isValid)))
         {
         }
 

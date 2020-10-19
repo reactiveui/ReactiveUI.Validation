@@ -59,14 +59,16 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// </summary>
         private bool _connected;
 
-        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented", Justification = "Generated dynamically with template.")]
+        [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1600:ElementsMustBeDocumented",
+            Justification = "Generated dynamically with template.")]
         public BasePropertyValidation(
             TViewModel viewModel,
             Expression<Func<TViewModel, TProperty1>> property1,
             Expression<Func<TViewModel, TProperty2>> property2,
             Func<(TProperty1, TProperty2), bool> isValidFunc,
             Func<(TProperty1, TProperty2), string> message)
-            : this(viewModel, property1, property2, isValidFunc, (p, v) => new ValidationText(v ? string.Empty : message(p)))
+            : this(viewModel, property1, property2, isValidFunc,
+                (p, v) => v ? ValidationText.Empty : ValidationText.Create(message(p)))
         {
         }
 
@@ -77,7 +79,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty2>> property2,
             Func<(TProperty1, TProperty2), bool> isValidFunc,
             Func<(TProperty1, TProperty2), bool, string> messageFunc)
-            : this(viewModel, property1, property2, isValidFunc, (p, v) => new ValidationText(messageFunc(p, v)))
+            : this(viewModel, property1, property2, isValidFunc, (p, v) => ValidationText.Create(messageFunc(p, v)))
         {
         }
 
@@ -204,7 +206,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty3>> property3,
             Func<(TProperty1, TProperty2, TProperty3), bool> isValidFunc,
             Func<(TProperty1, TProperty2, TProperty3), string> message)
-            : this(viewModel, property1, property2, property3, isValidFunc, (p, v) => new ValidationText(v ? string.Empty : message(p)))
+            : this(viewModel, property1, property2, property3, isValidFunc, (p, v) => v ? ValidationText.Empty : ValidationText.Create(message(p)))
         {
         }
 
@@ -216,7 +218,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty3>> property3,
             Func<(TProperty1, TProperty2, TProperty3), bool> isValidFunc,
             Func<(TProperty1, TProperty2, TProperty3), bool, string> messageFunc)
-            : this(viewModel, property1, property2, property3, isValidFunc, (p, v) => new ValidationText(messageFunc(p, v)))
+            : this(viewModel, property1, property2, property3, isValidFunc, (p, v) => ValidationText.Create(messageFunc(p, v)))
         {
         }
 
@@ -351,7 +353,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty4>> property4,
             Func<(TProperty1, TProperty2, TProperty3, TProperty4), bool> isValidFunc,
             Func<(TProperty1, TProperty2, TProperty3, TProperty4), string> message)
-            : this(viewModel, property1, property2, property3, property4, isValidFunc, (p, v) => new ValidationText(v ? string.Empty : message(p)))
+            : this(viewModel, property1, property2, property3, property4, isValidFunc, (p, v) => v ? ValidationText.Empty : ValidationText.Create(message(p)))
         {
         }
 
@@ -364,7 +366,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty4>> property4,
             Func<(TProperty1, TProperty2, TProperty3, TProperty4), bool> isValidFunc,
             Func<(TProperty1, TProperty2, TProperty3, TProperty4), bool, string> messageFunc)
-            : this(viewModel, property1, property2, property3, property4, isValidFunc, (p, v) => new ValidationText(messageFunc(p, v)))
+            : this(viewModel, property1, property2, property3, property4, isValidFunc, (p, v) => ValidationText.Create(messageFunc(p, v)))
         {
         }
 
@@ -507,7 +509,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty5>> property5,
             Func<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5), bool> isValidFunc,
             Func<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5), string> message)
-            : this(viewModel, property1, property2, property3, property4, property5, isValidFunc, (p, v) => new ValidationText(v ? string.Empty : message(p)))
+            : this(viewModel, property1, property2, property3, property4, property5, isValidFunc, (p, v) => v ? ValidationText.Empty : ValidationText.Create(message(p)))
         {
         }
 
@@ -521,7 +523,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty5>> property5,
             Func<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5), bool> isValidFunc,
             Func<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5), bool, string> messageFunc)
-            : this(viewModel, property1, property2, property3, property4, property5, isValidFunc, (p, v) => new ValidationText(messageFunc(p, v)))
+            : this(viewModel, property1, property2, property3, property4, property5, isValidFunc, (p, v) => ValidationText.Create(messageFunc(p, v)))
         {
         }
 
@@ -672,7 +674,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty6>> property6,
             Func<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6), bool> isValidFunc,
             Func<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6), string> message)
-            : this(viewModel, property1, property2, property3, property4, property5, property6, isValidFunc, (p, v) => new ValidationText(v ? string.Empty : message(p)))
+            : this(viewModel, property1, property2, property3, property4, property5, property6, isValidFunc, (p, v) => v ? ValidationText.Empty : ValidationText.Create(message(p)))
         {
         }
 
@@ -687,7 +689,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
             Expression<Func<TViewModel, TProperty6>> property6,
             Func<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6), bool> isValidFunc,
             Func<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6), bool, string> messageFunc)
-            : this(viewModel, property1, property2, property3, property4, property5, property6, isValidFunc, (p, v) => new ValidationText(messageFunc(p, v)))
+            : this(viewModel, property1, property2, property3, property4, property5, property6, isValidFunc, (p, v) => ValidationText.Create(messageFunc(p, v)))
         {
         }
 

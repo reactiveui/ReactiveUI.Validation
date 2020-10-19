@@ -16,9 +16,9 @@ namespace ReactiveUI.Validation.Collections
     public class ValidationText : IEnumerable<string>
     {
         /// <summary>
-        /// The empty validation text singleton instance.
+        /// The empty validation text singleton instance, contains a single empty string.
         /// </summary>
-        public static readonly ValidationText Empty = new ValidationText(Array.Empty<string>());
+        public static readonly ValidationText Empty = new ValidationText(new[] { string.Empty });
 
         // TODO When Add() & Clear() are obsolesced this should be made read-only.
         private /* readonly */ string[] _texts;
@@ -28,7 +28,7 @@ namespace ReactiveUI.Validation.Collections
         /// </summary>
         [Obsolete("Calling the constructor is deprecated, please use ValidationText.Create() overload instead.")]
         public ValidationText()
-            : this(Array.Empty<string>())
+            : this(Empty._texts)
         {
         }
 
@@ -38,7 +38,7 @@ namespace ReactiveUI.Validation.Collections
         /// <param name="text">Text to be added in the collection.</param>
         [Obsolete("Calling the constructor is deprecated, please use ValidationText.Create(string) overload instead.")]
         public ValidationText(string text)
-        :this(new[] { text })
+        : this(new[] { text })
         {
         }
 
@@ -48,13 +48,20 @@ namespace ReactiveUI.Validation.Collections
         /// <param name="validationTexts"><see cref="ValidationText"/> collection to be added into the text collection.</param>
         [Obsolete("Calling the constructor is deprecated, please use ValidationText.Create(IEnumerable<ValidationText>) overload instead.")]
         public ValidationText(IEnumerable<ValidationText> validationTexts)
-            : this((validationTexts ?? throw new System.ArgumentNullException(nameof(validationTexts))).SelectMany(vt => vt._texts).ToArray())
+            : this((validationTexts ?? throw new ArgumentNullException(nameof(validationTexts))).SelectMany(vt => vt._texts).ToArray())
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ValidationText"/> class with the array of texts.
+        /// </summary>
+        /// <param name="texts">The array of texts.</param>
         private ValidationText(string[] texts)
         {
-            _texts = texts;
+            // TODO Can remove this check when public constructors are obsolesced as Create method already checks this.
+            _texts = texts.Length < 1 || (texts.Length == 1 && string.IsNullOrEmpty(texts[0]))
+                ? Empty._texts
+                : texts;
         }
 
         /// <summary>
@@ -69,7 +76,7 @@ namespace ReactiveUI.Validation.Collections
         public string this[int index] => _texts[index];
 
         /// <summary>
-        /// Combines multiple <see cref="ValidationText"/> instances into a single instance, or returns <see cref="Empty"/> if the enumeration is empty.
+        /// Combines multiple <see cref="ValidationText"/> instances into a single instance, or returns <see cref="Empty"/> if the enumeration is empty, or contains a single empty element.
         /// </summary>
         /// <param name="validationTexts">An enumeration of <see cref="ValidationText"/>.</param>
         /// <returns>A <see cref="ValidationText"/>.</returns>
@@ -77,20 +84,21 @@ namespace ReactiveUI.Validation.Collections
             Create(validationTexts.SelectMany(vt => vt._texts).ToArray());
 
         /// <summary>
-        /// Combines multiple validation messages into a single instance, or returns <see cref="Empty"/> if the enumeration is empty.
+        /// Combines multiple validation messages into a single instance, or returns <see cref="Empty"/> if the enumeration is empty, or contains a single empty element.
         /// </summary>
         /// <param name="validationTexts">An enumeration of validation messages.</param>
         /// <returns>A <see cref="ValidationText"/>.</returns>
         public static ValidationText Create(IEnumerable<string> validationTexts) => Create(validationTexts.ToArray());
 
         /// <summary>
-        /// Combines multiple validation messages into a single instance, or returns <see cref="Empty"/> if the enumeration is empty.
+        /// Combines multiple validation messages into a single instance, or returns <see cref="Empty"/> if the enumeration is empty, or contains a single empty element.
         /// </summary>
         /// <param name="validationTexts">An array of validation messages.</param>
         /// <returns>A <see cref="ValidationText"/>.</returns>
-        public static ValidationText Create(params string[] validationTexts) => validationTexts.Length > 0
-            ? new ValidationText(validationTexts)
-            : Empty;
+        public static ValidationText Create(params string[] validationTexts) => validationTexts.Length < 1 ||
+            (validationTexts.Length == 1 && string.IsNullOrEmpty(validationTexts[0]))
+                ? Empty
+                : new ValidationText(validationTexts);
 
         /// <inheritdoc/>
         public IEnumerator<string> GetEnumerator()
@@ -120,7 +128,7 @@ namespace ReactiveUI.Validation.Collections
         [Obsolete("ValidationText will be made immutable in future versions, please do not use the Clear() method.")]
         public void Clear()
         {
-            _texts = Array.Empty<string>();
+            _texts = Empty._texts;
         }
 
         /// <summary>
