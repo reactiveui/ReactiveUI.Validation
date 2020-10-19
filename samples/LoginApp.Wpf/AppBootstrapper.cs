@@ -39,7 +39,7 @@ namespace LoginApp.Wpf
         }
 
         /// <summary>
-        /// Gets or sets the router which is used to navigate between views.
+        /// Gets the router which is used to navigate between views.
         /// </summary>
         public RoutingState Router { get; } = new RoutingState();
 
