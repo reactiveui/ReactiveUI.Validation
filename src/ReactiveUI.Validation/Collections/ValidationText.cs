@@ -26,7 +26,6 @@ namespace ReactiveUI.Validation.Collections
         /// </summary>
         public static readonly ValidationText Empty = new ValidationText(new[] { string.Empty });
 
-        // TODO When Add() & Clear() are obsolesced this should be made read-only.
         private /* readonly */ string[] _texts;
 
         /// <summary>
