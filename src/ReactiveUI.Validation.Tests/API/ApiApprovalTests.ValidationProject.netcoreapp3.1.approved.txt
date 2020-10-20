@@ -223,6 +223,9 @@ namespace ReactiveUI.Validation.Extensions
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel>(this TViewModel viewModel, System.IObservable<bool> validationObservable, string message)
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TValue>(this TViewModel viewModel, System.IObservable<TValue> validationObservable)
+            where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel
+            where TValue : ReactiveUI.Validation.States.IValidationState { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.IObservable<ReactiveUI.Validation.States.IValidationState> validationObservable)
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TValue>(this TViewModel viewModel, System.IObservable<TValue> validationObservable, System.Func<TValue, bool> isValidFunc, System.Func<TValue, string> messageFunc)
@@ -249,6 +252,9 @@ namespace ReactiveUI.Validation.Extensions
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.IObservable<bool> viewModelObservable, string message)
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp, TValue>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.IObservable<TValue> validationObservable)
+            where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel
+            where TValue : ReactiveUI.Validation.States.IValidationState { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp, TValue>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.IObservable<TValue> viewModelObservable, System.Func<TValue, bool> isValidFunc, System.Func<TValue, string> messageFunc)
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
     }

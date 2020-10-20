@@ -8,6 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
+using System.Reactive.Linq;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Components.Abstractions;
@@ -228,6 +229,39 @@ namespace ReactiveUI.Validation.Extensions
         }
 
         /// <summary>
+        /// Setup a validation rule with a general observable based on <see cref="IValidationState"/>.
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TValue">Validation observable type.</typeparam>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="validationObservable">Observable to define if the viewModel is valid or not.</param>
+        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+        /// <remarks>
+        /// It should be noted that the observable should provide an initial value, otherwise that can result
+        /// in an inconsistent performance.
+        /// </remarks>
+        public static ValidationHelper ValidationRule<TViewModel, TValue>(
+            this TViewModel viewModel,
+            IObservable<TValue> validationObservable)
+            where TViewModel : IReactiveObject, IValidatableViewModel
+            where TValue : IValidationState
+        {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (validationObservable is null)
+            {
+                throw new ArgumentNullException(nameof(validationObservable));
+            }
+
+            return viewModel.RegisterValidation(
+                new ObservableValidation<TViewModel, bool>(
+                    validationObservable.Select(s => s as IValidationState)));
+        }
+
+        /// <summary>
         /// Setup a validation rule with a general observable indicating validity and a static error message
         /// for the given view model property.
         /// </summary>
@@ -370,6 +404,47 @@ namespace ReactiveUI.Validation.Extensions
             return viewModel.RegisterValidation(
                 new ObservableValidation<TViewModel, bool, TViewModelProp>(
                     viewModelProperty, validationObservable));
+        }
+
+        /// <summary>
+        /// Setup a validation rule with a general observable based on <see cref="IValidationState"/>.
+        /// </summary>
+        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
+        /// <typeparam name="TViewModelProp">ViewModel property type.</typeparam>
+        /// <typeparam name="TValue">Validation observable type.</typeparam>
+        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModelProperty">ViewModel property referenced in viewModelObservableProperty.</param>
+        /// <param name="validationObservable">Observable to define if the viewModel is valid or not.</param>
+        /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+        /// <remarks>
+        /// It should be noted that the observable should provide an initial value, otherwise that can result
+        /// in an inconsistent performance.
+        /// </remarks>
+        public static ValidationHelper ValidationRule<TViewModel, TViewModelProp, TValue>(
+            this TViewModel viewModel,
+            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
+            IObservable<TValue> validationObservable)
+            where TViewModel : IReactiveObject, IValidatableViewModel
+            where TValue : IValidationState
+        {
+            if (viewModel is null)
+            {
+                throw new ArgumentNullException(nameof(viewModel));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (validationObservable is null)
+            {
+                throw new ArgumentNullException(nameof(validationObservable));
+            }
+
+            return viewModel.RegisterValidation(
+                new ObservableValidation<TViewModel, bool, TViewModelProp>(
+                    viewModelProperty, validationObservable.Select(v => v as IValidationState)));
         }
 
         /// <summary>
