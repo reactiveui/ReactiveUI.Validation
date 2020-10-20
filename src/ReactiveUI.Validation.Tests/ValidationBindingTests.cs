@@ -659,7 +659,7 @@ namespace ReactiveUI.Validation.Tests
         }
 
         /// <summary>
-        /// Verifies that the ValidationRule(IValidationState) methods work.
+        /// Verifies that the <see cref="ValidatableViewModelExtensions.ValidationRule{TVIewModel}(TVIewModel, IObservable{IValidationState})"/> methods work.
         /// </summary>
         [Fact]
         public void ShouldBindValidationRuleEmittingValidationStates()
@@ -671,6 +671,54 @@ namespace ReactiveUI.Validation.Tests
             var isViewModelBlocked = new ReplaySubject<bool>(1);
             isViewModelBlocked.OnNext(true);
 
+            // Create IObservable<IValidationState>
+            var nameValidationState = view.ViewModel.WhenAnyValue(
+                vm => vm.Name,
+                name => (IValidationState)new CustomValidationState(
+                    !string.IsNullOrWhiteSpace(name),
+                    nameErrorMessage));
+
+            view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name,
+                nameValidationState);
+
+            var viewModelBlockedValidationState = isViewModelBlocked.Select(blocked =>
+                (IValidationState)new CustomValidationState(!blocked, viewModelIsBlockedMessage));
+
+            view.ViewModel.ValidationRule(viewModelBlockedValidationState);
+
+            view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+            view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
+            view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
+
+            Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.Contains(nameErrorMessage, view.NameErrorLabel, comparison);
+            Assert.Contains(viewModelIsBlockedMessage, view.NameErrorContainer.Text, comparison);
+
+            view.ViewModel.Name = "Qwerty";
+            isViewModelBlocked.OnNext(false);
+
+            Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.True(view.ViewModel.ValidationContext.IsValid);
+            Assert.DoesNotContain(nameErrorMessage, view.NameErrorLabel, comparison);
+            Assert.DoesNotContain(viewModelIsBlockedMessage, view.NameErrorContainer.Text, comparison);
+        }
+
+        /// <summary>
+        /// Verifies that the <see cref="ValidatableViewModelExtensions.ValidationRule{TVIewModel, TValue}(TVIewModel, IObservable{TValue})"/> methods work.
+        /// </summary>
+        [Fact]
+        public void ShouldBindValidationRuleEmittingValidationStatesGeneric()
+        {
+            const StringComparison comparison = StringComparison.InvariantCulture;
+            const string viewModelIsBlockedMessage = "View model is blocked.";
+            const string nameErrorMessage = "Name shouldn't be empty.";
+            var view = new TestView(new TestViewModel { Name = string.Empty });
+            var isViewModelBlocked = new ReplaySubject<bool>(1);
+            isViewModelBlocked.OnNext(true);
+
+            // Use the observable directly in the rules, which use the generic version of the ex
             view.ViewModel.ValidationRule(
                 viewModel => viewModel.Name,
                 view.ViewModel.WhenAnyValue(
