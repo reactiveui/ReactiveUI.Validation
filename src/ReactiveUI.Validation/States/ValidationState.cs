@@ -26,7 +26,7 @@ namespace ReactiveUI.Validation.States
         /// <param name="isValid">Determines if the property is valid or not.</param>
         /// <param name="text">Validation text.</param>
         public ValidationState(bool isValid, string text)
-            : this(isValid, new ValidationText(text))
+            : this(isValid, ValidationText.Create(text))
         {
         }
 
@@ -50,7 +50,7 @@ namespace ReactiveUI.Validation.States
         [ExcludeFromCodeCoverage]
         [Obsolete("This constructor overload is going to be removed soon.")]
         public ValidationState(bool isValid, string text, IValidationComponent component)
-            : this(isValid, new ValidationText(text), component)
+            : this(isValid, ValidationText.Create(text), component)
         {
         }
 

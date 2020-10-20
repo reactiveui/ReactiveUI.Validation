@@ -10,15 +10,35 @@ namespace ReactiveUI.Validation.Collections
 {
     public class ValidationText : System.Collections.Generic.IEnumerable<string>, System.Collections.IEnumerable
     {
+        public static readonly ReactiveUI.Validation.Collections.ValidationText Empty;
+        public static readonly ReactiveUI.Validation.Collections.ValidationText None;
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        [System.Obsolete("Calling the constructor is deprecated, please use ValidationText.Create() overloa" +
+            "d instead.")]
         public ValidationText() { }
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        [System.Obsolete("Calling the constructor is deprecated, please use ValidationText.Create(IEnumerab" +
+            "le<ValidationText>) overload instead.")]
         public ValidationText(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Collections.ValidationText> validationTexts) { }
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        [System.Obsolete("Calling the constructor is deprecated, please use ValidationText.Create(string) o" +
+            "verload instead.")]
         public ValidationText(string text) { }
         public int Count { get; }
         public string this[int index] { get; }
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        [System.Obsolete("ValidationText will be made immutable in future versions, please do not use the A" +
+            "dd(string) method.")]
         public void Add(string text) { }
+        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+        [System.Obsolete("ValidationText will be made immutable in future versions, please do not use the C" +
+            "lear() method.")]
         public void Clear() { }
         public System.Collections.Generic.IEnumerator<string> GetEnumerator() { }
         public string ToSingleLine(string? separator = ",") { }
+        public static ReactiveUI.Validation.Collections.ValidationText Create(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Collections.ValidationText> validationTexts) { }
+        public static ReactiveUI.Validation.Collections.ValidationText Create(System.Collections.Generic.IEnumerable<string> validationTexts) { }
+        public static ReactiveUI.Validation.Collections.ValidationText Create(params string[] validationTexts) { }
     }
 }
 namespace ReactiveUI.Validation.Comparators

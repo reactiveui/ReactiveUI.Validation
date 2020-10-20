@@ -14,6 +14,7 @@ using System.Reactive.Linq;
 using DynamicData;
 using DynamicData.Binding;
 using ReactiveUI.Validation.Abstractions;
+using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.States;
@@ -90,11 +91,11 @@ namespace ReactiveUI.Validation.Helpers
         public virtual IEnumerable GetErrors(string propertyName) =>
             string.IsNullOrEmpty(propertyName) ?
                 SelectInvalidPropertyValidations()
-                    .SelectMany(validation => validation.Text)
+                    .SelectMany(validation => validation.Text ?? ValidationText.None)
                     .ToArray() :
                 SelectInvalidPropertyValidations()
                     .Where(validation => validation.ContainsPropertyName(propertyName))
-                    .SelectMany(validation => validation.Text)
+                    .SelectMany(validation => validation.Text ?? ValidationText.None)
                     .ToArray();
 
         /// <summary>
