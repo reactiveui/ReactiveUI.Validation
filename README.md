@@ -149,17 +149,23 @@ dotnet add package ReactiveUI.Validation.AndroidX
 
 > **Note** In ReactiveUI.Validation **1.7 and lower**, the Android-specific extensions are available in [the main package](https://www.nuget.org/packages/reactiveui.validation) targeting `MonoAndroid90`, and you don't need to install `ReactiveUI.Validation.AndroidSupport`. In ReactiveUI.Validation **1.7 and lower**, add `using ReactiveUI.Validation.Platforms.Android` instead of `using ReactiveUI.Validation.Extensions`.
 
+<img src="https://user-images.githubusercontent.com/6759207/96716730-15729480-13ae-11eb-928e-7e408b7ffac4.png" width="400" />
+
 ```csharp
 // This using directive makes Android-specific extensions available.
 // Make sure to install either the ReactiveUI.Validation.AndroidSupport
 // package or the ReactiveUI.Validation.AndroidX package.
 using ReactiveUI.Validation.Extensions;
 
-public class SampleActivity : ReactiveAppCompatActivity<SampleViewModel>
+public class SignUpActivity : ReactiveAppCompatActivity<SignUpViewModel>
 {
-    public TextInputEditText Name { get; set; }
+    // The Android native text boxes declared in an .axml file.
+    public TextInputEditText Password { get; set; }
+    public TextInputEditText ConfirmPassword { get; set; }
 
-    public TextInputLayout NameLayout { get; set; }
+    // The layouts wrapping the text boxes declared in an .axml file.
+    public TextInputLayout PasswordField { get; set; }
+    public TextInputLayout ConfirmPasswordField { get; set; }
 
     protected override void OnCreate (Bundle bundle)
     {
@@ -169,11 +175,13 @@ public class SampleActivity : ReactiveAppCompatActivity<SampleViewModel>
         // The WireUpControls method is a magic ReactiveUI utility method for Android, see:
         // https://www.reactiveui.net/docs/handbook/data-binding/xamarin-android/wire-up-controls
         this.WireUpControls();
-        this.Bind(ViewModel, vm => vm.Name, view => view.Name.Text);
+        this.Bind(ViewModel, x => x.Password, x => x.Password.Text);
+        this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPassword.Text);
 
-        // Bind any validations which reference the Name property 
+        // Bind any validations which reference the Password property 
         // to the Error property of the TextInputLayout control.
-        this.BindValidation(ViewModel, vm => vm.Name, NameLayout);
+        this.BindValidation(ViewModel, x => x.Password, PasswordField);
+        this.BindValidation(ViewModel, x => x.ConfirmPassword, ConfirmPasswordField);
     }
 }
 ```
@@ -181,6 +189,8 @@ public class SampleActivity : ReactiveAppCompatActivity<SampleViewModel>
 ## `INotifyDataErrorInfo` Support
 
 For those platforms that support the `INotifyDataErrorInfo` interface, ReactiveUI.Validation provides a helper base class named `ReactiveValidationObject`. The helper class implements both the `IValidatableViewModel` interface and the `INotifyDataErrorInfo` interface. It listens to any changes in the `ValidationContext` and invokes `INotifyDataErrorInfo` events. 
+
+<img width="400" src="https://user-images.githubusercontent.com/6759207/96717163-bbbe9a00-13ae-11eb-8c54-89cd339cbd5c.png">
 
 ```cs
 public class SampleViewModel : ReactiveValidationObject
