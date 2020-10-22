@@ -237,7 +237,7 @@ namespace ReactiveUI.Validation.Collections
         {
             if (ReferenceEquals(this, Empty))
             {
-                throw new InvalidOperationException("Adding to ValidationText.Empty is unsupported.");
+                throw new InvalidOperationException("Clearing ValidationText.Empty is unsupported.");
             }
 
             if (ReferenceEquals(this, None))
