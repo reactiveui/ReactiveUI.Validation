@@ -8,8 +8,17 @@ namespace ReactiveUI.Validation.Tests.Models
     /// <summary>
     /// Mocked View.
     /// </summary>
-    public class TestView : IViewFor<TestViewModel>
+    public class TestView : ReactiveObject, IViewFor<TestViewModel>
     {
+        private TestViewModel _viewModel;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TestView"/> class.
+        /// </summary>
+        public TestView()
+        {
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="TestView"/> class.
         /// </summary>
@@ -27,7 +36,11 @@ namespace ReactiveUI.Validation.Tests.Models
         }
 
         /// <inheritdoc/>
-        public TestViewModel ViewModel { get; set; }
+        public TestViewModel ViewModel
+        {
+            get => _viewModel;
+            set => this.RaiseAndSetIfChanged(ref _viewModel, value);
+        }
 
         /// <summary>
         /// Gets or sets the Name Label which emulates a Text property (eg. Entry in Xamarin.Forms).

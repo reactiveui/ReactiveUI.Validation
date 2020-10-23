@@ -749,6 +749,36 @@ namespace ReactiveUI.Validation.Tests
             Assert.DoesNotContain(viewModelIsBlockedMessage, view.NameErrorContainer.Text, comparison);
         }
 
+        /// <summary>
+        /// Verifies that we support nullable view model properties.
+        /// </summary>
+        [Fact]
+        public void ShouldSupportDelayedViewModelInitialization()
+        {
+            var view = new TestView
+            {
+                NameErrorLabel = string.Empty,
+                NameErrorContainer = { Text = string.Empty }
+            };
+
+            view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+            view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
+            view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
+
+            Assert.Empty(view.NameErrorLabel);
+            Assert.Empty(view.NameErrorContainer.Text);
+
+            const string errorMessage = "Name shouldn't be empty.";
+            var viewModel = new TestViewModel();
+            viewModel.ValidationRule(x => x.Name, x => !string.IsNullOrWhiteSpace(x), errorMessage);
+            view.ViewModel = viewModel;
+
+            Assert.NotEmpty(view.NameErrorLabel);
+            Assert.NotEmpty(view.NameErrorContainer.Text);
+            Assert.Equal(errorMessage, view.NameErrorLabel);
+            Assert.Equal(errorMessage, view.NameErrorContainer.Text);
+        }
+
         private class CustomValidationState : IValidationState
         {
             public CustomValidationState(bool isValid, string message)
