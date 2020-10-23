@@ -30,7 +30,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
         /// <param name="view">IViewFor instance.</param>
-        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModel">ViewModel instance. Can be null, used for generic type resolution.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <param name="formatter">
@@ -42,7 +42,7 @@ namespace ReactiveUI.Validation.Extensions
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty>(
             this TView view,
-            TViewModel viewModel,
+            TViewModel? viewModel,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             TextInputLayout viewProperty,
             IValidationTextFormatter<string>? formatter = null)
@@ -67,7 +67,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
         /// <param name="view">IViewFor instance.</param>
-        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModel">ViewModel instance. Can be null, used for generic type resolution.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <param name="formatter">
@@ -81,7 +81,7 @@ namespace ReactiveUI.Validation.Extensions
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty>(
             this TView view,
-            TViewModel viewModel,
+            TViewModel? viewModel,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             TextInputLayout viewProperty,
             IValidationTextFormatter<string>? formatter = null)
@@ -104,7 +104,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <param name="view">IViewFor instance.</param>
-        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModel">ViewModel instance. Can be null, used for generic type resolution.</param>
         /// <param name="viewModelHelperProperty">ViewModel's ValidationHelper property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <param name="formatter">
@@ -116,7 +116,7 @@ namespace ReactiveUI.Validation.Extensions
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidation<TView, TViewModel>(
             this TView view,
-            TViewModel viewModel,
+            TViewModel? viewModel,
             Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
             TextInputLayout viewProperty,
             IValidationTextFormatter<string>? formatter = null)
