@@ -15,6 +15,7 @@ using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
 using Splat;
 
+// ReSharper disable once CheckNamespace
 namespace ReactiveUI.Validation.Extensions
 {
     /// <summary>
@@ -30,7 +31,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
         /// <param name="view">IViewFor instance.</param>
-        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModel">ViewModel instance. Can be null, used for generic type resolution.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <param name="formatter">
@@ -42,13 +43,28 @@ namespace ReactiveUI.Validation.Extensions
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty>(
             this TView view,
-            TViewModel viewModel,
+            TViewModel? viewModel,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             TextInputLayout viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
+            if (view is null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
             formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
                           SingleLineFormatter.Default;
 
@@ -67,7 +83,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
         /// <param name="view">IViewFor instance.</param>
-        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModel">ViewModel instance. Can be null, used for generic type resolution.</param>
         /// <param name="viewModelProperty">ViewModel property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <param name="formatter">
@@ -81,13 +97,28 @@ namespace ReactiveUI.Validation.Extensions
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty>(
             this TView view,
-            TViewModel viewModel,
+            TViewModel? viewModel,
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             TextInputLayout viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
+            if (view is null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
             formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
                           SingleLineFormatter.Default;
 
@@ -104,7 +135,7 @@ namespace ReactiveUI.Validation.Extensions
         /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <param name="view">IViewFor instance.</param>
-        /// <param name="viewModel">ViewModel instance.</param>
+        /// <param name="viewModel">ViewModel instance. Can be null, used for generic type resolution.</param>
         /// <param name="viewModelHelperProperty">ViewModel's ValidationHelper property.</param>
         /// <param name="viewProperty">View property to bind the validation message.</param>
         /// <param name="formatter">
@@ -116,13 +147,28 @@ namespace ReactiveUI.Validation.Extensions
         [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution.")]
         public static IDisposable BindValidation<TView, TViewModel>(
             this TView view,
-            TViewModel viewModel,
+            TViewModel? viewModel,
             Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
             TextInputLayout viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
             where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
+            if (view is null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            if (viewModelHelperProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelHelperProperty));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
             formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
                           SingleLineFormatter.Default;
 
