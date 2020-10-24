@@ -17,7 +17,10 @@ using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.Formatters;
+using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.States;
+using Splat;
 
 namespace ReactiveUI.Validation.Helpers
 {
@@ -34,9 +37,18 @@ namespace ReactiveUI.Validation.Helpers
         /// <summary>
         /// Initializes a new instance of the <see cref="ReactiveValidationObject{TViewModel}"/> class.
         /// </summary>
-        /// <param name="scheduler">Scheduler for OAPHs and for the the ValidationContext.</param>
-        protected ReactiveValidationObject(IScheduler? scheduler = null)
-            : base(scheduler)
+        /// <param name="scheduler">
+        /// Scheduler for the <see cref="ValidationContext"/>. Uses <see cref="CurrentThreadScheduler"/> by default.
+        /// </param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
+        protected ReactiveValidationObject(
+            IScheduler? scheduler = null,
+            IValidationTextFormatter<string>? formatter = null)
+            : base(scheduler, formatter)
         {
         }
     }
@@ -47,14 +59,28 @@ namespace ReactiveUI.Validation.Helpers
     public abstract class ReactiveValidationObject : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
     {
         private readonly HashSet<string> _mentionedPropertyNames = new HashSet<string>();
+        private readonly IValidationTextFormatter<string> _formatter;
         private bool _hasErrors;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ReactiveValidationObject"/> class.
         /// </summary>
-        /// <param name="scheduler">Scheduler for OAPHs and for the the ValidationContext.</param>
-        protected ReactiveValidationObject(IScheduler? scheduler = null)
+        /// <param name="scheduler">
+        /// Scheduler for the <see cref="ValidationContext"/>. Uses <see cref="CurrentThreadScheduler"/> by default.
+        /// </param>
+        /// <param name="formatter">
+        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
+        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
+        /// </param>
+        protected ReactiveValidationObject(
+            IScheduler? scheduler = null,
+            IValidationTextFormatter<string>? formatter = null)
         {
+            _formatter = formatter ??
+                         Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+                         SingleLineFormatter.Default;
+
             ValidationContext = new ValidationContext(scheduler);
             ValidationContext.Validations
                 .ToObservableChangeSet()
@@ -89,13 +115,13 @@ namespace ReactiveUI.Validation.Helpers
         /// <returns>A list of error messages, usually strings.</returns>
         /// <inheritdoc />
         public virtual IEnumerable GetErrors(string propertyName) =>
-            string.IsNullOrEmpty(propertyName) ?
-                SelectInvalidPropertyValidations()
-                    .SelectMany(validation => validation.Text ?? ValidationText.None)
-                    .ToArray() :
-                SelectInvalidPropertyValidations()
+            string.IsNullOrEmpty(propertyName)
+                ? SelectInvalidPropertyValidations()
+                    .Select(state => _formatter.Format(state.Text ?? ValidationText.None))
+                    .ToArray()
+                : SelectInvalidPropertyValidations()
                     .Where(validation => validation.ContainsPropertyName(propertyName))
-                    .SelectMany(validation => validation.Text ?? ValidationText.None)
+                    .Select(state => _formatter.Format(state.Text ?? ValidationText.None))
                     .ToArray();
 
         /// <summary>

@@ -7,8 +7,10 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
+using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Extensions;
+using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.Tests.Models;
 using Xunit;
@@ -257,6 +259,44 @@ namespace ReactiveUI.Validation.Tests
             Assert.False(view.ViewModel.HasErrors);
             Assert.Equal(2, arguments.Count);
             Assert.Equal(nameof(view.ViewModel.Name), arguments[1].PropertyName);
+        }
+
+        /// <summary>
+        /// Verifies that we support custom formatters in our <see cref="INotifyDataErrorInfo"/> implementation.
+        /// </summary>
+        [Fact]
+        public void ShouldInvokeCustomFormatters()
+        {
+            var formatter = new PrefixFormatter("Validation error:");
+            var view = new IndeiTestView(new IndeiTestViewModel(formatter) { Name = string.Empty });
+            var arguments = new List<DataErrorsChangedEventArgs>();
+
+            view.ViewModel.ErrorsChanged += (sender, args) => arguments.Add(args);
+            view.ViewModel.ValidationRule(
+                viewModel => viewModel.Name,
+                name => !string.IsNullOrWhiteSpace(name),
+                "Name shouldn't be empty.");
+
+            Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
+            Assert.False(view.ViewModel.ValidationContext.IsValid);
+            Assert.True(view.ViewModel.HasErrors);
+
+            var errors = view.ViewModel
+                .GetErrors("Name")
+                .Cast<string>()
+                .ToArray();
+
+            Assert.Single(errors);
+            Assert.Equal("Validation error: Name shouldn't be empty.", errors[0]);
+        }
+
+        private class PrefixFormatter : IValidationTextFormatter<string>
+        {
+            private readonly string _prefix;
+
+            public PrefixFormatter(string prefix) => _prefix = prefix;
+
+            public string Format(ValidationText validationText) => $"{_prefix} {validationText.ToSingleLine()}";
         }
     }
 }
