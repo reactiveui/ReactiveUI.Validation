@@ -15,6 +15,7 @@ using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
 using Splat;
 
+// ReSharper disable once CheckNamespace
 namespace ReactiveUI.Validation.Extensions
 {
     /// <summary>
@@ -49,6 +50,21 @@ namespace ReactiveUI.Validation.Extensions
             where TView : IViewFor<TViewModel>
             where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
+            if (view is null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
             formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
                           SingleLineFormatter.Default;
 
@@ -88,6 +104,21 @@ namespace ReactiveUI.Validation.Extensions
             where TView : IViewFor<TViewModel>
             where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
+            if (view is null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            if (viewModelProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelProperty));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
             formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
                           SingleLineFormatter.Default;
 
@@ -123,6 +154,21 @@ namespace ReactiveUI.Validation.Extensions
             where TView : IViewFor<TViewModel>
             where TViewModel : class, IReactiveObject, IValidatableViewModel
         {
+            if (view is null)
+            {
+                throw new ArgumentNullException(nameof(view));
+            }
+
+            if (viewModelHelperProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewModelHelperProperty));
+            }
+
+            if (viewProperty is null)
+            {
+                throw new ArgumentNullException(nameof(viewProperty));
+            }
+
             formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
                           SingleLineFormatter.Default;
 
