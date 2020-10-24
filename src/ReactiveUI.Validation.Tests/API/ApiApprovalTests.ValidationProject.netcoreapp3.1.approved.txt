@@ -321,7 +321,7 @@ namespace ReactiveUI.Validation.Helpers
 {
     public abstract class ReactiveValidationObject : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel, System.ComponentModel.INotifyDataErrorInfo
     {
-        protected ReactiveValidationObject(System.Reactive.Concurrency.IScheduler? scheduler = null) { }
+        protected ReactiveValidationObject(System.Reactive.Concurrency.IScheduler? scheduler = null, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null) { }
         public bool HasErrors { get; }
         public ReactiveUI.Validation.Contexts.ValidationContext ValidationContext { get; }
         public event System.EventHandler<System.ComponentModel.DataErrorsChangedEventArgs>? ErrorsChanged;
@@ -333,7 +333,7 @@ namespace ReactiveUI.Validation.Helpers
         "veValidationObject.")]
     public abstract class ReactiveValidationObject<TViewModel> : ReactiveUI.Validation.Helpers.ReactiveValidationObject
     {
-        protected ReactiveValidationObject(System.Reactive.Concurrency.IScheduler? scheduler = null) { }
+        protected ReactiveValidationObject(System.Reactive.Concurrency.IScheduler? scheduler = null, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null) { }
     }
     public class ValidationHelper : ReactiveUI.ReactiveObject, System.IDisposable
     {
