@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Reactive.Concurrency;
+using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
 
 namespace ReactiveUI.Validation.Tests.Models
@@ -21,6 +22,15 @@ namespace ReactiveUI.Validation.Tests.Models
         /// </summary>
         public IndeiTestViewModel()
             : base(ImmediateScheduler.Instance)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IndeiTestViewModel"/> class.
+        /// </summary>
+        /// <param name="formatter">Validation text formatter.</param>
+        public IndeiTestViewModel(IValidationTextFormatter<string> formatter)
+            : base(ImmediateScheduler.Instance, formatter)
         {
         }
 
