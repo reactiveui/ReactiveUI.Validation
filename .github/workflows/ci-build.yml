@@ -58,7 +58,6 @@ jobs:
         include-filter: '[${{env.productNamespacePrefix}}*]*'
         output-format: cobertura
         output: '../../artifacts/coverage/'
-        configuration: ${{ env.configuration }}
         skip-auto-props: false
         use-sourcelink: true
         working-directory: src
