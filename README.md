@@ -221,15 +221,9 @@ this.ValidationRule(
     "Passwords must match.");
 ```
 
-## Capabilities
+## Custom Formatters
 
-In essence, ReactiveUI.Validation is a relatively simple model of the `ValidationContext` containing a list of `IValidationComponent` instances. An `IValidationComponent` provides an observable of `IValidationState`. Whenever validation state changes (either a transition of validity) or `ValidationText` changes, then a new value is pushed out.
-
-1. Rules can be composed of single or multiple properties along with more generic Observables.
-2. Validation text can encapsulate both valid and invalid states.
-3. Binding can occur to either a View or an action.
-4. Validation text can reference either the ViewModel or properties which comprise the validation rule e.g. include text entered as part of validation message.
-5. Validation text output can be adjusted using custom formatters, not only allowing for single & multiline output but also for platforms like Android it should be possible to achieve richer renderings i.e. Bold/italics.
+You can pass an instance of `IValidationTextFormatter<T>` to a call to `BindValidation` if you'd like to override the default `SingleLineFormatter` used in the validation library. The `SingleLineFormatter` accepts a separator char and uses whitespace by default, so the code snippet below shows how to use a non-default separator char:
 
 ```cs
 // This formatter is based on the default SingleLineFormatter but uses a custom separator char.
@@ -238,7 +232,7 @@ this.BindValidation(ViewModel, x => x.ErrorLabel.Text, formatter)
     .DisposeWith(disposables);
 ```
 
-The simplest possible `IValidationTextFormatter<TOut>` implementation may look like this one.
+The simplest possible custom `IValidationTextFormatter<TOut>` implementation may look like this one.
 
 ```cs
 private class ConstFormatter : IValidationTextFormatter<string>
@@ -250,11 +244,28 @@ private class ConstFormatter : IValidationTextFormatter<string>
     public string Format(ValidationText validationText) => _text;
 }
 
-// This formatter is based on a custsom IValidationTextFormatter implementation.
+// This formatter is based on a custom IValidationTextFormatter implementation.
 var formatter = new ConstFormatter("The input is invalid.");
 this.BindValidation(ViewModel, x => x.ErrorLabel.Text, formatter)
     .DisposeWith(disposables);
 ```
+
+If you'd like to override the `IValidationTextFormatter<string>` used in ReactiveUI.Validation by default, register an instance of `IValidationTextFormatter<string>` into `Locator.CurrentMutable` before your app starts. This could be useful in cases when your app needs localization and you wish to pass message keys instead of messages to `ValidationRule` calls.
+
+```cs
+// Register a singleton instance of IValidationTextFormatter<string> into Splat.Locator.
+Locator.CurrentMutable.RegisterConstant(new CustomFormatter(), typeof(IValidationTextFormatter<string>));
+```
+
+## Capabilities
+
+In essence, ReactiveUI.Validation is a relatively simple model of the `ValidationContext` containing a list of `IValidationComponent` instances. An `IValidationComponent` provides an observable of `IValidationState`. Whenever validation state changes (either a transition of validity) or `ValidationText` changes, then a new value is pushed out.
+
+1. Rules can be composed of single or multiple properties along with more generic Observables.
+2. Validation text can encapsulate both valid and invalid states.
+3. Binding can occur to either a View or an action.
+4. Validation text can reference either the ViewModel or properties which comprise the validation rule e.g. include text entered as part of validation message.
+5. Validation text output can be adjusted using custom formatters, not only allowing for single & multiline output but also for platforms like Android it should be possible to achieve richer renderings i.e. Bold/italics.
 
 ## Feedback
 
