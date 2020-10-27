@@ -63,7 +63,7 @@ jobs:
       shell: bash
       run: |
         echo $PWD
-        bash <(curl -s https://codecov.io/bash) -s ./artfacts/coverage/*.xml -t ${{ env.CODECOV_TOKEN }}
+        bash <(curl -s https://codecov.io/bash) -s ./artfacts -f "*.xml" -t ${{ env.CODECOV_TOKEN }}
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
