@@ -27,11 +27,6 @@ jobs:
       with:
         dotnet-version: 3.1.x
 
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '12.x'
-        
     - name: NBGV
       id: nbgv
       uses: dotnet/nbgv@master
@@ -49,24 +44,25 @@ jobs:
       run: msbuild /t:build,pack /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
       working-directory: src
 
-    - name: Install Report Generator
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool
-
-    - name: Run Unit Tests
-      run: dotnet test --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="../../artifacts/coverage/coverage.xml" /p:Include="[${{ env.productNamespacePrefix}}*]*" /p:Exclude="[${{ env.productNamespacePrefix}}*Tests.*]*"
-      working-directory: src
-
-    - name: Generate Coverage Report
-      run: reportgenerator -reports:"coverage.*.xml" -targetdir:report-output
-      working-directory: artifacts/coverage
+    - name: Run Unit Tests and Generate Coverage
+      uses: glennawatson/coverlet-msbuild@v1
+      with:
+        project-files: '**/*Tests*.csproj'
+        no-build: true
+        exclude-filter: '[${{env.productNamespacePrefix}}.*.Tests.*]*'
+        include-filter: '[${{env.productNamespacePrefix}}*]*'
+        output-format: cobertura
+        output: '../../artifacts/'
+        configuration: ${{ env.configuration }}
 
     - name: Upload Code Coverage
+      shell: bash
       run: |
-        npm install -g codecov
-        codecov
-      working-directory: artifacts/coverage
+        echo $PWD
+        bash <(curl -s https://codecov.io/bash) -X gcov -X coveragepy -t ${{ env.CODECOV_TOKEN }} -s '$PWD/artifacts' -f '*.xml'
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
     - name: Create NuGet Artifacts
       uses: actions/upload-artifact@master
       with:
