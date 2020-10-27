@@ -51,7 +51,7 @@ jobs:
         no-build: true
         exclude-filter: '[${{env.productNamespacePrefix}}.*.Tests.*]*'
         include-filter: '[${{env.productNamespacePrefix}}*]*'
-        output-format: opencover
+        output-format: cobertura
         output: '../../artifacts/'
         configuration: ${{ env.configuration }}
 
