@@ -62,7 +62,7 @@ jobs:
     - name: Upload Code Coverage
       shell: bash
       run: |
-        bash <(curl -s https://codecov.io/bash) -s ./artfacts/coverage -t ${{ env.CODECOV_TOKEN }}
+        bash <(curl -s https://codecov.io/bash) -s ./artfacts/coverage/*.xml -t ${{ env.CODECOV_TOKEN }}
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
