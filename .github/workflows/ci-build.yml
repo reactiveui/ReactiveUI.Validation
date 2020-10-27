@@ -52,14 +52,14 @@ jobs:
         exclude-filter: '[${{env.productNamespacePrefix}}.*.Tests.*]*'
         include-filter: '[${{env.productNamespacePrefix}}*]*'
         output-format: opencover
-        output: '../../artifact/'
+        output: '../../'
         configuration: ${{ env.configuration }}
 
     - name: Upload Code Coverage
       shell: bash
       run: |
         echo $PWD
-        bash <(curl -s https://codecov.io/bash) -X gcov -t ${{ env.CODECOV_TOKEN }}
+        bash <(curl -s https://codecov.io/bash) -X gcov -X coveragepy -t ${{ env.CODECOV_TOKEN }}
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
