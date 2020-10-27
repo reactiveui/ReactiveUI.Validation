@@ -44,10 +44,6 @@ jobs:
       run: msbuild /t:build,pack /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=${{ env.configuration }}
       working-directory: src
 
-    - name: Install Report Generator
-      run: dotnet tool install --global dotnet-reportgenerator-globaltool
-
-
     - name: Run Unit Tests and Generate Coverage
       uses: glennawatson/coverlet-msbuild@v1
       with:
@@ -56,14 +52,14 @@ jobs:
         exclude-filter: '[${{env.productNamespacePrefix}}.*.Tests.*]*'
         include-filter: '[${{env.productNamespacePrefix}}*]*'
         output-format: opencover
-        output: '../../artifacts/coverage/'
+        output: '../../artifact/'
         configuration: ${{ env.configuration }}
 
     - name: Upload Code Coverage
       shell: bash
       run: |
         echo $PWD
-        bash <(curl -s https://codecov.io/bash) -s ./artfacts -f "*.xml" -t ${{ env.CODECOV_TOKEN }}
+        bash <(curl -s https://codecov.io/bash) -X gcov -t ${{ env.CODECOV_TOKEN }}
       env:
         CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
