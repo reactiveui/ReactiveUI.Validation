@@ -25,49 +25,6 @@ namespace ReactiveUI.Validation.Extensions
         /// <summary>
         /// Binds the specified ViewModel property validation to the View property.
         /// </summary>
-        /// <remarks>Supports multiple validations for the same property.</remarks>
-        /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
-        /// <typeparam name="TViewModel">ViewModel type.</typeparam>
-        /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
-        /// <typeparam name="TViewProperty">View property type.</typeparam>
-        /// <param name="view">IViewFor instance.</param>
-        /// <param name="viewModel">ViewModel instance. Can be null, used for generic type resolution.</param>
-        /// <param name="viewModelProperty">ViewModel property.</param>
-        /// <param name="viewProperty">View property to bind the validation message.</param>
-        /// <param name="formatter">
-        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
-        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
-        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
-        /// </param>
-        /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-        [ExcludeFromCodeCoverage]
-        [Obsolete("This method is no longer required, BindValidation now supports multiple validations.")]
-        [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
-        public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(
-            this TView view,
-            TViewModel? viewModel,
-            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
-            Expression<Func<TView, TViewProperty>> viewProperty,
-            IValidationTextFormatter<string>? formatter = null)
-            where TView : IViewFor<TViewModel>
-            where TViewModel : class, IReactiveObject, IValidatableViewModel
-        {
-            if (viewModelProperty is null)
-            {
-                throw new ArgumentNullException(nameof(viewModelProperty));
-            }
-
-            if (viewProperty is null)
-            {
-                throw new ArgumentNullException(nameof(viewProperty));
-            }
-
-            return ValidationBinding.ForProperty(view, viewModelProperty, viewProperty, formatter);
-        }
-
-        /// <summary>
-        /// Binds the specified ViewModel property validation to the View property.
-        /// </summary>
         /// <typeparam name="TView">IViewFor of TViewModel.</typeparam>
         /// <typeparam name="TViewModel">ViewModel type.</typeparam>
         /// <typeparam name="TViewModelProperty">ViewModel property type.</typeparam>
@@ -174,57 +131,6 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             return ValidationBinding.ForValidationHelperProperty(view, viewModelHelperProperty, viewProperty, formatter);
-        }
-
-        /// <summary>
-        /// Creates a binding to a View property.
-        /// </summary>
-        /// <typeparam name="TTarget">Observable of any type.</typeparam>
-        /// <typeparam name="TValue">Any type.</typeparam>
-        /// <param name="this">Current observable instance.</param>
-        /// <param name="target">Target instance.</param>
-        /// <param name="viewExpression">Expression to discover View properties.</param>
-        /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-        [ExcludeFromCodeCoverage]
-        [Obsolete("This method is a part of ReactiveUI internals and will be " +
-                  "removed from ReactiveUI.Validation public API soon.")]
-        public static IDisposable BindToDirect<TTarget, TValue>(
-            IObservable<TValue> @this,
-            TTarget target,
-            Expression viewExpression)
-        {
-            if (@this is null)
-            {
-                throw new ArgumentNullException(nameof(@this));
-            }
-
-            if (target is null)
-            {
-                throw new ArgumentNullException(nameof(target));
-            }
-
-            if (viewExpression is null)
-            {
-                throw new ArgumentNullException(nameof(viewExpression));
-            }
-
-            var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo())!;
-            if (viewExpression.GetParent().NodeType == ExpressionType.Parameter)
-            {
-                return @this.Subscribe(
-                    x => setter(target, x, viewExpression.GetArgumentsArray()),
-                    ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"));
-            }
-
-            var bindInfo = @this.CombineLatest(
-                target.WhenAnyDynamic(viewExpression.GetParent(), x => x.Value),
-                (val, host) => new { val, host });
-
-            return bindInfo
-                .Where(x => x.host != null)
-                .Subscribe(
-                    x => setter(x.host, x.val, viewExpression.GetArgumentsArray()),
-                    ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"));
         }
     }
 }

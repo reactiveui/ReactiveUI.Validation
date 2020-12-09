@@ -25,7 +25,7 @@ namespace ReactiveUI.Validation.Components
     /// <summary>
     /// Base class for items which are used to build a <see cref="ReactiveUI.Validation.Contexts.ValidationContext" />.
     /// </summary>
-    public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent, IPropertyValidationComponent<TViewModel>
+    public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
         private readonly ReplaySubject<bool> _isValidSubject = new ReplaySubject<bool>(1);
@@ -97,20 +97,6 @@ namespace ReactiveUI.Validation.Components
 
             // Suppress finalization.
             GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc/>
-        [ExcludeFromCodeCoverage]
-        [Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidationComponent.")]
-        public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
-        {
-            if (property is null)
-            {
-                throw new ArgumentNullException(nameof(property));
-            }
-
-            var propertyName = property.Body.GetPropertyPath();
-            return ContainsPropertyName(propertyName, exclusively);
         }
 
         /// <inheritdoc/>
@@ -280,7 +266,7 @@ namespace ReactiveUI.Validation.Components
         {
             Activate();
             return _valueSubject
-                .Select(value => new ValidationState(_isValidFunc(value), _message(value, _isValidFunc(value)), this))
+                .Select(value => new ValidationState(_isValidFunc(value), _message(value, _isValidFunc(value))))
                 .DistinctUntilChanged(new ValidationStateComparer());
         }
 

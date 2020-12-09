@@ -237,7 +237,7 @@ namespace ReactiveUI.Validation.Components
     /// A validation component that is based on an <see cref="IObservable{T}"/>.
     /// </summary>
     [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just different generic parameters.")]
-    public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObject, IDisposable, IPropertyValidationComponent, IPropertyValidationComponent<TViewModel>
+    public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObject, IDisposable, IPropertyValidationComponent
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
         private readonly ReplaySubject<IValidationState> _isValidSubject = new ReplaySubject<IValidationState>(1);
@@ -333,20 +333,6 @@ namespace ReactiveUI.Validation.Components
 
             // Suppress finalization.
             GC.SuppressFinalize(this);
-        }
-
-        /// <inheritdoc/>
-        [ExcludeFromCodeCoverage]
-        [Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidationComponent.")]
-        public bool ContainsProperty<TProp>(Expression<Func<TViewModel, TProp>> property, bool exclusively = false)
-        {
-            if (property is null)
-            {
-                throw new ArgumentNullException(nameof(property));
-            }
-
-            var propertyName = property.Body.GetPropertyPath();
-            return ContainsPropertyName(propertyName, exclusively);
         }
 
         /// <inheritdoc/>

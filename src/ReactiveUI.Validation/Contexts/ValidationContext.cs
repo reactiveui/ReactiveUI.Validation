@@ -86,7 +86,7 @@ namespace ReactiveUI.Validation.Contexts
                 .DisposeWith(_disposables);
 
             _validSubject
-                .Select(_ => new ValidationState(IsValid, BuildText(), this))
+                .Select(_ => new ValidationState(IsValid, BuildText()))
                 .Do(_validationStatusChange.OnNext)
                 .Subscribe()
                 .DisposeWith(_disposables);
