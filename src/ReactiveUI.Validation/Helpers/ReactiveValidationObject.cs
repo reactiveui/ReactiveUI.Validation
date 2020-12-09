@@ -27,35 +27,6 @@ namespace ReactiveUI.Validation.Helpers
     /// <summary>
     /// Base class for ReactiveObjects that support <see cref="INotifyDataErrorInfo"/> validation.
     /// </summary>
-    /// <typeparam name="TViewModel">The parent view model.</typeparam>
-    [ExcludeFromCodeCoverage]
-    [Obsolete("The type parameters are no longer required. Use the non-generic version of ReactiveValidationObject.")]
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1649:FileHeaderFileNameDocumentationMustMatchTypeName", Justification = "Same class just generic.")]
-    [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just generic.")]
-    public abstract class ReactiveValidationObject<TViewModel> : ReactiveValidationObject
-    {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ReactiveValidationObject{TViewModel}"/> class.
-        /// </summary>
-        /// <param name="scheduler">
-        /// Scheduler for the <see cref="ValidationContext"/>. Uses <see cref="CurrentThreadScheduler"/> by default.
-        /// </param>
-        /// <param name="formatter">
-        /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
-        /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
-        /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
-        /// </param>
-        protected ReactiveValidationObject(
-            IScheduler? scheduler = null,
-            IValidationTextFormatter<string>? formatter = null)
-            : base(scheduler, formatter)
-        {
-        }
-    }
-
-    /// <summary>
-    /// Base class for ReactiveObjects that support <see cref="INotifyDataErrorInfo"/> validation.
-    /// </summary>
     public abstract class ReactiveValidationObject : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
     {
         private readonly HashSet<string> _mentionedPropertyNames = new HashSet<string>();

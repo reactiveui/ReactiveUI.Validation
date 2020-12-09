@@ -42,41 +42,6 @@ namespace ReactiveUI.Validation.States
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationState"/> class.
-        /// </summary>
-        /// <param name="isValid">Determines if the property is valid or not.</param>
-        /// <param name="text">Validation text.</param>
-        /// <param name="component">Validation property.</param>
-        [ExcludeFromCodeCoverage]
-        [Obsolete("This constructor overload is going to be removed soon.")]
-        public ValidationState(bool isValid, string text, IValidationComponent component)
-            : this(isValid, ValidationText.Create(text), component)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationState"/> class.
-        /// </summary>
-        /// <param name="isValid">Determines if the property is valid or not.</param>
-        /// <param name="text">Validation text.</param>
-        /// <param name="component">Validation property.</param>
-        [ExcludeFromCodeCoverage]
-        [Obsolete("This constructor overload is going to be removed soon.")]
-        public ValidationState(bool isValid, ValidationText text, IValidationComponent component)
-        {
-            IsValid = isValid;
-            Text = text ?? throw new ArgumentNullException(nameof(text));
-            Component = component;
-        }
-
-        /// <summary>
-        /// Gets the associated component.
-        /// </summary>
-        [ExcludeFromCodeCoverage]
-        [Obsolete("This property will be removed soon.")]
-        public IValidationComponent? Component { get; }
-
-        /// <summary>
         /// Gets a value indicating whether the validation is currently valid or not.
         /// </summary>
         public bool IsValid { get; }
