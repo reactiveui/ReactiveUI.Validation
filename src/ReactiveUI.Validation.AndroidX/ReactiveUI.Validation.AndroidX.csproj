@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="Xamarin.Google.Android.Material" Version="1.*" />
-    <PackageReference Include="ReactiveUI.AndroidX" Version="12.*" />
+    <PackageReference Include="ReactiveUI.AndroidX" Version="13.*" />
     <PackageReference Include="ReactiveUI" Version="12.*" />
   </ItemGroup>
 
