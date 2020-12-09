@@ -1,3 +1,4 @@
+[assembly: System.Reflection.AssemblyMetadata("RepositoryUrl", "https://github.com/reactiveui/reactiveui.validation")]
 [assembly: System.Runtime.Versioning.TargetFramework(".NETFramework,Version=v4.6.1", FrameworkDisplayName=".NET Framework 4.6.1")]
 namespace ReactiveUI.Validation.Abstractions
 {
@@ -12,28 +13,8 @@ namespace ReactiveUI.Validation.Collections
     {
         public static readonly ReactiveUI.Validation.Collections.ValidationText Empty;
         public static readonly ReactiveUI.Validation.Collections.ValidationText None;
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Calling the constructor is deprecated, please use ValidationText.Create() overloa" +
-            "d instead.")]
-        public ValidationText() { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Calling the constructor is deprecated, please use ValidationText.Create(IEnumerab" +
-            "le<ValidationText>) overload instead.")]
-        public ValidationText(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Collections.ValidationText> validationTexts) { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Calling the constructor is deprecated, please use ValidationText.Create(string) o" +
-            "verload instead.")]
-        public ValidationText(string text) { }
         public int Count { get; }
         public string this[int index] { get; }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("ValidationText will be made immutable in future versions, please do not use the A" +
-            "dd(string) method.")]
-        public void Add(string text) { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("ValidationText will be made immutable in future versions, please do not use the C" +
-            "lear() method.")]
-        public void Clear() { }
         public System.Collections.Generic.IEnumerator<string> GetEnumerator() { }
         public string ToSingleLine(string? separator = ",") { }
         public static ReactiveUI.Validation.Collections.ValidationText Create(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Collections.ValidationText> validationTexts) { }
@@ -53,20 +34,11 @@ namespace ReactiveUI.Validation.Comparators
 namespace ReactiveUI.Validation.Components.Abstractions
 {
     public interface IPropertyValidationComponent : ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidationComponent { }
-    [System.Obsolete("Consider using the non-generic version of an IPropertyValidationComponent.")]
-    public interface IPropertyValidationComponent<TViewModel> : ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidationComponent { }
     public interface IValidatesProperties
     {
         System.Collections.Generic.IEnumerable<string> Properties { get; }
         int PropertyCount { get; }
         bool ContainsPropertyName(string propertyName, bool exclusively = false);
-    }
-    [System.Obsolete("Consider using the non-generic version of an IValidatesProperties.")]
-    public interface IValidatesProperties<TViewModel> : ReactiveUI.Validation.Components.Abstractions.IValidatesProperties
-    {
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Consider using the non-generic version of an IValidatesProperties.")]
-        bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> propertyExpression, bool exclusively = false);
     }
     public interface IValidationComponent
     {
@@ -77,7 +49,7 @@ namespace ReactiveUI.Validation.Components.Abstractions
 }
 namespace ReactiveUI.Validation.Components
 {
-    public abstract class BasePropertyValidation<TViewModel> : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, System.IDisposable
+    public abstract class BasePropertyValidation<TViewModel> : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, System.IDisposable
     {
         protected BasePropertyValidation() { }
         public bool IsValid { get; }
@@ -86,10 +58,6 @@ namespace ReactiveUI.Validation.Components
         public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
         protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidat" +
-            "ionComponent.")]
-        public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = false) { }
         public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
@@ -103,42 +71,7 @@ namespace ReactiveUI.Validation.Components
         protected override void Dispose(bool disposing) { }
         protected override System.IObservable<ReactiveUI.Validation.States.IValidationState> GetValidationChangeObservable() { }
     }
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    [System.Obsolete("Consider using ObservableValidation<TViewModel, bool> instead.")]
-    public abstract class ModelObservableValidationBase<TViewModel> : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, System.IDisposable
-    {
-        protected ModelObservableValidationBase(TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, ReactiveUI.Validation.Collections.ValidationText> messageFunc) { }
-        public bool IsValid { get; }
-        public System.Collections.Generic.IEnumerable<string> Properties { get; }
-        public int PropertyCount { get; }
-        public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
-        public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
-        protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidat" +
-            "ionComponent.")]
-        public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = false) { }
-        public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
-        public void Dispose() { }
-        protected virtual void Dispose(bool disposing) { }
-    }
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    [System.Obsolete("Consider using ObservableValidation<TViewModel, bool> instead.")]
-    public class ModelObservableValidation<TViewModel> : ReactiveUI.Validation.Components.ModelObservableValidationBase<TViewModel>
-    {
-        public ModelObservableValidation(TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, string> message) { }
-        public ModelObservableValidation(TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, string> messageFunc) { }
-        public ModelObservableValidation(TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> validityObservable, string message) { }
-    }
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    [System.Obsolete("Consider using ObservableValidation<TViewModel, bool, TViewModelProp> instead.")]
-    public class ModelObservableValidation<TViewModel, TViewModelProp> : ReactiveUI.Validation.Components.ModelObservableValidationBase<TViewModel>
-    {
-        public ModelObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, string> message) { }
-        public ModelObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModel, System.IObservable<bool>> validityObservable, System.Func<TViewModel, bool, string> messageFunc) { }
-        public ModelObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModel, System.IObservable<bool>> validityObservable, string message) { }
-    }
-    public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties<TViewModel>, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, System.IDisposable
+    public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, System.IDisposable
     {
         protected ObservableValidationBase(System.IObservable<ReactiveUI.Validation.States.IValidationState> observable) { }
         protected ObservableValidationBase(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, bool, ReactiveUI.Validation.Collections.ValidationText> messageFunc) { }
@@ -148,10 +81,6 @@ namespace ReactiveUI.Validation.Components
         public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
         protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Consider using the non-generic ContainsProperty of a non-generic IPropertyValidat" +
-            "ionComponent.")]
-        public bool ContainsProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property, bool exclusively = false) { }
         public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
@@ -205,22 +134,6 @@ namespace ReactiveUI.Validation.Extensions
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel>(this TViewModel viewModel, System.IObservable<ReactiveUI.Validation.States.IValidationState> validationObservable)
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Use the overload accepting just IObservable<bool> instead of Func<TViewModel, IOb" +
-            "servable<bool>>")]
-        public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel>(this TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> viewModelObservableProperty, System.Func<TViewModel, string> messageFunc)
-            where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("This overload is planned for future removal. Consider using either the overload t" +
-            "hat accepts a Func<TViewModel, string> as the messageFunc parameter, or the over" +
-            "load that accepts a string.")]
-        public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel>(this TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> viewModelObservableProperty, System.Func<TViewModel, bool, string> messageFunc)
-            where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Use the overload accepting just IObservable<bool> instead of Func<TViewModel, IOb" +
-            "servable<bool>>")]
-        public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel>(this TViewModel viewModel, System.Func<TViewModel, System.IObservable<bool>> viewModelObservableProperty, string message)
-            where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel>(this TViewModel viewModel, System.IObservable<bool> validationObservable, string message)
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TValue>(this TViewModel viewModel, System.IObservable<TValue> validationObservable)
@@ -229,22 +142,6 @@ namespace ReactiveUI.Validation.Extensions
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.IObservable<ReactiveUI.Validation.States.IValidationState> validationObservable)
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TValue>(this TViewModel viewModel, System.IObservable<TValue> validationObservable, System.Func<TValue, bool> isValidFunc, System.Func<TValue, string> messageFunc)
-            where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Use the overload accepting just IObservable<bool> instead of Func<TViewModel, IOb" +
-            "servable<bool>>")]
-        public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModel, System.IObservable<bool>> viewModelObservableProperty, System.Func<TViewModel, string> messageFunc)
-            where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("This overload is planned for future removal. Consider using either the overload t" +
-            "hat accepts a Func<TViewModel, string> as the messageFunc parameter, or the over" +
-            "load that accepts a string.")]
-        public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModel, System.IObservable<bool>> viewModelObservableProperty, System.Func<TViewModel, bool, string> messageFunc)
-            where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Use the overload accepting just IObservable<bool> instead of Func<TViewModel, IOb" +
-            "servable<bool>>")]
-        public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModel, System.IObservable<bool>> viewModelObservableProperty, string message)
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModel, TViewModelProp>(this TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.Func<TViewModelProp, bool> isPropertyValid, System.Func<TViewModelProp, string> message)
             where TViewModel : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
@@ -265,25 +162,9 @@ namespace ReactiveUI.Validation.Extensions
     public static class ValidationContextExtensions
     {
         public static System.IObservable<System.Collections.Generic.IList<ReactiveUI.Validation.States.IValidationState>> ObserveFor<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Since we support adding and removing validation rules dynamically, consider using" +
-            " either the ObserveFor extension method, or BindValidation.")]
-        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Since we support adding and removing validation rules dynamically, consider using" +
-            " either the ObserveFor extension method, or BindValidation.")]
-        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TProperty1, TProperty2>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> viewModelProperty2) { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("Since we support adding and removing validation rules dynamically, consider using" +
-            " either the ObserveFor extension method, or BindValidation.")]
-        public static System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent<TViewModel>> ResolveFor<TViewModel, TProperty1, TProperty2, TProperty3>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty1>> viewModelProperty1, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty2>> viewModelProperty2, System.Linq.Expressions.Expression<System.Func<TViewModel, TProperty3>> viewModelProperty3) { }
     }
     public static class ViewForExtensions
     {
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("This method is a part of ReactiveUI internals and will be removed from ReactiveUI" +
-            ".Validation public API soon.")]
-        public static System.IDisposable BindToDirect<TTarget, TValue>(System.IObservable<TValue> @this, TTarget target, System.Linq.Expressions.Expression viewExpression) { }
         public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel :  class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
@@ -291,12 +172,6 @@ namespace ReactiveUI.Validation.Extensions
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel :  class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
         public static System.IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null)
-            where TView : ReactiveUI.IViewFor<TViewModel>
-            where TViewModel :  class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("This method is no longer required, BindValidation now supports multiple validatio" +
-            "ns.")]
-        public static System.IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null)
             where TView : ReactiveUI.IViewFor<TViewModel>
             where TViewModel :  class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
     }
@@ -328,13 +203,6 @@ namespace ReactiveUI.Validation.Helpers
         public virtual System.Collections.IEnumerable GetErrors(string propertyName) { }
         protected void RaiseErrorsChanged(string propertyName = "") { }
     }
-    [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-    [System.Obsolete("The type parameters are no longer required. Use the non-generic version of Reacti" +
-        "veValidationObject.")]
-    public abstract class ReactiveValidationObject<TViewModel> : ReactiveUI.Validation.Helpers.ReactiveValidationObject
-    {
-        protected ReactiveValidationObject(System.Reactive.Concurrency.IScheduler? scheduler = null, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null) { }
-    }
     public class ValidationHelper : ReactiveUI.ReactiveObject, System.IDisposable
     {
         public ValidationHelper(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation, System.IDisposable? cleanup = null) { }
@@ -357,15 +225,6 @@ namespace ReactiveUI.Validation.States
         public static readonly ReactiveUI.Validation.States.ValidationState Valid;
         public ValidationState(bool isValid, ReactiveUI.Validation.Collections.ValidationText text) { }
         public ValidationState(bool isValid, string text) { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("This constructor overload is going to be removed soon.")]
-        public ValidationState(bool isValid, ReactiveUI.Validation.Collections.ValidationText text, ReactiveUI.Validation.Components.Abstractions.IValidationComponent component) { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("This constructor overload is going to be removed soon.")]
-        public ValidationState(bool isValid, string text, ReactiveUI.Validation.Components.Abstractions.IValidationComponent component) { }
-        [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-        [System.Obsolete("This property will be removed soon.")]
-        public ReactiveUI.Validation.Components.Abstractions.IValidationComponent? Component { get; }
         public bool IsValid { get; }
         public ReactiveUI.Validation.Collections.ValidationText Text { get; }
     }
