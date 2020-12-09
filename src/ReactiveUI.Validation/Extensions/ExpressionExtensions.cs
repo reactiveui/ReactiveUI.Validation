@@ -3,6 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Linq.Expressions;
 using System.Text;
 
@@ -35,7 +36,10 @@ namespace ReactiveUI.Validation.Extensions
 
                 path.Insert(0, memberExpression.Member.Name);
 
-                expression = memberExpression.Expression;
+                expression = memberExpression.Expression ??
+                             throw new ArgumentException(
+                                 $"Unable to obtain parent expression of {memberExpression.Member.Name}",
+                                 nameof(expression));
             }
 
             return path.ToString();

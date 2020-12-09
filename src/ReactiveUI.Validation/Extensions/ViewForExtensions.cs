@@ -209,7 +209,7 @@ namespace ReactiveUI.Validation.Extensions
             }
 
             var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo())!;
-            if (viewExpression.GetParent().NodeType == ExpressionType.Parameter)
+            if (viewExpression.GetParent()?.NodeType == ExpressionType.Parameter)
             {
                 return @this.Subscribe(
                     x => setter(target, x, viewExpression.GetArgumentsArray()),

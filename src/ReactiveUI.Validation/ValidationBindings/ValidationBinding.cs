@@ -368,7 +368,7 @@ namespace ReactiveUI.Validation.ValidationBindings
             var viewExpression = Reflection.Rewrite(viewProperty.Body);
             var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo())!;
 
-            if (viewExpression.GetParent().NodeType == ExpressionType.Parameter)
+            if (viewExpression.GetParent()?.NodeType == ExpressionType.Parameter)
             {
                 return valueChange
                     .Do(
