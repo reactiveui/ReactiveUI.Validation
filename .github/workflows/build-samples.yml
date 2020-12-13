@@ -11,7 +11,7 @@ on:
       - 'samples/**'
 
 jobs:
-  build:
+  build-samples:
     strategy:
       matrix:
         configuration: [Debug, Release]
@@ -41,12 +41,12 @@ jobs:
 
     - name: Restore/Build the sample
       run: msbuild LoginApp.sln /t:restore,build /p:Configuration=$env:Configuration
-      working-directory: Sample
+      working-directory: samples
       env:
         Configuration: ${{ matrix.configuration }}
 
     # Execute all unit tests in the solution
     - name: Execute unit tests
-      working-directory: Sample
+      working-directory: samples
       run: dotnet test LoginApp.sln
 
