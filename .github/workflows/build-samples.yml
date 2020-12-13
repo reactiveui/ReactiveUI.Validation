@@ -23,6 +23,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
+        lfs: true
 
     # Install the .NET Core workload
     - name: Install .NET Core 3.1.x
@@ -44,9 +45,3 @@ jobs:
       working-directory: samples
       env:
         Configuration: ${{ matrix.configuration }}
-
-    # Execute all unit tests in the solution
-    - name: Execute unit tests
-      working-directory: samples
-      run: dotnet test LoginApp.sln
-
