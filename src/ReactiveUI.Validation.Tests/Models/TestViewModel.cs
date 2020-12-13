@@ -47,6 +47,6 @@ namespace ReactiveUI.Validation.Tests.Models
         }
 
         /// <inheritdoc/>
-        public ValidationContext ValidationContext { get; } = new ValidationContext(ImmediateScheduler.Instance);
+        public ValidationContext ValidationContext { get; } = new(ImmediateScheduler.Instance);
     }
 }

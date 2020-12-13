@@ -7,7 +7,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
@@ -19,7 +18,6 @@ using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
-using ReactiveUI.Validation.States;
 using Splat;
 
 namespace ReactiveUI.Validation.Helpers
@@ -29,7 +27,7 @@ namespace ReactiveUI.Validation.Helpers
     /// </summary>
     public abstract class ReactiveValidationObject : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
     {
-        private readonly HashSet<string> _mentionedPropertyNames = new HashSet<string>();
+        private readonly HashSet<string> _mentionedPropertyNames = new();
         private readonly IValidationTextFormatter<string> _formatter;
         private bool _hasErrors;
 
@@ -85,8 +83,8 @@ namespace ReactiveUI.Validation.Helpers
         /// <param name="propertyName">Property to search error notifications for.</param>
         /// <returns>A list of error messages, usually strings.</returns>
         /// <inheritdoc />
-        public virtual IEnumerable GetErrors(string propertyName) =>
-            string.IsNullOrEmpty(propertyName)
+        public virtual IEnumerable GetErrors(string? propertyName) =>
+            propertyName is null || string.IsNullOrEmpty(propertyName)
                 ? SelectInvalidPropertyValidations()
                     .Select(state => _formatter.Format(state.Text ?? ValidationText.None))
                     .ToArray()

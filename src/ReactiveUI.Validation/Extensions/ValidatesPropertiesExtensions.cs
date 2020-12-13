@@ -29,7 +29,7 @@ namespace ReactiveUI.Validation.Extensions
             Expression<Func<TViewModel, TProp>> propertyExpression,
             bool exclusively = false)
         {
-            if (validatesProperties == null)
+            if (validatesProperties is null)
             {
                 throw new ArgumentNullException(nameof(validatesProperties));
             }

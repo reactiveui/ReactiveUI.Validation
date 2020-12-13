@@ -6,13 +6,11 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
-using System.Reactive.Linq;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.ValidationBindings;
-using Splat;
 
 namespace ReactiveUI.Validation.Extensions
 {

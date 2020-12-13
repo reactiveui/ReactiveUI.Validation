@@ -41,7 +41,7 @@ namespace ReactiveUI.Validation.Components
             IObservable<TValue> observable,
             Func<TValue, bool> isValidFunc,
             string message)
-            : this(viewModel, viewModelProperty, observable, (mv, state) => isValidFunc(state), (vm, state) => message)
+            : this(viewModel, viewModelProperty, observable, (_, state) => isValidFunc(state), (_, _) => message)
         {
         }
 
@@ -59,7 +59,7 @@ namespace ReactiveUI.Validation.Components
             IObservable<TValue> observable,
             Func<TViewModel, TValue, bool> isValidFunc,
             string message)
-            : this(viewModel, viewModelProperty, observable, isValidFunc, (vm, state) => message)
+            : this(viewModel, viewModelProperty, observable, isValidFunc, (_, _) => message)
         {
         }
 
@@ -77,7 +77,7 @@ namespace ReactiveUI.Validation.Components
             IObservable<TValue> observable,
             Func<TValue, bool> isValidFunc,
             Func<TValue, string> messageFunc)
-            : this(viewModel, viewModelProperty, observable, (vm, state) => isValidFunc(state), (vm, state) =>
+            : this(viewModel, viewModelProperty, observable, (_, state) => isValidFunc(state), (_, state) =>
                 messageFunc(state))
         {
         }
@@ -151,7 +151,7 @@ namespace ReactiveUI.Validation.Components
             IObservable<TValue> observable,
             Func<TValue, bool> isValidFunc,
             string message)
-            : this(viewModel, observable, (mv, state) => isValidFunc(state), (vm, state) => message)
+            : this(viewModel, observable, (_, state) => isValidFunc(state), (_, _) => message)
         {
         }
 
@@ -167,7 +167,7 @@ namespace ReactiveUI.Validation.Components
             IObservable<TValue> observable,
             Func<TViewModel, TValue, bool> isValidFunc,
             string message)
-            : this(viewModel, observable, isValidFunc, (vm, state) => message)
+            : this(viewModel, observable, isValidFunc, (_, _) => message)
         {
         }
 
@@ -183,7 +183,7 @@ namespace ReactiveUI.Validation.Components
             IObservable<TValue> observable,
             Func<TValue, bool> isValidFunc,
             Func<TValue, string> messageFunc)
-            : this(viewModel, observable, (vm, state) => isValidFunc(state), (vm, state) => messageFunc(state))
+            : this(viewModel, observable, (_, state) => isValidFunc(state), (_, state) => messageFunc(state))
         {
         }
 
@@ -240,9 +240,9 @@ namespace ReactiveUI.Validation.Components
     public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObject, IDisposable, IPropertyValidationComponent
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
-        private readonly ReplaySubject<IValidationState> _isValidSubject = new ReplaySubject<IValidationState>(1);
-        private readonly HashSet<string> _propertyNames = new HashSet<string>();
-        private readonly CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly ReplaySubject<IValidationState> _isValidSubject = new(1);
+        private readonly HashSet<string> _propertyNames = new();
+        private readonly CompositeDisposable _disposables = new();
         private readonly IConnectableObservable<IValidationState> _validityConnectedObservable;
         private bool _isActive;
         private bool _isValid;

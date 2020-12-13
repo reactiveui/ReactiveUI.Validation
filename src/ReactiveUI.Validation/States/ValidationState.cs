@@ -4,9 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using ReactiveUI.Validation.Collections;
-using ReactiveUI.Validation.Components.Abstractions;
 
 namespace ReactiveUI.Validation.States
 {
@@ -18,7 +16,7 @@ namespace ReactiveUI.Validation.States
         /// <summary>
         /// Indicates a valid state.
         /// </summary>
-        public static readonly ValidationState Valid = new ValidationState(true, string.Empty);
+        public static readonly ValidationState Valid = new(true, string.Empty);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationState"/> class.

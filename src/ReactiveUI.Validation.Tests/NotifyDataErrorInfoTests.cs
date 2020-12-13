@@ -6,7 +6,6 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Reactive.Linq;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Extensions;
@@ -33,7 +32,7 @@ namespace ReactiveUI.Validation.Tests
             var viewModel = new IndeiTestViewModel();
             var view = new IndeiTestView(viewModel);
 
-            var firstValidation = new BasePropertyValidation<IndeiTestViewModel, string>(
+            using var firstValidation = new BasePropertyValidation<IndeiTestViewModel, string>(
                 viewModel,
                 vm => vm.Name,
                 s => !string.IsNullOrEmpty(s),
@@ -63,7 +62,7 @@ namespace ReactiveUI.Validation.Tests
             var viewModel = new IndeiTestViewModel();
             var view = new IndeiTestView(viewModel);
 
-            var firstValidation = new BasePropertyValidation<IndeiTestViewModel, string>(
+            using var firstValidation = new BasePropertyValidation<IndeiTestViewModel, string>(
                 viewModel,
                 vm => vm.Name,
                 s => !string.IsNullOrEmpty(s),
@@ -109,9 +108,9 @@ namespace ReactiveUI.Validation.Tests
             var viewModel = new IndeiTestViewModel();
 
             DataErrorsChangedEventArgs arguments = null;
-            viewModel.ErrorsChanged += (sender, args) => arguments = args;
+            viewModel.ErrorsChanged += (_, args) => arguments = args;
 
-            var firstValidation = new BasePropertyValidation<IndeiTestViewModel, string>(
+            using var firstValidation = new BasePropertyValidation<IndeiTestViewModel, string>(
                 viewModel,
                 vm => vm.Name,
                 s => !string.IsNullOrEmpty(s),
@@ -175,7 +174,7 @@ namespace ReactiveUI.Validation.Tests
             var viewModel = new IndeiTestViewModel();
             viewModel.ValidationRule(
                 m => m.Name,
-                m => m != null,
+                m => m is not null,
                 "Name shouldn't be null.");
 
             viewModel.ValidationRule(
@@ -197,19 +196,19 @@ namespace ReactiveUI.Validation.Tests
             var viewModel = new IndeiTestViewModel();
             viewModel.ValidationRule(
                 m => m.Name,
-                m => m != null,
+                m => m is not null,
                 "Name shouldn't be null.");
 
             viewModel.ValidationRule(
                 m => m.OtherName,
-                m => m != null,
+                m => m is not null,
                 "Other name shouldn't be null.");
 
             Assert.Single(viewModel.GetErrors(nameof(viewModel.Name)));
             Assert.Single(viewModel.GetErrors(nameof(viewModel.OtherName)));
 
             var arguments = new List<DataErrorsChangedEventArgs>();
-            viewModel.ErrorsChanged += (sender, args) => arguments.Add(args);
+            viewModel.ErrorsChanged += (_, args) => arguments.Add(args);
             viewModel.Name = "Josuke";
             viewModel.OtherName = "Jotaro";
 
@@ -237,7 +236,7 @@ namespace ReactiveUI.Validation.Tests
         {
             var view = new IndeiTestView(new IndeiTestViewModel { Name = string.Empty });
             var arguments = new List<DataErrorsChangedEventArgs>();
-            view.ViewModel.ErrorsChanged += (sender, args) => arguments.Add(args);
+            view.ViewModel.ErrorsChanged += (_, args) => arguments.Add(args);
 
             var helper = view
                 .ViewModel
@@ -271,7 +270,7 @@ namespace ReactiveUI.Validation.Tests
             var view = new IndeiTestView(new IndeiTestViewModel(formatter) { Name = string.Empty });
             var arguments = new List<DataErrorsChangedEventArgs>();
 
-            view.ViewModel.ErrorsChanged += (sender, args) => arguments.Add(args);
+            view.ViewModel.ErrorsChanged += (_, args) => arguments.Add(args);
             view.ViewModel.ValidationRule(
                 viewModel => viewModel.Name,
                 name => !string.IsNullOrWhiteSpace(name),

@@ -73,7 +73,7 @@ namespace ReactiveUI.Validation.ValidationBindings
 
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
-                .Where(vm => vm != null)
+                .Where(vm => vm is not null)
                 .SelectMany(vm => vm!.ValidationContext.ObserveFor(viewModelProperty, strict))
                 .Select(
                     states => states
@@ -123,14 +123,14 @@ namespace ReactiveUI.Validation.ValidationBindings
                 throw new ArgumentNullException(nameof(action));
             }
 
-            if (formatter == null)
+            if (formatter is null)
             {
                 throw new ArgumentNullException(nameof(formatter));
             }
 
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
-                .Where(vm => vm != null)
+                .Where(vm => vm is not null)
                 .SelectMany(vm => vm!.ValidationContext.ObserveFor(viewModelProperty, strict))
                 .Do(states => action(states, states
                     .Select(state => formatter.Format(state.Text))
@@ -183,11 +183,11 @@ namespace ReactiveUI.Validation.ValidationBindings
 
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
-                .Where(vm => vm != null)
+                .Where(vm => vm is not null)
                 .Select(
                     viewModel => viewModel
                         .WhenAnyValue(viewModelHelperProperty)
-                        .SelectMany(helper => helper != null
+                        .SelectMany(helper => helper is not null
                             ? helper.ValidationChanged
                             : Observable.Return(ValidationState.Valid)))
                 .Switch()
@@ -240,11 +240,11 @@ namespace ReactiveUI.Validation.ValidationBindings
 
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
-                .Where(vm => vm != null)
+                .Where(vm => vm is not null)
                 .Select(
                     viewModel => viewModel
                         .WhenAnyValue(viewModelHelperProperty)
-                        .SelectMany(helper => helper != null
+                        .SelectMany(helper => helper is not null
                             ? helper.ValidationChanged
                             : Observable.Return(ValidationState.Valid)))
                 .Switch()
@@ -290,7 +290,7 @@ namespace ReactiveUI.Validation.ValidationBindings
 
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
-                .Where(vm => vm != null)
+                .Where(vm => vm is not null)
                 .SelectMany(vm => vm!.ValidationContext.ValidationStatusChange)
                 .Do(state => action(formatter.Format(state.Text)))
                 .Select(_ => Unit.Default);
@@ -334,7 +334,7 @@ namespace ReactiveUI.Validation.ValidationBindings
 
             var vcObs = view
                 .WhenAnyValue(v => v.ViewModel)
-                .Where(vm => vm != null)
+                .Where(vm => vm is not null)
                 .SelectMany(vm => vm!.ValidationContext.ValidationStatusChange)
                 .Select(vc => formatter.Format(vc.Text));
 
@@ -343,11 +343,8 @@ namespace ReactiveUI.Validation.ValidationBindings
         }
 
         /// <inheritdoc/>
-        public void Dispose()
-        {
-            // Dispose of unmanaged resources.
+        public void Dispose() =>
             Dispose(true);
-        }
 
         /// <summary>
         /// Creates a binding to a View property.
@@ -374,7 +371,7 @@ namespace ReactiveUI.Validation.ValidationBindings
                     .Do(
                         x => setter(target, x, viewExpression.GetArgumentsArray()),
                         ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"))
-                    .Select(v => Unit.Default);
+                    .Select(_ => Unit.Default);
             }
 
             var bindInfo = valueChange.CombineLatest(
@@ -382,7 +379,7 @@ namespace ReactiveUI.Validation.ValidationBindings
                 (val, host) => new { val, host });
 
             return bindInfo
-                .Where(x => x.host != null)
+                .Where(x => x.host is not null)
                 .Do(
                     x => setter(x.host, x.val, viewExpression.GetArgumentsArray()),
                     ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"))

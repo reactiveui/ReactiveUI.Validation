@@ -14,10 +14,7 @@ namespace ReactiveUI.Validation.Tests.Models
         /// Initializes a new instance of the <see cref="SourceDestinationView"/> class.
         /// </summary>
         /// <param name="viewModel">ViewModel instance of type <see cref="SourceDestinationViewModel"/>.</param>
-        public SourceDestinationView(SourceDestinationViewModel viewModel)
-        {
-            ViewModel = viewModel;
-        }
+        public SourceDestinationView(SourceDestinationViewModel viewModel) => ViewModel = viewModel;
 
         /// <inheritdoc/>
         object IViewFor.ViewModel

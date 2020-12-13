@@ -4,7 +4,6 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
@@ -508,7 +507,7 @@ namespace ReactiveUI.Validation.Extensions
         public static IObservable<bool> IsValid<TViewModel>(this TViewModel viewModel)
             where TViewModel : IReactiveObject, IValidatableViewModel
         {
-            if (viewModel == null)
+            if (viewModel is null)
             {
                 throw new ArgumentNullException(nameof(viewModel));
             }

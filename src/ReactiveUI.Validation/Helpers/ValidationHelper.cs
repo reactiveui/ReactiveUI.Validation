@@ -4,8 +4,6 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
@@ -41,7 +39,7 @@ namespace ReactiveUI.Validation.Helpers
 
             _message = _validation.ValidationStatusChange
                 .Select(v => v.Text)
-                .ToProperty<ValidationHelper, ValidationText>(this, nameof(Message));
+                .ToProperty(this, nameof(Message));
         }
 
         /// <summary>
@@ -52,7 +50,7 @@ namespace ReactiveUI.Validation.Helpers
         /// <summary>
         /// Gets the current (optional) validation message.
         /// </summary>
-        public ValidationText? Message => _message.Value;
+        public ValidationText Message => _message.Value;
 
         /// <summary>
         /// Gets the observable for validation state changes.
@@ -75,12 +73,14 @@ namespace ReactiveUI.Validation.Helpers
         /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (!disposing)
             {
-                _isValid.Dispose();
-                _message.Dispose();
-                _cleanup?.Dispose();
+                return;
             }
+
+            _isValid.Dispose();
+            _message.Dispose();
+            _cleanup?.Dispose();
         }
     }
 }

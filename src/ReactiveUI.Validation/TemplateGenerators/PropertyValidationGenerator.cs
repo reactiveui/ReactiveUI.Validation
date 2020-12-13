@@ -35,7 +35,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Represents the current value.
         /// </summary>
-        private readonly Subject<(TProperty1, TProperty2)> _valueSubject = new Subject<(TProperty1, TProperty2)>();
+        private readonly Subject<(TProperty1, TProperty2)> _valueSubject = new();
 
         /// <summary>
         /// The validation message factory.
@@ -52,7 +52,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// </summary>
         private readonly Func<(TProperty1, TProperty2), bool> _isValidFunc;
 
-        private CompositeDisposable _disposables = new CompositeDisposable();
+        private CompositeDisposable _disposables = new();
 
         /// <summary>
         /// Are we connected.
@@ -145,10 +145,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <param name="params">ViewModel properties.</param>
         /// <param name="isValid">Whether the property is valid or not.</param>
         /// <returns>Returns the <see cref="ValidationText"/> object.</returns>
-        private ValidationText GetMessage((TProperty1, TProperty2) @params, bool isValid)
-        {
-            return _message(@params, isValid);
-        }
+        private ValidationText GetMessage((TProperty1, TProperty2) @params, bool isValid) => _message(@params, isValid);
 
         /// <summary>
         /// Activate the connection to ensure we start seeing validations.
@@ -172,7 +169,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Represents the current value.
         /// </summary>
-        private readonly Subject<(TProperty1, TProperty2, TProperty3)> _valueSubject = new Subject<(TProperty1, TProperty2, TProperty3)>();
+        private readonly Subject<(TProperty1, TProperty2, TProperty3)> _valueSubject = new();
 
         /// <summary>
         /// The validation message factory.
@@ -189,7 +186,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// </summary>
         private readonly Func<(TProperty1, TProperty2, TProperty3), bool> _isValidFunc;
 
-        private CompositeDisposable _disposables = new CompositeDisposable();
+        private CompositeDisposable _disposables = new();
 
         /// <summary>
         /// Are we connected.
@@ -291,10 +288,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <param name="params">ViewModel properties.</param>
         /// <param name="isValid">Whether the property is valid or not.</param>
         /// <returns>Returns the <see cref="ValidationText"/> object.</returns>
-        private ValidationText GetMessage((TProperty1, TProperty2, TProperty3) @params, bool isValid)
-        {
-            return _message(@params, isValid);
-        }
+        private ValidationText GetMessage((TProperty1, TProperty2, TProperty3) @params, bool isValid) => _message(@params, isValid);
 
         /// <summary>
         /// Activate the connection to ensure we start seeing validations.
@@ -318,7 +312,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Represents the current value.
         /// </summary>
-        private readonly Subject<(TProperty1, TProperty2, TProperty3, TProperty4)> _valueSubject = new Subject<(TProperty1, TProperty2, TProperty3, TProperty4)>();
+        private readonly Subject<(TProperty1, TProperty2, TProperty3, TProperty4)> _valueSubject = new();
 
         /// <summary>
         /// The validation message factory.
@@ -335,7 +329,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// </summary>
         private readonly Func<(TProperty1, TProperty2, TProperty3, TProperty4), bool> _isValidFunc;
 
-        private CompositeDisposable _disposables = new CompositeDisposable();
+        private CompositeDisposable _disposables = new();
 
         /// <summary>
         /// Are we connected.
@@ -446,10 +440,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <param name="params">ViewModel properties.</param>
         /// <param name="isValid">Whether the property is valid or not.</param>
         /// <returns>Returns the <see cref="ValidationText"/> object.</returns>
-        private ValidationText GetMessage((TProperty1, TProperty2, TProperty3, TProperty4) @params, bool isValid)
-        {
-            return _message(@params, isValid);
-        }
+        private ValidationText GetMessage((TProperty1, TProperty2, TProperty3, TProperty4) @params, bool isValid) => _message(@params, isValid);
 
         /// <summary>
         /// Activate the connection to ensure we start seeing validations.
@@ -473,7 +464,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Represents the current value.
         /// </summary>
-        private readonly Subject<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5)> _valueSubject = new Subject<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5)>();
+        private readonly Subject<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5)> _valueSubject = new();
 
         /// <summary>
         /// The validation message factory.
@@ -490,7 +481,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// </summary>
         private readonly Func<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5), bool> _isValidFunc;
 
-        private CompositeDisposable _disposables = new CompositeDisposable();
+        private CompositeDisposable _disposables = new();
 
         /// <summary>
         /// Are we connected.
@@ -610,10 +601,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <param name="params">ViewModel properties.</param>
         /// <param name="isValid">Whether the property is valid or not.</param>
         /// <returns>Returns the <see cref="ValidationText"/> object.</returns>
-        private ValidationText GetMessage((TProperty1, TProperty2, TProperty3, TProperty4, TProperty5) @params, bool isValid)
-        {
-            return _message(@params, isValid);
-        }
+        private ValidationText GetMessage((TProperty1, TProperty2, TProperty3, TProperty4, TProperty5) @params, bool isValid) => _message(@params, isValid);
 
         /// <summary>
         /// Activate the connection to ensure we start seeing validations.
@@ -637,7 +625,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <summary>
         /// Represents the current value.
         /// </summary>
-        private readonly Subject<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6)> _valueSubject = new Subject<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6)>();
+        private readonly Subject<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6)> _valueSubject = new();
 
         /// <summary>
         /// The validation message factory.
@@ -654,7 +642,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// </summary>
         private readonly Func<(TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6), bool> _isValidFunc;
 
-        private CompositeDisposable _disposables = new CompositeDisposable();
+        private CompositeDisposable _disposables = new();
 
         /// <summary>
         /// Are we connected.
@@ -783,10 +771,7 @@ namespace ReactiveUI.Validation.TemplateGenerators
         /// <param name="params">ViewModel properties.</param>
         /// <param name="isValid">Whether the property is valid or not.</param>
         /// <returns>Returns the <see cref="ValidationText"/> object.</returns>
-        private ValidationText GetMessage((TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6) @params, bool isValid)
-        {
-            return _message(@params, isValid);
-        }
+        private ValidationText GetMessage((TProperty1, TProperty2, TProperty3, TProperty4, TProperty5, TProperty6) @params, bool isValid) => _message(@params, isValid);
 
         /// <summary>
         /// Activate the connection to ensure we start seeing validations.

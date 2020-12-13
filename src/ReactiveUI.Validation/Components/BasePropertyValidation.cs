@@ -28,9 +28,9 @@ namespace ReactiveUI.Validation.Components
     public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
-        private readonly ReplaySubject<bool> _isValidSubject = new ReplaySubject<bool>(1);
-        private readonly HashSet<string> _propertyNames = new HashSet<string>();
-        private readonly CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly ReplaySubject<bool> _isValidSubject = new(1);
+        private readonly HashSet<string> _propertyNames = new();
+        private readonly CompositeDisposable _disposables = new();
         private IConnectableObservable<IValidationState>? _connectedChange;
         private bool _isConnected;
         private bool _isValid;
@@ -38,12 +38,10 @@ namespace ReactiveUI.Validation.Components
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BasePropertyValidation{TViewModel}"/> class.
+        /// Subscribe to the valid subject so we can assign the validity.
         /// </summary>
-        protected BasePropertyValidation()
-        {
-            // subscribe to the valid subject so we can assign the validity
+        protected BasePropertyValidation() =>
             _isValidSubject.Subscribe(v => _isValid = v).DisposeWith(_disposables);
-        }
 
         /// <inheritdoc/>
         public int PropertyCount => _propertyNames.Count;
@@ -70,7 +68,7 @@ namespace ReactiveUI.Validation.Components
             {
                 Activate();
 
-                if (_connectedChange == null)
+                if (_connectedChange is null)
                 {
                     throw new InvalidOperationException("ConnectedChange observable has not been initialized properly.");
                 }
@@ -100,12 +98,10 @@ namespace ReactiveUI.Validation.Components
         }
 
         /// <inheritdoc/>
-        public bool ContainsPropertyName(string propertyName, bool exclusively = false)
-        {
-            return exclusively
+        public bool ContainsPropertyName(string propertyName, bool exclusively = false) =>
+            exclusively
                 ? _propertyNames.Contains(propertyName) && _propertyNames.Count == 1
                 : _propertyNames.Contains(propertyName);
-        }
 
         /// <summary>
         /// Adds a property to the list of this which this validation is associated with.
@@ -171,11 +167,11 @@ namespace ReactiveUI.Validation.Components
     public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : BasePropertyValidation<TViewModel>
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
-        private readonly ReplaySubject<TViewModelProperty> _valueSubject = new ReplaySubject<TViewModelProperty>(1);
+        private readonly ReplaySubject<TViewModelProperty> _valueSubject = new(1);
         private readonly IConnectableObservable<TViewModelProperty> _valueConnectedObservable;
         private readonly Func<TViewModelProperty, bool, ValidationText> _message;
         private readonly Func<TViewModelProperty, bool> _isValidFunc;
-        private readonly CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly CompositeDisposable _disposables = new();
         private bool _isConnected;
 
         /// <summary>
@@ -190,7 +186,7 @@ namespace ReactiveUI.Validation.Components
             Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
             Func<TViewModelProperty, bool> isValidFunc,
             string message)
-            : this(viewModel, viewModelProperty, isValidFunc, (p, v) => v ? ValidationText.Empty : ValidationText.Create(message))
+            : this(viewModel, viewModelProperty, isValidFunc, (_, v) => v ? ValidationText.Empty : ValidationText.Create(message))
         {
         }
 
