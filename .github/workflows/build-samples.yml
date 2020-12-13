@@ -3,13 +3,15 @@ name: Sample Build
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'samples/**'
   pull_request:
     branches: [ main ]
+    paths:
+      - 'samples/**'
 
 jobs:
-
   build:
-
     strategy:
       matrix:
         configuration: [Debug, Release]
@@ -23,15 +25,15 @@ jobs:
         fetch-depth: 0
 
     # Install the .NET Core workload
-    - name: Install .NET Core 3.x
+    - name: Install .NET Core 3.1.x
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.x
+        dotnet-version: 3.1.x
 
-    - name: Install .NET 5.x
+    - name: Install .NET 5.0.x
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.x
+        dotnet-version: 5.0.x
 
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
