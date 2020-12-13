@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Reactive.Subjects;
 using ReactiveUI.Validation.Components;
-using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.Tests.Models;
@@ -22,7 +21,7 @@ namespace ReactiveUI.Validation.Tests
     public class ObservableValidationTests
     {
         private readonly ISubject<bool> _validState = new ReplaySubject<bool>(1);
-        private readonly TestViewModel _validModel = new TestViewModel
+        private readonly TestViewModel _validModel = new()
         {
             Name = "name",
             Name2 = "name2"
@@ -36,7 +35,7 @@ namespace ReactiveUI.Validation.Tests
         {
             _validState.OnNext(true);
 
-            var validation = new ObservableValidation<TestViewModel, bool>(
+            using var validation = new ObservableValidation<TestViewModel, bool>(
                 _validModel,
                 _validState,
                 valid => valid,
@@ -53,7 +52,7 @@ namespace ReactiveUI.Validation.Tests
         {
             _validState.OnNext(true);
 
-            var propertyValidation = new ObservableValidation<TestViewModel, bool, string>(
+            using var propertyValidation = new ObservableValidation<TestViewModel, bool, string>(
                 _validModel,
                 state => state.Name,
                 _validState,
@@ -69,7 +68,7 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void ObservableToInvalidTest()
         {
-            var validation = new ObservableValidation<TestViewModel, bool>(
+            using var validation = new ObservableValidation<TestViewModel, bool>(
                 _validModel,
                 _validState,
                 valid => valid,
@@ -89,7 +88,7 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void ObservableToInvalidOfPropertyValidationTest()
         {
-            var propertyValidation = new ObservableValidation<TestViewModel, bool, string>(
+            using var propertyValidation = new ObservableValidation<TestViewModel, bool, string>(
                 _validModel,
                 state => state.Name,
                 _validState,
@@ -172,7 +171,7 @@ namespace ReactiveUI.Validation.Tests
         public void ShouldResolveTypedProperties()
         {
             var viewModel = new TestViewModel { Name = string.Empty };
-            IPropertyValidationComponent component =
+            using var component =
                 new ObservableValidation<TestViewModel, string, string>(
                     viewModel,
                     model => model.Name,
@@ -193,9 +192,9 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void ShouldSupportMinimalObservableValidation()
         {
-            var stream = new Subject<IValidationState>();
+            using var stream = new Subject<IValidationState>();
             var arguments = new List<IValidationState>();
-            var component = new ObservableValidation<TestViewModel, bool>(stream);
+            using var component = new ObservableValidation<TestViewModel, bool>(stream);
             component.ValidationStatusChange.Subscribe(arguments.Add);
             stream.OnNext(ValidationState.Valid);
 

@@ -45,7 +45,7 @@ namespace ReactiveUI.Validation.Tests
             view.ViewModel.ValidationRule(
                 vm => vm.Name,
                 s => s.Length > minimumLength,
-                s => minimumLengthErrorMessage);
+                _ => minimumLengthErrorMessage);
 
             view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
             view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
@@ -321,8 +321,8 @@ namespace ReactiveUI.Validation.Tests
         {
             const string nameValidationError = "Name should not be empty.";
             var view = new TestView(new TestViewModel { Name = string.Empty });
-            var outerContext = new ValidationContext(ImmediateScheduler.Instance);
-            var validation = new BasePropertyValidation<TestViewModel, string>(
+            using var outerContext = new ValidationContext(ImmediateScheduler.Instance);
+            using var validation = new BasePropertyValidation<TestViewModel, string>(
                 view.ViewModel,
                 vm => vm.Name,
                 name => !string.IsNullOrWhiteSpace(name),
@@ -668,7 +668,7 @@ namespace ReactiveUI.Validation.Tests
             const string viewModelIsBlockedMessage = "View model is blocked.";
             const string nameErrorMessage = "Name shouldn't be empty.";
             var view = new TestView(new TestViewModel { Name = string.Empty });
-            var isViewModelBlocked = new ReplaySubject<bool>(1);
+            using var isViewModelBlocked = new ReplaySubject<bool>(1);
             isViewModelBlocked.OnNext(true);
 
             // Create IObservable<IValidationState>
@@ -715,7 +715,7 @@ namespace ReactiveUI.Validation.Tests
             const string viewModelIsBlockedMessage = "View model is blocked.";
             const string nameErrorMessage = "Name shouldn't be empty.";
             var view = new TestView(new TestViewModel { Name = string.Empty });
-            var isViewModelBlocked = new ReplaySubject<bool>(1);
+            using var isViewModelBlocked = new ReplaySubject<bool>(1);
             isViewModelBlocked.OnNext(true);
 
             // Use the observable directly in the rules, which use the generic version of the ex

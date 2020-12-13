@@ -23,10 +23,7 @@ namespace ReactiveUI.Validation.Tests.Models
         /// Initializes a new instance of the <see cref="TestView"/> class.
         /// </summary>
         /// <param name="viewModel">ViewModel instance of type <see cref="TestViewModel"/>.</param>
-        public TestView(TestViewModel viewModel)
-        {
-            ViewModel = viewModel;
-        }
+        public TestView(TestViewModel viewModel) => ViewModel = viewModel;
 
         /// <inheritdoc/>
         object IViewFor.ViewModel
@@ -70,6 +67,6 @@ namespace ReactiveUI.Validation.Tests.Models
         /// <summary>
         /// Gets the error label which is represented by a container.
         /// </summary>
-        public TestControl NameErrorContainer { get; } = new TestControl();
+        public TestControl NameErrorContainer { get; } = new();
     }
 }

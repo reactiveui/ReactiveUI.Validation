@@ -34,16 +34,16 @@ namespace ReactiveUI.Validation.Contexts
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Field _disposables disposes the items.")]
     public class ValidationContext : ReactiveObject, IDisposable, IValidationComponent
     {
-        private readonly SourceList<IValidationComponent> _validationSource = new SourceList<IValidationComponent>();
-        private readonly ReplaySubject<IValidationState> _validationStatusChange = new ReplaySubject<IValidationState>(1);
-        private readonly ReplaySubject<bool> _validSubject = new ReplaySubject<bool>(1);
+        private readonly SourceList<IValidationComponent> _validationSource = new();
+        private readonly ReplaySubject<IValidationState> _validationStatusChange = new(1);
+        private readonly ReplaySubject<bool> _validSubject = new(1);
 
         private readonly ReadOnlyObservableCollection<IValidationComponent> _validations;
         private readonly IConnectableObservable<bool> _validationConnectable;
         private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
         private readonly ObservableAsPropertyHelper<bool> _isValid;
 
-        private readonly CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly CompositeDisposable _disposables = new();
         private bool _isActive;
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace ReactiveUI.Validation.Contexts
         /// </returns>
         private ValidationText BuildText() =>
             ValidationText.Create(_validations
-                .Where(p => !p.IsValid && p.Text != null)
+                .Where(p => !p.IsValid && p.Text is not null)
                 .Select(p => p.Text!));
     }
 }

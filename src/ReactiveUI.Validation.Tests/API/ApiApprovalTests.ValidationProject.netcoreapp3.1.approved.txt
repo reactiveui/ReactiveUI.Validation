@@ -17,9 +17,9 @@ namespace ReactiveUI.Validation.Collections
         public string this[int index] { get; }
         public System.Collections.Generic.IEnumerator<string> GetEnumerator() { }
         public string ToSingleLine(string? separator = ",") { }
-        public static ReactiveUI.Validation.Collections.ValidationText Create(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Collections.ValidationText> validationTexts) { }
-        public static ReactiveUI.Validation.Collections.ValidationText Create(System.Collections.Generic.IEnumerable<string> validationTexts) { }
-        public static ReactiveUI.Validation.Collections.ValidationText Create(params string[] validationTexts) { }
+        public static ReactiveUI.Validation.Collections.ValidationText Create(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Collections.ValidationText>? validationTexts) { }
+        public static ReactiveUI.Validation.Collections.ValidationText Create(System.Collections.Generic.IEnumerable<string>? validationTexts) { }
+        public static ReactiveUI.Validation.Collections.ValidationText Create(params string?[]? validationTexts) { }
     }
 }
 namespace ReactiveUI.Validation.Comparators
@@ -27,7 +27,7 @@ namespace ReactiveUI.Validation.Comparators
     public class ValidationStateComparer : System.Collections.Generic.EqualityComparer<ReactiveUI.Validation.States.IValidationState>
     {
         public ValidationStateComparer() { }
-        public override bool Equals(ReactiveUI.Validation.States.IValidationState x, ReactiveUI.Validation.States.IValidationState y) { }
+        public override bool Equals(ReactiveUI.Validation.States.IValidationState? x, ReactiveUI.Validation.States.IValidationState? y) { }
         public override int GetHashCode(ReactiveUI.Validation.States.IValidationState obj) { }
     }
 }
@@ -189,7 +189,7 @@ namespace ReactiveUI.Validation.Formatters
     {
         public SingleLineFormatter(string? separator = null) { }
         public static ReactiveUI.Validation.Formatters.SingleLineFormatter Default { get; }
-        public string Format(ReactiveUI.Validation.Collections.ValidationText validationText) { }
+        public string Format(ReactiveUI.Validation.Collections.ValidationText? validationText) { }
     }
 }
 namespace ReactiveUI.Validation.Helpers
@@ -200,14 +200,14 @@ namespace ReactiveUI.Validation.Helpers
         public bool HasErrors { get; }
         public ReactiveUI.Validation.Contexts.ValidationContext ValidationContext { get; }
         public event System.EventHandler<System.ComponentModel.DataErrorsChangedEventArgs>? ErrorsChanged;
-        public virtual System.Collections.IEnumerable GetErrors(string propertyName) { }
+        public virtual System.Collections.IEnumerable GetErrors(string? propertyName) { }
         protected void RaiseErrorsChanged(string propertyName = "") { }
     }
     public class ValidationHelper : ReactiveUI.ReactiveObject, System.IDisposable
     {
         public ValidationHelper(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation, System.IDisposable? cleanup = null) { }
         public bool IsValid { get; }
-        public ReactiveUI.Validation.Collections.ValidationText? Message { get; }
+        public ReactiveUI.Validation.Collections.ValidationText Message { get; }
         public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationChanged { get; }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }

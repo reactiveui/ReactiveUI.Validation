@@ -14,8 +14,8 @@ namespace ReactiveUI.Validation.Tests.Models
     /// </summary>
     public class SourceDestinationViewModel : ReactiveObject, IValidatableViewModel
     {
-        private TestViewModel _source = new TestViewModel();
-        private TestViewModel _destination = new TestViewModel();
+        private TestViewModel _source = new();
+        private TestViewModel _destination = new();
 
         /// <summary>
         /// Gets or sets get the Name.
@@ -36,6 +36,6 @@ namespace ReactiveUI.Validation.Tests.Models
         }
 
         /// <inheritdoc/>
-        public ValidationContext ValidationContext { get; } = new ValidationContext(Scheduler.Immediate);
+        public ValidationContext ValidationContext { get; } = new(Scheduler.Immediate);
     }
 }

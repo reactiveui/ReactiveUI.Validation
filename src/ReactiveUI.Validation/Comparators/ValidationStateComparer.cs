@@ -22,14 +22,14 @@ namespace ReactiveUI.Validation.Comparators
         /// <param name="x">Source <see cref="IValidationState"/> object.</param>
         /// <param name="y">Target <see cref="IValidationState"/> object.</param>
         /// <returns>Returns true if both objects are equals, otherwise false.</returns>
-        public override bool Equals(IValidationState x, IValidationState y)
+        public override bool Equals(IValidationState? x, IValidationState? y)
         {
-            if (x == null && y == null)
+            if (x is null && y is null)
             {
                 return true;
             }
 
-            if (x == null || y == null)
+            if (x is null || y is null)
             {
                 return false;
             }
@@ -40,7 +40,7 @@ namespace ReactiveUI.Validation.Comparators
         /// <inheritdoc />
         public override int GetHashCode(IValidationState obj)
         {
-            if (obj == null)
+            if (obj is null)
             {
                 throw new ArgumentNullException(nameof(obj));
             }

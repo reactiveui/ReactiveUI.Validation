@@ -24,16 +24,13 @@ namespace ReactiveUI.Validation.Tests.API
     [ExcludeFromCodeCoverage]
     public class ApiApprovalTests
     {
-        private static readonly Regex _removeCoverletSectionRegex = new Regex(@"^namespace Coverlet\.Core\.Instrumentation\.Tracker.*?^}", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.Compiled);
+        private static readonly Regex _removeCoverletSectionRegex = new(@"^namespace Coverlet\.Core\.Instrumentation\.Tracker.*?^}", RegexOptions.Singleline | RegexOptions.Multiline | RegexOptions.Compiled);
 
         /// <summary>
         /// Tests to make sure the splat project is approved.
         /// </summary>
         [Fact]
-        public void ValidationProject()
-        {
-            CheckApproval(typeof(ValidationBinding).Assembly);
-        }
+        public void ValidationProject() => CheckApproval(typeof(ValidationBinding).Assembly);
 
         private static void CheckApproval(Assembly assembly, [CallerMemberName]string memberName = null, [CallerFilePath]string filePath = null)
         {
@@ -57,7 +54,7 @@ namespace ReactiveUI.Validation.Tests.API
             var approvedPublicApi = File.ReadAllText(approvedFileName);
 
             var generatorOptions = new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "ReactiveUI.Validation" } };
-            var receivedPublicApi = Filter(ApiGenerator.GeneratePublicApi(assembly, generatorOptions));
+            var receivedPublicApi = Filter(assembly.GeneratePublicApi(generatorOptions));
 
             if (!string.Equals(receivedPublicApi, approvedPublicApi, StringComparison.InvariantCulture))
             {
@@ -75,7 +72,8 @@ namespace ReactiveUI.Validation.Tests.API
                 new[]
                 {
                     Environment.NewLine
-                }, StringSplitOptions.RemoveEmptyEntries)
+                },
+                StringSplitOptions.RemoveEmptyEntries)
                     .Where(l =>
                     !l.StartsWith("[assembly: AssemblyVersion(", StringComparison.InvariantCulture) &&
                     !l.StartsWith("[assembly: AssemblyFileVersion(", StringComparison.InvariantCulture) &&

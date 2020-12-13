@@ -26,14 +26,14 @@ namespace ReactiveUI.Validation.Tests
         {
             var model = CreateDefaultValidModel();
 
-            var validation = new BasePropertyValidation<TestViewModel, string>(
+            using var validation = new BasePropertyValidation<TestViewModel, string>(
                 model,
                 vm => vm.Name,
                 n => !string.IsNullOrEmpty(n),
                 "broken");
 
             Assert.True(validation.IsValid);
-            Assert.True(string.IsNullOrEmpty(validation.Text.ToSingleLine()));
+            Assert.True(string.IsNullOrEmpty(validation.Text?.ToSingleLine()));
         }
 
         /// <summary>
@@ -46,10 +46,10 @@ namespace ReactiveUI.Validation.Tests
 
             var model = new TestViewModel();
 
-            var validation = new BasePropertyValidation<TestViewModel, string>(
+            using var validation = new BasePropertyValidation<TestViewModel, string>(
                 model,
                 vm => vm.Name,
-                n => n != null && n.Length >= testValue.Length,
+                n => n is not null && n.Length >= testValue.Length,
                 "broken");
 
             bool? lastVal = null;
@@ -78,15 +78,15 @@ namespace ReactiveUI.Validation.Tests
 
             var model = new TestViewModel();
 
-            var validation = new BasePropertyValidation<TestViewModel, string>(
+            using var validation = new BasePropertyValidation<TestViewModel, string>(
                 model,
                 vm => vm.Name,
-                n => n != null && n.Length > testValue.Length,
+                n => n is not null && n.Length > testValue.Length,
                 v => $"The value '{v}' is incorrect");
 
             model.Name = testValue;
 
-            Assert.Equal("The value 'bongo' is incorrect", validation.Text.ToSingleLine());
+            Assert.Equal("The value 'bongo' is incorrect", validation.Text?.ToSingleLine());
         }
 
         /// <summary>
@@ -100,10 +100,10 @@ namespace ReactiveUI.Validation.Tests
 
             var model = new TestViewModel();
 
-            var validation = new BasePropertyValidation<TestViewModel, string>(
+            using var validation = new BasePropertyValidation<TestViewModel, string>(
                 model,
                 vm => vm.Name,
-                n => n != null && n.Length > testValue.Length,
+                n => n is not null && n.Length > testValue.Length,
                 v => $"The value '{v}' is incorrect");
 
             model.Name = testValue;
@@ -112,13 +112,13 @@ namespace ReactiveUI.Validation.Tests
 
             validation.ValidationStatusChange.Subscribe(v => changes.Add(v));
 
-            Assert.Equal("The value 'bongo' is incorrect", validation.Text.ToSingleLine());
+            Assert.Equal("The value 'bongo' is incorrect", validation.Text?.ToSingleLine());
             Assert.Single(changes);
             Assert.Equal(new ValidationState(false, "The value 'bongo' is incorrect"), changes[0], new ValidationStateComparer());
 
             model.Name = testRoot;
 
-            Assert.Equal("The value 'bon' is incorrect", validation.Text.ToSingleLine());
+            Assert.Equal("The value 'bon' is incorrect", validation.Text?.ToSingleLine());
             Assert.Equal(2, changes.Count);
             Assert.Equal(new ValidationState(false, "The value 'bon' is incorrect"), changes[1], new ValidationStateComparer());
         }
@@ -134,22 +134,19 @@ namespace ReactiveUI.Validation.Tests
 
             var model = new TestViewModel { Name = testValue };
 
-            var validation = new BasePropertyValidation<TestViewModel, string>(
+            using var validation = new BasePropertyValidation<TestViewModel, string>(
                 model,
                 vm => vm.Name,
-                n => n != null && n.Length > testRoot.Length,
+                n => n is not null && n.Length > testRoot.Length,
                 (p, v) => v ? "cool" : $"The value '{p}' is incorrect");
 
-            Assert.Equal("cool", validation.Text.ToSingleLine());
+            Assert.Equal("cool", validation.Text?.ToSingleLine());
 
             model.Name = testRoot;
 
-            Assert.Equal("The value 'bon' is incorrect", validation.Text.ToSingleLine());
+            Assert.Equal("The value 'bon' is incorrect", validation.Text?.ToSingleLine());
         }
 
-        private static TestViewModel CreateDefaultValidModel()
-        {
-            return new TestViewModel { Name = "name" };
-        }
+        private static TestViewModel CreateDefaultValidModel() => new() { Name = "name" };
     }
 }

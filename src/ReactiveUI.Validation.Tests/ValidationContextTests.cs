@@ -24,7 +24,7 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void EmptyValidationContextIsValid()
         {
-            var vc = new ValidationContext(ImmediateScheduler.Instance);
+            using var vc = new ValidationContext(ImmediateScheduler.Instance);
 
             Assert.True(vc.IsValid);
             Assert.Equal(0, vc.Text.Count);
@@ -36,13 +36,13 @@ namespace ReactiveUI.Validation.Tests
         [Fact]
         public void CanAddValidationComponentsTest()
         {
-            var vc = new ValidationContext(ImmediateScheduler.Instance);
+            using var vc = new ValidationContext(ImmediateScheduler.Instance);
 
             var invalidName = string.Empty;
 
             var vm = new TestViewModel { Name = "valid" };
 
-            var v1 = new BasePropertyValidation<TestViewModel, string>(
+            using var v1 = new BasePropertyValidation<TestViewModel, string>(
                 vm,
                 v => v.Name,
                 s => !string.IsNullOrEmpty(s),
@@ -69,17 +69,17 @@ namespace ReactiveUI.Validation.Tests
             const string validName = "valid";
             var invalidName = string.Empty;
 
-            var vc = new ValidationContext(ImmediateScheduler.Instance);
+            using var vc = new ValidationContext(ImmediateScheduler.Instance);
 
             var vm = new TestViewModel { Name = validName, Name2 = validName };
 
-            var firstValidation = new BasePropertyValidation<TestViewModel, string>(
+            using var firstValidation = new BasePropertyValidation<TestViewModel, string>(
                 vm,
                 v => v.Name,
                 s => !string.IsNullOrEmpty(s),
                 s => $"Name {s} isn't valid");
 
-            var secondValidation = new BasePropertyValidation<TestViewModel, string>(
+            using var secondValidation = new BasePropertyValidation<TestViewModel, string>(
                 vm,
                 v => v.Name2,
                 s => !string.IsNullOrEmpty(s),
@@ -117,7 +117,7 @@ namespace ReactiveUI.Validation.Tests
         public void IsValidShouldNotifyOfValidityChange()
         {
             var viewModel = new TestViewModel { Name = string.Empty };
-            var nameValidation = new BasePropertyValidation<TestViewModel, string>(
+            using var nameValidation = new BasePropertyValidation<TestViewModel, string>(
                 viewModel,
                 viewModelProperty => viewModelProperty.Name,
                 s => !string.IsNullOrEmpty(s),
@@ -143,13 +143,13 @@ namespace ReactiveUI.Validation.Tests
         public void ShouldClearAttachedValidationRules()
         {
             var viewModel = new TestViewModel { Name = string.Empty };
-            var nameValidation = new BasePropertyValidation<TestViewModel, string>(
+            using var nameValidation = new BasePropertyValidation<TestViewModel, string>(
                 viewModel,
                 viewModelProperty => viewModelProperty.Name,
                 s => !string.IsNullOrEmpty(s),
                 "Name should not be empty.");
 
-            var name2Validation = new BasePropertyValidation<TestViewModel, string>(
+            using var name2Validation = new BasePropertyValidation<TestViewModel, string>(
                 viewModel,
                 viewModelProperty => viewModelProperty.Name2,
                 s => !string.IsNullOrEmpty(s),
@@ -184,14 +184,14 @@ namespace ReactiveUI.Validation.Tests
         public void ShouldClearAttachedValidationRulesForTheGivenProperty()
         {
             var viewModel = new TestViewModel { Name = string.Empty };
-            var nameValidation = new BasePropertyValidation<TestViewModel, string>(
+            using var nameValidation = new BasePropertyValidation<TestViewModel, string>(
                 viewModel,
                 viewModelProperty => viewModelProperty.Name,
                 s => !string.IsNullOrEmpty(s),
                 "Name should not be empty.");
 
             const string name2ErrorMessage = "Name2 should not be empty.";
-            var name2Validation = new BasePropertyValidation<TestViewModel, string>(
+            using var name2Validation = new BasePropertyValidation<TestViewModel, string>(
                 viewModel,
                 viewModelProperty => viewModelProperty.Name2,
                 s => !string.IsNullOrEmpty(s),

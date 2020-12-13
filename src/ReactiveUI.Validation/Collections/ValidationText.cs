@@ -18,12 +18,12 @@ namespace ReactiveUI.Validation.Collections
         /// <summary>
         /// The none validation text singleton instance contains no items.
         /// </summary>
-        public static readonly ValidationText None = new ValidationText(Array.Empty<string>());
+        public static readonly ValidationText None = new(Array.Empty<string>());
 
         /// <summary>
         /// The empty validation text singleton instance contains single empty string.
         /// </summary>
-        public static readonly ValidationText Empty = new ValidationText(new[] { string.Empty });
+        public static readonly ValidationText Empty = new(new[] { string.Empty });
 
         private readonly string[] _texts;
 
@@ -31,10 +31,7 @@ namespace ReactiveUI.Validation.Collections
         /// Initializes a new instance of the <see cref="ValidationText"/> class with the array of texts.
         /// </summary>
         /// <param name="texts">The array of texts.</param>
-        private ValidationText(string[] texts)
-        {
-            _texts = texts;
-        }
+        private ValidationText(string[] texts) => _texts = texts;
 
         /// <summary>
         /// Gets returns the number of elements in the collection.
@@ -53,7 +50,7 @@ namespace ReactiveUI.Validation.Collections
         /// </summary>
         /// <param name="validationTexts">An enumeration of <see cref="ValidationText"/>.</param>
         /// <returns>A <see cref="ValidationText"/>.</returns>
-        public static ValidationText Create(IEnumerable<ValidationText> validationTexts)
+        public static ValidationText Create(IEnumerable<ValidationText>? validationTexts)
         {
             // Note _texts are already validated as not-null
             string[] texts = (validationTexts ?? Array.Empty<ValidationText>())
@@ -78,10 +75,10 @@ namespace ReactiveUI.Validation.Collections
         /// </summary>
         /// <param name="validationTexts">An enumeration of validation messages.</param>
         /// <returns>A <see cref="ValidationText"/>.</returns>
-        public static ValidationText Create(IEnumerable<string> validationTexts)
+        public static ValidationText Create(IEnumerable<string>? validationTexts)
         {
             string[] texts = (validationTexts ?? Array.Empty<string>())
-                .Where(t => t != null)
+                .Where(t => t is not null)
                 .ToArray();
 
             if (texts.Length < 1)
@@ -102,7 +99,7 @@ namespace ReactiveUI.Validation.Collections
         /// </summary>
         /// <param name="validationTexts">An array of validation messages.</param>
         /// <returns>A <see cref="ValidationText"/>.</returns>
-        public static ValidationText Create(params string[] validationTexts)
+        public static ValidationText Create(params string?[]? validationTexts)
         {
             if (validationTexts is null || validationTexts.Length < 1)
             {
@@ -113,58 +110,45 @@ namespace ReactiveUI.Validation.Collections
             if (validationTexts.Length == 1)
             {
                 var text = validationTexts[0];
+
                 if (text is null)
                 {
                     return None;
                 }
 
-                if (text.Length < 1)
-                {
-                    return Empty;
-                }
-
-                return new ValidationText(validationTexts);
+                return text.Length < 1 ? Empty : new ValidationText(validationTexts!);
             }
 
             // Ensure we have no null items in the multi-item array
             if (validationTexts.Any(t => t is null))
             {
                 // Strip nulls
-                validationTexts = validationTexts.Where(t => t != null).ToArray();
+                validationTexts = validationTexts.Where(t => t is not null).ToArray();
                 if (validationTexts.Length < 1)
                 {
                     return None;
                 }
 
-                if (validationTexts[0].Length < 1)
+                if (validationTexts[0]?.Length < 1)
                 {
                     return Empty;
                 }
             }
 
-            return new ValidationText(validationTexts);
+            return new ValidationText(validationTexts!);
         }
 
         /// <inheritdoc/>
-        public IEnumerator<string> GetEnumerator()
-        {
-            return ((IEnumerable<string>)_texts).GetEnumerator();
-        }
+        public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>)_texts).GetEnumerator();
 
         /// <inheritdoc/>
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return _texts.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => _texts.GetEnumerator();
 
         /// <summary>
         /// Convert representation to a single line using a specified separator.
         /// </summary>
         /// <param name="separator">String separator.</param>
         /// <returns>Returns all the text collection separated by the separator.</returns>
-        public string ToSingleLine(string? separator = ",")
-        {
-            return string.Join(separator, _texts);
-        }
+        public string ToSingleLine(string? separator = ",") => string.Join(separator, _texts);
     }
 }
