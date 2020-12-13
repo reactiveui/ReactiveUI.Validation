@@ -45,9 +45,3 @@ jobs:
       working-directory: samples
       env:
         Configuration: ${{ matrix.configuration }}
-
-    # Execute all unit tests in the solution
-    - name: Execute unit tests
-      working-directory: samples
-      run: dotnet test LoginApp.sln
-
