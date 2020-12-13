@@ -3,10 +3,16 @@ name: Build
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'version.json'
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches: [ main ]
-
+    paths:
+      - 'src/**'
+      - 'version.json'
+          
 env:
   configuration: Release
   productNamespacePrefix: "ReactiveUI.Validation"
