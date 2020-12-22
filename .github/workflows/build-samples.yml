@@ -44,7 +44,7 @@ jobs:
 
     # The workaround from https://github.com/actions/setup-dotnet/issues/155#issuecomment-748452076
     - name: Clean
-      run: msbuild LoginApp.sln /t:clean /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration && dotnet nuget locals all --clear
+      run: msbuild LoginApp.sln /t:clean /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration && dotnet nuget locals all --clear
       working-directory: samples
       env:
         Configuration: ${{ matrix.configuration }}
