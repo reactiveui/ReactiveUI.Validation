@@ -5,10 +5,12 @@ on:
     branches: [ main ]
     paths:
       - 'samples/**'
+      - '.github/**'
   pull_request:
     branches: [ main ]
     paths:
       - 'samples/**'
+      - '.github/**'
 
 jobs:
   build-samples:
@@ -39,6 +41,13 @@ jobs:
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
+
+    # The workaround from https://github.com/actions/setup-dotnet/issues/155#issuecomment-748452076
+    - name: Clean
+      run: msbuild LoginApp.sln /t:clean /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration && dotnet nuget locals all --clear
+      working-directory: samples
+      env:
+        Configuration: ${{ matrix.configuration }}
 
     - name: Restore/Build the sample
       run: msbuild LoginApp.sln /t:restore,build /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration
