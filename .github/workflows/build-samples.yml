@@ -36,6 +36,10 @@ jobs:
       with:
         dotnet-version: 5.0.x
 
+    # The workaround from https://github.com/actions/setup-dotnet/issues/155#issuecomment-748452076
+    - name: Clean
+      run: msbuild LoginApp.sln /t:clean /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration && dotnet nuget locals all --clear
+
     # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
     - name: Setup MSBuild.exe
       uses: microsoft/setup-msbuild@v1.0.2
