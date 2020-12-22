@@ -50,7 +50,7 @@ jobs:
         Configuration: ${{ matrix.configuration }}
 
     - name: Restore/Build the sample
-      run: msbuild LoginApp.sln /t:restore,build /maxcpucount /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration
+      run: msbuild LoginApp.sln /t:restore,build /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration
       working-directory: samples
       env:
         Configuration: ${{ matrix.configuration }}
