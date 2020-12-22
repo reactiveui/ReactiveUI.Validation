@@ -72,7 +72,7 @@
     <PackageReference Include="Xamarin.Android.Support.v7.MediaRouter" Version="28.0.0.3" />
     <PackageReference Include="Xamarin.AndroidX.MediaRouter" Version="1.2.0" />
     <PackageReference Include="Xamarin.AndroidX.Palette" Version="1.0.0.6" />
-    <PackageReference Include="Xamarin.AndroidX.Preference" Version="1.1.1.5" />
+    <PackageReference Include="Xamarin.AndroidX.Preference" Version="1.1.1.6" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
