@@ -4,7 +4,6 @@
 // See the LICENSE file in the project root for full license information.
 
 using Avalonia;
-using Avalonia.Logging.Serilog;
 using Avalonia.ReactiveUI;
 
 namespace LoginApp.Avalonia
@@ -28,6 +27,6 @@ namespace LoginApp.Avalonia
             => AppBuilder.Configure<App>()
                 .UseReactiveUI()
                 .UsePlatformDetect()
-                .LogToDebug();
+                .LogToTrace();
     }
 }
