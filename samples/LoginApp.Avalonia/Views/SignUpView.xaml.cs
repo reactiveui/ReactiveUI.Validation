@@ -19,7 +19,8 @@ namespace LoginApp.Avalonia.Views
     /// A page which contains controls for signing up.
     /// </summary>
     /// <inheritdoc />
-    public class SignUpView : ReactiveWindow<SignUpViewModel>
+    [GenerateTypedNameReferences]
+    public partial class SignUpView : ReactiveWindow<SignUpViewModel>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SignUpView"/> class.
@@ -29,6 +30,20 @@ namespace LoginApp.Avalonia.Views
             AvaloniaXamlLoader.Load(this);
             this.WhenActivated(disposables =>
             {
+                // Standard ReactiveUI bindings.
+                this.Bind(ViewModel, x => x.UserName, x => x.UserNameTextBox.Text)
+                    .DisposeWith(disposables);
+                this.Bind(ViewModel, x => x.Password, x => x.PasswordTextBox.Text)
+                    .DisposeWith(disposables);
+                this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordTextBox.Text)
+                    .DisposeWith(disposables);
+                this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUpButton)
+                    .DisposeWith(disposables);
+
+                this.OneWayBind(ViewModel, x => x.IsBusy, x => x.BudyIndicator.IsVisible)
+                    .DisposeWith(disposables);
+
+                // ReactiveUI.Validation: Bindings for error messages.
                 this.BindValidation(ViewModel, x => x.UserName, x => x.UserNameValidation.Text)
                     .DisposeWith(disposables);
                 this.BindValidation(ViewModel, x => x.Password, x => x.PasswordValidation.Text)
@@ -36,18 +51,11 @@ namespace LoginApp.Avalonia.Views
                 this.BindValidation(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordValidation.Text)
                     .DisposeWith(disposables);
 
+                // ReactiveUI.Validation: Compound validation bindings.
                 var newLineFormatter = new SingleLineFormatter(Environment.NewLine);
                 this.BindValidation(ViewModel, x => x.CompoundValidation.Text, newLineFormatter)
                     .DisposeWith(disposables);
             });
         }
-
-        private TextBlock ConfirmPasswordValidation => this.FindControl<TextBlock>("ConfirmPasswordValidation");
-
-        private TextBlock UserNameValidation => this.FindControl<TextBlock>("UserNameValidation");
-
-        private TextBlock PasswordValidation => this.FindControl<TextBlock>("PasswordValidation");
-
-        private TextBlock CompoundValidation => this.FindControl<TextBlock>("CompoundValidation");
     }
 }

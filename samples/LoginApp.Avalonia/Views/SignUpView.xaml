@@ -8,14 +8,14 @@
                 <Grid ColumnDefinitions="Auto, *">
                     <TextBlock Grid.Column="0" Classes="Heading" Text="Sign Up" />
                     <Ellipse Grid.Column="1"
+                             x:Name="BudyIndicator"
                              Width="5" Height="5"
                              HorizontalAlignment="Left"
                              VerticalAlignment="Center"
-                             IsVisible="{Binding IsBusy}"
                              Fill="Red" Margin="7 7 5 3" />
                 </Grid>
                 <TextBox Margin="0 10 0 0"
-                         Text="{Binding UserName}" 
+                         x:Name="UserNameTextBox"
                          Watermark="Please, enter user name..."
                          UseFloatingWatermark="True" />
                 <TextBlock x:Name="UserNameValidation" 
@@ -23,7 +23,7 @@
                            FontSize="12" />
                 
                 <TextBox Margin="0 10 0 0"
-                         Text="{Binding Password}" 
+                         x:Name="PasswordTextBox"
                          Watermark="Please, enter your password..."
                          UseFloatingWatermark="True"
                          PasswordChar="*" />
@@ -32,7 +32,7 @@
                            FontSize="12" />
                 
                 <TextBox Margin="0 10 0 0"
-                         Text="{Binding ConfirmPassword}" 
+                         x:Name="ConfirmPasswordTextBox"
                          Watermark="Please, confirm the password..."
                          UseFloatingWatermark="True"
                          PasswordChar="*" />
@@ -42,8 +42,8 @@
                            FontSize="12" />
                 
                 <Button Margin="0 10 0 5"
-                        Content="Sign up" 
-                        Command="{Binding SignUp}" />
+                        Content="Sign up"
+                        x:Name="SignUpButton" />
                 <TextBlock x:Name="CompoundValidation"
                            TextWrapping="Wrap"
                            Foreground="Red"
