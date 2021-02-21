@@ -19,7 +19,6 @@ namespace LoginApp.Avalonia.Views
     /// A page which contains controls for signing up.
     /// </summary>
     /// <inheritdoc />
-    [GenerateTypedNameReferences]
     public partial class SignUpView : ReactiveWindow<SignUpViewModel>
     {
         /// <summary>
