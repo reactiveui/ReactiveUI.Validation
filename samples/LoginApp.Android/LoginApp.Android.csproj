@@ -82,7 +82,6 @@
     <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.3.0" />
     <PackageReference Include="Xamarin.AndroidX.RecyclerView" Version="1.1.0.7" />
   </ItemGroup>
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\LoginApp\LoginApp.csproj">
       <Project>{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFC}</Project>
