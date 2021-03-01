@@ -26,7 +26,7 @@ namespace LoginApp.Avalonia.Views
         /// </summary>
         public SignUpView()
         {
-            AvaloniaXamlLoader.Load(this);
+            InitializeComponent();
             this.WhenActivated(disposables =>
             {
                 // Standard ReactiveUI bindings.
