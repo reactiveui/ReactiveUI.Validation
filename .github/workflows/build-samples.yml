@@ -44,13 +44,13 @@ jobs:
 
     # The workaround from https://github.com/actions/setup-dotnet/issues/155#issuecomment-748452076
     - name: Clean
-      run: msbuild LoginApp.sln /t:clean /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration && dotnet nuget locals all --clear
+      run: dotnet msbuild LoginApp.sln /t:clean /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration && dotnet nuget locals all --clear
       working-directory: samples
       env:
         Configuration: ${{ matrix.configuration }}
 
     - name: Restore/Build the sample
-      run: msbuild LoginApp.sln /t:restore,build /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration
+      run: dotnet msbuild LoginApp.sln /t:restore,build /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration
       working-directory: samples
       env:
         Configuration: ${{ matrix.configuration }}
