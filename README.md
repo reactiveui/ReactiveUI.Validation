@@ -212,7 +212,7 @@ public class SampleViewModel : ReactiveValidationObject
 }
 ```
 
-> **Note** Keep in mind that `INotifyDataErrorInfo` is only supported via XAML binding. ReactiveUI binding doesn't use the inbuilt classes of the WPF.
+> **Note** Keep in mind that `INotifyDataErrorInfo` is only supported via XAML binding. ReactiveUI binding doesn't use the inbuilt classes of WPF.
 
 When using a `ValidationRule` overload that accepts an observable, please remember to supply the property which the validation rule is targeting as the first argument. Otherwise it is not possible for `INotifyDataErrorInfo` to conclude which property the error message is for.
 
