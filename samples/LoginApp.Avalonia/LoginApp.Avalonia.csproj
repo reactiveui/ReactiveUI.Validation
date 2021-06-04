@@ -7,7 +7,7 @@
     <ItemGroup>
         <PackageReference Include="Avalonia" Version="0.10.5" />
         <PackageReference Include="Avalonia.Desktop" Version="0.10.4" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.4" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.6" />
         <PackageReference Include="Citrus.Avalonia" Version="1.4.3" />
         <PackageReference Include="MessageBox.Avalonia" Version="1.2.0" />
         <PackageReference Include="XamlNameReferenceGenerator" Version="1.2.1" />
