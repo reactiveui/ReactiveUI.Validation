@@ -79,7 +79,7 @@
     <!-- We are pinning transitive deps versions coming from ReactiveUI.AndroidX.
          See: https://github.com/reactiveui/ReactiveUI.Validation/pull/216#issuecomment-783218308 -->
     <PackageReference Include="Xamarin.AndroidX.Preference" Version="1.1.1.8" />
-    <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.3.3" />
+    <PackageReference Include="Xamarin.AndroidX.Fragment" Version="1.3.4" />
     <PackageReference Include="Xamarin.AndroidX.RecyclerView" Version="1.2.0" />
   </ItemGroup>
   <ItemGroup>
