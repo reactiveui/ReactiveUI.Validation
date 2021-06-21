@@ -72,7 +72,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ReactiveUI" Version="13.*" />
-    <PackageReference Include="ReactiveUI.AndroidX" Version="13.*" />
+    <PackageReference Include="ReactiveUI.AndroidX" Version="14.*" />
     <PackageReference Include="ReactiveUI.Validation" Version="2.*" />
     <PackageReference Include="ReactiveUI.Validation.AndroidX" Version="2.*" />
     <PackageReference Include="Xamarin.Google.Android.Material" Version="1.3.0.1" />
