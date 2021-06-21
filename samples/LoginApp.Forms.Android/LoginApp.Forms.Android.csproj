@@ -56,7 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ReactiveUI" Version="13.*" />
+    <PackageReference Include="ReactiveUI" Version="14.*" />
     <PackageReference Include="ReactiveUI.XamForms" Version="13.*" />
     <PackageReference Include="Xamarin.Forms" Version="5.0.*" />
     <PackageReference Include="Xamarin.Android.Support.v7.Preference" Version="28.0.0.3" />
