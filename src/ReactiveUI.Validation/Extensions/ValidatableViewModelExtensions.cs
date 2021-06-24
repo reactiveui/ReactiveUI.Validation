@@ -34,8 +34,8 @@ namespace ReactiveUI.Validation.Extensions
         /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
         public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
             this TViewModel viewModel,
-            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
-            Func<TViewModelProp, bool> isPropertyValid,
+            Expression<Func<TViewModel, TViewModelProp?>> viewModelProperty,
+            Func<TViewModelProp?, bool> isPropertyValid,
             string message)
             where TViewModel : IReactiveObject, IValidatableViewModel
         {
@@ -78,9 +78,9 @@ namespace ReactiveUI.Validation.Extensions
         /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
         public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
             this TViewModel viewModel,
-            Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
-            Func<TViewModelProp, bool> isPropertyValid,
-            Func<TViewModelProp, string> message)
+            Expression<Func<TViewModel, TViewModelProp?>> viewModelProperty,
+            Func<TViewModelProp?, bool> isPropertyValid,
+            Func<TViewModelProp?, string> message)
             where TViewModel : IReactiveObject, IValidatableViewModel
         {
             if (viewModel is null)

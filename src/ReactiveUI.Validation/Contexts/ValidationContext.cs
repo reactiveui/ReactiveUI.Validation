@@ -40,7 +40,7 @@ namespace ReactiveUI.Validation.Contexts
 
         private readonly ReadOnlyObservableCollection<IValidationComponent> _validations;
         private readonly IConnectableObservable<bool> _validationConnectable;
-        private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
+        private readonly ObservableAsPropertyHelper<ValidationText?> _validationText;
         private readonly ObservableAsPropertyHelper<bool> _isValid;
 
         private readonly CompositeDisposable _disposables = new();
@@ -131,7 +131,7 @@ namespace ReactiveUI.Validation.Contexts
         }
 
         /// <inheritdoc />
-        public ValidationText Text
+        public ValidationText? Text
         {
             get
             {

@@ -44,7 +44,7 @@ namespace ReactiveUI.Validation.Extensions
         public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty>(
             this TView view,
             TViewModel? viewModel,
-            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
+            Expression<Func<TViewModel, TViewModelProperty?>> viewModelProperty,
             TextInputLayout viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
@@ -98,7 +98,7 @@ namespace ReactiveUI.Validation.Extensions
         public static IDisposable BindValidationEx<TView, TViewModel, TViewModelProperty>(
             this TView view,
             TViewModel? viewModel,
-            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
+            Expression<Func<TViewModel, TViewModelProperty?>> viewModelProperty,
             TextInputLayout viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
@@ -148,7 +148,7 @@ namespace ReactiveUI.Validation.Extensions
         public static IDisposable BindValidation<TView, TViewModel>(
             this TView view,
             TViewModel? viewModel,
-            Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
+            Expression<Func<TViewModel?, ValidationHelper?>> viewModelHelperProperty,
             TextInputLayout viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
