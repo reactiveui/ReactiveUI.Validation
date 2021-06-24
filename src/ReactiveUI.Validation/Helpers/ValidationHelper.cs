@@ -50,7 +50,7 @@ namespace ReactiveUI.Validation.Helpers
         /// <summary>
         /// Gets the current (optional) validation message.
         /// </summary>
-        public ValidationText Message => _message.Value;
+        public ValidationText? Message => _message.Value;
 
         /// <summary>
         /// Gets the observable for validation state changes.

@@ -167,10 +167,10 @@ namespace ReactiveUI.Validation.Components
     public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : BasePropertyValidation<TViewModel>
     {
         [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
-        private readonly ReplaySubject<TViewModelProperty> _valueSubject = new(1);
-        private readonly IConnectableObservable<TViewModelProperty> _valueConnectedObservable;
-        private readonly Func<TViewModelProperty, bool, ValidationText> _message;
-        private readonly Func<TViewModelProperty, bool> _isValidFunc;
+        private readonly ReplaySubject<TViewModelProperty?> _valueSubject = new(1);
+        private readonly IConnectableObservable<TViewModelProperty?> _valueConnectedObservable;
+        private readonly Func<TViewModelProperty?, bool, ValidationText> _message;
+        private readonly Func<TViewModelProperty?, bool> _isValidFunc;
         private readonly CompositeDisposable _disposables = new();
         private bool _isConnected;
 
@@ -183,8 +183,8 @@ namespace ReactiveUI.Validation.Components
         /// <param name="message">Validation error message.</param>
         public BasePropertyValidation(
             TViewModel viewModel,
-            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
-            Func<TViewModelProperty, bool> isValidFunc,
+            Expression<Func<TViewModel, TViewModelProperty?>> viewModelProperty,
+            Func<TViewModelProperty?, bool> isValidFunc,
             string message)
             : this(viewModel, viewModelProperty, isValidFunc, (_, v) => v ? ValidationText.Empty : ValidationText.Create(message))
         {
@@ -199,9 +199,9 @@ namespace ReactiveUI.Validation.Components
         /// <param name="message">Func to define the validation error message based on the viewModelProperty value.</param>
         public BasePropertyValidation(
             TViewModel viewModel,
-            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
-            Func<TViewModelProperty, bool> isValidFunc,
-            Func<TViewModelProperty, string> message)
+            Expression<Func<TViewModel, TViewModelProperty?>> viewModelProperty,
+            Func<TViewModelProperty?, bool> isValidFunc,
+            Func<TViewModelProperty?, string> message)
             : this(viewModel, viewModelProperty, isValidFunc, (p, v) =>
                 v ? ValidationText.None : ValidationText.Create(message(p)))
         {
@@ -216,9 +216,9 @@ namespace ReactiveUI.Validation.Components
         /// <param name="messageFunc">Func to define the validation error message based on the viewModelProperty and isValidFunc values.</param>
         public BasePropertyValidation(
             TViewModel viewModel,
-            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
-            Func<TViewModelProperty, bool> isValidFunc,
-            Func<TViewModelProperty, bool, string> messageFunc)
+            Expression<Func<TViewModel, TViewModelProperty?>> viewModelProperty,
+            Func<TViewModelProperty?, bool> isValidFunc,
+            Func<TViewModelProperty?, bool, string> messageFunc)
             : this(viewModel, viewModelProperty, isValidFunc, (prop1, isValid) =>
                 ValidationText.Create(messageFunc(prop1, isValid)))
         {
@@ -234,9 +234,9 @@ namespace ReactiveUI.Validation.Components
         /// <param name="messageFunc">Func to define the validation error message based on the viewModelProperty and isValidFunc values.</param>
         private BasePropertyValidation(
             TViewModel viewModel,
-            Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
-            Func<TViewModelProperty, bool> isValidFunc,
-            Func<TViewModelProperty, bool, ValidationText> messageFunc)
+            Expression<Func<TViewModel, TViewModelProperty?>> viewModelProperty,
+            Func<TViewModelProperty?, bool> isValidFunc,
+            Func<TViewModelProperty?, bool, ValidationText> messageFunc)
         {
             // Now, we have a function, which, in this case uses the value of the view Model Property...
             _isValidFunc = isValidFunc;

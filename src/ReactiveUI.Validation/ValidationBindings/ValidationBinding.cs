@@ -157,7 +157,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <returns>Returns a validation component.</returns>
         public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(
             TView view,
-            Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
+            Expression<Func<TViewModel?, ValidationHelper?>> viewModelHelperProperty,
             Expression<Func<TView, TViewProperty>> viewProperty,
             IValidationTextFormatter<string>? formatter = null)
             where TView : IViewFor<TViewModel>
@@ -212,7 +212,7 @@ namespace ReactiveUI.Validation.ValidationBindings
         /// <returns>Returns a validation component.</returns>
         public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TOut>(
             TView view,
-            Expression<Func<TViewModel?, ValidationHelper>> viewModelHelperProperty,
+            Expression<Func<TViewModel?, ValidationHelper?>> viewModelHelperProperty,
             Action<IValidationState, TOut> action,
             IValidationTextFormatter<TOut> formatter)
             where TView : IViewFor<TViewModel>
