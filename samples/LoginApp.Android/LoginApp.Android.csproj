@@ -75,7 +75,7 @@
     <PackageReference Include="ReactiveUI.AndroidX" Version="14.*" />
     <PackageReference Include="ReactiveUI.Validation" Version="2.*" />
     <PackageReference Include="ReactiveUI.Validation.AndroidX" Version="2.*" />
-    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0" />
+    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.4.0.1" />
     <!-- We are pinning transitive deps versions coming from ReactiveUI.AndroidX.
          See: https://github.com/reactiveui/ReactiveUI.Validation/pull/216#issuecomment-783218308 -->
     <PackageReference Include="Xamarin.AndroidX.Preference" Version="1.1.1.8" />
