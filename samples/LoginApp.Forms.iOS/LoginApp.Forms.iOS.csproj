@@ -150,11 +150,11 @@
   <ItemGroup>
     <PackageReference Include="Xamarin.Forms" Version="5.0.*" />
   </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
   <ItemGroup>
     <ProjectReference Include="..\LoginApp.Forms\LoginApp.Forms.csproj">
-      <Project>{A4B47D0D-AA6A-4698-A8FE-612ADE83BBFC}</Project>
+      <Project>{f08e553a-b99b-49bf-a61d-b20c32e98b74}</Project>
       <Name>LoginApp.Forms</Name>
     </ProjectReference>
   </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
 </Project>
