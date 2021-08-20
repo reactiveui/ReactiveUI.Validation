@@ -56,7 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ReactiveUI.XamForms" Version="14.*" />
+    <PackageReference Include="ReactiveUI.XamForms" Version="15.*" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainActivity.cs" />
