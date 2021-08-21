@@ -131,7 +131,7 @@ namespace ReactiveUI.Validation.Contexts
         }
 
         /// <inheritdoc />
-        public ValidationText? Text
+        public ValidationText Text
         {
             get
             {
