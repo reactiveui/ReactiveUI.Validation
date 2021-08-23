@@ -71,7 +71,7 @@
     <AndroidResource Include="Resources\values\styles.xml" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ReactiveUI" Version="15.*" />
+    <PackageReference Include="ReactiveUI" Version="16.*" />
     <PackageReference Include="ReactiveUI.AndroidX" Version="16.*" />
     <PackageReference Include="ReactiveUI.Validation" Version="2.*" />
     <PackageReference Include="ReactiveUI.Validation.AndroidX" Version="2.*" />
