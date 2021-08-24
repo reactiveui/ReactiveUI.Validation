@@ -3,8 +3,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="ReactiveUI" Version="15.*" />
-    <PackageReference Include="ReactiveUI.Fody" Version="15.*" />
+    <PackageReference Include="ReactiveUI" Version="16.*" />
+    <PackageReference Include="ReactiveUI.Fody" Version="16.*" />
     <PackageReference Include="ReactiveUI.Validation" Version="2.*" />
   </ItemGroup>
 </Project>
