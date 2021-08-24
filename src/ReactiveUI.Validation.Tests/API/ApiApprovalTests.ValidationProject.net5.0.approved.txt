@@ -110,7 +110,7 @@ namespace ReactiveUI.Validation.Contexts
     {
         public ValidationContext(System.Reactive.Concurrency.IScheduler? scheduler = null) { }
         public bool IsValid { get; }
-        public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
+        public ReactiveUI.Validation.Collections.ValidationText Text { get; }
         public System.IObservable<bool> Valid { get; }
         public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
         public System.Collections.ObjectModel.ReadOnlyObservableCollection<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> Validations { get; }
