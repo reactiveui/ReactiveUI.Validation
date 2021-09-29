@@ -97,7 +97,7 @@ namespace ReactiveUI.Validation.Helpers
         /// Raises the <see cref="ErrorsChanged"/> event.
         /// </summary>
         /// <param name="propertyName">The name of the validated property.</param>
-        protected void RaiseErrorsChanged(string propertyName = "") =>
+        protected virtual void RaiseErrorsChanged(string propertyName = "") =>
             ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
 
         /// <summary>
