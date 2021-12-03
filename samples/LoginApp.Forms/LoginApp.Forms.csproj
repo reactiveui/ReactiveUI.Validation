@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ReactiveUI.XamForms" Version="16.*" />
+    <PackageReference Include="ReactiveUI.XamForms" Version="17.*" />
   </ItemGroup>
   
   <ItemGroup>
