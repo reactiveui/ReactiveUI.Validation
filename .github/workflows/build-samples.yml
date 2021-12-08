@@ -13,48 +13,14 @@ on:
       - '.github/**'
 
 jobs:
-  build-samples:
-    strategy:
-      matrix:
-        configuration: [Debug, Release]
+  build:
+    uses: reactiveui/actions-common/.github/workflows/workflow-common-setup-and-build.yml@main
+    with:
+      configuration: Release
+      productNamespacePrefix: "ReactiveUI.Validation"
+      useVisualStudioPreview: false
+      useMauiCheckDotNetTool: false
+      srcFolder: 'samples'
+      solutionFile: 'LoginApp.sln'
+      performTests: false
 
-    runs-on: windows-latest  
-
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        lfs: true
-
-    # Install the .NET Core workload
-    - name: Install .NET Core 3.1.x
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 3.1.x
-
-    - name: Install .NET 5.0.x
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 5.0.x
-
-    # Add  MSBuild to the PATH: https://github.com/microsoft/setup-msbuild
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1.0.2
-
-    - name: Update VS2019
-      shell: powershell
-      run: Start-Process -Wait -PassThru -FilePath "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe" -ArgumentList "update --passive --norestart --installpath ""C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise"""
-
-    # The workaround from https://github.com/actions/setup-dotnet/issues/155#issuecomment-748452076
-    - name: Clean
-      run: msbuild LoginApp.sln /t:clean /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration && dotnet nuget locals all --clear
-      working-directory: samples
-      env:
-        Configuration: ${{ matrix.configuration }}
-
-    - name: Restore/Build the sample
-      run: msbuild LoginApp.sln /t:restore,build /p:NoPackageAnalysis=true /verbosity:minimal /p:Configuration=$env:Configuration
-      working-directory: samples
-      env:
-        Configuration: ${{ matrix.configuration }}
