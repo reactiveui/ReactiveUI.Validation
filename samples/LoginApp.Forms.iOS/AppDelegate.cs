@@ -4,8 +4,8 @@
 // See the LICENSE file in the project root for full license information.
 
 using Foundation;
-using LoginApp.Forms;
 using UIKit;
+using Xamarin.Forms.Platform.iOS;
 
 namespace LoginApp.Forms.IOS
 {
@@ -13,7 +13,7 @@ namespace LoginApp.Forms.IOS
     /// The application delegate for the application.
     /// </summary>
     [Register("AppDelegate")]
-    public class AppDelegate : global::Xamarin.Forms.Platform.iOS.FormsApplicationDelegate
+    public class AppDelegate : FormsApplicationDelegate
     {
         /// <inheritdoc/>
         public override bool FinishedLaunching(UIApplication uiApplication, NSDictionary launchOptions)
