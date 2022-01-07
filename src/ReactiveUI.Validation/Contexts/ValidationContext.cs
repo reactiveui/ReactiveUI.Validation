@@ -19,208 +19,207 @@ using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.States;
 
-namespace ReactiveUI.Validation.Contexts
+namespace ReactiveUI.Validation.Contexts;
+
+/// <inheritdoc cref="ReactiveObject" />
+/// <inheritdoc cref="IDisposable" />
+/// <inheritdoc cref="IValidationComponent" />
+/// <summary>
+/// The overall context for a view model under which validation takes place.
+/// </summary>
+/// <remarks>
+/// Contains all of the <see cref="ReactiveUI.Validation.Components.Abstractions.IValidationComponent" /> instances
+/// applicable to the view model.
+/// </remarks>
+[SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Field _disposables disposes the items.")]
+public class ValidationContext : ReactiveObject, IDisposable, IValidationComponent
 {
-    /// <inheritdoc cref="ReactiveObject" />
-    /// <inheritdoc cref="IDisposable" />
-    /// <inheritdoc cref="IValidationComponent" />
+    private readonly SourceList<IValidationComponent> _validationSource = new();
+    private readonly ReplaySubject<IValidationState> _validationStatusChange = new(1);
+    private readonly ReplaySubject<bool> _validSubject = new(1);
+
+    private readonly ReadOnlyObservableCollection<IValidationComponent> _validations;
+    private readonly IConnectableObservable<bool> _validationConnectable;
+    private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
+    private readonly ObservableAsPropertyHelper<bool> _isValid;
+
+    private readonly CompositeDisposable _disposables = new();
+    private bool _isActive;
+
     /// <summary>
-    /// The overall context for a view model under which validation takes place.
+    /// Initializes a new instance of the <see cref="ValidationContext"/> class.
     /// </summary>
-    /// <remarks>
-    /// Contains all of the <see cref="ReactiveUI.Validation.Components.Abstractions.IValidationComponent" /> instances
-    /// applicable to the view model.
-    /// </remarks>
-    [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Field _disposables disposes the items.")]
-    public class ValidationContext : ReactiveObject, IDisposable, IValidationComponent
+    /// <param name="scheduler">Optional scheduler to use for the properties. Uses the current thread scheduler by default.</param>
+    public ValidationContext(IScheduler? scheduler = null)
     {
-        private readonly SourceList<IValidationComponent> _validationSource = new();
-        private readonly ReplaySubject<IValidationState> _validationStatusChange = new(1);
-        private readonly ReplaySubject<bool> _validSubject = new(1);
+        scheduler ??= CurrentThreadScheduler.Instance;
+        _validationSource
+            .Connect()
+            .ObserveOn(scheduler)
+            .Bind(out _validations)
+            .Subscribe()
+            .DisposeWith(_disposables);
 
-        private readonly ReadOnlyObservableCollection<IValidationComponent> _validations;
-        private readonly IConnectableObservable<bool> _validationConnectable;
-        private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
-        private readonly ObservableAsPropertyHelper<bool> _isValid;
+        _validationConnectable = _validations
+            .ToObservableChangeSet()
+            .ToCollection()
+            .StartWithEmpty()
+            .Select(validations =>
+                validations
+                    .Select(v => v.ValidationStatusChange)
+                    .Merge()
+                    .Select(_ => Unit.Default)
+                    .StartWith(Unit.Default))
+            .Switch()
+            .Select(_ => GetIsValid())
+            .Multicast(_validSubject);
 
-        private readonly CompositeDisposable _disposables = new();
-        private bool _isActive;
+        _isValid = _validSubject
+            .StartWith(true)
+            .ToProperty(this, m => m.IsValid, scheduler: scheduler)
+            .DisposeWith(_disposables);
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationContext"/> class.
-        /// </summary>
-        /// <param name="scheduler">Optional scheduler to use for the properties. Uses the current thread scheduler by default.</param>
-        public ValidationContext(IScheduler? scheduler = null)
+        _validationText = _validSubject
+            .StartWith(true)
+            .Select(_ => BuildText())
+            .ToProperty(this, m => m.Text, ValidationText.None, scheduler: scheduler)
+            .DisposeWith(_disposables);
+
+        _validSubject
+            .Select(_ => new ValidationState(IsValid, BuildText()))
+            .Do(_validationStatusChange.OnNext)
+            .Subscribe()
+            .DisposeWith(_disposables);
+    }
+
+    /// <summary>
+    /// Gets an observable for the Valid state.
+    /// </summary>
+    public IObservable<bool> Valid
+    {
+        get
         {
-            scheduler ??= CurrentThreadScheduler.Instance;
-            _validationSource
-                .Connect()
-                .ObserveOn(scheduler)
-                .Bind(out _validations)
-                .Subscribe()
-                .DisposeWith(_disposables);
-
-            _validationConnectable = _validations
-                .ToObservableChangeSet()
-                .ToCollection()
-                .StartWithEmpty()
-                .Select(validations =>
-                    validations
-                        .Select(v => v.ValidationStatusChange)
-                        .Merge()
-                        .Select(_ => Unit.Default)
-                        .StartWith(Unit.Default))
-                .Switch()
-                .Select(_ => GetIsValid())
-                .Multicast(_validSubject);
-
-            _isValid = _validSubject
-                .StartWith(true)
-                .ToProperty(this, m => m.IsValid, scheduler: scheduler)
-                .DisposeWith(_disposables);
-
-            _validationText = _validSubject
-                .StartWith(true)
-                .Select(_ => BuildText())
-                .ToProperty(this, m => m.Text, ValidationText.None, scheduler: scheduler)
-                .DisposeWith(_disposables);
-
-            _validSubject
-                .Select(_ => new ValidationState(IsValid, BuildText()))
-                .Do(_validationStatusChange.OnNext)
-                .Subscribe()
-                .DisposeWith(_disposables);
+            Activate();
+            return _validSubject.AsObservable();
         }
+    }
 
-        /// <summary>
-        /// Gets an observable for the Valid state.
-        /// </summary>
-        public IObservable<bool> Valid
+    /// <summary>
+    /// Gets get the list of validations.
+    /// </summary>
+    public ReadOnlyObservableCollection<IValidationComponent> Validations => _validations;
+
+    /// <inheritdoc/>
+    [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "Reviewed.")]
+    public bool IsValid
+    {
+        get
         {
-            get
-            {
-                Activate();
-                return _validSubject.AsObservable();
-            }
+            Activate();
+            return _isValid.Value;
         }
+    }
 
-        /// <summary>
-        /// Gets get the list of validations.
-        /// </summary>
-        public ReadOnlyObservableCollection<IValidationComponent> Validations => _validations;
-
-        /// <inheritdoc/>
-        [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "Reviewed.")]
-        public bool IsValid
+    /// <inheritdoc />
+    public IObservable<IValidationState> ValidationStatusChange
+    {
+        get
         {
-            get
-            {
-                Activate();
-                return _isValid.Value;
-            }
+            Activate();
+            return _validationStatusChange.AsObservable();
         }
+    }
 
-        /// <inheritdoc />
-        public IObservable<IValidationState> ValidationStatusChange
+    /// <inheritdoc />
+    public ValidationText Text
+    {
+        get
         {
-            get
-            {
-                Activate();
-                return _validationStatusChange.AsObservable();
-            }
+            Activate();
+            return _validationText.Value;
         }
+    }
 
-        /// <inheritdoc />
-        public ValidationText Text
+    /// <summary>
+    /// Adds a validation into the validations collection.
+    /// </summary>
+    /// <param name="validation">Validation component to be added into the collection.</param>
+    public void Add(IValidationComponent validation) => _validationSource.Add(validation);
+
+    /// <summary>
+    /// Removes a validation from the validations collection.
+    /// </summary>
+    /// <param name="validation">Validation component to be removed from the collection.</param>
+    public void Remove(IValidationComponent validation) => _validationSource.Edit(list =>
+    {
+        if (list.Contains(validation))
         {
-            get
-            {
-                Activate();
-                return _validationText.Value;
-            }
+            list.Remove(validation);
         }
+    });
 
-        /// <summary>
-        /// Adds a validation into the validations collection.
-        /// </summary>
-        /// <param name="validation">Validation component to be added into the collection.</param>
-        public void Add(IValidationComponent validation) => _validationSource.Add(validation);
-
-        /// <summary>
-        /// Removes a validation from the validations collection.
-        /// </summary>
-        /// <param name="validation">Validation component to be removed from the collection.</param>
-        public void Remove(IValidationComponent validation) => _validationSource.Edit(list =>
+    /// <summary>
+    /// Removes many validation components from the validations collection.
+    /// </summary>
+    /// <param name="validations">Validation components to be removed from the collection.</param>
+    public void RemoveMany(IEnumerable<IValidationComponent> validations) => _validationSource.Edit(list =>
+    {
+        foreach (var validation in validations)
         {
             if (list.Contains(validation))
             {
                 list.Remove(validation);
             }
-        });
-
-        /// <summary>
-        /// Removes many validation components from the validations collection.
-        /// </summary>
-        /// <param name="validations">Validation components to be removed from the collection.</param>
-        public void RemoveMany(IEnumerable<IValidationComponent> validations) => _validationSource.Edit(list =>
-        {
-            foreach (var validation in validations)
-            {
-                if (list.Contains(validation))
-                {
-                    list.Remove(validation);
-                }
-            }
-        });
-
-        /// <summary>
-        /// Returns if the whole context is valid checking all the validations.
-        /// </summary>
-        /// <returns>Returns true if the <see cref="ValidationContext"/> is valid, otherwise false.</returns>
-        public bool GetIsValid() => _validations.Count == 0 || _validations.All(v => v.IsValid);
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            // Dispose of unmanaged resources.
-            Dispose(true);
-
-            // Suppress finalization.
-            GC.SuppressFinalize(this);
         }
+    });
 
-        /// <summary>
-        /// Disposes of the managed resources.
-        /// </summary>
-        /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _disposables.Dispose();
-            }
-        }
+    /// <summary>
+    /// Returns if the whole context is valid checking all the validations.
+    /// </summary>
+    /// <returns>Returns true if the <see cref="ValidationContext"/> is valid, otherwise false.</returns>
+    public bool GetIsValid() => _validations.Count == 0 || _validations.All(v => v.IsValid);
 
-        private void Activate()
-        {
-            if (_isActive)
-            {
-                return;
-            }
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        // Dispose of unmanaged resources.
+        Dispose(true);
 
-            _isActive = true;
-            _disposables.Add(_validationConnectable.Connect());
-        }
-
-        /// <summary>
-        /// Build a list of the validation text for each invalid component.
-        /// </summary>
-        /// <returns>
-        /// Returns the <see cref="ValidationText"/> with all the error messages from the non valid components.
-        /// </returns>
-        private ValidationText BuildText() =>
-            ValidationText.Create(_validations
-                .Where(p => !p.IsValid && p.Text is not null)
-                .Select(p => p.Text!));
+        // Suppress finalization.
+        GC.SuppressFinalize(this);
     }
+
+    /// <summary>
+    /// Disposes of the managed resources.
+    /// </summary>
+    /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _disposables.Dispose();
+        }
+    }
+
+    private void Activate()
+    {
+        if (_isActive)
+        {
+            return;
+        }
+
+        _isActive = true;
+        _disposables.Add(_validationConnectable.Connect());
+    }
+
+    /// <summary>
+    /// Build a list of the validation text for each invalid component.
+    /// </summary>
+    /// <returns>
+    /// Returns the <see cref="ValidationText"/> with all the error messages from the non valid components.
+    /// </returns>
+    private ValidationText BuildText() =>
+        ValidationText.Create(_validations
+            .Where(p => !p.IsValid && p.Text is not null)
+            .Select(p => p.Text!));
 }

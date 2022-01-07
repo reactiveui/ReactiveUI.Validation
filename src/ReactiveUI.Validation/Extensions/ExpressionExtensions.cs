@@ -7,42 +7,41 @@ using System;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace ReactiveUI.Validation.Extensions
+namespace ReactiveUI.Validation.Extensions;
+
+/// <summary>
+/// Extensions methods associated to <see cref="Expression"/> instances.
+/// </summary>
+internal static class ExpressionExtensions
 {
     /// <summary>
-    /// Extensions methods associated to <see cref="Expression"/> instances.
+    /// Returns a property path expression as a string.
     /// </summary>
-    internal static class ExpressionExtensions
+    /// <param name="expression">The property path expression.</param>
+    /// <returns>The property path string representing the expression.</returns>
+    /// <remarks>
+    /// For more info see:
+    /// https://github.com/reactiveui/ReactiveUI.Validation/issues/60
+    /// This is a helper method.
+    /// </remarks>
+    public static string GetPropertyPath(this Expression expression)
     {
-        /// <summary>
-        /// Returns a property path expression as a string.
-        /// </summary>
-        /// <param name="expression">The property path expression.</param>
-        /// <returns>The property path string representing the expression.</returns>
-        /// <remarks>
-        /// For more info see:
-        /// https://github.com/reactiveui/ReactiveUI.Validation/issues/60
-        /// This is a helper method.
-        /// </remarks>
-        public static string GetPropertyPath(this Expression expression)
+        var path = new StringBuilder();
+        while (expression is MemberExpression memberExpression)
         {
-            var path = new StringBuilder();
-            while (expression is MemberExpression memberExpression)
+            if (path.Length > 0)
             {
-                if (path.Length > 0)
-                {
-                    path.Insert(0, '.');
-                }
-
-                path.Insert(0, memberExpression.Member.Name);
-
-                expression = memberExpression.Expression ??
-                             throw new ArgumentException(
-                                 $"Unable to obtain parent expression of {memberExpression.Member.Name}",
-                                 nameof(expression));
+                path.Insert(0, '.');
             }
 
-            return path.ToString();
+            path.Insert(0, memberExpression.Member.Name);
+
+            expression = memberExpression.Expression ??
+                         throw new ArgumentException(
+                             $"Unable to obtain parent expression of {memberExpression.Member.Name}",
+                             nameof(expression));
         }
+
+        return path.ToString();
     }
 }

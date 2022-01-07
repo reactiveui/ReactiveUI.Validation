@@ -5,16 +5,15 @@
 
 using ReactiveUI.Validation.Contexts;
 
-namespace ReactiveUI.Validation.Abstractions
+namespace ReactiveUI.Validation.Abstractions;
+
+/// <summary>
+/// Interface used by view models to indicate they have a validation context.
+/// </summary>
+public interface IValidatableViewModel
 {
     /// <summary>
-    /// Interface used by view models to indicate they have a validation context.
+    /// Gets get the validation context.
     /// </summary>
-    public interface IValidatableViewModel
-    {
-        /// <summary>
-        /// Gets get the validation context.
-        /// </summary>
-        ValidationContext ValidationContext { get; }
-    }
+    ValidationContext ValidationContext { get; }
 }

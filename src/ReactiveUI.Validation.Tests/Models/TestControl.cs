@@ -3,16 +3,15 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-namespace ReactiveUI.Validation.Tests.Models
+namespace ReactiveUI.Validation.Tests.Models;
+
+/// <summary>
+/// The container that contains a Text property.
+/// </summary>
+public class TestControl
 {
     /// <summary>
-    /// The container that contains a Text property.
+    /// Gets or sets the text property of the container.
     /// </summary>
-    public class TestControl
-    {
-        /// <summary>
-        /// Gets or sets the text property of the container.
-        /// </summary>
-        public string Text { get; set; }
-    }
+    public string Text { get; set; }
 }

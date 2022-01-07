@@ -5,16 +5,15 @@
 
 using ReactiveUI.Validation.Abstractions;
 
-namespace ReactiveUI.Validation.Tests.Models
+namespace ReactiveUI.Validation.Tests.Models;
+
+/// <summary>
+/// Sample abstract view model that implements <see cref="IReactiveObject" />.
+/// </summary>
+public interface ISampleViewModel : IReactiveObject, IValidatableViewModel
 {
     /// <summary>
-    /// Sample abstract view model that implements <see cref="IReactiveObject" />.
+    /// Gets or sets the name property used for testing.
     /// </summary>
-    public interface ISampleViewModel : IReactiveObject, IValidatableViewModel
-    {
-        /// <summary>
-        /// Gets or sets the name property used for testing.
-        /// </summary>
-        string Name { get; set; }
-    }
+    string Name { get; set; }
 }

@@ -7,23 +7,22 @@ using System;
 using System.Windows.Forms;
 using LoginApp.WinForms.Views;
 
-namespace LoginApp.WinForms
+namespace LoginApp.WinForms;
+
+/// <summary>
+/// Windows Forms entry point.
+/// </summary>
+public static class Program
 {
     /// <summary>
-    /// Windows Forms entry point.
+    /// The main entry point for the application.
     /// </summary>
-    public static class Program
+    [STAThread]
+    public static void Main()
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        public static void Main()
-        {
-            Application.SetHighDpiMode(HighDpiMode.SystemAware);
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new SignUpView());
-        }
+        Application.SetHighDpiMode(HighDpiMode.SystemAware);
+        Application.EnableVisualStyles();
+        Application.SetCompatibleTextRenderingDefault(false);
+        Application.Run(new SignUpView());
     }
 }
