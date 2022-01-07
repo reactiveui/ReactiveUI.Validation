@@ -14,7 +14,7 @@ namespace LoginApp.Uwp
     /// Defines the main Universal Windows Application class.
     /// </summary>
     /// <inheritdoc />
-    internal sealed partial class App : Application
+    public sealed partial class App : Application
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="App"/> class.
@@ -31,14 +31,14 @@ namespace LoginApp.Uwp
                 Window.Current.Content = rootFrame;
             }
 
-            if (e.PrelaunchActivated)
+            if (e?.PrelaunchActivated == true)
             {
                 return;
             }
 
             if (rootFrame.Content == null)
             {
-                rootFrame.Navigate(typeof(SignUpView), e.Arguments);
+                rootFrame.Navigate(typeof(SignUpView), e?.Arguments);
             }
 
             Window.Current.Activate();
