@@ -5,12 +5,11 @@
 
 using System;
 
-namespace ReactiveUI.Validation.ValidationBindings.Abstractions
+namespace ReactiveUI.Validation.ValidationBindings.Abstractions;
+
+/// <summary>
+/// A validation binding component.
+/// </summary>
+public interface IValidationBinding : IDisposable
 {
-    /// <summary>
-    /// A validation binding component.
-    /// </summary>
-    public interface IValidationBinding : IDisposable
-    {
-    }
 }

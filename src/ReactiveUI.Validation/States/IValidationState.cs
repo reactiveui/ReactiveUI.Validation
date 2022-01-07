@@ -5,21 +5,20 @@
 
 using ReactiveUI.Validation.Collections;
 
-namespace ReactiveUI.Validation.States
+namespace ReactiveUI.Validation.States;
+
+/// <summary>
+/// Represents the validation state of a validation component.
+/// </summary>
+public interface IValidationState
 {
     /// <summary>
-    /// Represents the validation state of a validation component.
+    /// Gets the validation text.
     /// </summary>
-    public interface IValidationState
-    {
-        /// <summary>
-        /// Gets the validation text.
-        /// </summary>
-        ValidationText Text { get; }
+    ValidationText Text { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the validation is currently valid or not.
-        /// </summary>
-        bool IsValid { get; }
-    }
+    /// <summary>
+    /// Gets a value indicating whether the validation is currently valid or not.
+    /// </summary>
+    bool IsValid { get; }
 }

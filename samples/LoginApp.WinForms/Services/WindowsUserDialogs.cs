@@ -3,17 +3,16 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Windows;
+using System.Windows.Forms;
 using LoginApp.Services;
 
-namespace LoginApp.WinForms.Services
+namespace LoginApp.WinForms.Services;
+
+/// <summary>
+/// This class defines user dialogs for the Windows Presentation Framework app.
+/// </summary>
+public class WindowsUserDialogs : IUserDialogs
 {
-    /// <summary>
-    /// This class defines user dialogs for the Windows Presentation Framework app.
-    /// </summary>
-    public class WindowsUserDialogs : IUserDialogs
-    {
-        /// <inheritdoc />
-        public void ShowDialog(string message) => MessageBox.Show(message);
-    }
+    /// <inheritdoc />
+    public void ShowDialog(string message) => MessageBox.Show(message);
 }

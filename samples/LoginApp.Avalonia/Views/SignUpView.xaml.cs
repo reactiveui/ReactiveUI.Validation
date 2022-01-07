@@ -13,48 +13,47 @@ using ReactiveUI;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters;
 
-namespace LoginApp.Avalonia.Views
+namespace LoginApp.Avalonia.Views;
+
+/// <summary>
+/// A page which contains controls for signing up.
+/// </summary>
+/// <inheritdoc />
+public partial class SignUpView : ReactiveWindow<SignUpViewModel>
 {
     /// <summary>
-    /// A page which contains controls for signing up.
+    /// Initializes a new instance of the <see cref="SignUpView"/> class.
     /// </summary>
-    /// <inheritdoc />
-    public partial class SignUpView : ReactiveWindow<SignUpViewModel>
+    public SignUpView()
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SignUpView"/> class.
-        /// </summary>
-        public SignUpView()
+        InitializeComponent();
+        this.WhenActivated(disposables =>
         {
-            InitializeComponent();
-            this.WhenActivated(disposables =>
-            {
-                // Standard ReactiveUI bindings.
-                this.Bind(ViewModel, x => x.UserName, x => x.UserNameTextBox.Text)
-                    .DisposeWith(disposables);
-                this.Bind(ViewModel, x => x.Password, x => x.PasswordTextBox.Text)
-                    .DisposeWith(disposables);
-                this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordTextBox.Text)
-                    .DisposeWith(disposables);
-                this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUpButton)
-                    .DisposeWith(disposables);
+            // Standard ReactiveUI bindings.
+            this.Bind(ViewModel, x => x.UserName, x => x.UserNameTextBox.Text)
+                .DisposeWith(disposables);
+            this.Bind(ViewModel, x => x.Password, x => x.PasswordTextBox.Text)
+                .DisposeWith(disposables);
+            this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordTextBox.Text)
+                .DisposeWith(disposables);
+            this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUpButton)
+                .DisposeWith(disposables);
 
-                this.OneWayBind(ViewModel, x => x.IsBusy, x => x.BudyIndicator.IsVisible)
-                    .DisposeWith(disposables);
+            this.OneWayBind(ViewModel, x => x.IsBusy, x => x.BudyIndicator.IsVisible)
+                .DisposeWith(disposables);
 
-                // ReactiveUI.Validation: Bindings for error messages.
-                this.BindValidation(ViewModel, x => x.UserName, x => x.UserNameValidation.Text)
-                    .DisposeWith(disposables);
-                this.BindValidation(ViewModel, x => x.Password, x => x.PasswordValidation.Text)
-                    .DisposeWith(disposables);
-                this.BindValidation(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordValidation.Text)
-                    .DisposeWith(disposables);
+            // ReactiveUI.Validation: Bindings for error messages.
+            this.BindValidation(ViewModel, x => x.UserName, x => x.UserNameValidation.Text)
+                .DisposeWith(disposables);
+            this.BindValidation(ViewModel, x => x.Password, x => x.PasswordValidation.Text)
+                .DisposeWith(disposables);
+            this.BindValidation(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordValidation.Text)
+                .DisposeWith(disposables);
 
-                // ReactiveUI.Validation: Compound validation bindings.
-                var newLineFormatter = new SingleLineFormatter(Environment.NewLine);
-                this.BindValidation(ViewModel, x => x.CompoundValidation.Text, newLineFormatter)
-                    .DisposeWith(disposables);
-            });
-        }
+            // ReactiveUI.Validation: Compound validation bindings.
+            var newLineFormatter = new SingleLineFormatter(Environment.NewLine);
+            this.BindValidation(ViewModel, x => x.CompoundValidation.Text, newLineFormatter)
+                .DisposeWith(disposables);
+        });
     }
 }

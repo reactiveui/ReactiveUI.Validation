@@ -7,26 +7,25 @@ using System;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.States;
 
-namespace ReactiveUI.Validation.Components.Abstractions
+namespace ReactiveUI.Validation.Components.Abstractions;
+
+/// <summary>
+/// Core interface which all validation components must implement.
+/// </summary>
+public interface IValidationComponent
 {
     /// <summary>
-    /// Core interface which all validation components must implement.
+    /// Gets the current (optional) validation message.
     /// </summary>
-    public interface IValidationComponent
-    {
-        /// <summary>
-        /// Gets the current (optional) validation message.
-        /// </summary>
-        ValidationText? Text { get; }
+    ValidationText? Text { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the validation is currently valid or not.
-        /// </summary>
-        bool IsValid { get; }
+    /// <summary>
+    /// Gets a value indicating whether the validation is currently valid or not.
+    /// </summary>
+    bool IsValid { get; }
 
-        /// <summary>
-        /// Gets the observable for validation state changes.
-        /// </summary>
-        IObservable<IValidationState> ValidationStatusChange { get; }
-    }
+    /// <summary>
+    /// Gets the observable for validation state changes.
+    /// </summary>
+    IObservable<IValidationState> ValidationStatusChange { get; }
 }

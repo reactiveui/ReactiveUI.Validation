@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <StartupObject>LoginApp.Wpf.Program</StartupObject>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWpf>true</UseWpf>
   </PropertyGroup>
 

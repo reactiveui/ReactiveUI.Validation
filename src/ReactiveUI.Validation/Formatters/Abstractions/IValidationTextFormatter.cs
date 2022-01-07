@@ -5,19 +5,18 @@
 
 using ReactiveUI.Validation.Collections;
 
-namespace ReactiveUI.Validation.Formatters.Abstractions
+namespace ReactiveUI.Validation.Formatters.Abstractions;
+
+/// <summary>
+/// Specification for a <see cref="ValidationText"/> formatter.
+/// </summary>
+/// <typeparam name="TOut">Covariant type.</typeparam>
+public interface IValidationTextFormatter<out TOut>
 {
     /// <summary>
-    /// Specification for a <see cref="ValidationText"/> formatter.
+    /// Formats the <see cref="ValidationText"/> to desired output.
     /// </summary>
-    /// <typeparam name="TOut">Covariant type.</typeparam>
-    public interface IValidationTextFormatter<out TOut>
-    {
-        /// <summary>
-        /// Formats the <see cref="ValidationText"/> to desired output.
-        /// </summary>
-        /// <param name="validationText">ValidationText object to be formatted.</param>
-        /// <returns>Returns the result.</returns>
-        TOut Format(ValidationText validationText);
-    }
+    /// <param name="validationText">ValidationText object to be formatted.</param>
+    /// <returns>Returns the result.</returns>
+    TOut Format(ValidationText validationText);
 }

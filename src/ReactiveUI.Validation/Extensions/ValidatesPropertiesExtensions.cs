@@ -7,40 +7,39 @@ using System;
 using System.Linq.Expressions;
 using ReactiveUI.Validation.Components.Abstractions;
 
-namespace ReactiveUI.Validation.Extensions
+namespace ReactiveUI.Validation.Extensions;
+
+/// <summary>
+/// Extensions for <see cref="IValidatesProperties"/>.
+/// </summary>
+public static class ValidatesPropertiesExtensions
 {
     /// <summary>
-    /// Extensions for <see cref="IValidatesProperties"/>.
+    /// Determine if a property name is actually contained within this.
     /// </summary>
-    public static class ValidatesPropertiesExtensions
+    /// <typeparam name="TViewModel">View model type.</typeparam>
+    /// <typeparam name="TProp">View model property type.</typeparam>
+    /// <param name="validatesProperties">The validation component.</param>
+    /// <param name="propertyExpression">ViewModel property.</param>
+    /// <param name="exclusively">Indicates if the property to find is unique.</param>
+    /// <returns>Returns true if it contains the property, otherwise false.</returns>
+    /// <exception cref="ArgumentNullException">Thrown when any argument is null.</exception>
+    public static bool ContainsProperty<TViewModel, TProp>(
+        this IValidatesProperties validatesProperties,
+        Expression<Func<TViewModel, TProp>> propertyExpression,
+        bool exclusively = false)
     {
-        /// <summary>
-        /// Determine if a property name is actually contained within this.
-        /// </summary>
-        /// <typeparam name="TViewModel">View model type.</typeparam>
-        /// <typeparam name="TProp">View model property type.</typeparam>
-        /// <param name="validatesProperties">The validation component.</param>
-        /// <param name="propertyExpression">ViewModel property.</param>
-        /// <param name="exclusively">Indicates if the property to find is unique.</param>
-        /// <returns>Returns true if it contains the property, otherwise false.</returns>
-        /// <exception cref="ArgumentNullException">Thrown when any argument is null.</exception>
-        public static bool ContainsProperty<TViewModel, TProp>(
-            this IValidatesProperties validatesProperties,
-            Expression<Func<TViewModel, TProp>> propertyExpression,
-            bool exclusively = false)
+        if (validatesProperties is null)
         {
-            if (validatesProperties is null)
-            {
-                throw new ArgumentNullException(nameof(validatesProperties));
-            }
-
-            if (propertyExpression is null)
-            {
-                throw new ArgumentNullException(nameof(propertyExpression));
-            }
-
-            var propertyName = propertyExpression.Body.GetPropertyPath();
-            return validatesProperties.ContainsPropertyName(propertyName, exclusively);
+            throw new ArgumentNullException(nameof(validatesProperties));
         }
+
+        if (propertyExpression is null)
+        {
+            throw new ArgumentNullException(nameof(propertyExpression));
+        }
+
+        var propertyName = propertyExpression.Body.GetPropertyPath();
+        return validatesProperties.ContainsPropertyName(propertyName, exclusively);
     }
 }

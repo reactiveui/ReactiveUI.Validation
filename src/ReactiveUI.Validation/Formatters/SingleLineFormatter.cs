@@ -6,36 +6,35 @@
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Formatters.Abstractions;
 
-namespace ReactiveUI.Validation.Formatters
+namespace ReactiveUI.Validation.Formatters;
+
+/// <inheritdoc />
+/// <summary>
+/// Helper class to generate a single formatted line for a <see cref="ReactiveUI.Validation.Collections.ValidationText" />.
+/// </summary>
+public class SingleLineFormatter : IValidationTextFormatter<string>
 {
-    /// <inheritdoc />
+    private readonly string? _separator;
+
     /// <summary>
-    /// Helper class to generate a single formatted line for a <see cref="ReactiveUI.Validation.Collections.ValidationText" />.
+    /// Initializes a new instance of the <see cref="SingleLineFormatter"/> class.
     /// </summary>
-    public class SingleLineFormatter : IValidationTextFormatter<string>
-    {
-        private readonly string? _separator;
+    /// <param name="separator">Separator string.</param>
+    public SingleLineFormatter(string? separator = null) => _separator = separator;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SingleLineFormatter"/> class.
-        /// </summary>
-        /// <param name="separator">Separator string.</param>
-        public SingleLineFormatter(string? separator = null) => _separator = separator;
+    /// <summary>
+    /// Gets the default formatter.
+    /// </summary>
+    public static SingleLineFormatter Default { get; } = new(" ");
 
-        /// <summary>
-        /// Gets the default formatter.
-        /// </summary>
-        public static SingleLineFormatter Default { get; } = new(" ");
-
-        /// <summary>
-        /// Formats the <see cref="ValidationText"/> into a single line text using the
-        /// default separator.
-        /// </summary>
-        /// <param name="validationText">ValidationText object to be formatted.</param>
-        /// <returns>Returns the string formatted.</returns>
-        public string Format(ValidationText? validationText) =>
-            validationText is not null
-                ? validationText.ToSingleLine(_separator)
-                : string.Empty;
-    }
+    /// <summary>
+    /// Formats the <see cref="ValidationText"/> into a single line text using the
+    /// default separator.
+    /// </summary>
+    /// <param name="validationText">ValidationText object to be formatted.</param>
+    /// <returns>Returns the string formatted.</returns>
+    public string Format(ValidationText? validationText) =>
+        validationText is not null
+            ? validationText.ToSingleLine(_separator)
+            : string.Empty;
 }

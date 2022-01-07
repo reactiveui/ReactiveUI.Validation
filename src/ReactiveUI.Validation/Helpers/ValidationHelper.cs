@@ -9,78 +9,77 @@ using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.States;
 
-namespace ReactiveUI.Validation.Helpers
+namespace ReactiveUI.Validation.Helpers;
+
+/// <inheritdoc cref="ReactiveObject" />
+/// <inheritdoc cref="IDisposable" />
+/// <summary>
+/// Encapsulation of a validation with bindable properties.
+/// </summary>
+public class ValidationHelper : ReactiveObject, IDisposable
 {
-    /// <inheritdoc cref="ReactiveObject" />
-    /// <inheritdoc cref="IDisposable" />
+    private readonly ObservableAsPropertyHelper<ValidationText> _message;
+    private readonly ObservableAsPropertyHelper<bool> _isValid;
+    private readonly IValidationComponent _validation;
+    private readonly IDisposable? _cleanup;
+
     /// <summary>
-    /// Encapsulation of a validation with bindable properties.
+    /// Initializes a new instance of the <see cref="ValidationHelper"/> class.
     /// </summary>
-    public class ValidationHelper : ReactiveObject, IDisposable
+    /// <param name="validation">Validation property.</param>
+    /// <param name="cleanup">The disposable to dispose when the helper is disposed.</param>
+    public ValidationHelper(IValidationComponent validation, IDisposable? cleanup = null)
     {
-        private readonly ObservableAsPropertyHelper<ValidationText> _message;
-        private readonly ObservableAsPropertyHelper<bool> _isValid;
-        private readonly IValidationComponent _validation;
-        private readonly IDisposable? _cleanup;
+        _validation = validation ?? throw new ArgumentNullException(nameof(validation));
+        _cleanup = cleanup;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ValidationHelper"/> class.
-        /// </summary>
-        /// <param name="validation">Validation property.</param>
-        /// <param name="cleanup">The disposable to dispose when the helper is disposed.</param>
-        public ValidationHelper(IValidationComponent validation, IDisposable? cleanup = null)
+        _isValid = _validation.ValidationStatusChange
+            .Select(v => v.IsValid)
+            .ToProperty(this, nameof(IsValid));
+
+        _message = _validation.ValidationStatusChange
+            .Select(v => v.Text)
+            .ToProperty(this, nameof(Message));
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether the validation is currently valid or not.
+    /// </summary>
+    public bool IsValid => _isValid.Value;
+
+    /// <summary>
+    /// Gets the current (optional) validation message.
+    /// </summary>
+    public ValidationText? Message => _message.Value;
+
+    /// <summary>
+    /// Gets the observable for validation state changes.
+    /// </summary>
+    public IObservable<IValidationState> ValidationChanged => _validation.ValidationStatusChange;
+
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        // Dispose of unmanaged resources.
+        Dispose(true);
+
+        // Suppress finalization.
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Disposes of the managed resources.
+    /// </summary>
+    /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!disposing)
         {
-            _validation = validation ?? throw new ArgumentNullException(nameof(validation));
-            _cleanup = cleanup;
-
-            _isValid = _validation.ValidationStatusChange
-                .Select(v => v.IsValid)
-                .ToProperty(this, nameof(IsValid));
-
-            _message = _validation.ValidationStatusChange
-                .Select(v => v.Text)
-                .ToProperty(this, nameof(Message));
+            return;
         }
 
-        /// <summary>
-        /// Gets a value indicating whether the validation is currently valid or not.
-        /// </summary>
-        public bool IsValid => _isValid.Value;
-
-        /// <summary>
-        /// Gets the current (optional) validation message.
-        /// </summary>
-        public ValidationText? Message => _message.Value;
-
-        /// <summary>
-        /// Gets the observable for validation state changes.
-        /// </summary>
-        public IObservable<IValidationState> ValidationChanged => _validation.ValidationStatusChange;
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            // Dispose of unmanaged resources.
-            Dispose(true);
-
-            // Suppress finalization.
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Disposes of the managed resources.
-        /// </summary>
-        /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing)
-            {
-                return;
-            }
-
-            _isValid.Dispose();
-            _message.Dispose();
-            _cleanup?.Dispose();
-        }
+        _isValid.Dispose();
+        _message.Dispose();
+        _cleanup?.Dispose();
     }
 }
