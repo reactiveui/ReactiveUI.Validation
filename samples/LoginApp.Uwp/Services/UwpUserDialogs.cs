@@ -6,14 +6,13 @@
 using LoginApp.Services;
 using Windows.UI.Popups;
 
-namespace LoginApp.Uwp.Services
+namespace LoginApp.Uwp.Services;
+
+/// <summary>
+/// This class defines user dialogs for the Universal Windows Platform app.
+/// </summary>
+public class UwpUserDialogs : IUserDialogs
 {
-    /// <summary>
-    /// This class defines user dialogs for the Universal Windows Platform app.
-    /// </summary>
-    public class UwpUserDialogs : IUserDialogs
-    {
-        /// <inheritdoc />
-        public void ShowDialog(string message) => new MessageDialog(message).ShowAsync();
-    }
+    /// <inheritdoc />
+    public void ShowDialog(string message) => new MessageDialog(message).ShowAsync();
 }
