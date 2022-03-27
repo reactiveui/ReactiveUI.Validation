@@ -39,6 +39,8 @@ Install the following package into you class library and into a platform-specifi
 1. Decorate existing ViewModel with `IValidatableViewModel`, which has a single member, `ValidationContext`. The ValidationContext contains all of the functionality surrounding the validation of the ViewModel. Most access to the specification of validation rules is performed through extension methods on the `IValidatableViewModel` interface. Then, add validation to the ViewModel.
 
 ```csharp
+using ReactiveUI.Validation.Extensions;
+
 public class SampleViewModel : ReactiveObject, IValidatableViewModel
 {
     public SampleViewModel()
@@ -113,6 +115,8 @@ this.ValidationRule(vm => vm.UserName, usernameNotEmpty);
 2. Add validation presentation to the View.
 
 ```csharp
+using ReactiveUI.Validation.Extensions;
+
 public class SampleView : ReactiveContentPage<SampleViewModel>
 {
     public SampleView()
@@ -193,6 +197,8 @@ For those platforms that support the `INotifyDataErrorInfo` interface, ReactiveU
 <img width="400" src="https://user-images.githubusercontent.com/6759207/96717163-bbbe9a00-13ae-11eb-8c54-89cd339cbd5c.png">
 
 ```cs
+using ReactiveUI.Validation.Extensions;
+
 public class SampleViewModel : ReactiveValidationObject
 {
     public SampleViewModel()
