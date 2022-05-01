@@ -151,7 +151,7 @@
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.13" />
     <PackageReference Include="ReactiveUI" Version="17.*" />
     <PackageReference Include="ReactiveUI.Uwp">
-      <Version>17.1.50</Version>
+      <Version>18.0.10</Version>
     </PackageReference>
     <PackageReference Include="ReactiveUI.Validation" Version="2.*" />
   </ItemGroup>
