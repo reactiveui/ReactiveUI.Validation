@@ -4,150 +4,127 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Collections;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ReactiveUI.Validation.Collections;
 
 /// <summary>
-/// Container for validation text.
+/// Factory container for validation text.
 /// </summary>
-public class ValidationText : IEnumerable<string>
+public static class ValidationText
 {
     /// <summary>
     /// The none validation text singleton instance contains no items.
     /// </summary>
-    public static readonly ValidationText None = new(Array.Empty<string>());
+    public static readonly IValidationText None = new ArrayValidationText(Array.Empty<string>());
 
     /// <summary>
     /// The empty validation text singleton instance contains single empty string.
     /// </summary>
-    public static readonly ValidationText Empty = new(new[] { string.Empty });
-
-    private readonly string[] _texts;
+    public static readonly IValidationText Empty = new SingleValidationText(string.Empty);
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ValidationText"/> class with the array of texts.
-    /// </summary>
-    /// <param name="texts">The array of texts.</param>
-    private ValidationText(string[] texts) => _texts = texts;
-
-    /// <summary>
-    /// Gets returns the number of elements in the collection.
-    /// </summary>
-    public int Count => _texts.Length;
-
-    /// <summary>
-    /// Indexer.
-    /// </summary>
-    /// <param name="index">Position.</param>
-    public string this[int index] => _texts[index];
-
-    /// <summary>
-    /// Combines multiple <see cref="ValidationText"/> instances into a single instance, or returns <see cref="None"/> if the
+    /// Combines multiple <see cref="IValidationText"/> instances into a single instance, or returns <see cref="None"/> if the
     /// enumeration is empty, or <see cref="Empty"/> if the enumeration only contains <see cref="string.Empty"/>.
     /// </summary>
-    /// <param name="validationTexts">An enumeration of <see cref="ValidationText"/>.</param>
-    /// <returns>A <see cref="ValidationText"/>.</returns>
-    public static ValidationText Create(IEnumerable<ValidationText>? validationTexts)
+    /// <param name="validationTexts">An enumeration of <see cref="IValidationText"/>.</param>
+    /// <returns>A <see cref="IValidationText"/>.</returns>
+    public static IValidationText Create(IEnumerable<IValidationText?>? validationTexts)
     {
-        // Note _texts are already validated as not-null
-        string[] texts = (validationTexts ?? Array.Empty<ValidationText>())
-            .SelectMany(vt => vt._texts)
-            .ToArray();
-
-        if (texts.Length < 1)
+        if (validationTexts is null)
         {
             return None;
         }
 
-        if (texts.Length == 1 && texts[0].Length < 1)
-        {
-            return Empty;
-        }
+        // Note _texts are already validated as not-null
+        string[] texts = validationTexts.Where(static x => x is not null).SelectMany(static vt => vt!)
+            .ToArray();
 
-        return new ValidationText(texts);
+        return CreateValidationText(texts);
     }
 
     /// <summary>
     /// Combines multiple validation messages into a single instance, or returns <see cref="None"/> if the enumeration is empty, or only contains empty elements.
     /// </summary>
     /// <param name="validationTexts">An enumeration of validation messages.</param>
-    /// <returns>A <see cref="ValidationText"/>.</returns>
-    public static ValidationText Create(IEnumerable<string>? validationTexts)
+    /// <returns>A <see cref="IValidationText"/>.</returns>
+    public static IValidationText Create(IEnumerable<string?>? validationTexts)
     {
-        string[] texts = (validationTexts ?? Array.Empty<string>())
-            .Where(t => t is not null)
-            .ToArray();
-
-        if (texts.Length < 1)
+        if (validationTexts is null)
         {
             return None;
         }
 
-        if (texts.Length == 1 && texts[0].Length < 1)
-        {
-            return Empty;
-        }
+        string[] texts = validationTexts.Where(t => t is not null).ToArray()!;
 
-        return new ValidationText(texts);
+        return CreateValidationText(texts);
     }
+
+    /// <summary>
+    /// validation message into a single instance, or returns <see cref="None"/> if the enumeration is empty, or contains a single empty element.
+    /// </summary>
+    /// <param name="validationText">An array of validation messages.</param>
+    /// <returns>A <see cref="IValidationText"/>.</returns>
+    public static IValidationText Create(string? validationText) => validationText is null ? None : CreateValidationText(validationText);
 
     /// <summary>
     /// Combines multiple validation messages into a single instance, or returns <see cref="None"/> if the enumeration is empty, or contains a single empty element.
     /// </summary>
     /// <param name="validationTexts">An array of validation messages.</param>
-    /// <returns>A <see cref="ValidationText"/>.</returns>
-    public static ValidationText Create(params string?[]? validationTexts)
+    /// <returns>A <see cref="IValidationText"/>.</returns>
+    public static IValidationText Create(params string?[]? validationTexts)
     {
         if (validationTexts is null || validationTexts.Length < 1)
         {
             return None;
         }
 
-        // Optimise code path for single item array.
+// Optimize code path for single item array.
         if (validationTexts.Length == 1)
         {
-            var text = validationTexts[0];
+            string? text = validationTexts[0];
 
             if (text is null)
             {
                 return None;
             }
 
-            return text.Length < 1 ? Empty : new ValidationText(validationTexts!);
+            return text.Length < 1 ? Empty : new SingleValidationText(text);
         }
+
+        string[] texts = ArrayPool<string>.Shared.Rent(validationTexts.Length);
+        int index = 0;
 
         // Ensure we have no null items in the multi-item array
-        if (validationTexts.Any(t => t is null))
+        for (int i = 0; i < validationTexts.Length; i++)
         {
-            // Strip nulls
-            validationTexts = validationTexts.Where(t => t is not null).ToArray();
-            if (validationTexts.Length < 1)
+            string? text = validationTexts[i];
+
+            if (text is null)
             {
-                return None;
+                continue;
             }
 
-            if (validationTexts[0]?.Length < 1)
-            {
-                return Empty;
-            }
+            texts[index] = text;
+            index++;
         }
 
-        return new ValidationText(validationTexts!);
+        return index switch
+        {
+            0 => None,
+            1 => CreateValidationText(texts[0]),
+            _ => new ArrayValidationText(texts.ToArray())
+        };
     }
 
-    /// <inheritdoc/>
-    public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>)_texts).GetEnumerator();
+    private static IValidationText CreateValidationText(string[] texts) => texts.Length switch
+    {
+        0 => None,
+        1 => CreateValidationText(texts[0]),
+        _ => new ArrayValidationText(texts)
+    };
 
-    /// <inheritdoc/>
-    IEnumerator IEnumerable.GetEnumerator() => _texts.GetEnumerator();
-
-    /// <summary>
-    /// Convert representation to a single line using a specified separator.
-    /// </summary>
-    /// <param name="separator">String separator.</param>
-    /// <returns>Returns all the text collection separated by the separator.</returns>
-    public string ToSingleLine(string? separator = ",") => string.Join(separator, _texts);
+    private static IValidationText CreateValidationText(string text) => text.Length is 0 ? Empty : new SingleValidationText(text);
 }

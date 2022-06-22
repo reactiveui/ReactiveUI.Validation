@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
@@ -40,7 +41,7 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
 
     private readonly ReadOnlyObservableCollection<IValidationComponent> _validations;
     private readonly IConnectableObservable<bool> _validationConnectable;
-    private readonly ObservableAsPropertyHelper<ValidationText> _validationText;
+    private readonly ObservableAsPropertyHelper<IValidationText> _validationText;
     private readonly ObservableAsPropertyHelper<bool> _isValid;
 
     private readonly CompositeDisposable _disposables = new();
@@ -131,7 +132,7 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
     }
 
     /// <inheritdoc />
-    public ValidationText Text
+    public IValidationText Text
     {
         get
         {
@@ -216,10 +217,38 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
     /// Build a list of the validation text for each invalid component.
     /// </summary>
     /// <returns>
-    /// Returns the <see cref="ValidationText"/> with all the error messages from the non valid components.
+    /// Returns the <see cref="IValidationText"/> with all the error messages from the non valid components.
     /// </returns>
-    private ValidationText BuildText() =>
-        ValidationText.Create(_validations
-            .Where(p => !p.IsValid && p.Text is not null)
-            .Select(p => p.Text!));
+    private IValidationText BuildText()
+    {
+        IValidationText[] validationComponents = ArrayPool<IValidationText>.Shared.Rent(_validations.Count);
+
+        try
+        {
+            int index = 0;
+            for (int i = 0; i < _validations.Count; i++)
+            {
+                IValidationComponent validationComponent = _validations[i];
+
+                if (validationComponent.IsValid || validationComponent.Text is null)
+                {
+                    continue;
+                }
+
+                validationComponents[index] = validationComponent.Text;
+                index++;
+            }
+
+            return index switch
+            {
+                0 => ValidationText.None,
+                1 => ValidationText.Create(validationComponents[0]),
+                _ => ValidationText.Create(validationComponents)
+            };
+        }
+        finally
+        {
+            ArrayPool<IValidationText>.Shared.Return(validationComponents, true);
+        }
+    }
 }

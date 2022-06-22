@@ -34,7 +34,7 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
     private IConnectableObservable<IValidationState>? _connectedChange;
     private bool _isConnected;
     private bool _isValid;
-    private ValidationText? _text;
+    private IValidationText? _text;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BasePropertyValidation{TViewModel}"/> class.
@@ -78,7 +78,7 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
     }
 
     /// <inheritdoc/>
-    public ValidationText? Text
+    public IValidationText? Text
     {
         get
         {
@@ -115,7 +115,7 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
             throw new ArgumentNullException(nameof(property));
         }
 
-        var propertyName = property.Body.GetPropertyPath();
+        string propertyName = property.Body.GetPropertyPath();
         _propertyNames.Add(propertyName);
     }
 
@@ -169,7 +169,7 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
     private readonly ReplaySubject<TViewModelProperty?> _valueSubject = new(1);
     private readonly IConnectableObservable<TViewModelProperty?> _valueConnectedObservable;
-    private readonly Func<TViewModelProperty?, bool, ValidationText> _message;
+    private readonly Func<TViewModelProperty?, bool, IValidationText> _message;
     private readonly Func<TViewModelProperty?, bool> _isValidFunc;
     private readonly CompositeDisposable _disposables = new();
     private bool _isConnected;
@@ -236,7 +236,7 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
         TViewModel viewModel,
         Expression<Func<TViewModel, TViewModelProperty?>> viewModelProperty,
         Func<TViewModelProperty?, bool> isValidFunc,
-        Func<TViewModelProperty?, bool, ValidationText> messageFunc)
+        Func<TViewModelProperty?, bool, IValidationText> messageFunc)
     {
         // Now, we have a function, which, in this case uses the value of the view Model Property...
         _isValidFunc = isValidFunc;

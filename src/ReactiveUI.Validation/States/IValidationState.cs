@@ -15,7 +15,7 @@ public interface IValidationState
     /// <summary>
     /// Gets the validation text.
     /// </summary>
-    ValidationText Text { get; }
+    IValidationText Text { get; }
 
     /// <summary>
     /// Gets a value indicating whether the validation is currently valid or not.

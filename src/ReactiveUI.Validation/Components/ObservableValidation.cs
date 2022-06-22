@@ -246,7 +246,7 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
     private readonly IConnectableObservable<IValidationState> _validityConnectedObservable;
     private bool _isActive;
     private bool _isValid;
-    private ValidationText? _text;
+    private IValidationText? _text;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableValidationBase{TViewModel,TValue}"/> class.
@@ -259,11 +259,11 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
         TViewModel viewModel,
         IObservable<TValue> observable,
         Func<TViewModel, TValue, bool> isValidFunc,
-        Func<TViewModel, TValue, bool, ValidationText> messageFunc)
+        Func<TViewModel, TValue, bool, IValidationText> messageFunc)
         : this(observable.Select(value =>
         {
-            var isValid = isValidFunc(viewModel, value);
-            var message = messageFunc(viewModel, value, isValid);
+            bool isValid = isValidFunc(viewModel, value);
+            IValidationText message = messageFunc(viewModel, value, isValid);
             return new ValidationState(isValid, message);
         }))
     {
@@ -296,7 +296,7 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
     public IEnumerable<string> Properties => _propertyNames.AsEnumerable();
 
     /// <inheritdoc/>
-    public ValidationText? Text
+    public IValidationText? Text
     {
         get
         {
@@ -368,7 +368,7 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
             throw new ArgumentNullException(nameof(property));
         }
 
-        var propertyName = property.Body.GetPropertyPath();
+        string propertyName = property.Body.GetPropertyPath();
         _propertyNames.Add(propertyName);
     }
 

@@ -23,7 +23,7 @@ public class ValidationTextTests
     [Fact]
     public void NoneValidationTextIsEmpty()
     {
-        ValidationText vt = ValidationText.None;
+        IValidationText vt = ValidationText.None;
 
         Assert.Equal(0, vt.Count);
 
@@ -40,7 +40,7 @@ public class ValidationTextTests
     [Fact]
     public void EmptyValidationTextIsSingleEmpty()
     {
-        ValidationText vt = ValidationText.Empty;
+        IValidationText vt = ValidationText.Empty;
 
         Assert.Equal(1, vt.Count);
 
@@ -58,7 +58,7 @@ public class ValidationTextTests
     [Fact]
     public void ParameterlessCreateReturnsNone()
     {
-        ValidationText vt = ValidationText.Create();
+        IValidationText vt = ValidationText.Create();
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -69,18 +69,18 @@ public class ValidationTextTests
     [Fact]
     public void CreateEmptyStringEnumerableReturnsNone()
     {
-        ValidationText vt = ValidationText.Create((IEnumerable<string>)Array.Empty<string>());
+        IValidationText vt = ValidationText.Create((IEnumerable<string>)Array.Empty<string>());
 
         Assert.Same(ValidationText.None, vt);
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{ValidationText})"/> with an empty enumerable <see cref="ValidationText.None"/>.
+    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with an empty enumerable <see cref="ValidationText.None"/>.
     /// </summary>
     [Fact]
     public void CreateEmptyValidationTextEnumerableReturnsNone()
     {
-        ValidationText vt = ValidationText.Create(Array.Empty<ValidationText>());
+        IValidationText vt = ValidationText.Create(Array.Empty<IValidationText>());
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -91,7 +91,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateNullReturnsNone()
     {
-        ValidationText vt = ValidationText.Create((string)null);
+        IValidationText vt = ValidationText.Create((string)null);
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -102,18 +102,18 @@ public class ValidationTextTests
     [Fact]
     public void CreateNullStringEnumerableReturnsNone()
     {
-        ValidationText vt = ValidationText.Create((IEnumerable<string>)null);
+        IValidationText vt = ValidationText.Create((IEnumerable<string>)null);
 
         Assert.Same(ValidationText.None, vt);
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{ValidationText})"/> with <see langword="null"/> returns <see cref="ValidationText.None"/>.
+    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with <see langword="null"/> returns <see cref="ValidationText.None"/>.
     /// </summary>
     [Fact]
     public void CreateNullValidationTextEnumerableReturnsNone()
     {
-        ValidationText vt = ValidationText.Create((IEnumerable<ValidationText>)null);
+        IValidationText vt = ValidationText.Create((IEnumerable<IValidationText>)null);
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -124,18 +124,18 @@ public class ValidationTextTests
     [Fact]
     public void CreateNullItemStringEnumerableReturnsNone()
     {
-        ValidationText vt = ValidationText.Create((IEnumerable<string>)new string[] { null });
+        IValidationText vt = ValidationText.Create((IEnumerable<string>)new string[] { null });
 
         Assert.Same(ValidationText.None, vt);
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{ValidationText})"/>  with an enumerable containing <see cref="ValidationText.None"/> returns <see cref="ValidationText.None"/>.
+    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/>  with an enumerable containing <see cref="ValidationText.None"/> returns <see cref="ValidationText.None"/>.
     /// </summary>
     [Fact]
     public void CreateNoneItemValidationTextEnumerableReturnsNone()
     {
-        ValidationText vt = ValidationText.Create(new[] { ValidationText.None });
+        IValidationText vt = ValidationText.Create(new[] { ValidationText.None });
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -146,7 +146,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateNoneItemStringEnumerableReturnsNone()
     {
-        ValidationText vt = ValidationText.Create(ValidationText.None);
+        IValidationText vt = ValidationText.Create(ValidationText.None);
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -157,7 +157,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateStringEmptyReturnsEmpty()
     {
-        ValidationText vt = ValidationText.Create(string.Empty);
+        IValidationText vt = ValidationText.Create(string.Empty);
 
         Assert.Same(ValidationText.Empty, vt);
     }
@@ -168,7 +168,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateSingleStringEmptyReturnsEmpty()
     {
-        ValidationText vt = ValidationText.Create((IEnumerable<string>)new[] { string.Empty });
+        IValidationText vt = ValidationText.Create((IEnumerable<string>)new[] { string.Empty });
 
         Assert.Same(ValidationText.Empty, vt);
     }
@@ -179,41 +179,41 @@ public class ValidationTextTests
     [Fact]
     public void CreateValidationTextEmptyReturnsEmpty()
     {
-        ValidationText vt = ValidationText.Create(new[] { ValidationText.Empty });
+        IValidationText vt = ValidationText.Create(new[] { ValidationText.Empty });
 
         Assert.Same(ValidationText.Empty, vt);
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{ValidationText})"/> with an enumerable containing two <see cref="ValidationText.None"/> returns <see cref="ValidationText.None"/>.
+    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with an enumerable containing two <see cref="ValidationText.None"/> returns <see cref="ValidationText.None"/>.
     /// </summary>
     [Fact]
     public void CombineValidationTextNoneReturnsNone()
     {
-        ValidationText vt = ValidationText.Create(new[] { ValidationText.None, ValidationText.None });
+        IValidationText vt = ValidationText.Create(new[] { ValidationText.None, ValidationText.None });
 
         Assert.Same(ValidationText.None, vt);
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{ValidationText})"/> with an enumerable containing <see cref="ValidationText.None"/> and <see cref="ValidationText.Empty"/> returns <see cref="ValidationText.Empty"/>.
+    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with an enumerable containing <see cref="ValidationText.None"/> and <see cref="ValidationText.Empty"/> returns <see cref="ValidationText.Empty"/>.
     /// </summary>
     [Fact]
     public void CombineValidationTextEmptyAndNoneReturnsEmpty()
     {
-        ValidationText vt = ValidationText.Create(new[] { ValidationText.None, ValidationText.Empty });
+        IValidationText vt = ValidationText.Create(new[] { ValidationText.None, ValidationText.Empty });
 
         Assert.Same(ValidationText.Empty, vt);
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{ValidationText})"/> with an enumerable containing two <see cref="ValidationText.Empty"/>
+    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with an enumerable containing two <see cref="ValidationText.Empty"/>
     /// returns a single <see cref="ValidationText"/> with two empty strings.
     /// </summary>
     [Fact]
     public void CombineValidationTextEmptyReturnsTwoEmpty()
     {
-        ValidationText vt = ValidationText.Create(new[] { ValidationText.Empty, ValidationText.Empty });
+        IValidationText vt = ValidationText.Create(new[] { ValidationText.Empty, ValidationText.Empty });
 
         Assert.NotSame(ValidationText.Empty, vt);
         Assert.Equal(2, vt.Count);

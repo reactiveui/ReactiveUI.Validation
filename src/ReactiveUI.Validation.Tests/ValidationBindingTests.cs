@@ -787,7 +787,7 @@ public class ValidationBindingTests
             Text = isValid ? ValidationText.Empty : ValidationText.Create(message);
         }
 
-        public ValidationText Text { get; }
+        public IValidationText Text { get; }
 
         public bool IsValid { get; }
     }
@@ -798,6 +798,6 @@ public class ValidationBindingTests
 
         public ConstFormatter(string text) => _text = text;
 
-        public string Format(ValidationText validationText) => _text;
+        public string Format(IValidationText validationText) => _text;
     }
 }

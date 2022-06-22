@@ -295,6 +295,6 @@ public class NotifyDataErrorInfoTests
 
         public PrefixFormatter(string prefix) => _prefix = prefix;
 
-        public string Format(ValidationText validationText) => $"{_prefix} {validationText.ToSingleLine()}";
+        public string Format(IValidationText validationText) => $"{_prefix} {validationText.ToSingleLine()}";
     }
 }

@@ -18,7 +18,7 @@ namespace ReactiveUI.Validation.Helpers;
 /// </summary>
 public class ValidationHelper : ReactiveObject, IDisposable
 {
-    private readonly ObservableAsPropertyHelper<ValidationText> _message;
+    private readonly ObservableAsPropertyHelper<IValidationText> _message;
     private readonly ObservableAsPropertyHelper<bool> _isValid;
     private readonly IValidationComponent _validation;
     private readonly IDisposable? _cleanup;
@@ -50,7 +50,7 @@ public class ValidationHelper : ReactiveObject, IDisposable
     /// <summary>
     /// Gets the current (optional) validation message.
     /// </summary>
-    public ValidationText? Message => _message.Value;
+    public IValidationText? Message => _message.Value;
 
     /// <summary>
     /// Gets the observable for validation state changes.
