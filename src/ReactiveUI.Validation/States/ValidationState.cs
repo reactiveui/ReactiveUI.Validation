@@ -16,7 +16,7 @@ public class ValidationState : IValidationState
     /// <summary>
     /// Indicates a valid state.
     /// </summary>
-    public static readonly ValidationState Valid = new(true, string.Empty);
+    public static readonly IValidationState Valid = new ValidationState(true, ValidationText.None);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationState"/> class.
