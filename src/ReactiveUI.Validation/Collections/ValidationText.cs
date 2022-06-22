@@ -39,7 +39,7 @@ public static class ValidationText
         }
 
         // Note _texts are already validated as not-null
-        string[] texts = validationTexts.Where(static x => x is not null).SelectMany(static vt => vt!)
+        ReadOnlySpan<string> texts = validationTexts.Where(static x => x is not null).SelectMany(static vt => vt!)
             .ToArray();
 
         return CreateValidationText(texts);
@@ -57,7 +57,7 @@ public static class ValidationText
             return None;
         }
 
-        string[] texts = validationTexts.Where(t => t is not null).ToArray()!;
+        ReadOnlySpan<string> texts = validationTexts.Where(t => t is not null).ToArray()!;
 
         return CreateValidationText(texts);
     }
@@ -95,35 +95,38 @@ public static class ValidationText
         }
 
         string[] texts = ArrayPool<string>.Shared.Rent(validationTexts.Length);
-        int index = 0;
 
-        // Ensure we have no null items in the multi-item array
-        for (int i = 0; i < validationTexts.Length; i++)
+        try
         {
-            string? text = validationTexts[i];
+            int currentIndex = 0;
 
-            if (text is null)
+            // Ensure we have no null items in the multi-item array
+            for (int i = 0; i < validationTexts.Length; i++)
             {
-                continue;
+                string? text = validationTexts[i];
+
+                if (text is null)
+                {
+                    continue;
+                }
+
+                texts[currentIndex] = text;
+                currentIndex++;
             }
 
-            texts[index] = text;
-            index++;
+            return CreateValidationText(texts.AsSpan(0, currentIndex + 1));
         }
-
-        return index switch
+        finally
         {
-            0 => None,
-            1 => CreateValidationText(texts[0]),
-            _ => new ArrayValidationText(texts.ToArray())
-        };
+            ArrayPool<string>.Shared.Return(texts);
+        }
     }
 
-    private static IValidationText CreateValidationText(string[] texts) => texts.Length switch
+    private static IValidationText CreateValidationText(ReadOnlySpan<string> texts) => texts.Length switch
     {
         0 => None,
         1 => CreateValidationText(texts[0]),
-        _ => new ArrayValidationText(texts)
+        _ => new ArrayValidationText(texts.ToArray())
     };
 
     private static IValidationText CreateValidationText(string text) => text.Length is 0 ? Empty : new SingleValidationText(text);
