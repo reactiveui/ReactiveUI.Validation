@@ -62,8 +62,11 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
         _validationConnectable = changeSets
             .StartWithEmpty()
             .AutoRefreshOnObservable(x => x.ValidationStatusChange)
-            .ToCollection()
-            .Select(static validations => validations.Count is 0 || validations.All(v => v.IsValid))
+            .QueryWhenChanged(static x =>
+                {
+                    using ReadOnlyCollectionPooled<IValidationComponent> validationComponents = new(x.Items);
+                    return validationComponents.Count is 0 || validationComponents.All(v => v.IsValid);
+                })
             .Multicast(_validSubject);
 
         _isValid = _validSubject
