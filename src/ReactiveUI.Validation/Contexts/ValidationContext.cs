@@ -9,13 +9,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using DynamicData;
-using DynamicData.Binding;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.States;
@@ -35,7 +33,7 @@ namespace ReactiveUI.Validation.Contexts;
 [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Field _disposables disposes the items.")]
 public class ValidationContext : ReactiveObject, IDisposable, IValidationComponent
 {
-    private readonly SourceList<IValidationComponent> _validationSource = new();
+    private readonly SourceCache<IValidationComponent, IValidationComponent> _validationSource = new(static x => x);
     private readonly ReplaySubject<IValidationState> _validationStatusChange = new(1);
     private readonly ReplaySubject<bool> _validSubject = new(1);
 
@@ -54,25 +52,18 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
     public ValidationContext(IScheduler? scheduler = null)
     {
         scheduler ??= CurrentThreadScheduler.Instance;
-        _validationSource
-            .Connect()
-            .ObserveOn(scheduler)
+        var changeSets = _validationSource.Connect().ObserveOn(scheduler);
+
+        changeSets
             .Bind(out _validations)
             .Subscribe()
             .DisposeWith(_disposables);
 
-        _validationConnectable = _validations
-            .ToObservableChangeSet()
-            .ToCollection()
+        _validationConnectable = changeSets
             .StartWithEmpty()
-            .Select(validations =>
-                validations
-                    .Select(v => v.ValidationStatusChange)
-                    .Merge()
-                    .Select(_ => Unit.Default)
-                    .StartWith(Unit.Default))
-            .Switch()
-            .Select(_ => GetIsValid())
+            .AutoRefreshOnObservable(x => x.ValidationStatusChange)
+            .ToCollection()
+            .Select(static validations => validations.Count is 0 || validations.All(v => v.IsValid))
             .Multicast(_validSubject);
 
         _isValid = _validSubject
@@ -145,34 +136,19 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
     /// Adds a validation into the validations collection.
     /// </summary>
     /// <param name="validation">Validation component to be added into the collection.</param>
-    public void Add(IValidationComponent validation) => _validationSource.Add(validation);
+    public void Add(IValidationComponent validation) => _validationSource.AddOrUpdate(validation);
 
     /// <summary>
     /// Removes a validation from the validations collection.
     /// </summary>
     /// <param name="validation">Validation component to be removed from the collection.</param>
-    public void Remove(IValidationComponent validation) => _validationSource.Edit(list =>
-    {
-        if (list.Contains(validation))
-        {
-            list.Remove(validation);
-        }
-    });
+    public void Remove(IValidationComponent validation) => _validationSource.RemoveKey(validation);
 
     /// <summary>
     /// Removes many validation components from the validations collection.
     /// </summary>
     /// <param name="validations">Validation components to be removed from the collection.</param>
-    public void RemoveMany(IEnumerable<IValidationComponent> validations) => _validationSource.Edit(list =>
-    {
-        foreach (var validation in validations)
-        {
-            if (list.Contains(validation))
-            {
-                list.Remove(validation);
-            }
-        }
-    });
+    public void RemoveMany(IEnumerable<IValidationComponent> validations) => _validationSource.RemoveKeys(validations);
 
     /// <summary>
     /// Returns if the whole context is valid checking all the validations.
@@ -225,7 +201,7 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
 
         try
         {
-            int index = 0;
+            int currentIndex = 0;
             for (int i = 0; i < _validations.Count; i++)
             {
                 IValidationComponent validationComponent = _validations[i];
@@ -235,15 +211,15 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
                     continue;
                 }
 
-                validationComponents[index] = validationComponent.Text;
-                index++;
+                validationComponents[currentIndex] = validationComponent.Text;
+                currentIndex++;
             }
 
-            return index switch
+            return currentIndex switch
             {
                 0 => ValidationText.None,
                 1 => ValidationText.Create(validationComponents[0]),
-                _ => ValidationText.Create(validationComponents)
+                _ => ValidationText.Create(validationComponents.Take(currentIndex))
             };
         }
         finally
