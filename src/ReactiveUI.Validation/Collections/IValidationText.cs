@@ -11,19 +11,8 @@ namespace ReactiveUI.Validation.Collections;
 /// <summary>
 /// Represents the validation state of a validation component.
 /// </summary>
-public interface IValidationText : IEnumerable<string>
+public interface IValidationText : IReadOnlyList<string>
 {
-    /// <summary>
-    /// Gets returns the number of elements in the collection.
-    /// </summary>
-    int Count { get; }
-
-    /// <summary>
-    /// Indexer.
-    /// </summary>
-    /// <param name="index">Position.</param>
-    string this[int index] { get; }
-
     /// <summary>
     /// Convert representation to a single line using a specified separator.
     /// </summary>
