@@ -31,7 +31,7 @@ public static class ValidationText
     /// </summary>
     /// <param name="validationTexts">An enumeration of <see cref="IValidationText"/>.</param>
     /// <returns>A <see cref="IValidationText"/>.</returns>
-    public static IValidationText Create(IEnumerable<IValidationText?>? validationTexts)
+    public static IValidationText Create(IEnumerable<IValidationText>? validationTexts)
     {
         if (validationTexts is null)
         {
@@ -39,10 +39,9 @@ public static class ValidationText
         }
 
         // Note _texts are already validated as not-null
-        ReadOnlySpan<string> texts = validationTexts.Where(static x => x is not null).SelectMany(static vt => vt!)
-            .ToArray();
+        string[] texts = validationTexts.SelectMany(static vt => vt).ToArray();
 
-        return CreateValidationText(texts);
+        return CreateValidationText(texts, texts.Length);
     }
 
     /// <summary>
@@ -57,9 +56,9 @@ public static class ValidationText
             return None;
         }
 
-        ReadOnlySpan<string> texts = validationTexts.Where(t => t is not null).ToArray()!;
+        string[] texts = validationTexts.Where(t => t is not null).ToArray()!;
 
-        return CreateValidationText(texts);
+        return CreateValidationText(texts, texts.Length);
     }
 
     /// <summary>
@@ -114,7 +113,7 @@ public static class ValidationText
                 currentIndex++;
             }
 
-            return CreateValidationText(texts.AsSpan(0, currentIndex + 1));
+            return CreateValidationText(texts, currentIndex);
         }
         finally
         {
@@ -122,11 +121,11 @@ public static class ValidationText
         }
     }
 
-    private static IValidationText CreateValidationText(ReadOnlySpan<string> texts) => texts.Length switch
+    private static IValidationText CreateValidationText(IReadOnlyList<string> texts, int count) => count switch
     {
         0 => None,
         1 => CreateValidationText(texts[0]),
-        _ => new ArrayValidationText(texts.ToArray())
+        _ => new ArrayValidationText(texts.Take(count).ToArray())
     };
 
     private static IValidationText CreateValidationText(string text) => text.Length is 0 ? Empty : new SingleValidationText(text);
