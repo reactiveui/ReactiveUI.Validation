@@ -94,14 +94,6 @@ internal sealed class ReadOnlyCollectionPooled<T> : IReadOnlyCollection<T>, IDis
             return MoveNextRare();
         }
 
-        private bool MoveNextRare()
-        {
-            _index = _readOnlyCollectionPooled.Count + 1;
-            _current = default;
-
-            return false;
-        }
-
         public void Reset()
         {
             _index = 0;
@@ -109,6 +101,14 @@ internal sealed class ReadOnlyCollectionPooled<T> : IReadOnlyCollection<T>, IDis
         }
 
         [DoesNotReturn]
-        private static void ThrowInvalidOperationException() => throw new InvalidOperationException();        
+        private static void ThrowInvalidOperationException() => throw new InvalidOperationException();
+
+        private bool MoveNextRare()
+        {
+            _index = _readOnlyCollectionPooled.Count + 1;
+            _current = default;
+
+            return false;
+        }
     }
 }
