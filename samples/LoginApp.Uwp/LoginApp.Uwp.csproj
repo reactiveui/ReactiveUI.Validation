@@ -149,7 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.14" />
-    <PackageReference Include="ReactiveUI" Version="17.*" />
+    <PackageReference Include="ReactiveUI" Version="18.*" />
     <PackageReference Include="ReactiveUI.Uwp">
       <Version>18.2.5</Version>
     </PackageReference>
