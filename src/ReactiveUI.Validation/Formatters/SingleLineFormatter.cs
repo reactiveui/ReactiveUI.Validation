@@ -10,7 +10,7 @@ namespace ReactiveUI.Validation.Formatters;
 
 /// <inheritdoc />
 /// <summary>
-/// Helper class to generate a single formatted line for a <see cref="ReactiveUI.Validation.Collections.ValidationText" />.
+/// Helper class to generate a single formatted line for a <see cref="IValidationText" />.
 /// </summary>
 public class SingleLineFormatter : IValidationTextFormatter<string>
 {
@@ -28,12 +28,12 @@ public class SingleLineFormatter : IValidationTextFormatter<string>
     public static SingleLineFormatter Default { get; } = new(" ");
 
     /// <summary>
-    /// Formats the <see cref="ValidationText"/> into a single line text using the
+    /// Formats the <see cref="IValidationText"/> into a single line text using the
     /// default separator.
     /// </summary>
     /// <param name="validationText">ValidationText object to be formatted.</param>
     /// <returns>Returns the string formatted.</returns>
-    public string Format(ValidationText? validationText) =>
+    public string Format(IValidationText? validationText) =>
         validationText is not null
             ? validationText.ToSingleLine(_separator)
             : string.Empty;

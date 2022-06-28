@@ -16,7 +16,7 @@ public class ValidationState : IValidationState
     /// <summary>
     /// Indicates a valid state.
     /// </summary>
-    public static readonly ValidationState Valid = new(true, string.Empty);
+    public static readonly IValidationState Valid = new ValidationState(true, ValidationText.None);
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationState"/> class.
@@ -33,7 +33,7 @@ public class ValidationState : IValidationState
     /// </summary>
     /// <param name="isValid">Determines if the property is valid or not.</param>
     /// <param name="text">Validation text.</param>
-    public ValidationState(bool isValid, ValidationText text)
+    public ValidationState(bool isValid, IValidationText text)
     {
         IsValid = isValid;
         Text = text ?? throw new ArgumentNullException(nameof(text));
@@ -47,5 +47,5 @@ public class ValidationState : IValidationState
     /// <summary>
     /// Gets the validation text.
     /// </summary>
-    public ValidationText Text { get; }
+    public IValidationText Text { get; }
 }

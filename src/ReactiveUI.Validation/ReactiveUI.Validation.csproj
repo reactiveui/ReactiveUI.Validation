@@ -1,7 +1,7 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>MonoAndroid11.0;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;tizen40;netstandard2.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>MonoAndroid12.0;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;tizen40;netstandard2.0;net6.0;net6.0-android;net6.0-ios;net6.0-tvos;net6.0-macos;net6.0-maccatalyst</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net462;net472;uap10.0.16299;net6.0-windows;net6.0-windows10.0.19041</TargetFrameworks>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <Nullable>enable</Nullable>
@@ -10,5 +10,12 @@
 
   <ItemGroup>
     <PackageReference Include="ReactiveUI" Version="18.*" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework.StartsWith('netstandard'))">
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
+  </ItemGroup>
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
+    <PackageReference Include="System.Buffers" Version="4.5.1" />
   </ItemGroup>
 </Project>

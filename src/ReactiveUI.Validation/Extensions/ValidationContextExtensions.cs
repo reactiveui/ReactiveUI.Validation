@@ -22,6 +22,8 @@ namespace ReactiveUI.Validation.Extensions;
 /// </summary>
 public static class ValidationContextExtensions
 {
+    private static IValidationState[] InitialValidationStates { get; } = { ValidationState.Valid };
+
     /// <summary>
     /// Resolves the <see cref="IValidationState"/> for a specified property in a reactive fashion.
     /// </summary>
@@ -46,7 +48,6 @@ public static class ValidationContextExtensions
             throw new ArgumentNullException(nameof(viewModelProperty));
         }
 
-        var initial = new[] { ValidationState.Valid };
         return context
             .Validations
             .ToObservableChangeSet()
@@ -56,7 +57,7 @@ public static class ValidationContextExtensions
                 .Where(validation => validation.ContainsProperty(viewModelProperty, strict))
                 .Select(validation => validation.ValidationStatusChange)
                 .CombineLatest()
-                .StartWith(initial))
+                .StartWith(InitialValidationStates))
             .Switch();
     }
 }

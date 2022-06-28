@@ -17,7 +17,7 @@ public interface IValidationComponent
     /// <summary>
     /// Gets the current (optional) validation message.
     /// </summary>
-    ValidationText? Text { get; }
+    IValidationText? Text { get; }
 
     /// <summary>
     /// Gets a value indicating whether the validation is currently valid or not.
