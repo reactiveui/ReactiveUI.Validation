@@ -1,11 +1,10 @@
-﻿// Copyright (c) 2022 .NET Foundation and Contributors. All rights reserved.
+// Copyright (c) 2022 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Buffers;
-using System.Diagnostics.CodeAnalysis;
 
 namespace ReactiveUI.Validation.Extensions;
 
@@ -24,7 +23,7 @@ internal static class ArrayPoolExtensions
     /// <param name="clearArray">Indicates whether the contents of the array should be cleared before reuse.</param>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="newSize"/> is less than 0.</exception>
     /// <remarks>When this method returns, the caller must not use any references to the old array anymore.</remarks>
-    public static void Resize<T>(this ArrayPool<T> pool, [NotNull] ref T[]? array, int newSize, bool clearArray = false)
+    public static void Resize<T>(this ArrayPool<T> pool, ref T[]? array, int newSize, bool clearArray = false)
     {
         // If the old array is null, just create a new one with the requested size
         if (array is null)
