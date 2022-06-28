@@ -37,12 +37,9 @@ internal sealed class ReadOnlyCollectionPooled<T> : IReadOnlyCollection<T>, IDis
         _items = array;
     }
 
-    void IDisposable.Dispose() => ArrayPool<T>.Shared.Return(_items);
-
-#pragma warning disable SA1201 // ElementsMustAppearInTheCorrectOrder
     public int Count { get; }
 
-#pragma warning restore SA1201 // ElementsMustAppearInTheCorrectOrder
+    void IDisposable.Dispose() => ArrayPool<T>.Shared.Return(_items);
 
     IEnumerator<T> IEnumerable<T>.GetEnumerator() => new Enumerator(this);
 
@@ -61,6 +58,21 @@ internal sealed class ReadOnlyCollectionPooled<T> : IReadOnlyCollection<T>, IDis
             _readOnlyCollectionPooled = readOnlyCollectionPooled;
             _index = 0;
             _current = default;
+        }
+
+        public T Current => _current!;
+
+        object? IEnumerator.Current
+        {
+            get
+            {
+                if (_index == 0 || _index == _readOnlyCollectionPooled.Count + 1)
+                {
+                    ThrowInvalidOperationException();
+                }
+
+                return Current;
+            }
         }
 
         public void Dispose()
@@ -89,34 +101,14 @@ internal sealed class ReadOnlyCollectionPooled<T> : IReadOnlyCollection<T>, IDis
 
             return false;
         }
-    #pragma warning disable SA1201 // ElementsMustAppearInTheCorrectOrder
 
-        // ReSharper disable once ConvertToAutoPropertyWithPrivateSetter
-        public T Current => _current!;
-
-    #pragma warning restore SA1201 // ElementsMustAppearInTheCorrectOrder
-        object? IEnumerator.Current
-        {
-            get
-            {
-                if (_index == 0 || _index == _readOnlyCollectionPooled.Count + 1)
-                {
-                    ThrowInvalidOperationException();
-                }
-
-                return Current;
-            }
-        }
-
-        [DoesNotReturn]
-        private static void ThrowInvalidOperationException() => throw new InvalidOperationException();
-
-    #pragma warning disable SA1202 // Elements should be ordered by access
         public void Reset()
-    #pragma warning restore SA1202 // Elements should be ordered by access
         {
             _index = 0;
             _current = default;
         }
+
+        [DoesNotReturn]
+        private static void ThrowInvalidOperationException() => throw new InvalidOperationException();        
     }
 }
