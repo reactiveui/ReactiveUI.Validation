@@ -9,17 +9,18 @@ namespace ReactiveUI.Validation.Abstractions
 }
 namespace ReactiveUI.Validation.Collections
 {
-    public class ValidationText : System.Collections.Generic.IEnumerable<string>, System.Collections.IEnumerable
+    public interface IValidationText : System.Collections.Generic.IEnumerable<string>, System.Collections.Generic.IReadOnlyCollection<string>, System.Collections.Generic.IReadOnlyList<string>, System.Collections.IEnumerable
     {
-        public static readonly ReactiveUI.Validation.Collections.ValidationText Empty;
-        public static readonly ReactiveUI.Validation.Collections.ValidationText None;
-        public int Count { get; }
-        public string this[int index] { get; }
-        public System.Collections.Generic.IEnumerator<string> GetEnumerator() { }
-        public string ToSingleLine(string? separator = ",") { }
-        public static ReactiveUI.Validation.Collections.ValidationText Create(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Collections.ValidationText>? validationTexts) { }
-        public static ReactiveUI.Validation.Collections.ValidationText Create(System.Collections.Generic.IEnumerable<string>? validationTexts) { }
-        public static ReactiveUI.Validation.Collections.ValidationText Create(params string?[]? validationTexts) { }
+        string ToSingleLine(string? separator = ",");
+    }
+    public static class ValidationText
+    {
+        public static readonly ReactiveUI.Validation.Collections.IValidationText Empty;
+        public static readonly ReactiveUI.Validation.Collections.IValidationText None;
+        public static ReactiveUI.Validation.Collections.IValidationText Create(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Collections.IValidationText>? validationTexts) { }
+        public static ReactiveUI.Validation.Collections.IValidationText Create(System.Collections.Generic.IEnumerable<string?>? validationTexts) { }
+        public static ReactiveUI.Validation.Collections.IValidationText Create(string? validationText) { }
+        public static ReactiveUI.Validation.Collections.IValidationText Create(params string?[]? validationTexts) { }
     }
 }
 namespace ReactiveUI.Validation.Comparators
@@ -43,7 +44,7 @@ namespace ReactiveUI.Validation.Components.Abstractions
     public interface IValidationComponent
     {
         bool IsValid { get; }
-        ReactiveUI.Validation.Collections.ValidationText? Text { get; }
+        ReactiveUI.Validation.Collections.IValidationText? Text { get; }
         System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
     }
 }
@@ -55,7 +56,7 @@ namespace ReactiveUI.Validation.Components
         public bool IsValid { get; }
         public System.Collections.Generic.IEnumerable<string> Properties { get; }
         public int PropertyCount { get; }
-        public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
+        public ReactiveUI.Validation.Collections.IValidationText? Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
         protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
         public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
@@ -74,11 +75,11 @@ namespace ReactiveUI.Validation.Components
     public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, System.IDisposable
     {
         protected ObservableValidationBase(System.IObservable<ReactiveUI.Validation.States.IValidationState> observable) { }
-        protected ObservableValidationBase(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, bool, ReactiveUI.Validation.Collections.ValidationText> messageFunc) { }
+        protected ObservableValidationBase(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, bool, ReactiveUI.Validation.Collections.IValidationText> messageFunc) { }
         public bool IsValid { get; }
         public System.Collections.Generic.IEnumerable<string> Properties { get; }
         public int PropertyCount { get; }
-        public ReactiveUI.Validation.Collections.ValidationText? Text { get; }
+        public ReactiveUI.Validation.Collections.IValidationText? Text { get; }
         public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
         protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
         public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
@@ -110,7 +111,7 @@ namespace ReactiveUI.Validation.Contexts
     {
         public ValidationContext(System.Reactive.Concurrency.IScheduler? scheduler = null) { }
         public bool IsValid { get; }
-        public ReactiveUI.Validation.Collections.ValidationText Text { get; }
+        public ReactiveUI.Validation.Collections.IValidationText Text { get; }
         public System.IObservable<bool> Valid { get; }
         public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
         public System.Collections.ObjectModel.ReadOnlyObservableCollection<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> Validations { get; }
@@ -180,7 +181,7 @@ namespace ReactiveUI.Validation.Formatters.Abstractions
 {
     public interface IValidationTextFormatter<out TOut>
     {
-        TOut Format(ReactiveUI.Validation.Collections.ValidationText validationText);
+        TOut Format(ReactiveUI.Validation.Collections.IValidationText validationText);
     }
 }
 namespace ReactiveUI.Validation.Formatters
@@ -189,7 +190,7 @@ namespace ReactiveUI.Validation.Formatters
     {
         public SingleLineFormatter(string? separator = null) { }
         public static ReactiveUI.Validation.Formatters.SingleLineFormatter Default { get; }
-        public string Format(ReactiveUI.Validation.Collections.ValidationText? validationText) { }
+        public string Format(ReactiveUI.Validation.Collections.IValidationText? validationText) { }
     }
 }
 namespace ReactiveUI.Validation.Helpers
@@ -207,7 +208,7 @@ namespace ReactiveUI.Validation.Helpers
     {
         public ValidationHelper(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation, System.IDisposable? cleanup = null) { }
         public bool IsValid { get; }
-        public ReactiveUI.Validation.Collections.ValidationText? Message { get; }
+        public ReactiveUI.Validation.Collections.IValidationText? Message { get; }
         public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationChanged { get; }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
@@ -218,15 +219,15 @@ namespace ReactiveUI.Validation.States
     public interface IValidationState
     {
         bool IsValid { get; }
-        ReactiveUI.Validation.Collections.ValidationText Text { get; }
+        ReactiveUI.Validation.Collections.IValidationText Text { get; }
     }
     public class ValidationState : ReactiveUI.Validation.States.IValidationState
     {
-        public static readonly ReactiveUI.Validation.States.ValidationState Valid;
-        public ValidationState(bool isValid, ReactiveUI.Validation.Collections.ValidationText text) { }
+        public static readonly ReactiveUI.Validation.States.IValidationState Valid;
+        public ValidationState(bool isValid, ReactiveUI.Validation.Collections.IValidationText text) { }
         public ValidationState(bool isValid, string text) { }
         public bool IsValid { get; }
-        public ReactiveUI.Validation.Collections.ValidationText Text { get; }
+        public ReactiveUI.Validation.Collections.IValidationText Text { get; }
     }
 }
 namespace ReactiveUI.Validation.ValidationBindings.Abstractions
