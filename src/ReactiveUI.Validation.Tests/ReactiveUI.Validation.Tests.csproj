@@ -22,7 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="DiffEngine" Version="8.5.3" />    
+    <PackageReference Include="DiffEngine" Version="9.1.0" />    
   </ItemGroup>
 
   <ItemGroup>
