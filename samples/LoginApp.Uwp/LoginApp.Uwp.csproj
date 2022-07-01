@@ -153,7 +153,7 @@
     <PackageReference Include="ReactiveUI.Uwp">
       <Version>18.2.5</Version>
     </PackageReference>
-    <PackageReference Include="ReactiveUI.Validation" Version="2.*" />
+    <PackageReference Include="ReactiveUI.Validation" Version="3.*" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="Views\SignUpView.xaml">
