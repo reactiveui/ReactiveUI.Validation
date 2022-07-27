@@ -17,15 +17,15 @@ public interface IValidationComponent
     /// <summary>
     /// Gets the current (optional) validation message.
     /// </summary>
-    public IValidationText? Text { get; }
+    IValidationText? Text { get; }
 
     /// <summary>
     /// Gets a value indicating whether the validation is currently valid or not.
     /// </summary>
-    public bool IsValid { get; }
+    bool IsValid { get; }
 
     /// <summary>
     /// Gets the observable for validation state changes.
     /// </summary>
-    public IObservable<IValidationState> ValidationStatusChange { get; }
+    IObservable<IValidationState> ValidationStatusChange { get; }
 }

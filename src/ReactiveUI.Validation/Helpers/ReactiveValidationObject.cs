@@ -76,7 +76,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     }
 
     /// <inheritdoc />
-    public ValidationContext ValidationContext { get; }
+    public IValidationContext ValidationContext { get; }
 
     /// <summary>
     /// Returns a collection of error messages, required by the INotifyDataErrorInfo interface.

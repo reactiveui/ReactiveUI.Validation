@@ -3,7 +3,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.Contexts.Abstractions;
 
 namespace ReactiveUI.Validation.Abstractions;
 
@@ -15,5 +15,5 @@ public interface IValidatableViewModel
     /// <summary>
     /// Gets get the validation context.
     /// </summary>
-    ValidationContext ValidationContext { get; }
+    IValidationContext ValidationContext { get; }
 }

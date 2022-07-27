@@ -6,6 +6,7 @@
 using System.Reactive.Concurrency;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.Contexts.Abstractions;
 
 namespace ReactiveUI.Validation.Tests.Models;
 
@@ -36,5 +37,5 @@ public class SourceDestinationViewModel : ReactiveObject, IValidatableViewModel
     }
 
     /// <inheritdoc/>
-    public ValidationContext ValidationContext { get; } = new(Scheduler.Immediate);
+    public IValidationContext ValidationContext { get; } = new ValidationContext(Scheduler.Immediate);
 }

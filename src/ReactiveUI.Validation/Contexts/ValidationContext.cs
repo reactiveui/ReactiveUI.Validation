@@ -7,6 +7,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -16,6 +17,7 @@ using System.Reactive.Subjects;
 using DynamicData;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
+using ReactiveUI.Validation.Contexts.Abstractions;
 using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.ValidationTexts;
 using ReactiveUI.Validation.ValidationTexts.Abstractions;
@@ -23,8 +25,7 @@ using ReactiveUI.Validation.ValidationTexts.Abstractions;
 namespace ReactiveUI.Validation.Contexts;
 
 /// <inheritdoc cref="ReactiveObject" />
-/// <inheritdoc cref="IDisposable" />
-/// <inheritdoc cref="IValidationComponent" />
+/// <inheritdoc cref="IValidationContext" />
 /// <summary>
 /// The overall context for a view model under which validation takes place.
 /// </summary>
@@ -33,7 +34,7 @@ namespace ReactiveUI.Validation.Contexts;
 /// applicable to the view model.
 /// </remarks>
 [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Field _disposables disposes the items.")]
-public class ValidationContext : ReactiveObject, IDisposable, IValidationComponent
+public class ValidationContext : ReactiveObject, IValidationContext
 {
     private readonly SourceCache<IValidationComponent, IValidationComponent> _validationSource = new(static x => x);
     private readonly ReplaySubject<IValidationState> _validationStatusChange = new(1);
