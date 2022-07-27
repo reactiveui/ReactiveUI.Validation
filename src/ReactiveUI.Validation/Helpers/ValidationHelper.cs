@@ -50,7 +50,7 @@ public class ValidationHelper : ReactiveObject, IDisposable
     /// <summary>
     /// Gets the current (optional) validation message.
     /// </summary>
-    public IValidationText? Message => _message.Value;
+    public IValidationText Message => _message.Value;
 
     /// <summary>
     /// Gets the observable for validation state changes.

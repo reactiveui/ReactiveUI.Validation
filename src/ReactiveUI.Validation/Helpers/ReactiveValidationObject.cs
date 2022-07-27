@@ -127,7 +127,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
         HasErrors = !ValidationContext.GetIsValid();
         if (component is IPropertyValidationComponent propertyValidationComponent)
         {
-            foreach (var propertyName in propertyValidationComponent.Properties)
+            foreach (string propertyName in propertyValidationComponent.Properties)
             {
                 RaiseErrorsChanged(propertyName);
                 _mentionedPropertyNames.Add(propertyName);
@@ -135,7 +135,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
         }
         else
         {
-            foreach (var propertyName in _mentionedPropertyNames)
+            foreach (string propertyName in _mentionedPropertyNames)
             {
                 RaiseErrorsChanged(propertyName);
             }

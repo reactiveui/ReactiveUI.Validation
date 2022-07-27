@@ -326,7 +326,7 @@ public sealed class ValidationBinding : IValidationBinding
 
         if (viewProperty is null)
         {
-            throw new ArgumentNullException(nameof(view));
+            throw new ArgumentNullException(nameof(viewProperty));
         }
 
         formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
@@ -383,7 +383,7 @@ public sealed class ValidationBinding : IValidationBinding
             .Do(
                 x => setter(x.host, x.val, viewExpression.GetArgumentsArray()),
                 ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"))
-            .Select(v => Unit.Default);
+            .Select(_ => Unit.Default);
     }
 
     /// <summary>
