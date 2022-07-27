@@ -44,7 +44,7 @@ public class NotifyDataErrorInfoTests
 
         // Verify validation context behavior.
         Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.Single(viewModel.ValidationContext.Validations);
+        Assert.Single(viewModel.ValidationContext.Validations.Items);
         Assert.Equal(NameShouldNotBeEmptyMessage, view.NameErrorLabel);
 
         // Verify INotifyDataErrorInfo behavior.
@@ -75,7 +75,7 @@ public class NotifyDataErrorInfoTests
         // Verify the initial state.
         Assert.True(viewModel.HasErrors);
         Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.Single(viewModel.ValidationContext.Validations);
+        Assert.Single(viewModel.ValidationContext.Validations.Items);
         Assert.Equal(NameShouldNotBeEmptyMessage, viewModel.GetErrors("Name").Cast<string>().First());
         Assert.Equal(NameShouldNotBeEmptyMessage, view.NameErrorLabel);
 
@@ -94,7 +94,7 @@ public class NotifyDataErrorInfoTests
         // Verify the changed state.
         Assert.True(viewModel.HasErrors);
         Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.Single(viewModel.ValidationContext.Validations);
+        Assert.Single(viewModel.ValidationContext.Validations.Items);
         Assert.Equal(NameShouldNotBeEmptyMessage, viewModel.GetErrors("Name").Cast<string>().First());
         Assert.Equal(NameShouldNotBeEmptyMessage, view.NameErrorLabel);
     }
@@ -120,7 +120,7 @@ public class NotifyDataErrorInfoTests
 
         Assert.True(viewModel.HasErrors);
         Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.Single(viewModel.ValidationContext.Validations);
+        Assert.Single(viewModel.ValidationContext.Validations.Items);
         Assert.Single(viewModel.GetErrors("Name").Cast<string>());
 
         viewModel.Name = "JoJo";
@@ -150,7 +150,7 @@ public class NotifyDataErrorInfoTests
 
         Assert.False(viewModel.HasErrors);
         Assert.True(viewModel.ValidationContext.IsValid);
-        Assert.Single(viewModel.ValidationContext.Validations);
+        Assert.Single(viewModel.ValidationContext.Validations.Items);
         Assert.Empty(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>());
         Assert.Empty(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>());
 

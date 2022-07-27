@@ -8,8 +8,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
+
 using DynamicData;
-using DynamicData.Binding;
+
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
@@ -49,9 +50,8 @@ public static class ValidationContextExtensions
             throw new ArgumentNullException(nameof(viewModelProperty));
         }
 
-        return context
-            .Validations
-            .ToObservableChangeSet()
+        return context.Validations
+            .Connect()
             .ToCollection()
             .Select(validations => validations
                 .OfType<IPropertyValidationComponent>()

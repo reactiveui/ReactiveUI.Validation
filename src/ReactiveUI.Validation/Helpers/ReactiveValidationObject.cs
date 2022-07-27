@@ -53,7 +53,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
 
         ValidationContext = new ValidationContext(scheduler);
         ValidationContext.Validations
-            .ToObservableChangeSet()
+            .Connect()
             .ToCollection()
             .Select(components => components
                 .Select(component => component
@@ -106,7 +106,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     /// </summary>
     /// <returns>Returns the invalid property validations.</returns>
     private IEnumerable<IPropertyValidationComponent> SelectInvalidPropertyValidations() =>
-        ValidationContext.Validations
+        ValidationContext.Validations.Items
             .OfType<IPropertyValidationComponent>()
             .Where(validation => !validation.IsValid);
 
