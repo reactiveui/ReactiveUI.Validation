@@ -6,12 +6,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.Tests.Models;
+using ReactiveUI.Validation.ValidationTexts.Abstractions;
 using Xunit;
 
 namespace ReactiveUI.Validation.Tests;

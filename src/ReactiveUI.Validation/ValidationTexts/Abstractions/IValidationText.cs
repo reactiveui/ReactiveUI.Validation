@@ -5,7 +5,7 @@
 
 using System.Collections.Generic;
 
-namespace ReactiveUI.Validation.Collections;
+namespace ReactiveUI.Validation.ValidationTexts.Abstractions;
 
 /// <summary>
 /// Represents the validation state of a validation component.

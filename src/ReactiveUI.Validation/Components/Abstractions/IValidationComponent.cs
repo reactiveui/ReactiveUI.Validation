@@ -4,8 +4,8 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.States;
+using ReactiveUI.Validation.ValidationTexts.Abstractions;
 
 namespace ReactiveUI.Validation.Components.Abstractions;
 
@@ -17,15 +17,15 @@ public interface IValidationComponent
     /// <summary>
     /// Gets the current (optional) validation message.
     /// </summary>
-    IValidationText? Text { get; }
+    public IValidationText? Text { get; }
 
     /// <summary>
     /// Gets a value indicating whether the validation is currently valid or not.
     /// </summary>
-    bool IsValid { get; }
+    public bool IsValid { get; }
 
     /// <summary>
     /// Gets the observable for validation state changes.
     /// </summary>
-    IObservable<IValidationState> ValidationStatusChange { get; }
+    public IObservable<IValidationState> ValidationStatusChange { get; }
 }

@@ -6,8 +6,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.ValidationTexts;
+using ReactiveUI.Validation.ValidationTexts.Abstractions;
 using Xunit;
 
 namespace ReactiveUI.Validation.Tests;

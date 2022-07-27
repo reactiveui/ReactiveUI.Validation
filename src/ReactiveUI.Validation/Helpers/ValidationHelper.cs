@@ -5,9 +5,9 @@
 
 using System;
 using System.Reactive.Linq;
-using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.States;
+using ReactiveUI.Validation.ValidationTexts.Abstractions;
 
 namespace ReactiveUI.Validation.Helpers;
 

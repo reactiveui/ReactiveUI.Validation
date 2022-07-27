@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
@@ -18,6 +17,8 @@ using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.Tests.Models;
 using ReactiveUI.Validation.ValidationBindings;
+using ReactiveUI.Validation.ValidationTexts;
+using ReactiveUI.Validation.ValidationTexts.Abstractions;
 using Xunit;
 
 namespace ReactiveUI.Validation.Tests;

@@ -17,6 +17,8 @@ using DynamicData;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.States;
+using ReactiveUI.Validation.ValidationTexts;
+using ReactiveUI.Validation.ValidationTexts.Abstractions;
 
 namespace ReactiveUI.Validation.Contexts;
 

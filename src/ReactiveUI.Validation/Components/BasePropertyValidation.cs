@@ -11,12 +11,12 @@ using System.Linq.Expressions;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-
-using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Comparators;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.States;
+using ReactiveUI.Validation.ValidationTexts;
+using ReactiveUI.Validation.ValidationTexts.Abstractions;
 
 namespace ReactiveUI.Validation.Components;
 

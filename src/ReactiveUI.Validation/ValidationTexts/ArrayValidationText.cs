@@ -5,8 +5,9 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using ReactiveUI.Validation.ValidationTexts.Abstractions;
 
-namespace ReactiveUI.Validation.Collections;
+namespace ReactiveUI.Validation.ValidationTexts;
 
 internal sealed class ArrayValidationText : IValidationText
 {
