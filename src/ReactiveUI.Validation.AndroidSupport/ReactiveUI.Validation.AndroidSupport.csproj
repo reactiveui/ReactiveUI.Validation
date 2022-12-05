@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFramework>MonoAndroid12.1</TargetFramework>
+    <TargetFrameworks>MonoAndroid12.0;MonoAndroid12.1;MonoAndroid13.0</TargetFrameworks>
     <PackageDescription>Provides ReactiveUI.Validation extensions for the Android Support Library</PackageDescription>
     <PackageId>ReactiveUI.Validation.AndroidSupport</PackageId>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
