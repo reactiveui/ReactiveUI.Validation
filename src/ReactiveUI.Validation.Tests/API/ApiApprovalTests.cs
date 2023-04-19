@@ -53,7 +53,7 @@ public class ApiApprovalTests
 
         var approvedPublicApi = File.ReadAllText(approvedFileName);
 
-        var generatorOptions = new ApiGeneratorOptions { WhitelistedNamespacePrefixes = new[] { "ReactiveUI.Validation" } };
+        var generatorOptions = new ApiGeneratorOptions { AllowNamespacePrefixes = new[] { "ReactiveUI.Validation" } };
         var receivedPublicApi = Filter(assembly.GeneratePublicApi(generatorOptions));
 
         if (!string.Equals(receivedPublicApi, approvedPublicApi, StringComparison.InvariantCulture))
