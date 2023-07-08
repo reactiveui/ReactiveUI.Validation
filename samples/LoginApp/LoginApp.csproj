@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="ReactiveUI" Version="19.*" />
-    <PackageReference Include="ReactiveUI.Fody" Version="18.*" />
+    <PackageReference Include="ReactiveUI.Fody" Version="19.*" />
     <PackageReference Include="ReactiveUI.Validation" Version="3.*" />
   </ItemGroup>
 </Project>
