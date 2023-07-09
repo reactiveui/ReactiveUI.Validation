@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
     <TargetFrameworks>MonoAndroid12.0;MonoAndroid12.1;MonoAndroid13.0;net6.0-android;net7.0-android</TargetFrameworks>
@@ -10,7 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ReactiveUI.AndroidX" Version="18.*" />
+    <PackageReference Include="ReactiveUI.AndroidX" Version="19.*" />
   </ItemGroup>
 
   <ItemGroup>
