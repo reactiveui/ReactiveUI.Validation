@@ -6,7 +6,6 @@
     <PackageId>ReactiveUI.Validation.AndroidSupport</PackageId>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <Nullable>enable</Nullable>
-    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

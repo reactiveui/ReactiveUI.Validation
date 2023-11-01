@@ -12,16 +12,12 @@ namespace ReactiveUI.Validation.Formatters;
 /// <summary>
 /// Helper class to generate a single formatted line for a <see cref="IValidationText" />.
 /// </summary>
-public class SingleLineFormatter : IValidationTextFormatter<string>
+/// <remarks>
+/// Initializes a new instance of the <see cref="SingleLineFormatter"/> class.
+/// </remarks>
+/// <param name="separator">Separator string.</param>
+public class SingleLineFormatter(string? separator = null) : IValidationTextFormatter<string>
 {
-    private readonly string? _separator;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SingleLineFormatter"/> class.
-    /// </summary>
-    /// <param name="separator">Separator string.</param>
-    public SingleLineFormatter(string? separator = null) => _separator = separator;
-
     /// <summary>
     /// Gets the default formatter.
     /// </summary>
@@ -35,6 +31,6 @@ public class SingleLineFormatter : IValidationTextFormatter<string>
     /// <returns>Returns the string formatted.</returns>
     public string Format(IValidationText? validationText) =>
         validationText is not null
-            ? validationText.ToSingleLine(_separator)
+            ? validationText.ToSingleLine(separator)
             : string.Empty;
 }
