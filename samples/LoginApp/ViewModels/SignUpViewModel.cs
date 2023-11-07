@@ -24,17 +24,17 @@ namespace LoginApp.ViewModels;
 public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IActivatableViewModel
 {
     private readonly ObservableAsPropertyHelper<bool> _isBusy;
-    private readonly IUserDialogs _dialogs;
+    private readonly IUserDialogs? _dialogs;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SignUpViewModel"/> class.
     /// </summary>
     /// <param name="hostScreen">The screen used for routing purposes.</param>
     /// <param name="dialogs"><see cref="IUserDialogs"/> implementation to show dialogs.</param>
-    public SignUpViewModel(IScreen hostScreen = null, IUserDialogs dialogs = null)
+    public SignUpViewModel(IScreen? hostScreen = null, IUserDialogs? dialogs = null)
     {
         _dialogs = dialogs ?? Locator.Current.GetService<IUserDialogs>();
-        HostScreen = hostScreen ?? Locator.Current.GetService<IScreen>();
+        HostScreen = hostScreen ?? Locator.Current.GetService<IScreen>()!;
         SignUp = ReactiveCommand.Create(SignUpImpl, this.IsValid());
 
         // These are the basic property validation rules that accept a property selector,
@@ -53,7 +53,7 @@ public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IAc
         this.ValidationRule(
             vm => vm.Password,
             password => password?.Length > 2,
-            password => $"Password should be longer, current length: {password.Length}");
+            password => $"Password should be longer, current length: {password!.Length}");
 
         this.ValidationRule(
             vm => vm.ConfirmPassword,
@@ -86,15 +86,15 @@ public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IAc
 
         IObservable<IValidationState> usernameDirty =
             this.WhenAnyValue(x => x.UserName)
-                .Select(name => new ValidationState(false, "Please wait..."));
+                .Select(_ => new ValidationState(false, "Please wait..."));
 
         this.ValidationRule(
             vm => vm.UserName,
             usernameValidated.Merge(usernameDirty));
 
         _isBusy = usernameValidated
-            .Select(message => false)
-            .Merge(usernameDirty.Select(message => true))
+            .Select(_ => false)
+            .Merge(usernameDirty.Select(_ => true))
             .ToProperty(this, x => x.IsBusy);
     }
 
@@ -151,5 +151,5 @@ public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IAc
                 : ValidationState.Valid;
     }
 
-    private void SignUpImpl() => _dialogs.ShowDialog("User created successfully.");
+    private void SignUpImpl() => _dialogs!.ShowDialog("User created successfully.");
 }

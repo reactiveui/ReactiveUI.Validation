@@ -1,29 +1,25 @@
-<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net6</TargetFramework>
-    </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Avalonia" Version="0.10.19" />
-        <PackageReference Include="Avalonia.Desktop" Version="0.10.19" />
-        <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.19" />
-        <PackageReference Include="MessageBox.Avalonia" Version="2.0.1" />
-        <PackageReference Include="XamlNameReferenceGenerator" Version="1.6.1" />
-    </ItemGroup>
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\LoginApp\LoginApp.csproj" />
-    </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="Avalonia.ReactiveUI" Version="$(AvaloniaVersion)" />
+		<PackageReference Include="MessageBox.Avalonia" Version="3.1.5.1" />
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="$(AvaloniaVersion)" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <Compile Update="**\*.xaml.cs">
-            <DependentUpon>%(Filename)</DependentUpon>
-        </Compile>
-        <EmbeddedResource Include="**\*.xaml">
-            <SubType>Designer</SubType>
-        </EmbeddedResource>
-        <!-- This AdditionalFiles directive is required by XamlNameReferenceGenerator. -->
-        <AdditionalFiles Include="**\*.xaml" />
-    </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\LoginApp\LoginApp.csproj" />
+	</ItemGroup>
 </Project>

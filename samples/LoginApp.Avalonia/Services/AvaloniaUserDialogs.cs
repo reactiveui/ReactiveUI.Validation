@@ -4,6 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using LoginApp.Services;
+using MsBox.Avalonia;
 
 namespace LoginApp.Avalonia.Services;
 
@@ -14,8 +15,6 @@ public class AvaloniaUserDialogs : IUserDialogs
 {
     /// <inheritdoc />
     public void ShowDialog(string message) =>
-        MessageBox
-            .Avalonia
-            .MessageBoxManager
-            .GetMessageBoxStandardWindow("Notification", message).Show();
+        MessageBoxManager
+            .GetMessageBoxStandard("Notification", message).ShowAsync();
 }
