@@ -5,8 +5,6 @@
 
 using System;
 using System.Reactive.Disposables;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using LoginApp.ViewModels;
 using ReactiveUI;
@@ -19,7 +17,7 @@ namespace LoginApp.Avalonia.Views;
 /// A page which contains controls for signing up.
 /// </summary>
 /// <inheritdoc />
-public partial class SignUpView : ReactiveWindow<SignUpViewModel>
+public partial class SignUpView : ReactiveUserControl<SignUpViewModel>
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="SignUpView"/> class.

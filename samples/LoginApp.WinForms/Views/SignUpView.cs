@@ -52,12 +52,12 @@ public partial class SignUpView : Form, IViewFor<SignUpViewModel>
     /// <summary>
     /// Gets or sets the view model for the <see cref="SignUpView"/> class.
     /// </summary>
-    public SignUpViewModel ViewModel { get; set; } = new SignUpViewModel(null, new WindowsUserDialogs());
+    public SignUpViewModel? ViewModel { get; set; } = new SignUpViewModel(null, new WindowsUserDialogs());
 
     /// <inheritdoc />
-    object IViewFor.ViewModel
+    object? IViewFor.ViewModel
     {
         get => ViewModel;
-        set => ViewModel = (SignUpViewModel)value;
+        set => ViewModel = (SignUpViewModel?)value;
     }
 }
