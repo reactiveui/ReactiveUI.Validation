@@ -4,7 +4,8 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using ReactiveUI.Validation.Collections;
+using ReactiveUI.Validation.ValidationTexts;
+using ReactiveUI.Validation.ValidationTexts.Abstractions;
 
 namespace ReactiveUI.Validation.States;
 

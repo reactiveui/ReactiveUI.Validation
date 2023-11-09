@@ -472,6 +472,7 @@ public static class ValidatableViewModelExtensions
         var validationComponents = viewModel
             .ValidationContext
             .Validations
+            .Items
             .OfType<IPropertyValidationComponent>()
             .Where(validation => validation.ContainsProperty(viewModelProperty))
             .ToList();
@@ -495,7 +496,7 @@ public static class ValidatableViewModelExtensions
             throw new ArgumentNullException(nameof(viewModel));
         }
 
-        viewModel.ValidationContext.RemoveMany(viewModel.ValidationContext.Validations);
+        viewModel.ValidationContext.RemoveMany(viewModel.ValidationContext.Validations.Items);
     }
 
     /// <summary>

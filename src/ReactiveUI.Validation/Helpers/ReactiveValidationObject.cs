@@ -13,11 +13,12 @@ using System.Reactive.Linq;
 using DynamicData;
 using DynamicData.Binding;
 using ReactiveUI.Validation.Abstractions;
-using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.Contexts.Abstractions;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
+using ReactiveUI.Validation.ValidationTexts;
 using Splat;
 
 namespace ReactiveUI.Validation.Helpers;
@@ -52,7 +53,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
 
         ValidationContext = new ValidationContext(scheduler);
         ValidationContext.Validations
-            .ToObservableChangeSet()
+            .Connect()
             .ToCollection()
             .Select(components => components
                 .Select(component => component
@@ -75,7 +76,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     }
 
     /// <inheritdoc />
-    public ValidationContext ValidationContext { get; }
+    public IValidationContext ValidationContext { get; }
 
     /// <summary>
     /// Returns a collection of error messages, required by the INotifyDataErrorInfo interface.
@@ -105,7 +106,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     /// </summary>
     /// <returns>Returns the invalid property validations.</returns>
     private IEnumerable<IPropertyValidationComponent> SelectInvalidPropertyValidations() =>
-        ValidationContext.Validations
+        ValidationContext.Validations.Items
             .OfType<IPropertyValidationComponent>()
             .Where(validation => !validation.IsValid);
 
@@ -126,7 +127,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
         HasErrors = !ValidationContext.GetIsValid();
         if (component is IPropertyValidationComponent propertyValidationComponent)
         {
-            foreach (var propertyName in propertyValidationComponent.Properties)
+            foreach (string propertyName in propertyValidationComponent.Properties)
             {
                 RaiseErrorsChanged(propertyName);
                 _mentionedPropertyNames.Add(propertyName);
@@ -134,7 +135,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
         }
         else
         {
-            foreach (var propertyName in _mentionedPropertyNames)
+            foreach (string propertyName in _mentionedPropertyNames)
             {
                 RaiseErrorsChanged(propertyName);
             }

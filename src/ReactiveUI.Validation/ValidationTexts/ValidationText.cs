@@ -7,8 +7,10 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Linq;
+using ReactiveUI.Validation.Collections;
+using ReactiveUI.Validation.ValidationTexts.Abstractions;
 
-namespace ReactiveUI.Validation.Collections;
+namespace ReactiveUI.Validation.ValidationTexts;
 
 /// <summary>
 /// Factory container for validation text.
@@ -80,7 +82,7 @@ public static class ValidationText
             return None;
         }
 
-// Optimize code path for single item array.
+        // Optimize code path for single item array.
         if (validationTexts.Length == 1)
         {
             string? text = validationTexts[0];

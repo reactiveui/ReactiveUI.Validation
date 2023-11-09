@@ -8,11 +8,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Linq;
+
 using DynamicData;
-using DynamicData.Binding;
+
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
+using ReactiveUI.Validation.Contexts.Abstractions;
 using ReactiveUI.Validation.States;
 
 namespace ReactiveUI.Validation.Extensions;
@@ -34,7 +36,7 @@ public static class ValidationContextExtensions
     /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
     /// <returns>Returns a collection of <see cref="BasePropertyValidation{TViewModel}"/> objects.</returns>
     public static IObservable<IList<IValidationState>> ObserveFor<TViewModel, TViewModelProperty>(
-        this ValidationContext context,
+        this IValidationContext context,
         Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
         bool strict = true)
     {
@@ -48,9 +50,8 @@ public static class ValidationContextExtensions
             throw new ArgumentNullException(nameof(viewModelProperty));
         }
 
-        return context
-            .Validations
-            .ToObservableChangeSet()
+        return context.Validations
+            .Connect()
             .ToCollection()
             .Select(validations => validations
                 .OfType<IPropertyValidationComponent>()

@@ -8,7 +8,6 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
@@ -18,6 +17,8 @@ using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.Tests.Models;
 using ReactiveUI.Validation.ValidationBindings;
+using ReactiveUI.Validation.ValidationTexts;
+using ReactiveUI.Validation.ValidationTexts.Abstractions;
 using Xunit;
 
 namespace ReactiveUI.Validation.Tests;
@@ -106,7 +107,7 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
         Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.Single(view.ViewModel.ValidationContext.Validations);
+        Assert.Single(view.ViewModel.ValidationContext.Validations.Items);
     }
 
     /// <summary>
@@ -210,7 +211,7 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, vm => vm.NameRule, v => v.NameErrorLabel);
 
         Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Single(view.ViewModel.ValidationContext.Validations);
+        Assert.Single(view.ViewModel.ValidationContext.Validations.Items);
         Assert.Equal(nameErrorMessage, view.NameErrorLabel);
 
         view.ViewModel.Name = "Jonathan";
@@ -249,14 +250,14 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, vm => vm.NameRule, v => v.NameErrorLabel);
 
         Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Single(view.ViewModel.ValidationContext.Validations);
+        Assert.Single(view.ViewModel.ValidationContext.Validations.Items);
         Assert.Equal(namesShouldMatchMessage, view.NameErrorLabel);
 
         view.ViewModel.Name = "Bongo";
         view.ViewModel.Name2 = "Bongo";
 
         Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.Single(view.ViewModel.ValidationContext.Validations);
+        Assert.Single(view.ViewModel.ValidationContext.Validations.Items);
         Assert.Empty(view.NameErrorLabel);
     }
 
