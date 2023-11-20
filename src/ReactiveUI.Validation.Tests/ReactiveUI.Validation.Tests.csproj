@@ -21,7 +21,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="DiffEngine" Version="12.4.1" />    
+    <PackageReference Include="DiffEngine" Version="13.0.0" />    
   </ItemGroup>
 
   <ItemGroup>
