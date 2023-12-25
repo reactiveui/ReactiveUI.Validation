@@ -15,14 +15,14 @@
     <PackageReference Include="Xunit.StaFact" Version="1.1.11" />
     <PackageReference Include="Microsoft.Reactive.Testing" Version="6.0.0" />
     <PackageReference Include="PublicApiGenerator" Version="11.0.0" />
-    <PackageReference Include="Verify.Xunit" Version="22.8.0" />
+    <PackageReference Include="Verify.Xunit" Version="22.10.2" />
     <PackageReference Include="xunit.runner.console" Version="2.6.2" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.5.4" />
     <PackageReference Include="coverlet.msbuild" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="DiffEngine" Version="13.0.2" />    
+    <PackageReference Include="DiffEngine" Version="14.1.0" />    
   </ItemGroup>
 
   <ItemGroup>
