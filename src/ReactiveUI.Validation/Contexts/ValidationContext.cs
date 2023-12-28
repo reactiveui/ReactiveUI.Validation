@@ -42,7 +42,7 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
     private readonly ObservableAsPropertyHelper<IValidationText> _validationText;
     private readonly ObservableAsPropertyHelper<bool> _isValid;
 
-    private readonly CompositeDisposable _disposables = new();
+    private readonly CompositeDisposable _disposables = [];
     private bool _isActive;
 
     /// <summary>

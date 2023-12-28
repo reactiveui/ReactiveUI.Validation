@@ -29,8 +29,8 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
 {
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
     private readonly ReplaySubject<bool> _isValidSubject = new(1);
-    private readonly HashSet<string> _propertyNames = new();
-    private readonly CompositeDisposable _disposables = new();
+    private readonly HashSet<string> _propertyNames = [];
+    private readonly CompositeDisposable _disposables = [];
     private IConnectableObservable<IValidationState>? _connectedChange;
     private bool _isConnected;
     private bool _isValid;
@@ -171,7 +171,7 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
     private readonly IConnectableObservable<TViewModelProperty?> _valueConnectedObservable;
     private readonly Func<TViewModelProperty?, bool, IValidationText> _message;
     private readonly Func<TViewModelProperty?, bool> _isValidFunc;
-    private readonly CompositeDisposable _disposables = new();
+    private readonly CompositeDisposable _disposables = [];
     private bool _isConnected;
 
     /// <summary>

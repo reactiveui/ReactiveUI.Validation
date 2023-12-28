@@ -27,7 +27,7 @@ namespace ReactiveUI.Validation.Helpers;
 /// </summary>
 public abstract class ReactiveValidationObject : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
 {
-    private readonly HashSet<string> _mentionedPropertyNames = new();
+    private readonly HashSet<string> _mentionedPropertyNames = [];
     private readonly IValidationTextFormatter<string> _formatter;
     private bool _hasErrors;
 

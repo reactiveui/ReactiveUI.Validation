@@ -241,8 +241,8 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
 {
     [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
     private readonly ReplaySubject<IValidationState> _isValidSubject = new(1);
-    private readonly HashSet<string> _propertyNames = new();
-    private readonly CompositeDisposable _disposables = new();
+    private readonly HashSet<string> _propertyNames = [];
+    private readonly CompositeDisposable _disposables = [];
     private readonly IConnectableObservable<IValidationState> _validityConnectedObservable;
     private bool _isActive;
     private bool _isValid;
