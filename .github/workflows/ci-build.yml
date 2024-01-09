@@ -12,5 +12,5 @@ jobs:
     with:
       configuration: Release
       productNamespacePrefix: "ReactiveUI.Validation"
-      useVisualStudioPreview: true
+      useVisualStudioPreview: false
       useMauiCheckDotNetTool: false
