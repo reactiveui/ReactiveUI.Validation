@@ -18,7 +18,7 @@ public static class ValidationText
     /// <summary>
     /// The none validation text singleton instance contains no items.
     /// </summary>
-    public static readonly IValidationText None = new ArrayValidationText(Array.Empty<string>());
+    public static readonly IValidationText None = new ArrayValidationText([]);
 
     /// <summary>
     /// The empty validation text singleton instance contains single empty string.

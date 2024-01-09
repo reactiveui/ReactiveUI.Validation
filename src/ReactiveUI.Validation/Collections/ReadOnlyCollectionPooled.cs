@@ -59,9 +59,9 @@ internal sealed class ReadOnlyCollectionPooled<T> : IReadOnlyCollection<T>, IDis
             _current = default;
         }
 
-        public T Current => _current!;
+        public readonly T Current => _current!;
 
-        object? IEnumerator.Current
+        readonly object? IEnumerator.Current
         {
             get
             {
