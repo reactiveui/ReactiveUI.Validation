@@ -16,7 +16,6 @@ namespace ReactiveUI.Validation.Tests.API;
 /// Tests to make sure that the API matches the approved ones.
 /// </summary>
 [ExcludeFromCodeCoverage]
-[UsesVerify]
 public class ApiApprovalTests
 {
     /// <summary>
