@@ -21,7 +21,7 @@ public class ValidationHelper : ReactiveObject, IDisposable
     private readonly ObservableAsPropertyHelper<IValidationText> _message;
     private readonly ObservableAsPropertyHelper<bool> _isValid;
     private readonly IValidationComponent _validation;
-    private readonly IDisposable? _cleanup;
+    private IDisposable? _cleanup;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationHelper"/> class.
@@ -50,7 +50,7 @@ public class ValidationHelper : ReactiveObject, IDisposable
     /// <summary>
     /// Gets the current (optional) validation message.
     /// </summary>
-    public IValidationText? Message => _message.Value;
+    public IValidationText Message => _message.Value;
 
     /// <summary>
     /// Gets the observable for validation state changes.
@@ -81,5 +81,6 @@ public class ValidationHelper : ReactiveObject, IDisposable
         _isValid.Dispose();
         _message.Dispose();
         _cleanup?.Dispose();
+        _cleanup = null;
     }
 }

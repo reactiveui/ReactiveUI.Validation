@@ -9,6 +9,7 @@ using System.Linq;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Contexts;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace ReactiveUI.Validation.Tests;
 
@@ -23,14 +24,12 @@ public class ValidationTextTests
     [Fact]
     public void NoneValidationTextIsEmpty()
     {
-        IValidationText vt = ValidationText.None;
+        var vt = ValidationText.None;
 
         Assert.Equal(0, vt.Count);
 
         // Calling Count() checks the enumeration returns no results, unlike the Count property.
-#pragma warning disable CA1829 // Use Length/Count property instead of Count() when available
-        Assert.Equal(0, vt.Count());
-#pragma warning restore CA1829 // Use Length/Count property instead of Count() when available
+        Assert.Equal(0, vt.Count);
         Assert.Equal(string.Empty, vt.ToSingleLine());
     }
 
@@ -40,14 +39,12 @@ public class ValidationTextTests
     [Fact]
     public void EmptyValidationTextIsSingleEmpty()
     {
-        IValidationText vt = ValidationText.Empty;
+        var vt = ValidationText.Empty;
 
         Assert.Equal(1, vt.Count);
 
         // Calling Count() checks the enumeration returns no results, unlike the Count property.
-#pragma warning disable CA1829 // Use Length/Count property instead of Count() when available
-        Assert.Equal(1, vt.Count());
-#pragma warning restore CA1829 // Use Length/Count property instead of Count() when available
+        Assert.Equal(1, vt.Count);
         Assert.Same(string.Empty, vt.Single());
         Assert.Equal(string.Empty, vt.ToSingleLine());
     }
@@ -58,7 +55,7 @@ public class ValidationTextTests
     [Fact]
     public void ParameterlessCreateReturnsNone()
     {
-        IValidationText vt = ValidationText.Create();
+        var vt = ValidationText.Create();
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -69,7 +66,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateEmptyStringEnumerableReturnsNone()
     {
-        IValidationText vt = ValidationText.Create((IEnumerable<string>)Array.Empty<string>());
+        var vt = ValidationText.Create((IEnumerable<string>)[]);
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -80,7 +77,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateEmptyValidationTextEnumerableReturnsNone()
     {
-        IValidationText vt = ValidationText.Create(Array.Empty<IValidationText>());
+        var vt = ValidationText.Create(Array.Empty<IValidationText>());
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -91,7 +88,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateNullReturnsNone()
     {
-        IValidationText vt = ValidationText.Create((string)null);
+        var vt = ValidationText.Create((string)null);
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -102,7 +99,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateNullStringEnumerableReturnsNone()
     {
-        IValidationText vt = ValidationText.Create((IEnumerable<string>)null);
+        var vt = ValidationText.Create((IEnumerable<string>)null);
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -113,7 +110,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateNullValidationTextEnumerableReturnsNone()
     {
-        IValidationText vt = ValidationText.Create((IEnumerable<IValidationText>)null);
+        var vt = ValidationText.Create((IEnumerable<IValidationText>)null);
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -124,7 +121,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateNullItemStringEnumerableReturnsNone()
     {
-        IValidationText vt = ValidationText.Create((IEnumerable<string>)new string[] { null });
+        var vt = ValidationText.Create((IEnumerable<string>)[null]);
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -135,7 +132,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateNoneItemValidationTextEnumerableReturnsNone()
     {
-        IValidationText vt = ValidationText.Create(new[] { ValidationText.None });
+        var vt = ValidationText.Create(new[] { ValidationText.None });
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -146,7 +143,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateNoneItemStringEnumerableReturnsNone()
     {
-        IValidationText vt = ValidationText.Create(ValidationText.None);
+        var vt = ValidationText.Create(ValidationText.None);
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -157,7 +154,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateStringEmptyReturnsEmpty()
     {
-        IValidationText vt = ValidationText.Create(string.Empty);
+        var vt = ValidationText.Create(string.Empty);
 
         Assert.Same(ValidationText.Empty, vt);
     }
@@ -168,7 +165,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateSingleStringEmptyReturnsEmpty()
     {
-        IValidationText vt = ValidationText.Create((IEnumerable<string>)new[] { string.Empty });
+        var vt = ValidationText.Create((IEnumerable<string>)[string.Empty]);
 
         Assert.Same(ValidationText.Empty, vt);
     }
@@ -179,7 +176,7 @@ public class ValidationTextTests
     [Fact]
     public void CreateValidationTextEmptyReturnsEmpty()
     {
-        IValidationText vt = ValidationText.Create(new[] { ValidationText.Empty });
+        var vt = ValidationText.Create(new[] { ValidationText.Empty });
 
         Assert.Same(ValidationText.Empty, vt);
     }
@@ -190,7 +187,7 @@ public class ValidationTextTests
     [Fact]
     public void CombineValidationTextNoneReturnsNone()
     {
-        IValidationText vt = ValidationText.Create(new[] { ValidationText.None, ValidationText.None });
+        var vt = ValidationText.Create(new[] { ValidationText.None, ValidationText.None });
 
         Assert.Same(ValidationText.None, vt);
     }
@@ -201,7 +198,7 @@ public class ValidationTextTests
     [Fact]
     public void CombineValidationTextEmptyAndNoneReturnsEmpty()
     {
-        IValidationText vt = ValidationText.Create(new[] { ValidationText.None, ValidationText.Empty });
+        var vt = ValidationText.Create(new[] { ValidationText.None, ValidationText.Empty });
 
         Assert.Same(ValidationText.Empty, vt);
     }
@@ -213,15 +210,13 @@ public class ValidationTextTests
     [Fact]
     public void CombineValidationTextEmptyReturnsTwoEmpty()
     {
-        IValidationText vt = ValidationText.Create(new[] { ValidationText.Empty, ValidationText.Empty });
+        var vt = ValidationText.Create(new[] { ValidationText.Empty, ValidationText.Empty });
 
         Assert.NotSame(ValidationText.Empty, vt);
         Assert.Equal(2, vt.Count);
 
         // Calling Count() checks the enumeration returns no results, unlike the Count property.
-#pragma warning disable CA1829 // Use Length/Count property instead of Count() when available
-        Assert.Equal(2, vt.Count());
-#pragma warning restore CA1829 // Use Length/Count property instead of Count() when available
+        Assert.Equal(2, vt.Count);
         Assert.Equal(string.Empty, vt[0]);
         Assert.Equal(string.Empty, vt[1]);
 

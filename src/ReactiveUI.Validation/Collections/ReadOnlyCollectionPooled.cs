@@ -18,14 +18,14 @@ internal sealed class ReadOnlyCollectionPooled<T> : IReadOnlyCollection<T>, IDis
 
     public ReadOnlyCollectionPooled(IEnumerable<T> items)
     {
-        T[] array = ArrayPool<T>.Shared.Rent(16);
-        int index = 0;
+        var array = ArrayPool<T>.Shared.Rent(16);
+        var index = 0;
 
-        foreach (T item in items)
+        foreach (var item in items)
         {
             if (array.Length == index)
             {
-                ArrayPool<T>.Shared.Resize(ref array!, array.Length * 2, true);
+                ArrayPool<T>.Shared.Resize(ref array, array.Length * 2, true);
             }
 
             array[index] = item;
@@ -46,7 +46,7 @@ internal sealed class ReadOnlyCollectionPooled<T> : IReadOnlyCollection<T>, IDis
 
     public Enumerator GetEnumerator() => new(this);
 
-    public struct Enumerator : IEnumerator<T>, IEnumerator
+    public struct Enumerator : IEnumerator<T>
     {
         private readonly ReadOnlyCollectionPooled<T> _readOnlyCollectionPooled;
         private int _index;
@@ -80,7 +80,7 @@ internal sealed class ReadOnlyCollectionPooled<T> : IReadOnlyCollection<T>, IDis
 
         public bool MoveNext()
         {
-            ReadOnlyCollectionPooled<T>? readOnlyCollectionPooled = _readOnlyCollectionPooled;
+            var readOnlyCollectionPooled = _readOnlyCollectionPooled;
 
             if ((uint)_index < (uint)readOnlyCollectionPooled.Count)
             {

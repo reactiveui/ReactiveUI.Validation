@@ -23,11 +23,10 @@ namespace ReactiveUI.Validation.Components;
 /// <inheritdoc cref="ReactiveObject" />
 /// <inheritdoc cref="IDisposable" />
 /// <summary>
-/// Base class for items which are used to build a <see cref="ReactiveUI.Validation.Contexts.ValidationContext" />.
+/// Base class for items which are used to build a <see cref="Contexts.ValidationContext" />.
 /// </summary>
 public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent
 {
-    [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
     private readonly ReplaySubject<bool> _isValidSubject = new(1);
     private readonly HashSet<string> _propertyNames = [];
     private readonly CompositeDisposable _disposables = [];
@@ -115,7 +114,7 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
             throw new ArgumentNullException(nameof(property));
         }
 
-        string propertyName = property.Body.GetPropertyPath();
+        var propertyName = property.Body.GetPropertyPath();
         _propertyNames.Add(propertyName);
     }
 
@@ -134,6 +133,7 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
         if (disposing)
         {
             _disposables.Dispose();
+            _isValidSubject.Dispose();
         }
     }
 
@@ -166,7 +166,6 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
 [SuppressMessage("StyleCop.CSharp.MaintainabilityRules", "SA1402:FileMayOnlyContainASingleType", Justification = "Same class just generic.")]
 public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : BasePropertyValidation<TViewModel>
 {
-    [SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Disposed by field _disposables.")]
     private readonly ReplaySubject<TViewModelProperty?> _valueSubject = new(1);
     private readonly IConnectableObservable<TViewModelProperty?> _valueConnectedObservable;
     private readonly Func<TViewModelProperty?, bool, IValidationText> _message;
@@ -274,6 +273,7 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
         if (disposing)
         {
             _disposables.Dispose();
+            _valueSubject.Dispose();
         }
     }
 

@@ -8,6 +8,4 @@ namespace ReactiveUI.Validation.Components.Abstractions;
 /// <summary>
 /// A component specifically validating one or more untyped properties.
 /// </summary>
-public interface IPropertyValidationComponent : IValidationComponent, IValidatesProperties
-{
-}
+public interface IPropertyValidationComponent : IValidationComponent, IValidatesProperties;

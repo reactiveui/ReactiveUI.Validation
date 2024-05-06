@@ -6,7 +6,6 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Concurrency;
@@ -27,22 +26,20 @@ namespace ReactiveUI.Validation.Contexts;
 /// The overall context for a view model under which validation takes place.
 /// </summary>
 /// <remarks>
-/// Contains all of the <see cref="ReactiveUI.Validation.Components.Abstractions.IValidationComponent" /> instances
+/// Contains all of the <see cref="IValidationComponent" /> instances
 /// applicable to the view model.
 /// </remarks>
-[SuppressMessage("Usage", "CA2213:Disposable fields should be disposed", Justification = "Field _disposables disposes the items.")]
-public class ValidationContext : ReactiveObject, IDisposable, IValidationComponent
+public class ValidationContext : ReactiveObject, IValidationContext
 {
-    private readonly SourceCache<IValidationComponent, IValidationComponent> _validationSource = new(static x => x);
     private readonly ReplaySubject<IValidationState> _validationStatusChange = new(1);
     private readonly ReplaySubject<bool> _validSubject = new(1);
 
-    private readonly ReadOnlyObservableCollection<IValidationComponent> _validations;
     private readonly IConnectableObservable<bool> _validationConnectable;
     private readonly ObservableAsPropertyHelper<IValidationText> _validationText;
     private readonly ObservableAsPropertyHelper<bool> _isValid;
 
     private readonly CompositeDisposable _disposables = [];
+    private SourceList<IValidationComponent> _validationSource = new();
     private bool _isActive;
 
     /// <summary>
@@ -53,18 +50,14 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
     {
         scheduler ??= CurrentThreadScheduler.Instance;
         var changeSets = _validationSource.Connect().ObserveOn(scheduler);
-
-        changeSets
-            .Bind(out _validations)
-            .Subscribe()
-            .DisposeWith(_disposables);
+        Validations = changeSets.AsObservableList();
 
         _validationConnectable = changeSets
             .StartWithEmpty()
             .AutoRefreshOnObservable(x => x.ValidationStatusChange)
             .QueryWhenChanged(static x =>
                 {
-                    using ReadOnlyCollectionPooled<IValidationComponent> validationComponents = new(x.Items);
+                    using ReadOnlyCollectionPooled<IValidationComponent> validationComponents = new(x);
                     return validationComponents.Count is 0 || validationComponents.All(v => v.IsValid);
                 })
             .Multicast(_validSubject);
@@ -102,10 +95,9 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
     /// <summary>
     /// Gets get the list of validations.
     /// </summary>
-    public ReadOnlyObservableCollection<IValidationComponent> Validations => _validations;
+    public IObservableList<IValidationComponent> Validations { get; private set; }
 
     /// <inheritdoc/>
-    [SuppressMessage("Microsoft.Naming", "CA1721:PropertyNamesShouldNotMatchGetMethods", Justification = "Reviewed.")]
     public bool IsValid
     {
         get
@@ -136,28 +128,36 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
     }
 
     /// <summary>
+    /// Gets a value indicating whether this instance is disposed.
+    /// </summary>
+    /// <value>
+    ///   <c>true</c> if this instance is disposed; otherwise, <c>false</c>.
+    /// </value>
+    public bool IsDisposed => _disposables.IsDisposed;
+
+    /// <summary>
     /// Adds a validation into the validations collection.
     /// </summary>
     /// <param name="validation">Validation component to be added into the collection.</param>
-    public void Add(IValidationComponent validation) => _validationSource.AddOrUpdate(validation);
+    public void Add(IValidationComponent validation) => _validationSource.Add(validation);
 
     /// <summary>
     /// Removes a validation from the validations collection.
     /// </summary>
     /// <param name="validation">Validation component to be removed from the collection.</param>
-    public void Remove(IValidationComponent validation) => _validationSource.RemoveKey(validation);
+    public void Remove(IValidationComponent validation) => _validationSource.Remove(validation);
 
     /// <summary>
     /// Removes many validation components from the validations collection.
     /// </summary>
     /// <param name="validations">Validation components to be removed from the collection.</param>
-    public void RemoveMany(IEnumerable<IValidationComponent> validations) => _validationSource.RemoveKeys(validations);
+    public void RemoveMany(IEnumerable<IValidationComponent> validations) => _validationSource.RemoveMany(validations);
 
     /// <summary>
     /// Returns if the whole context is valid checking all the validations.
     /// </summary>
     /// <returns>Returns true if the <see cref="ValidationContext"/> is valid, otherwise false.</returns>
-    public bool GetIsValid() => _validations.Count == 0 || _validations.All(v => v.IsValid);
+    public bool GetIsValid() => Validations.Count == 0 || Validations.Items.All(v => v.IsValid);
 
     /// <inheritdoc/>
     public void Dispose()
@@ -175,9 +175,19 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
     /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing)
+        if (!_disposables.IsDisposed && disposing)
         {
             _disposables.Dispose();
+            _isValid.Dispose();
+            _validationText.Dispose();
+            _validationStatusChange.Dispose();
+            _validSubject.Dispose();
+            _validationSource.Clear();
+            Validations.Dispose();
+            _validationSource.Dispose();
+
+            Validations = null!;
+            _validationSource = null!;
         }
     }
 
@@ -200,15 +210,13 @@ public class ValidationContext : ReactiveObject, IDisposable, IValidationCompone
     /// </returns>
     private IValidationText BuildText()
     {
-        IValidationText[] validationComponents = ArrayPool<IValidationText>.Shared.Rent(_validations.Count);
+        var validationComponents = ArrayPool<IValidationText>.Shared.Rent(Validations.Count);
 
         try
         {
-            int currentIndex = 0;
-            for (int i = 0; i < _validations.Count; i++)
+            var currentIndex = 0;
+            foreach (var validationComponent in Validations.Items)
             {
-                IValidationComponent validationComponent = _validations[i];
-
                 if (validationComponent.IsValid || validationComponent.Text is null)
                 {
                     continue;

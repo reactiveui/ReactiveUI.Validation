@@ -3,7 +3,7 @@ namespace ReactiveUI.Validation.Abstractions
 {
     public interface IValidatableViewModel
     {
-        ReactiveUI.Validation.Contexts.ValidationContext ValidationContext { get; }
+        ReactiveUI.Validation.Contexts.IValidationContext ValidationContext { get; }
     }
 }
 namespace ReactiveUI.Validation.Collections
@@ -106,14 +106,24 @@ namespace ReactiveUI.Validation.Components
 }
 namespace ReactiveUI.Validation.Contexts
 {
-    public class ValidationContext : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, System.IDisposable
+    public interface IValidationContext : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, Splat.IEnableLogger, System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging, System.IDisposable, System.Reactive.Disposables.ICancelable
+    {
+        System.IObservable<bool> Valid { get; }
+        DynamicData.IObservableList<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> Validations { get; }
+        void Add(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation);
+        bool GetIsValid();
+        void Remove(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation);
+        void RemoveMany(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> validations);
+    }
+    public class ValidationContext : ReactiveUI.ReactiveObject, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, ReactiveUI.Validation.Contexts.IValidationContext, Splat.IEnableLogger, System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging, System.IDisposable, System.Reactive.Disposables.ICancelable
     {
         public ValidationContext(System.Reactive.Concurrency.IScheduler? scheduler = null) { }
+        public bool IsDisposed { get; }
         public bool IsValid { get; }
         public ReactiveUI.Validation.Collections.IValidationText Text { get; }
         public System.IObservable<bool> Valid { get; }
         public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
-        public System.Collections.ObjectModel.ReadOnlyObservableCollection<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> Validations { get; }
+        public DynamicData.IObservableList<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> Validations { get; }
         public void Add(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation) { }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }
@@ -161,7 +171,7 @@ namespace ReactiveUI.Validation.Extensions
     }
     public static class ValidationContextExtensions
     {
-        public static System.IObservable<System.Collections.Generic.IList<ReactiveUI.Validation.States.IValidationState>> ObserveFor<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.ValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
+        public static System.IObservable<System.Collections.Generic.IList<ReactiveUI.Validation.States.IValidationState>> ObserveFor<TViewModel, TViewModelProperty>(this ReactiveUI.Validation.Contexts.IValidationContext context, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict = true) { }
     }
     public static class ViewForExtensions
     {
@@ -194,12 +204,14 @@ namespace ReactiveUI.Validation.Formatters
 }
 namespace ReactiveUI.Validation.Helpers
 {
-    public abstract class ReactiveValidationObject : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel, System.ComponentModel.INotifyDataErrorInfo
+    public abstract class ReactiveValidationObject : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel, System.ComponentModel.INotifyDataErrorInfo, System.IDisposable
     {
         protected ReactiveValidationObject(System.Reactive.Concurrency.IScheduler? scheduler = null, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null) { }
         public bool HasErrors { get; }
-        public ReactiveUI.Validation.Contexts.ValidationContext ValidationContext { get; }
+        public ReactiveUI.Validation.Contexts.IValidationContext ValidationContext { get; }
         public event System.EventHandler<System.ComponentModel.DataErrorsChangedEventArgs>? ErrorsChanged;
+        public void Dispose() { }
+        protected virtual void Dispose(bool disposing) { }
         public virtual System.Collections.IEnumerable GetErrors(string? propertyName) { }
         protected void RaiseErrorsChanged(string propertyName = "") { }
     }
@@ -207,7 +219,7 @@ namespace ReactiveUI.Validation.Helpers
     {
         public ValidationHelper(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation, System.IDisposable? cleanup = null) { }
         public bool IsValid { get; }
-        public ReactiveUI.Validation.Collections.IValidationText? Message { get; }
+        public ReactiveUI.Validation.Collections.IValidationText Message { get; }
         public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationChanged { get; }
         public void Dispose() { }
         protected virtual void Dispose(bool disposing) { }

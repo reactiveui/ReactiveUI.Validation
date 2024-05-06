@@ -3,7 +3,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
+using System;
 using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Helpers;
@@ -47,5 +49,5 @@ public class TestViewModel : ReactiveObject, IValidatableViewModel
     }
 
     /// <inheritdoc/>
-    public ValidationContext ValidationContext { get; } = new(ImmediateScheduler.Instance);
+    public IValidationContext ValidationContext { get; } = new ValidationContext(ImmediateScheduler.Instance);
 }
