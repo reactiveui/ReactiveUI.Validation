@@ -28,7 +28,7 @@ internal sealed class ReadOnlyCollectionPooled<T> : IReadOnlyCollection<T>, IDis
                 ArrayPool<T>.Shared.Resize(ref array, array.Length * 2, true);
             }
 
-            array[index] = item;
+            array![index] = item;
             index++;
         }
 
