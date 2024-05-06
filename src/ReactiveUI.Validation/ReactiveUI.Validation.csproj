@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup Condition="!$(TargetFramework.StartsWith('Xamarin'))">
-    <PackageReference Include="ReactiveUI" Version="19.5.41" />
+    <PackageReference Include="ReactiveUI" Version="19.6.12" />
   </ItemGroup>
   
   <!--Xamarin does not support System.Text.Json due to the inclusion of System.Buffers, the latest version (19.5.31) of ReactiveUI includes System.Text.Json-->
   <ItemGroup Condition="$(TargetFramework.StartsWith('Xamarin'))">
-    <PackageReference Include="ReactiveUI" Version="19.5.1" />
+    <PackageReference Include="ReactiveUI" Version="19.6.12" />
   </ItemGroup>
 </Project>
