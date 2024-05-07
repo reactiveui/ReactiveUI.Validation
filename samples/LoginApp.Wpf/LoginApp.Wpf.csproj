@@ -11,7 +11,7 @@
 
   <ItemGroup>
     <PackageReference Include="MahApps.Metro" Version="2.4.10" />
-    <PackageReference Include="ReactiveUI.WPF" Version="19.*" />
+    <PackageReference Include="ReactiveUI.WPF" Version="20.*" />
   </ItemGroup>
 
   <ItemGroup>
