@@ -1,47 +1,55 @@
-﻿<reactiveUi:ReactiveUserControl 
-    x:TypeArguments="viewModels:SignUpViewModel"
+﻿<reactiveUi:ReactiveUserControl
+    x:Class="LoginApp.Wpf.Views.SignUpView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:reactiveUi="http://reactiveui.net"
     xmlns:viewModels="clr-namespace:LoginApp.ViewModels;assembly=LoginApp"
-    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
-    x:Class="LoginApp.Wpf.Views.SignUpView">
+    x:TypeArguments="viewModels:SignUpViewModel">
     <StackPanel Margin="10">
         <TextBlock Text="Sign Up" />
-        <TextBox Margin="0 10 0 0"
-                 mah:TextBoxHelper.ClearTextButton="True"
-                 mah:TextBoxHelper.UseFloatingWatermark="True"
-                 mah:TextBoxHelper.Watermark="Please, enter user name..."
-                 Text="{Binding UserName, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBlock x:Name="UserNameValidation" 
-                   Foreground="Red"
-                   FontSize="12" />
-    
-        <TextBox Margin="0 10 0 0"
-                 mah:TextBoxHelper.ClearTextButton="True"
-                 mah:TextBoxHelper.UseFloatingWatermark="True"
-                 mah:TextBoxHelper.Watermark="Please, enter new password..."
-                 Text="{Binding Password, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBlock x:Name="PasswordValidation" 
-                   Foreground="Red"
-                   FontSize="12" />
-    
-        <TextBox Margin="0 10 0 0"
-                 mah:TextBoxHelper.ClearTextButton="True"
-                 mah:TextBoxHelper.UseFloatingWatermark="True"
-                 mah:TextBoxHelper.Watermark="Please, confirm the password..."
-                 Text="{Binding ConfirmPassword, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
-        <TextBlock x:Name="ConfirmPasswordValidation"
-                   TextWrapping="Wrap"
-                   Foreground="Red"
-                   FontSize="12" />
-    
-        <Button Margin="0 10 0 5"
-                Content="Sign up" 
-                Command="{Binding SignUp}" />
-        <TextBlock x:Name="CompoundValidation"
-                   TextWrapping="Wrap"
-                   Foreground="Red"
-                   FontSize="12" />
+        <TextBox
+            Margin="0,10,0,0"
+            mah:TextBoxHelper.ClearTextButton="True"
+            mah:TextBoxHelper.UseFloatingWatermark="True"
+            mah:TextBoxHelper.Watermark="Please, enter user name..."
+            Text="{Binding UserName, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock
+            x:Name="UserNameValidation"
+            FontSize="12"
+            Foreground="Red" />
+
+        <TextBox
+            Margin="0,10,0,0"
+            mah:TextBoxHelper.ClearTextButton="True"
+            mah:TextBoxHelper.UseFloatingWatermark="True"
+            mah:TextBoxHelper.Watermark="Please, enter new password..."
+            Text="{Binding Password, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock
+            x:Name="PasswordValidation"
+            FontSize="12"
+            Foreground="Red" />
+
+        <TextBox
+            Margin="0,10,0,0"
+            mah:TextBoxHelper.ClearTextButton="True"
+            mah:TextBoxHelper.UseFloatingWatermark="True"
+            mah:TextBoxHelper.Watermark="Please, confirm the password..."
+            Text="{Binding ConfirmPassword, ValidatesOnNotifyDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+        <TextBlock
+            x:Name="ConfirmPasswordValidation"
+            FontSize="12"
+            Foreground="Red"
+            TextWrapping="Wrap" />
+
+        <Button
+            Margin="0,10,0,5"
+            Command="{Binding SignUp}"
+            Content="Sign up" />
+        <TextBlock
+            x:Name="CompoundValidation"
+            FontSize="12"
+            Foreground="Red"
+            TextWrapping="Wrap" />
     </StackPanel>
 </reactiveUi:ReactiveUserControl>

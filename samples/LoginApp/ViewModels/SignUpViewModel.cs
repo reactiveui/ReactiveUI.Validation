@@ -6,6 +6,7 @@
 using System;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using LoginApp.Services;
@@ -25,6 +26,7 @@ public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IAc
 {
     private readonly ObservableAsPropertyHelper<bool> _isBusy;
     private readonly IUserDialogs? _dialogs;
+    private readonly CompositeDisposable _disposables = [];
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SignUpViewModel"/> class.
@@ -43,27 +45,31 @@ public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IAc
         this.ValidationRule(
             vm => vm.UserName,
             name => !string.IsNullOrWhiteSpace(name),
-            "UserName is required.");
+            "UserName is required.")
+            .DisposeWith(_disposables);
 
         this.ValidationRule(
             vm => vm.Password,
             password => !string.IsNullOrWhiteSpace(password),
-            "Password is required.");
+            "Password is required.")
+            .DisposeWith(_disposables);
 
         this.ValidationRule(
             vm => vm.Password,
             password => password?.Length > 2,
-            password => $"Password should be longer, current length: {password!.Length}");
+            password => $"Password should be longer, current length: {password!.Length}")
+            .DisposeWith(_disposables);
 
         this.ValidationRule(
             vm => vm.ConfirmPassword,
             confirmation => !string.IsNullOrWhiteSpace(confirmation),
-            "Confirm password field is required.");
+            "Confirm password field is required.")
+            .DisposeWith(_disposables);
 
         // Here we construct an IObservable<bool> that defines a complex validation rule
         // based on multiple properties. We associate this IObservable<bool> with the
         // 'ConfirmPassword' property via a call to the ValidationRule extension method.
-        IObservable<bool> passwordsObservable =
+        var passwordsObservable =
             this.WhenAnyValue(
                 x => x.Password,
                 x => x.ConfirmPassword,
@@ -73,18 +79,19 @@ public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IAc
         this.ValidationRule(
             vm => vm.ConfirmPassword,
             passwordsObservable,
-            "Passwords must match.");
+            "Passwords must match.")
+            .DisposeWith(_disposables);
 
         // Here we pass a complex IObservable<TState> to the ValidationRule. That observable
         // emits an empty string when UserName is valid, and emits a non-empty when UserName
         // is either invalid, or just changed and hasn't been validated yet.
-        IObservable<IValidationState> usernameValidated =
+        var usernameValidated =
             this.WhenAnyValue(x => x.UserName)
                 .Throttle(TimeSpan.FromSeconds(0.7), RxApp.TaskpoolScheduler)
                 .SelectMany(ValidateNameImpl)
                 .ObserveOn(RxApp.MainThreadScheduler);
 
-        IObservable<IValidationState> usernameDirty =
+        var usernameDirty =
             this.WhenAnyValue(x => x.UserName)
                 .Select(_ => new ValidationState(false, "Please wait..."));
 
@@ -95,7 +102,8 @@ public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IAc
         _isBusy = usernameValidated
             .Select(_ => false)
             .Merge(usernameDirty.Select(_ => true))
-            .ToProperty(this, x => x.IsBusy);
+            .ToProperty(this, x => x.IsBusy)
+            .DisposeWith(_disposables);
     }
 
     /// <summary>
@@ -140,6 +148,20 @@ public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IAc
     /// Gets the activator which contains context information for use in activation of the view model.
     /// </summary>
     public ViewModelActivator Activator { get; } = new ViewModelActivator();
+
+    /// <summary>
+    /// Disposes the specified disposing.
+    /// </summary>
+    /// <param name="disposing">if set to <c>true</c> [disposing].</param>
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            _disposables.Dispose();
+        }
+
+        base.Dispose(disposing);
+    }
 
     private static async Task<IValidationState> ValidateNameImpl(string username)
     {
