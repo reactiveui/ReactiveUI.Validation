@@ -39,7 +39,7 @@ public static class ValidationText
         }
 
         // Note _texts are already validated as not-null
-        string[] texts = validationTexts.SelectMany(static vt => vt).ToArray();
+        var texts = validationTexts.SelectMany(static vt => vt).ToArray();
 
         return CreateValidationText(texts, texts.Length);
     }
@@ -56,9 +56,9 @@ public static class ValidationText
             return None;
         }
 
-        string[] texts = validationTexts.Where(t => t is not null).ToArray()!;
+        var texts = validationTexts.Where(t => t is not null).ToArray();
 
-        return CreateValidationText(texts, texts.Length);
+        return CreateValidationText(texts!, texts.Length);
     }
 
     /// <summary>
@@ -83,7 +83,7 @@ public static class ValidationText
 // Optimize code path for single item array.
         if (validationTexts.Length == 1)
         {
-            string? text = validationTexts[0];
+            var text = validationTexts[0];
 
             if (text is null)
             {
@@ -93,16 +93,16 @@ public static class ValidationText
             return text.Length < 1 ? Empty : new SingleValidationText(text);
         }
 
-        string[] texts = ArrayPool<string>.Shared.Rent(validationTexts.Length);
+        var texts = ArrayPool<string>.Shared.Rent(validationTexts.Length);
 
         try
         {
-            int currentIndex = 0;
+            var currentIndex = 0;
 
             // Ensure we have no null items in the multi-item array
-            for (int i = 0; i < validationTexts.Length; i++)
+            for (var i = 0; i < validationTexts.Length; i++)
             {
-                string? text = validationTexts[i];
+                var text = validationTexts[i];
 
                 if (text is null)
                 {

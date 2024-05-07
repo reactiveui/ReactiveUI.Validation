@@ -36,5 +36,5 @@ public class SourceDestinationViewModel : ReactiveObject, IValidatableViewModel
     }
 
     /// <inheritdoc/>
-    public ValidationContext ValidationContext { get; } = new(Scheduler.Immediate);
+    public IValidationContext ValidationContext { get; } = new ValidationContext(Scheduler.Immediate);
 }

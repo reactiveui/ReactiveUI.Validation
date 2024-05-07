@@ -9,9 +9,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Concurrency;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using DynamicData;
-using DynamicData.Binding;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
@@ -25,10 +25,11 @@ namespace ReactiveUI.Validation.Helpers;
 /// <summary>
 /// Base class for ReactiveObjects that support <see cref="INotifyDataErrorInfo"/> validation.
 /// </summary>
-public abstract class ReactiveValidationObject : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo
+public abstract class ReactiveValidationObject : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo, IDisposable
 {
-    private readonly HashSet<string> _mentionedPropertyNames = [];
-    private readonly IValidationTextFormatter<string> _formatter;
+    private CompositeDisposable _disposables = [];
+    private IValidationTextFormatter<string> _formatter;
+    private HashSet<string> _mentionedPropertyNames = [];
     private bool _hasErrors;
 
     /// <summary>
@@ -51,8 +52,9 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
                      SingleLineFormatter.Default;
 
         ValidationContext = new ValidationContext(scheduler);
+        ValidationContext.DisposeWith(_disposables);
         ValidationContext.Validations
-            .ToObservableChangeSet()
+            .Connect()
             .ToCollection()
             .Select(components => components
                 .Select(component => component
@@ -61,7 +63,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
                 .Merge()
                 .StartWith(ValidationContext))
             .Switch()
-            .Subscribe(OnValidationStatusChange);
+            .Subscribe(OnValidationStatusChange).DisposeWith(_disposables);
     }
 
     /// <inheritdoc />
@@ -75,7 +77,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     }
 
     /// <inheritdoc />
-    public ValidationContext ValidationContext { get; }
+    public IValidationContext ValidationContext { get; private set; }
 
     /// <summary>
     /// Returns a collection of error messages, required by the INotifyDataErrorInfo interface.
@@ -94,6 +96,16 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
                 .ToArray();
 
     /// <summary>
+    /// Releases unmanaged and - optionally - managed resources.
+    /// </summary>
+    public void Dispose()
+    {
+        // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
     /// Raises the <see cref="ErrorsChanged"/> event.
     /// </summary>
     /// <param name="propertyName">The name of the validated property.</param>
@@ -101,11 +113,28 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
         ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
 
     /// <summary>
+    /// Disposes the specified disposing.
+    /// </summary>
+    /// <param name="disposing">if set to <c>true</c> [disposing].</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposables.IsDisposed && disposing)
+        {
+            _disposables.Dispose();
+            _mentionedPropertyNames.Clear();
+            _formatter = null!;
+            _mentionedPropertyNames = null!;
+            _disposables = null!;
+            ValidationContext = null!;
+        }
+    }
+
+    /// <summary>
     /// Selects validation components that are invalid.
     /// </summary>
     /// <returns>Returns the invalid property validations.</returns>
     private IEnumerable<IPropertyValidationComponent> SelectInvalidPropertyValidations() =>
-        ValidationContext.Validations
+        ValidationContext.Validations.Items
             .OfType<IPropertyValidationComponent>()
             .Where(validation => !validation.IsValid);
 

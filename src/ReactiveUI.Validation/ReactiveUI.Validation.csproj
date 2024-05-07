@@ -1,18 +1,13 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
   <PropertyGroup>
-    <TargetFrameworks>MonoAndroid13.0;Xamarin.iOS10;Xamarin.Mac20;Xamarin.TVOS10;tizen40;netstandard2.0;net6.0;net7.0;net7.0-android;net7.0-ios;net7.0-tvos;net7.0-macos;net7.0-maccatalyst;net8.0;net8.0-android;net8.0-ios;net8.0-tvos;net8.0-macos;net8.0-maccatalyst</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net6.0;net7.0;net7.0-android;net7.0-ios;net7.0-tvos;net7.0-macos;net7.0-maccatalyst;net8.0;net8.0-android;net8.0-ios;net8.0-tvos;net8.0-macos;net8.0-maccatalyst</TargetFrameworks>
     <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT' ">$(TargetFrameworks);net462;net472;net6.0-windows10.0.17763.0;net7.0-windows10.0.17763.0;net8.0-windows10.0.17763.0</TargetFrameworks>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup Condition="!$(TargetFramework.StartsWith('Xamarin'))">
-    <PackageReference Include="ReactiveUI" Version="19.5.41" />
-  </ItemGroup>
-  
-  <!--Xamarin does not support System.Text.Json due to the inclusion of System.Buffers, the latest version (19.5.31) of ReactiveUI includes System.Text.Json-->
-  <ItemGroup Condition="$(TargetFramework.StartsWith('Xamarin'))">
-    <PackageReference Include="ReactiveUI" Version="19.5.1" />
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI" Version="20.0.1" />
   </ItemGroup>
 </Project>

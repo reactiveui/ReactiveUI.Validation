@@ -15,5 +15,5 @@ public interface IValidatableViewModel
     /// <summary>
     /// Gets get the validation context.
     /// </summary>
-    ValidationContext ValidationContext { get; }
+    IValidationContext ValidationContext { get; }
 }
