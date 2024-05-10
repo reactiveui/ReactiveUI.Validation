@@ -1,4 +1,4 @@
-// Copyright (c) 2022 .NET Foundation and Contributors. All rights reserved.
+// Copyright (c) 2024 .NET Foundation and Contributors. All rights reserved.
 // Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -37,7 +37,6 @@ public static class ViewForExtensions
     /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
     /// </param>
     /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-    [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
     public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(
         this TView view,
         TViewModel? viewModel,
@@ -75,7 +74,6 @@ public static class ViewForExtensions
     /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
     /// </param>
     /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-    [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
     public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
         this TView view,
         TViewModel? viewModel,
@@ -108,7 +106,6 @@ public static class ViewForExtensions
     /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
     /// </param>
     /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-    [SuppressMessage("Design", "CA1801: Parameter unused", Justification = "Used for generic resolution")]
     public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
         this TView view,
         TViewModel? viewModel,
