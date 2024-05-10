@@ -533,7 +533,7 @@ public static class ValidatableViewModelExtensions
         viewModel.ValidationContext.Add(validation);
         return new ValidationHelper(validation, Disposable.Create(() =>
         {
-            viewModel.ValidationContext.Remove(validation);
+            viewModel.ValidationContext?.Remove(validation);
             validation.Dispose();
         }));
     }
