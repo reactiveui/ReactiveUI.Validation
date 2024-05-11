@@ -30,7 +30,6 @@ namespace ReactiveUI.Validation.Contexts;
 /// </remarks>
 public class ValidationContext : ReactiveObject, IValidationContext
 {
-    private static readonly CompositeDisposable _collectionDisposables = [];
     private readonly CompositeDisposable _disposables = [];
 
     private readonly ReplaySubject<IValidationState> _validationStatusChange = new(1);
@@ -58,8 +57,7 @@ public class ValidationContext : ReactiveObject, IValidationContext
             .AutoRefreshOnObservable(x => x.ValidationStatusChange)
             .QueryWhenChanged(static x =>
                 {
-                    using ReadOnlyCollectionPooled<IValidationComponent> validationComponents = new(x);
-                    validationComponents.DisposeWith(_collectionDisposables);
+                    using ReadOnlyDisposableCollection<IValidationComponent> validationComponents = new(x);
                     return validationComponents.Count is 0 || validationComponents.All(v => v.IsValid);
                 });
 
@@ -163,10 +161,7 @@ public class ValidationContext : ReactiveObject, IValidationContext
     /// <inheritdoc/>
     public void Dispose()
     {
-        // Dispose of unmanaged resources.
         Dispose(true);
-
-        // Suppress finalization.
         GC.SuppressFinalize(this);
     }
 
@@ -186,7 +181,6 @@ public class ValidationContext : ReactiveObject, IValidationContext
             _validationSource.Clear();
             _validationSource.Dispose();
             Validations.Dispose();
-            _collectionDisposables.Dispose();
         }
     }
 
