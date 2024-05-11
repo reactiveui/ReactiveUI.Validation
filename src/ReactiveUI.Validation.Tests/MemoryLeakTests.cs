@@ -51,6 +51,6 @@ public class MemoryLeakTests
         GC.Collect();
         GC.WaitForPendingFinalizers();
 
-        reference.Target.Should().BeNull("it is garbage collected");
+        reference.IsAlive.Should().BeFalse("it is garbage collected");
     }
 }
