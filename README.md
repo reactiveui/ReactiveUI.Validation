@@ -6,7 +6,7 @@
 
 # ReactiveUI.Validation
 
-Validation for ReactiveUI based solutions, functioning in a reactive way. `ReactiveUI.Validation` was originally developed by [@jcmm33](https://github.com/jcmm33) as [Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation), and then refactored and updated by [Àlex Martínez Morón](https://github.com/alexmartinezm) and the [ReactiveUI Core Team](https://github.com/reactiveui/ReactiveUI#core-team). `ReactiveUI.Validation` supports all platforms, including .NET Framework, .NET Standard, .NET Core, Maui, MonoAndroid, AndroidX, Tizen, UAP, Xamarin.iOS, Xamarin.Mac, Xamarin.TVOS.
+Validation for ReactiveUI based solutions, functioning in a reactive way. `ReactiveUI.Validation` was originally developed by [@jcmm33](https://github.com/jcmm33) as [Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation), and then refactored and updated by [Àlex Martínez Morón](https://github.com/alexmartinezm) and the [ReactiveUI Core Team](https://github.com/reactiveui/ReactiveUI#core-team). `ReactiveUI.Validation` supports all platforms, including .NET Framework, .NET Standard, .NET Core, Maui.
 
 ## NuGet Packages
 

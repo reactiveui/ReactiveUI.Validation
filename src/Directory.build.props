@@ -7,8 +7,10 @@
     <PackageIconUrl>https://github.com/reactiveui/ReactiveUI.Validation/blob/master/media/logo.png?raw=true</PackageIconUrl>
     <Authors>.NET Foundation and Contributors</Authors>
     <Description>Validations library for ReactiveUI.</Description>
-    <Owners>xpaulbettsx;ghuntley</Owners>
-    <PackageTags>reactiveui;validation library;reactive programming;xamarin forms;netcore;portable;xamarin;xamarin ios;xamarin mac;android;monodroid;uwp;net45</PackageTags>
+    <Owners>xanaisbettsx;ghuntley</Owners>
+    <PackageTags>reactiveui;validation library;reactive programming;netcore;netstandard;netframework</PackageTags>
+    <PackageIcon>logo.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>https://github.com/reactiveui/reactiveui.validation/releases</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/reactiveui/reactiveui.validation</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -21,7 +23,6 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <!-- Optional: Include PDB in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <CodeAnalysisRuleSet>$(MSBuildThisFileDirectory)analyzers.ruleset</CodeAnalysisRuleSet>
     <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8605;CS8606;CS8607;CS8608;CS8609;CS8610;CS8611;CS8612;CS8613;CS8614;CS8615;CS8616;CS8617;CS8618;CS8619;CS8620;CS8621;CS8622;CS8623;CS8624;CS8625</WarningsAsErrors>
     <LangVersion>preview</LangVersion>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
@@ -29,7 +30,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)..\media\logo.png" Pack="true" PackagePath="\" />
     <None Include="$(MSBuildThisFileDirectory)..\LICENSE" Pack="true" PackagePath="LICENSE" />
+    <None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(IsTestProject)' != 'true'">
