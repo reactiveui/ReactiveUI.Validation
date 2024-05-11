@@ -27,9 +27,9 @@ namespace ReactiveUI.Validation.Helpers;
 /// </summary>
 public abstract class ReactiveValidationObject : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo, IDisposable
 {
-    private CompositeDisposable _disposables = [];
-    private IValidationTextFormatter<string> _formatter;
-    private HashSet<string> _mentionedPropertyNames = [];
+    private readonly CompositeDisposable _disposables = [];
+    private readonly IValidationTextFormatter<string> _formatter;
+    private readonly HashSet<string> _mentionedPropertyNames = [];
     private bool _hasErrors;
 
     /// <summary>
@@ -77,7 +77,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     }
 
     /// <inheritdoc />
-    public IValidationContext ValidationContext { get; private set; }
+    public IValidationContext ValidationContext { get; }
 
     /// <summary>
     /// Returns a collection of error messages, required by the INotifyDataErrorInfo interface.
@@ -121,11 +121,8 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
         if (!_disposables.IsDisposed && disposing)
         {
             _disposables.Dispose();
+            ValidationContext.Dispose();
             _mentionedPropertyNames.Clear();
-            _formatter = null!;
-            _mentionedPropertyNames = null!;
-            _disposables = null!;
-            ValidationContext = null!;
         }
     }
 

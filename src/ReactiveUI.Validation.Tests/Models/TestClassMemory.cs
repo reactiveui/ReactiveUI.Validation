@@ -31,7 +31,7 @@ public sealed class TestClassMemory : ReactiveValidationObject
             .DisposeWith(_disposable);
 
         // commenting out the following statement makes the test green
-        ValidationContext.ValidationStatusChange
+        ValidationContext?.ValidationStatusChange
             .Subscribe(/* you do something here, but this does not matter for now. */)
             .DisposeWith(_disposable);
     }

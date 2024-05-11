@@ -37,13 +37,13 @@ public class MemoryLeakTests
         new Action(
             () =>
             {
-                var sut = new TestClassMemory();
+                var memTest = new TestClassMemory();
 
-                reference = new WeakReference(sut, true);
-                sut.Dispose();
+                reference = new WeakReference(memTest, true);
+                memTest.Dispose();
             })();
 
-        // Sut should have gone out of scope about now, so the garbage collector can clean it up
+        // memTest should have gone out of scope about now, so the garbage collector can clean it up
         dotMemory.Check(
             memory => memory.GetObjects(
                 where => where.Type.Is<TestClassMemory>()).ObjectsCount.Should().Be(0, "it is out of scope"));
@@ -51,14 +51,6 @@ public class MemoryLeakTests
         GC.Collect();
         GC.WaitForPendingFinalizers();
 
-        if (reference.Target is TestClassMemory sut)
-        {
-            // ReactiveObject does not inherit from IDisposable, so we need to check ValidationContext
-            sut.ValidationContext.Should().BeNull("it is garbage collected");
-        }
-        else
-        {
-            reference.Target.Should().BeNull("it is garbage collected");
-        }
+        reference.Target.Should().BeNull("it is garbage collected");
     }
 }
