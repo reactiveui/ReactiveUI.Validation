@@ -125,7 +125,7 @@ public class ValidationContextTests
         viewModel.ValidationContext.Add(nameValidation);
 
         var latestValidity = false;
-        viewModel.IsValid().Subscribe(isValid => latestValidity = isValid);
+        var d = viewModel.IsValid().Subscribe(isValid => latestValidity = isValid);
         Assert.False(latestValidity);
 
         viewModel.Name = "Jonathan";
@@ -133,6 +133,7 @@ public class ValidationContextTests
 
         viewModel.Name = string.Empty;
         Assert.False(latestValidity);
+        d.Dispose();
     }
 
     /// <summary>

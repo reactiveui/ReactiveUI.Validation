@@ -6,7 +6,6 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
@@ -31,15 +30,16 @@ namespace ReactiveUI.Validation.Contexts;
 /// </remarks>
 public class ValidationContext : ReactiveObject, IValidationContext
 {
+    private readonly CompositeDisposable _disposables = [];
+
     private readonly ReplaySubject<IValidationState> _validationStatusChange = new(1);
     private readonly ReplaySubject<bool> _validSubject = new(1);
 
-    private readonly IConnectableObservable<bool> _validationConnectable;
+    private readonly IObservable<bool> _validationObservable;
     private readonly ObservableAsPropertyHelper<IValidationText> _validationText;
     private readonly ObservableAsPropertyHelper<bool> _isValid;
 
-    private readonly CompositeDisposable _disposables = [];
-    private SourceList<IValidationComponent> _validationSource = new();
+    private readonly SourceList<IValidationComponent> _validationSource = new();
     private bool _isActive;
 
     /// <summary>
@@ -52,15 +52,14 @@ public class ValidationContext : ReactiveObject, IValidationContext
         var changeSets = _validationSource.Connect().ObserveOn(scheduler);
         Validations = changeSets.AsObservableList();
 
-        _validationConnectable = changeSets
+        _validationObservable = changeSets
             .StartWithEmpty()
             .AutoRefreshOnObservable(x => x.ValidationStatusChange)
             .QueryWhenChanged(static x =>
                 {
-                    using ReadOnlyCollectionPooled<IValidationComponent> validationComponents = new(x);
+                    using ReadOnlyDisposableCollection<IValidationComponent> validationComponents = new(x);
                     return validationComponents.Count is 0 || validationComponents.All(v => v.IsValid);
-                })
-            .Multicast(_validSubject);
+                });
 
         _isValid = _validSubject
             .StartWith(true)
@@ -95,7 +94,7 @@ public class ValidationContext : ReactiveObject, IValidationContext
     /// <summary>
     /// Gets get the list of validations.
     /// </summary>
-    public IObservableList<IValidationComponent> Validations { get; private set; }
+    public IObservableList<IValidationComponent> Validations { get; }
 
     /// <inheritdoc/>
     public bool IsValid
@@ -162,10 +161,7 @@ public class ValidationContext : ReactiveObject, IValidationContext
     /// <inheritdoc/>
     public void Dispose()
     {
-        // Dispose of unmanaged resources.
         Dispose(true);
-
-        // Suppress finalization.
         GC.SuppressFinalize(this);
     }
 
@@ -183,11 +179,8 @@ public class ValidationContext : ReactiveObject, IValidationContext
             _validationStatusChange.Dispose();
             _validSubject.Dispose();
             _validationSource.Clear();
-            Validations.Dispose();
             _validationSource.Dispose();
-
-            Validations = null!;
-            _validationSource = null!;
+            Validations.Dispose();
         }
     }
 
@@ -199,7 +192,7 @@ public class ValidationContext : ReactiveObject, IValidationContext
         }
 
         _isActive = true;
-        _disposables.Add(_validationConnectable.Connect());
+        _disposables.Add(_validationObservable.Subscribe(_validSubject));
     }
 
     /// <summary>

@@ -27,6 +27,7 @@
     <LangVersion>preview</LangVersion>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
+		<NoWarn>$(NoWarn);IDE1006</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -35,17 +36,16 @@
     <None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(IsTestProject)' != 'true'">
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" /> 
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Nerdbank.GitVersioning" Version="3.6.133" PrivateAssets="all" />
-    <PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.556" PrivateAssets="all" />
-    <PackageReference Include="Roslynator.Analyzers" Version="4.12.2" PrivateAssets="All" />
-  </ItemGroup>
-  <ItemGroup>
-    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
-  </ItemGroup>
+	<ItemGroup Condition="'$(IsTestProject)' != 'true'">
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Nerdbank.GitVersioning" Version="3.6.133" PrivateAssets="all" />
+		<PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.556" PrivateAssets="all" />
+		<PackageReference Include="Roslynator.Analyzers" Version="4.12.2" PrivateAssets="All" />
+	</ItemGroup>
+	<ItemGroup>
+		<AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
+	</ItemGroup>
 
- </Project>
- 
+</Project>
