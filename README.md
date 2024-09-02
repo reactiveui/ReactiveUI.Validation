@@ -10,7 +10,7 @@ Validation for ReactiveUI based solutions, functioning in a reactive way. `React
 
 ## NuGet Packages
 
-Install the following package into you class library and into a platform-specific project.
+Install the following package into your class library and into a platform-specific project.
 
 | Platform           | ReactiveUI Package                               | NuGet                |
 | ------------------ | ------------------------------------------------ | -------------------- |
