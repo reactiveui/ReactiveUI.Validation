@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
+# 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Validation", "ReactiveUI.Validation\ReactiveUI.Validation.csproj", "{B62AABD0-22A4-470D-B6EB-F6B3EAE668DE}"
@@ -18,6 +18,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		..\version.json = ..\version.json
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReactiveUI.Validation.AndroidX", "ReactiveUI.Validation.AndroidX\ReactiveUI.Validation.AndroidX.csproj", "{6E984244-95F9-4EA6-BEE2-F665C0C4BCFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{892D51D9-7A3F-4E66-A871-082A63D9BE05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{892D51D9-7A3F-4E66-A871-082A63D9BE05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{892D51D9-7A3F-4E66-A871-082A63D9BE05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E984244-95F9-4EA6-BEE2-F665C0C4BCFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E984244-95F9-4EA6-BEE2-F665C0C4BCFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E984244-95F9-4EA6-BEE2-F665C0C4BCFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E984244-95F9-4EA6-BEE2-F665C0C4BCFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
