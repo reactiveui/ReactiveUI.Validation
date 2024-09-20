@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0-android</TargetFrameworks>
+    <PackageDescription>Provides ReactiveUI.Validation extensions for the AndroidX Library</PackageDescription>
+    <PackageId>ReactiveUI.Validation.AndroidX</PackageId>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI.AndroidX" Version="20.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReactiveUI.Validation\ReactiveUI.Validation.csproj" />
+  </ItemGroup>
+</Project>
