@@ -11,7 +11,7 @@ using System.Reactive.Linq;
 using System.Threading.Tasks;
 using LoginApp.Services;
 using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
+using ReactiveUI.SourceGenerators;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.States;
@@ -22,11 +22,29 @@ namespace LoginApp.ViewModels;
 /// <summary>
 /// A view model which shows controls to create an account.
 /// </summary>
-public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IActivatableViewModel
+public partial class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IActivatableViewModel
 {
     private readonly ObservableAsPropertyHelper<bool> _isBusy;
     private readonly IUserDialogs? _dialogs;
     private readonly CompositeDisposable _disposables = [];
+
+    /// <summary>
+    /// Gets or sets the typed <see cref="UserName"/>.
+    /// </summary>
+    [Reactive]
+    private string _userName = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the typed <see cref="Password"/>.
+    /// </summary>
+    [Reactive]
+    private string _password = string.Empty;
+
+    /// <summary>
+    /// Gets or sets the typed <see cref="ConfirmPassword"/>.
+    /// </summary>
+    [Reactive]
+    private string _confirmPassword = string.Empty;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SignUpViewModel"/> class.
@@ -105,24 +123,6 @@ public class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IAc
             .ToProperty(this, x => x.IsBusy)
             .DisposeWith(_disposables);
     }
-
-    /// <summary>
-    /// Gets or sets the typed <see cref="UserName"/>.
-    /// </summary>
-    [Reactive]
-    public string UserName { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Gets or sets the typed <see cref="Password"/>.
-    /// </summary>
-    [Reactive]
-    public string Password { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Gets or sets the typed <see cref="ConfirmPassword"/>.
-    /// </summary>
-    [Reactive]
-    public string ConfirmPassword { get; set; } = string.Empty;
 
     /// <summary>
     /// Gets a value indicating whether the form is currently validating asynchronously.

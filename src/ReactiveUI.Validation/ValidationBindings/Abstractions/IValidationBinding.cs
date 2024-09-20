@@ -10,6 +10,4 @@ namespace ReactiveUI.Validation.ValidationBindings.Abstractions;
 /// <summary>
 /// A validation binding component.
 /// </summary>
-public interface IValidationBinding : IDisposable
-{
-}
+public interface IValidationBinding : IDisposable;
