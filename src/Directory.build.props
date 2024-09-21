@@ -27,7 +27,7 @@
     <LangVersion>preview</LangVersion>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
-		<NoWarn>$(NoWarn);IDE1006</NoWarn>
+		<NoWarn>$(NoWarn);IDE1006;IDE0130</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
