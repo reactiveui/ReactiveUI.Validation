@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ReactiveUI" Version="20.1.52" />    
+    <PackageReference Include="ReactiveUI" Version="20.1.63" />    
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('netstandard')) or $(TargetFramework.StartsWith('net4'))">
