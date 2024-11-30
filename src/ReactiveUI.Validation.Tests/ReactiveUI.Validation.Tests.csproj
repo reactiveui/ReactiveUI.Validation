@@ -22,7 +22,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="DiffEngine" Version="15.5.3" />
+    <PackageReference Include="DiffEngine" Version="15.5.5" />
     <PackageReference Include="JetBrains.DotMemoryUnit" Version="3.2.20220510" />
     <PackageReference Include="FluentAssertions" Version="6.12.1" />
   </ItemGroup>
