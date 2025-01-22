@@ -10,7 +10,7 @@
     <CodeAnalysisRuleSet />
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Polyfill" Version="7.11.0">
+    <PackageReference Include="Polyfill" Version="7.12.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
