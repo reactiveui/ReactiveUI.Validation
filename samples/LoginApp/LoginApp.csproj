@@ -14,7 +14,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.1.8" PrivateAssets="all" />
+    <PackageReference Include="ReactiveUI.SourceGenerators" Version="2.1.27" PrivateAssets="all" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\ReactiveUI.Validation\ReactiveUI.Validation.csproj" />
