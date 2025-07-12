@@ -24,7 +24,7 @@
     </PackageReference>
     <PackageReference Include="DiffEngine" Version="16.2.2" />
     <PackageReference Include="JetBrains.DotMemoryUnit" Version="3.2.20220510" />
-    <PackageReference Include="FluentAssertions" Version="8.3.0" />
+    <PackageReference Include="FluentAssertions" Version="8.4.0" />
   </ItemGroup>
 
   <ItemGroup>
