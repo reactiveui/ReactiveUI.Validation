@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ReactiveUI.AndroidX" Version="20.3.1" />
+    <PackageReference Include="ReactiveUI.AndroidX" Version="20.4.1" />
   </ItemGroup>
 
   <ItemGroup>
