@@ -41,7 +41,7 @@ public class MemoryLeakTests
         dotMemory.Check(
             memory => Assert.That(
                 memory.GetObjects(where => where.Type.Is<TestClassMemory>()).ObjectsCount,
-                Is.EqualTo(0),
+                Is.Zero,
                 "it is out of scope"));
 
         GC.Collect();

@@ -33,11 +33,11 @@ public class PropertyValidationTests
             n => !string.IsNullOrEmpty(n),
             "broken");
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(validation.IsValid, Is.True);
             Assert.That(string.IsNullOrEmpty(validation.Text?.ToSingleLine()), Is.True);
-        });
+        }
     }
 
     /// <summary>
@@ -62,20 +62,20 @@ public class PropertyValidationTests
             .ValidationStatusChange
             .Subscribe(v => lastVal = v.IsValid);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(validation.IsValid, Is.False);
             Assert.That(lastVal, Is.False);
             Assert.That(lastVal.HasValue, Is.True);
-        });
+        }
 
         model.Name = testValue + "-" + testValue;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(validation.IsValid, Is.True);
             Assert.That(lastVal, Is.True);
-        });
+        }
     }
 
     /// <summary>
@@ -125,22 +125,22 @@ public class PropertyValidationTests
         var expectedState1 = new ValidationState(false, "The value 'bongo' is incorrect");
         var comparer = new ValidationStateComparer();
         
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(validation.Text?.ToSingleLine(), Is.EqualTo("The value 'bongo' is incorrect"));
             Assert.That(changes, Has.Count.EqualTo(1));
             Assert.That(comparer.Equals(changes[0], expectedState1), Is.True, "Validation states should be equal");
-        });
+        }
 
         model.Name = testRoot;
 
         var expectedState2 = new ValidationState(false, "The value 'bon' is incorrect");
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(validation.Text?.ToSingleLine(), Is.EqualTo("The value 'bon' is incorrect"));
             Assert.That(changes, Has.Count.EqualTo(2));
             Assert.That(comparer.Equals(changes[1], expectedState2), Is.True, "Validation states should be equal");
-        });
+        }
     }
 
     /// <summary>

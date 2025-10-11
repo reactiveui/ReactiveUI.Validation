@@ -27,11 +27,11 @@ public class ValidationContextTests
     {
         using var vc = new ValidationContext(ImmediateScheduler.Instance);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(vc.IsValid, Is.True);
-            Assert.That(vc.Text.Count, Is.EqualTo(0));
-        });
+            Assert.That(vc.Text, Has.Count.Zero);
+        }
     }
 
     /// <summary>
@@ -58,12 +58,12 @@ public class ValidationContextTests
 
         vm.Name = invalidName;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(v1.IsValid, Is.False);
             Assert.That(vc.IsValid, Is.False);
-            Assert.That(vc.Text.Count, Is.EqualTo(1));
-        });
+            Assert.That(vc.Text, Has.Count.EqualTo(1));
+        }
     }
 
     /// <summary>
@@ -94,37 +94,37 @@ public class ValidationContextTests
         vc.Add(firstValidation);
         vc.Add(secondValidation);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(vc.IsValid, Is.True);
-            Assert.That(vc.Text.Count, Is.EqualTo(0));
-        });
+            Assert.That(vc.Text, Has.Count.Zero);
+        }
 
         vm.Name = invalidName;
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(vc.IsValid, Is.False);
-            Assert.That(vc.Text.Count, Is.EqualTo(1));
+            Assert.That(vc.Text, Has.Count.EqualTo(1));
             Assert.That(vc.Text[0], Is.EqualTo("Name " + invalidName + " isn't valid"));
-        });
+        }
 
         vm.Name2 = invalidName;
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(vc.IsValid, Is.False);
-            Assert.That(vc.Text.Count, Is.EqualTo(2));
+            Assert.That(vc.Text, Has.Count.EqualTo(2));
             Assert.That(vc.Text[0], Is.EqualTo("Name " + invalidName + " isn't valid"));
             Assert.That(vc.Text[1], Is.EqualTo("Name 2 " + invalidName + " isn't valid"));
-        });
+        }
 
         vm.Name = validName;
         vm.Name2 = validName;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(vc.IsValid, Is.True);
-            Assert.That(vc.Text.Count, Is.EqualTo(0));
-        });
+            Assert.That(vc.Text, Has.Count.Zero);
+        }
     }
 
     /// <summary>
@@ -177,31 +177,31 @@ public class ValidationContextTests
         viewModel.ValidationContext.Add(nameValidation);
         viewModel.ValidationContext.Add(name2Validation);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(viewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+            Assert.That(viewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
             Assert.That(viewModel.ValidationContext.IsValid, Is.False);
             Assert.That(viewModel.ValidationContext.Text, Is.Not.Empty);
-        });
+        }
 
         viewModel.ClearValidationRules();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(viewModel.ValidationContext.Validations.Count, Is.EqualTo(0));
+            Assert.That(viewModel.ValidationContext.Validations, Has.Count.Zero);
             Assert.That(viewModel.ValidationContext.IsValid, Is.True);
             Assert.That(viewModel.ValidationContext.Text, Is.Empty);
-        });
+        }
 
         // Verify that the method is idempotent.
         viewModel.ClearValidationRules();
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(viewModel.ValidationContext.Validations.Count, Is.EqualTo(0));
+            Assert.That(viewModel.ValidationContext.Validations, Has.Count.Zero);
             Assert.That(viewModel.ValidationContext.IsValid, Is.True);
             Assert.That(viewModel.ValidationContext.Text, Is.Empty);
-        });
+        }
     }
 
     /// <summary>
@@ -228,33 +228,33 @@ public class ValidationContextTests
         viewModel.ValidationContext.Add(nameValidation);
         viewModel.ValidationContext.Add(name2Validation);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(viewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+            Assert.That(viewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
             Assert.That(viewModel.ValidationContext.IsValid, Is.False);
             Assert.That(viewModel.ValidationContext.Text, Is.Not.Empty);
-        });
+        }
         Assert.Throws<ArgumentNullException>(() => viewModel.ClearValidationRules<TestViewModel, string>(null!));
 
         viewModel.ClearValidationRules(x => x.Name);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(viewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+            Assert.That(viewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
             Assert.That(viewModel.ValidationContext.IsValid, Is.False);
             Assert.That(viewModel.ValidationContext.Text, Is.Not.Empty);
             Assert.That(viewModel.ValidationContext.Text.ToSingleLine(), Is.EqualTo(name2ErrorMessage));
-        });
+        }
 
         // Verify that the method is idempotent.
         viewModel.ClearValidationRules(x => x.Name);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(viewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+            Assert.That(viewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
             Assert.That(viewModel.ValidationContext.IsValid, Is.False);
             Assert.That(viewModel.ValidationContext.Text, Is.Not.Empty);
             Assert.That(viewModel.ValidationContext.Text.ToSingleLine(), Is.EqualTo(name2ErrorMessage));
-        });
+        }
     }
 }

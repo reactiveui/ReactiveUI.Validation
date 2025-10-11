@@ -53,8 +53,11 @@ public class ValidationBindingTests
 
         view.ViewModel.Name = "som";
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
+        }
 
         // Checks if second validation error message is shown
         Assert.That(view.NameErrorLabel, Is.EqualTo(minimumLengthErrorMessage));
@@ -84,9 +87,12 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
         view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorContainer.Text);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
         Assert.That(view.NameErrorContainer.Text, Is.EqualTo(minimumLengthErrorMessage));
+        }
     }
 
     /// <summary>
@@ -106,8 +112,11 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
         view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
         Assert.That(view.ViewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
+        }
     }
 
     /// <summary>
@@ -132,10 +141,13 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name2, v => v.Name2Label);
         view.BindValidation(view.ViewModel, v => v.NameErrorLabel);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
         Assert.That(view.NameErrorLabel, Is.Not.Empty);
         Assert.That(view.NameErrorLabel, Is.EqualTo("Name should not be empty. Name2 should not be empty."));
+        }
     }
 
     /// <summary>
@@ -159,8 +171,11 @@ public class ValidationBindingTests
 
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.NameErrorLabel, Is.Not.Empty);
         Assert.That(view.NameErrorLabel, Is.EqualTo(errorMessage));
+        }
     }
 
     /// <summary>
@@ -186,9 +201,12 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, x => x.Source.Name, x => x.SourceError);
         view.BindValidation(view.ViewModel, x => x.Destination.Name, x => x.DestinationError);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.SourceError, Is.Not.Null);
         Assert.That(view.SourceError, Is.EqualTo("Source text"));
         Assert.That(view.DestinationError, Is.EqualTo("Destination text"));
+        }
     }
 
     /// <summary>
@@ -210,19 +228,28 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
         view.BindValidation(view.ViewModel, vm => vm.NameRule, v => v.NameErrorLabel);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.ViewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
         Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
+        }
 
         view.ViewModel.Name = "Jonathan";
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
         Assert.That(view.NameErrorLabel, Is.Empty);
+        }
 
         view.ViewModel.Name = string.Empty;
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
+        }
     }
 
     /// <summary>
@@ -249,16 +276,22 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name2, v => v.Name2Label);
         view.BindValidation(view.ViewModel, vm => vm.NameRule, v => v.NameErrorLabel);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.ViewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
         Assert.That(view.NameErrorLabel, Is.EqualTo(namesShouldMatchMessage));
+        }
 
         view.ViewModel.Name = "Bongo";
         view.ViewModel.Name2 = "Bongo";
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
         Assert.That(view.ViewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
         Assert.That(view.NameErrorLabel, Is.Empty);
+        }
     }
 
     /// <summary>
@@ -281,13 +314,19 @@ public class ValidationBindingTests
         view.OneWayBind(view.ViewModel, vm => vm.NameRule.IsValid, v => v.IsNameValid);
         view.OneWayBind(view.ViewModel, vm => vm.NameRule.Message, v => v.NameErrorLabel, s => s.ToSingleLine());
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.IsNameValid, Is.False);
         Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
+        }
 
         view.ViewModel.Name = "Bingo";
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.IsNameValid, Is.True);
         Assert.That(view.NameErrorLabel, Is.Empty);
+        }
     }
 
     /// <summary>
@@ -307,10 +346,13 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
         view.BindValidation(view.ViewModel, v => v.NameErrorLabel, new ConstFormatter(validationConstant));
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.NameErrorLabel, Is.Not.Empty);
         Assert.That(view.NameErrorLabel, Is.EqualTo(validationConstant));
+        }
     }
 
     /// <summary>
@@ -335,14 +377,20 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
         view.BindValidation(view.ViewModel, vm => vm.NameRule, v => v.NameErrorLabel);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.NameRule.IsValid, Is.False);
         Assert.That(view.NameErrorLabel, Is.Not.Empty);
         Assert.That(view.NameErrorLabel, Is.EqualTo(nameValidationError));
+        }
 
         view.ViewModel.Name = "Jotaro";
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.NameRule.IsValid, Is.True);
         Assert.That(view.NameErrorLabel, Is.Empty);
+        }
     }
 
     /// <summary>
@@ -389,17 +437,23 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, x => x.Name2, x => x.Name2Label);
         view.BindValidation(view.ViewModel, x => x.NameErrorLabel);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(4));
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(4));
         Assert.That(view.NameErrorLabel, Is.Not.Empty);
         Assert.That(view.NameErrorLabel, Is.EqualTo("Foo != Bar. Bar != Foo. Names should be equal. Foo should equal Bar."));
+        }
 
         view.ViewModel.Name = "Foo";
         view.ViewModel.Name2 = "Foo";
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(4));
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(4));
         Assert.That(view.NameErrorLabel, Is.Empty);
+        }
     }
 
     /// <summary>
@@ -423,10 +477,13 @@ public class ValidationBindingTests
             (_, errorText) => view.NameErrorLabel = errorText.FirstOrDefault(msg => !string.IsNullOrEmpty(msg)),
             SingleLineFormatter.Default);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.NameErrorLabel, Is.Not.Empty);
         Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
+        }
     }
 
     /// <summary>
@@ -452,10 +509,13 @@ public class ValidationBindingTests
             (_, errorText) => view.NameErrorLabel = errorText,
             SingleLineFormatter.Default);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.NameErrorLabel, Is.Not.Empty);
         Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
+        }
     }
 
     /// <summary>
@@ -479,10 +539,13 @@ public class ValidationBindingTests
             errorText => view.NameErrorLabel = errorText,
             SingleLineFormatter.Default);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.NameErrorLabel, Is.Not.Empty);
         Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
+        }
     }
 
     /// <summary>
@@ -503,15 +566,21 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.NameErrorLabel, Is.Not.Empty);
         Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
+        }
 
         view.ViewModel.Name = "Saitama";
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
         Assert.That(view.NameErrorLabel, Is.Empty);
+        }
     }
 
     /// <summary>
@@ -539,34 +608,46 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
         view.BindValidation(view.ViewModel, x => x.Name2, x => x.Name2ErrorLabel);
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
         Assert.That(view.Name2ErrorLabel, Is.EqualTo(name2ErrorMessage));
+        }
 
         nameRule.Dispose();
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.NameErrorLabel, Is.Empty);
         Assert.That(view.Name2ErrorLabel, Is.EqualTo(name2ErrorMessage));
+        }
 
         name2Rule.Dispose();
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(0));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.Zero);
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
         Assert.That(view.NameErrorLabel, Is.Empty);
         Assert.That(view.Name2ErrorLabel, Is.Empty);
+        }
 
         view.ViewModel.ValidationRule(
             viewModel => viewModel.Name,
             name => !string.IsNullOrWhiteSpace(name),
             nameErrorMessage);
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
         Assert.That(view.Name2ErrorLabel, Is.Empty);
+        }
     }
 
     /// <summary>
@@ -591,30 +672,42 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
         view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.NameErrorContainer.Text, Is.EqualTo("Name is empty. Name2 is empty."));
+        }
 
         nameRule.Dispose();
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.NameErrorContainer.Text, Is.EqualTo("Name2 is empty."));
+        }
 
         name2Rule.Dispose();
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(0));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.Zero);
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
         Assert.That(view.NameErrorContainer.Text, Is.Empty);
+        }
 
         view.ViewModel.ValidationRule(
             viewModel => viewModel.Name,
             name => !string.IsNullOrWhiteSpace(name),
             "Name is empty.");
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.NameErrorContainer.Text, Is.EqualTo("Name is empty."));
+        }
     }
 
     /// <summary>
@@ -636,16 +729,22 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
         view.BindValidation(view.ViewModel, x => x.NameRule, x => x.NameErrorLabel);
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
+        }
 
         view.ViewModel.NameRule.Dispose();
         view.ViewModel.NameRule = null;
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(0));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.Zero);
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
         Assert.That(view.NameErrorLabel, Is.Empty);
+        }
 
         const string secretMessage = "This is the secret message.";
         view.ViewModel.NameRule = view.ViewModel
@@ -654,9 +753,12 @@ public class ValidationBindingTests
                 name => !string.IsNullOrWhiteSpace(name),
                 secretMessage);
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.NameErrorLabel, Is.EqualTo(secretMessage));
+        }
     }
 
     /// <summary>
@@ -692,18 +794,24 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
         view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.NameErrorLabel.Contains(nameErrorMessage, comparison), Is.True);
         Assert.That(view.NameErrorContainer.Text.Contains(viewModelIsBlockedMessage, comparison), Is.True);
+        }
 
         view.ViewModel.Name = "Qwerty";
         isViewModelBlocked.OnNext(false);
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
         Assert.That(view.NameErrorLabel.Contains(nameErrorMessage, comparison), Is.False);
         Assert.That(view.NameErrorContainer.Text.Contains(viewModelIsBlockedMessage, comparison), Is.False);
+        }
     }
 
     /// <summary>
@@ -736,18 +844,24 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
         view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.NameErrorLabel.Contains(nameErrorMessage, comparison), Is.True);
         Assert.That(view.NameErrorContainer.Text.Contains(viewModelIsBlockedMessage, comparison), Is.True);
+        }
 
         view.ViewModel.Name = "Qwerty";
         isViewModelBlocked.OnNext(false);
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
         Assert.That(view.NameErrorLabel.Contains(nameErrorMessage, comparison), Is.False);
         Assert.That(view.NameErrorContainer.Text.Contains(viewModelIsBlockedMessage, comparison), Is.False);
+        }
     }
 
     /// <summary>
@@ -766,18 +880,24 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
         view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.NameErrorLabel, Is.Empty);
         Assert.That(view.NameErrorContainer.Text, Is.Empty);
+        }
 
         const string errorMessage = "Name shouldn't be empty.";
         var viewModel = new TestViewModel();
         viewModel.ValidationRule(x => x.Name, x => !string.IsNullOrWhiteSpace(x), errorMessage);
         view.ViewModel = viewModel;
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(view.NameErrorLabel, Is.Not.Empty);
         Assert.That(view.NameErrorContainer.Text, Is.Not.Empty);
         Assert.That(view.NameErrorLabel, Is.EqualTo(errorMessage));
         Assert.That(view.NameErrorContainer.Text, Is.EqualTo(errorMessage));
+        }
     }
 
     private class CustomValidationState(bool isValid, string message) : IValidationState

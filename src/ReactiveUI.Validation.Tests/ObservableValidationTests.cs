@@ -21,7 +21,7 @@ namespace ReactiveUI.Validation.Tests;
 [TestFixture]
 public class ObservableValidationTests
 {
-    private ISubject<bool> _validState = default!;
+    private ReplaySubject<bool> _validState = default!;
     private TestViewModel _validModel = default!;
 
     [SetUp]
@@ -33,6 +33,12 @@ public class ObservableValidationTests
             Name = "name",
             Name2 = "name2"
         };
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        _validState?.Dispose();
     }
 
     /// <summary>
@@ -86,11 +92,11 @@ public class ObservableValidationTests
         _validState.OnNext(true);
         _validState.OnNext(false);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(validation.IsValid, Is.False);
             Assert.That(validation.Text?.ToSingleLine(), Is.EqualTo("broken"));
-        });
+        }
     }
 
     /// <summary>
@@ -110,11 +116,11 @@ public class ObservableValidationTests
         _validState.OnNext(true);
         _validState.OnNext(false);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(propertyValidation.IsValid, Is.False);
             Assert.That(propertyValidation.Text?.ToSingleLine(), Is.EqualTo("broken"));
-        });
+        }
     }
 
     /// <summary>
@@ -193,13 +199,13 @@ public class ObservableValidationTests
                 state => !string.IsNullOrWhiteSpace(state),
                 "Name shouldn't be empty.");
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name), Is.True);
             Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name, true), Is.True);
             Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name2), Is.False);
             Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name2, true), Is.False);
-        });
+        }
         Assert.Throws<ArgumentNullException>(() => component.ContainsProperty<TestViewModel, string>(null!));
     }
 
@@ -215,25 +221,25 @@ public class ObservableValidationTests
         component.ValidationStatusChange.Subscribe(arguments.Add);
         stream.OnNext(ValidationState.Valid);
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(component.IsValid, Is.True);
             Assert.That(component.Text!.ToSingleLine(), Is.Empty);
             Assert.That(arguments, Has.Count.EqualTo(1));
             Assert.That(arguments[0].IsValid, Is.True);
             Assert.That(arguments[0].Text.ToSingleLine(), Is.Empty);
-        });
+        }
 
         const string errorMessage = "Errors exist.";
         stream.OnNext(new ValidationState(false, errorMessage));
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(component.IsValid, Is.False);
             Assert.That(component.Text.ToSingleLine(), Is.EqualTo(errorMessage));
             Assert.That(arguments, Has.Count.EqualTo(2));
             Assert.That(arguments[1].IsValid, Is.False);
             Assert.That(arguments[1].Text.ToSingleLine(), Is.EqualTo(errorMessage));
-        });
+        }
     }
 }

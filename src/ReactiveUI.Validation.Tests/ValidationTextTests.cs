@@ -26,12 +26,12 @@ public class ValidationTextTests
     {
         var vt = ValidationText.None;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(vt.Count, Is.EqualTo(0));
-            Assert.That(vt.Count, Is.EqualTo(0));
+            Assert.That(vt, Has.Count.Zero);
+            Assert.That(vt, Has.Count.Zero);
             Assert.That(vt.ToSingleLine(), Is.EqualTo(string.Empty));
-        });
+        }
     }
 
     /// <summary>
@@ -42,13 +42,13 @@ public class ValidationTextTests
     {
         var vt = ValidationText.Empty;
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
-            Assert.That(vt.Count, Is.EqualTo(1));
-            Assert.That(vt.Count, Is.EqualTo(1));
+            Assert.That(vt, Has.Count.EqualTo(1));
+            Assert.That(vt, Has.Count.EqualTo(1));
             Assert.That(vt.Single(), Is.SameAs(string.Empty));
             Assert.That(vt.ToSingleLine(), Is.EqualTo(string.Empty));
-        });
+        }
     }
 
     /// <summary>
@@ -214,14 +214,14 @@ public class ValidationTextTests
     {
         var vt = ValidationText.Create(new[] { ValidationText.Empty, ValidationText.Empty });
 
-        Assert.Multiple(() =>
+        using (Assert.EnterMultipleScope())
         {
             Assert.That(vt, Is.Not.SameAs(ValidationText.Empty));
-            Assert.That(vt.Count, Is.EqualTo(2));
-            Assert.That(vt.Count, Is.EqualTo(2));
+            Assert.That(vt, Has.Count.EqualTo(2));
+            Assert.That(vt, Has.Count.EqualTo(2));
             Assert.That(vt[0], Is.EqualTo(string.Empty));
             Assert.That(vt[1], Is.EqualTo(string.Empty));
             Assert.That(vt.ToSingleLine("|"), Is.EqualTo("|"));
-        });
+        }
     }
 }

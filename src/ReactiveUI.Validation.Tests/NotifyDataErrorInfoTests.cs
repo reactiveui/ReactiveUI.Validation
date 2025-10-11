@@ -44,13 +44,19 @@ public class NotifyDataErrorInfoTests
         view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
         // Verify validation context behavior.
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(viewModel.ValidationContext.IsValid, Is.False);
         Assert.That(viewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
         Assert.That(view.NameErrorLabel, Is.EqualTo(NameShouldNotBeEmptyMessage));
+        }
 
         // Verify INotifyDataErrorInfo behavior.
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(viewModel.HasErrors, Is.True);
         Assert.That(viewModel.GetErrors("Name").Cast<string>().First(), Is.EqualTo(NameShouldNotBeEmptyMessage));
+        }
     }
 
     /// <summary>
@@ -74,30 +80,39 @@ public class NotifyDataErrorInfoTests
         view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
         // Verify the initial state.
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(viewModel.HasErrors, Is.True);
         Assert.That(viewModel.ValidationContext.IsValid, Is.False);
         Assert.That(viewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
         Assert.That(viewModel.GetErrors("Name").Cast<string>().First(), Is.EqualTo(NameShouldNotBeEmptyMessage));
         Assert.That(view.NameErrorLabel, Is.EqualTo(NameShouldNotBeEmptyMessage));
+        }
 
         // Send INotifyPropertyChanged.
         viewModel.Name = "JoJo";
 
         // Verify the changed state.
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(viewModel.HasErrors, Is.False);
         Assert.That(viewModel.ValidationContext.IsValid, Is.True);
         Assert.That(viewModel.GetErrors("Name").Cast<string>(), Is.Empty);
         Assert.That(view.NameErrorLabel, Is.Empty);
+        }
 
         // Send INotifyPropertyChanged.
         viewModel.Name = string.Empty;
 
         // Verify the changed state.
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(viewModel.HasErrors, Is.True);
         Assert.That(viewModel.ValidationContext.IsValid, Is.False);
         Assert.That(viewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
         Assert.That(viewModel.GetErrors("Name").Cast<string>().First(), Is.EqualTo(NameShouldNotBeEmptyMessage));
         Assert.That(view.NameErrorLabel, Is.EqualTo(NameShouldNotBeEmptyMessage));
+        }
     }
 
     /// <summary>
@@ -119,17 +134,23 @@ public class NotifyDataErrorInfoTests
 
         viewModel.ValidationContext.Add(firstValidation);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(viewModel.HasErrors, Is.True);
         Assert.That(viewModel.ValidationContext.IsValid, Is.False);
         Assert.That(viewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
         Assert.That(viewModel.GetErrors("Name").Cast<string>().Count(), Is.EqualTo(1));
+        }
 
         viewModel.Name = "JoJo";
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(viewModel.HasErrors, Is.False);
         Assert.That(viewModel.GetErrors("Name").Cast<string>(), Is.Empty);
         Assert.That(arguments, Is.Not.Null);
         Assert.That(arguments.PropertyName, Is.EqualTo("Name"));
+        }
     }
 
     /// <summary>
@@ -149,20 +170,26 @@ public class NotifyDataErrorInfoTests
                 (name, other) => name == other),
             namesShouldMatchMessage);
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(viewModel.HasErrors, Is.False);
         Assert.That(viewModel.ValidationContext.IsValid, Is.True);
         Assert.That(viewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
         Assert.That(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>(), Is.Empty);
         Assert.That(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>(), Is.Empty);
+        }
 
         viewModel.Name = "JoJo";
         viewModel.OtherName = "NoNo";
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(viewModel.HasErrors, Is.True);
         Assert.That(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>(), Is.Empty);
         Assert.That(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>().Count(), Is.EqualTo(1));
         Assert.That(viewModel.ValidationContext.Text, Has.Count.EqualTo(1));
         Assert.That(viewModel.ValidationContext.Text.Single(), Is.EqualTo(namesShouldMatchMessage));
+        }
     }
 
     /// <summary>
@@ -183,8 +210,11 @@ public class NotifyDataErrorInfoTests
             m => !string.IsNullOrWhiteSpace(m),
             "Name shouldn't be white space.");
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(viewModel.ValidationContext.IsValid, Is.False);
-        Assert.That(viewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        Assert.That(viewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
+        }
     }
 
     /// <summary>
@@ -205,26 +235,35 @@ public class NotifyDataErrorInfoTests
             m => m is not null,
             "Other name shouldn't be null.");
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>().Count(), Is.EqualTo(1));
         Assert.That(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>().Count(), Is.EqualTo(1));
+        }
 
         var arguments = new List<DataErrorsChangedEventArgs>();
         viewModel.ErrorsChanged += (_, args) => arguments.Add(args);
         viewModel.Name = "Josuke";
         viewModel.OtherName = "Jotaro";
 
-        Assert.That(arguments.Count, Is.EqualTo(2));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(arguments, Has.Count.EqualTo(2));
         Assert.That(arguments[0].PropertyName, Is.EqualTo(nameof(viewModel.Name)));
         Assert.That(arguments[1].PropertyName, Is.EqualTo(nameof(viewModel.OtherName)));
         Assert.That(viewModel.HasErrors, Is.False);
+        }
 
         viewModel.Name = null;
         viewModel.OtherName = null;
 
-        Assert.That(arguments.Count, Is.EqualTo(4));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(arguments, Has.Count.EqualTo(4));
         Assert.That(arguments[2].PropertyName, Is.EqualTo(nameof(viewModel.Name)));
         Assert.That(arguments[3].PropertyName, Is.EqualTo(nameof(viewModel.OtherName)));
         Assert.That(viewModel.HasErrors, Is.True);
+        }
     }
 
     /// <summary>
@@ -246,19 +285,25 @@ public class NotifyDataErrorInfoTests
                 name => !string.IsNullOrWhiteSpace(name),
                 "Name shouldn't be empty.");
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.ViewModel.HasErrors, Is.True);
-        Assert.That(arguments.Count, Is.EqualTo(1));
+        Assert.That(arguments, Has.Count.EqualTo(1));
         Assert.That(arguments[0].PropertyName, Is.EqualTo(nameof(view.ViewModel.Name)));
+        }
 
         helper.Dispose();
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(0));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.Zero);
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
         Assert.That(view.ViewModel.HasErrors, Is.False);
-        Assert.That(arguments.Count, Is.EqualTo(2));
+        Assert.That(arguments, Has.Count.EqualTo(2));
         Assert.That(arguments[1].PropertyName, Is.EqualTo(nameof(view.ViewModel.Name)));
+        }
     }
 
     /// <summary>
@@ -277,17 +322,23 @@ public class NotifyDataErrorInfoTests
             name => !string.IsNullOrWhiteSpace(name),
             "Name shouldn't be empty.");
 
-        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        using (Assert.EnterMultipleScope())
+        {
+        Assert.That(view.ViewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
         Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
         Assert.That(view.ViewModel.HasErrors, Is.True);
+        }
 
         var errors = view.ViewModel
             .GetErrors("Name")
             .Cast<string>()
             .ToArray();
 
+        using (Assert.EnterMultipleScope())
+        {
         Assert.That(errors, Has.Length.EqualTo(1));
         Assert.That(errors[0], Is.EqualTo("Validation error: Name shouldn't be empty."));
+        }
     }
 
     private class PrefixFormatter : IValidationTextFormatter<string>
