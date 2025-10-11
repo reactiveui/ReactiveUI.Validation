@@ -1,10 +1,11 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Licensed to the ReactiveUI and Contributors under one or more agreements.
+// The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Helpers;
 
@@ -42,8 +43,7 @@ public sealed class TestClassMemory : ReactiveValidationObject
     /// <value>
     /// The name.
     /// </value>
-    public string Name { get; set; }
-
+    public string Name { get; set; } = null!;
     /// <summary>
     /// Disposes the specified disposing.
     /// </summary>

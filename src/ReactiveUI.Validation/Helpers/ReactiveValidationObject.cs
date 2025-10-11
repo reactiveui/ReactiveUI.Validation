@@ -1,23 +1,28 @@
-// Copyright (c) 2025 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Licensed to the ReactiveUI and Contributors under one or more agreements.
+// The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
+
 using DynamicData;
+
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
+
 using Splat;
 
 namespace ReactiveUI.Validation.Helpers;
@@ -43,6 +48,9 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
     /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
     /// </param>
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     protected ReactiveValidationObject(
         IScheduler? scheduler = null,
         IValidationTextFormatter<string>? formatter = null)

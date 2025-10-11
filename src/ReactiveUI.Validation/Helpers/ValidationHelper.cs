@@ -1,10 +1,12 @@
-// Copyright (c) 2025 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Licensed to the ReactiveUI and Contributors under one or more agreements.
+// The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reactive.Linq;
+
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.States;
@@ -28,6 +30,9 @@ public class ValidationHelper : ReactiveObject, IDisposable
     /// </summary>
     /// <param name="validation">Validation property.</param>
     /// <param name="cleanup">The disposable to dispose when the helper is disposed.</param>
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public ValidationHelper(IValidationComponent validation, IDisposable? cleanup = null)
     {
         _validation = validation ?? throw new ArgumentNullException(nameof(validation));

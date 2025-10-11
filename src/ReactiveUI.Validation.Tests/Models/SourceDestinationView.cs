@@ -1,6 +1,6 @@
-// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Licensed to the ReactiveUI and Contributors under one or more agreements.
+// The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace ReactiveUI.Validation.Tests.Models;
@@ -17,22 +17,22 @@ public class SourceDestinationView : IViewFor<SourceDestinationViewModel>
     public SourceDestinationView(SourceDestinationViewModel viewModel) => ViewModel = viewModel;
 
     /// <inheritdoc/>
-    object IViewFor.ViewModel
+    object? IViewFor.ViewModel
     {
         get => ViewModel;
         set => ViewModel = value as SourceDestinationViewModel;
     }
 
     /// <inheritdoc/>
-    public SourceDestinationViewModel ViewModel { get; set; }
+    public SourceDestinationViewModel? ViewModel { get; set; }
 
     /// <summary>
     /// Gets or sets the SourceError Label which emulates a Text property (eg. Entry in Xamarin.Forms).
     /// </summary>
-    public string SourceError { get; set; }
+    public string SourceError { get; set; } = null!;
 
     /// <summary>
     /// Gets or sets the DestinationError Label which emulates a Text property (eg. Entry in Xamarin.Forms).
     /// </summary>
-    public string DestinationError { get; set; }
+    public string DestinationError { get; set; } = null!;
 }

@@ -1,17 +1,21 @@
-// Copyright (c) 2025 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Licensed to the ReactiveUI and Contributors under one or more agreements.
+// The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+
 using DynamicData;
+
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.States;
@@ -46,6 +50,9 @@ public class ValidationContext : ReactiveObject, IValidationContext
     /// Initializes a new instance of the <see cref="ValidationContext"/> class.
     /// </summary>
     /// <param name="scheduler">Optional scheduler to use for the properties. Uses the current thread scheduler by default.</param>
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public ValidationContext(IScheduler? scheduler = null)
     {
         scheduler ??= CurrentThreadScheduler.Instance;

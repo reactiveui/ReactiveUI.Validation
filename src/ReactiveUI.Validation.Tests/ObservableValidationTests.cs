@@ -1,6 +1,6 @@
-// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Licensed to the ReactiveUI and Contributors under one or more agreements.
+// The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System;
@@ -24,6 +24,9 @@ public class ObservableValidationTests
     private ReplaySubject<bool> _validState = default!;
     private TestViewModel _validModel = default!;
 
+    /// <summary>
+    /// Sets up the test fixtures.
+    /// </summary>
     [SetUp]
     public void SetUp()
     {
@@ -35,6 +38,9 @@ public class ObservableValidationTests
         };
     }
 
+    /// <summary>
+    /// Tears down the test fixtures.
+    /// </summary>
     [TearDown]
     public void TearDown()
     {
@@ -68,7 +74,7 @@ public class ObservableValidationTests
 
         using var propertyValidation = new ObservableValidation<TestViewModel, bool, string>(
             _validModel,
-            state => state.Name,
+            state => state.Name!,
             _validState,
             valid => valid,
             "broken");
@@ -107,7 +113,7 @@ public class ObservableValidationTests
     {
         using var propertyValidation = new ObservableValidation<TestViewModel, bool, string>(
             _validModel,
-            state => state.Name,
+            state => state.Name!,
             _validState,
             valid => valid,
             "broken");
@@ -162,7 +168,7 @@ public class ObservableValidationTests
     {
         var validation = new ObservableValidation<TestViewModel, bool, string>(
             _validModel,
-            state => state.Name,
+            state => state.Name!,
             _validState,
             validity => validity,
             "broken");
@@ -192,20 +198,21 @@ public class ObservableValidationTests
     {
         var viewModel = new TestViewModel { Name = string.Empty };
         using var component =
-            new ObservableValidation<TestViewModel, string, string>(
+            new ObservableValidation<TestViewModel, string?, string?>(
                 viewModel,
-                model => model.Name,
+                model => model.Name!,
                 viewModel.WhenAnyValue(x => x.Name),
                 state => !string.IsNullOrWhiteSpace(state),
                 "Name shouldn't be empty.");
 
         using (Assert.EnterMultipleScope())
         {
-            Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name), Is.True);
-            Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name, true), Is.True);
-            Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name2), Is.False);
-            Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name2, true), Is.False);
+            Assert.That(component.ContainsProperty<TestViewModel, string?>(model => model.Name), Is.True);
+            Assert.That(component.ContainsProperty<TestViewModel, string?>(model => model.Name, true), Is.True);
+            Assert.That(component.ContainsProperty<TestViewModel, string?>(model => model.Name2), Is.False);
+            Assert.That(component.ContainsProperty<TestViewModel, string?>(model => model.Name2, true), Is.False);
         }
+
         Assert.Throws<ArgumentNullException>(() => component.ContainsProperty<TestViewModel, string>(null!));
     }
 

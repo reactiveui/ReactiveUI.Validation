@@ -1,16 +1,18 @@
-// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Licensed to the ReactiveUI and Contributors under one or more agreements.
+// The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 namespace ReactiveUI.Validation.Tests.Models;
 
 /// <summary>
-/// Mocked View.
+/// Represents a mocked view used by the tests under <c>ReactiveUI.Validation.Tests.Models</c>.
+/// Implements <see cref="IViewFor{T}"/> for <see cref="TestViewModel"/> and exposes
+/// simple properties that emulate UI elements used in validation scenarios.
 /// </summary>
 public class TestView : ReactiveObject, IViewFor<TestViewModel>
 {
-    private TestViewModel _viewModel;
+    private TestViewModel? _viewModel;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TestView"/> class.
@@ -20,52 +22,54 @@ public class TestView : ReactiveObject, IViewFor<TestViewModel>
     }
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="TestView"/> class.
+    /// Initializes a new instance of the <see cref="TestView"/> class with the specified view model.
     /// </summary>
-    /// <param name="viewModel">ViewModel instance of type <see cref="TestViewModel"/>.</param>
+    /// <param name="viewModel">The <see cref="TestViewModel"/> instance to associate with this view.</param>
     public TestView(TestViewModel viewModel) => ViewModel = viewModel;
 
     /// <inheritdoc/>
-    object IViewFor.ViewModel
+    object? IViewFor.ViewModel
     {
         get => ViewModel;
         set => ViewModel = value as TestViewModel;
     }
 
-    /// <inheritdoc/>
-    public TestViewModel ViewModel
+    /// <summary>
+    /// Gets or sets the view model associated with this view.
+    /// </summary>
+    public TestViewModel? ViewModel
     {
         get => _viewModel;
         set => this.RaiseAndSetIfChanged(ref _viewModel, value);
     }
 
     /// <summary>
-    /// Gets or sets the Name Label which emulates a Text property (eg. Entry in Xamarin.Forms).
+    /// Gets or sets the Name label text which emulates a <c>Text</c> property (e.g., Entry in Xamarin.Forms).
     /// </summary>
-    public string NameLabel { get; set; }
+    public string NameLabel { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets the Name2 Label which emulates a Text property (eg. Entry in Xamarin.Forms).
+    /// Gets or sets the Name2 label text which emulates a <c>Text</c> property (e.g., Entry in Xamarin.Forms).
     /// </summary>
-    public string Name2Label { get; set; }
+    public string Name2Label { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets the NameError Label which emulates a Text property (eg. Entry in Xamarin.Forms).
+    /// Gets or sets the Name error label text which emulates a <c>Text</c> property (e.g., Entry in Xamarin.Forms).
     /// </summary>
-    public string NameErrorLabel { get; set; }
+    public string NameErrorLabel { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets the Name2 Error Label which emulates a Text property (eg. Entry in Xamarin.Forms).
+    /// Gets or sets the Name2 error label text which emulates a <c>Text</c> property (e.g., Entry in Xamarin.Forms).
     /// </summary>
-    public string Name2ErrorLabel { get; set; }
+    public string Name2ErrorLabel { get; set; } = null!;
 
     /// <summary>
-    /// Gets or sets a value indicating whether the form is valid.
+    /// Gets or sets a value indicating whether the Name field is valid.
     /// </summary>
     public bool IsNameValid { get; set; }
 
     /// <summary>
-    /// Gets the error label which is represented by a container.
+    /// Gets the container control for the Name validation error message.
     /// </summary>
     public TestControl NameErrorContainer { get; } = new();
 }

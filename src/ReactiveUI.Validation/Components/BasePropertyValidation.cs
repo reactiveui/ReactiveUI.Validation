@@ -1,6 +1,6 @@
-// Copyright (c) 2025 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Licensed to the ReactiveUI and Contributors under one or more agreements.
+// The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System;
@@ -9,6 +9,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
@@ -180,6 +181,9 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
     /// <param name="viewModelProperty">ViewModel property.</param>
     /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
     /// <param name="message">Validation error message.</param>
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public BasePropertyValidation(
         TViewModel viewModel,
         Expression<Func<TViewModel, TViewModelProperty?>> viewModelProperty,
@@ -196,6 +200,9 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
     /// <param name="viewModelProperty">ViewModel property.</param>
     /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
     /// <param name="message">Func to define the validation error message based on the viewModelProperty value.</param>
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public BasePropertyValidation(
         TViewModel viewModel,
         Expression<Func<TViewModel, TViewModelProperty?>> viewModelProperty,
@@ -213,6 +220,9 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
     /// <param name="viewModelProperty">ViewModel property.</param>
     /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
     /// <param name="messageFunc">Func to define the validation error message based on the viewModelProperty and isValidFunc values.</param>
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public BasePropertyValidation(
         TViewModel viewModel,
         Expression<Func<TViewModel, TViewModelProperty?>> viewModelProperty,
@@ -231,6 +241,10 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
     /// <param name="viewModelProperty">ViewModel property.</param>
     /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
     /// <param name="messageFunc">Func to define the validation error message based on the viewModelProperty and isValidFunc values.</param>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     private BasePropertyValidation(
         TViewModel viewModel,
         Expression<Func<TViewModel, TViewModelProperty?>> viewModelProperty,
