@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="ReactiveUI.AndroidX" Version="22.0.1" />
+    <PackageReference Include="Xamarin.Google.Android.Material" Version="1.12.0.5" />
   </ItemGroup>
 
   <ItemGroup>
