@@ -6,19 +6,20 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using NUnit.Framework;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.Tests.Models;
-using Xunit;
 
 namespace ReactiveUI.Validation.Tests;
 
 /// <summary>
 /// Tests for INotifyDataErrorInfo support.
 /// </summary>
+[TestFixture]
 public class NotifyDataErrorInfoTests
 {
     private const string NameShouldNotBeEmptyMessage = "Name shouldn't be empty.";
@@ -26,7 +27,7 @@ public class NotifyDataErrorInfoTests
     /// <summary>
     /// Verifies that the ErrorsChanged event fires on ViewModel initialization.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldMarkPropertiesAsInvalidOnInit()
     {
         var viewModel = new IndeiTestViewModel();
@@ -43,20 +44,20 @@ public class NotifyDataErrorInfoTests
         view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
         // Verify validation context behavior.
-        Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.Single(viewModel.ValidationContext.Validations.Items);
-        Assert.Equal(NameShouldNotBeEmptyMessage, view.NameErrorLabel);
+        Assert.That(viewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(viewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
+        Assert.That(view.NameErrorLabel, Is.EqualTo(NameShouldNotBeEmptyMessage));
 
         // Verify INotifyDataErrorInfo behavior.
-        Assert.True(viewModel.HasErrors);
-        Assert.Equal(NameShouldNotBeEmptyMessage, viewModel.GetErrors("Name").Cast<string>().First());
+        Assert.That(viewModel.HasErrors, Is.True);
+        Assert.That(viewModel.GetErrors("Name").Cast<string>().First(), Is.EqualTo(NameShouldNotBeEmptyMessage));
     }
 
     /// <summary>
     /// Verifies that the view model listens to the INotifyPropertyChanged event
     /// and sends INotifyDataErrorInfo notifications.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSynchronizeNotifyDataErrorInfoWithValidationContext()
     {
         var viewModel = new IndeiTestViewModel();
@@ -73,36 +74,36 @@ public class NotifyDataErrorInfoTests
         view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
         // Verify the initial state.
-        Assert.True(viewModel.HasErrors);
-        Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.Single(viewModel.ValidationContext.Validations.Items);
-        Assert.Equal(NameShouldNotBeEmptyMessage, viewModel.GetErrors("Name").Cast<string>().First());
-        Assert.Equal(NameShouldNotBeEmptyMessage, view.NameErrorLabel);
+        Assert.That(viewModel.HasErrors, Is.True);
+        Assert.That(viewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(viewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
+        Assert.That(viewModel.GetErrors("Name").Cast<string>().First(), Is.EqualTo(NameShouldNotBeEmptyMessage));
+        Assert.That(view.NameErrorLabel, Is.EqualTo(NameShouldNotBeEmptyMessage));
 
         // Send INotifyPropertyChanged.
         viewModel.Name = "JoJo";
 
         // Verify the changed state.
-        Assert.False(viewModel.HasErrors);
-        Assert.True(viewModel.ValidationContext.IsValid);
-        Assert.Empty(viewModel.GetErrors("Name").Cast<string>());
-        Assert.Empty(view.NameErrorLabel);
+        Assert.That(viewModel.HasErrors, Is.False);
+        Assert.That(viewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(viewModel.GetErrors("Name").Cast<string>(), Is.Empty);
+        Assert.That(view.NameErrorLabel, Is.Empty);
 
         // Send INotifyPropertyChanged.
         viewModel.Name = string.Empty;
 
         // Verify the changed state.
-        Assert.True(viewModel.HasErrors);
-        Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.Single(viewModel.ValidationContext.Validations.Items);
-        Assert.Equal(NameShouldNotBeEmptyMessage, viewModel.GetErrors("Name").Cast<string>().First());
-        Assert.Equal(NameShouldNotBeEmptyMessage, view.NameErrorLabel);
+        Assert.That(viewModel.HasErrors, Is.True);
+        Assert.That(viewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(viewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
+        Assert.That(viewModel.GetErrors("Name").Cast<string>().First(), Is.EqualTo(NameShouldNotBeEmptyMessage));
+        Assert.That(view.NameErrorLabel, Is.EqualTo(NameShouldNotBeEmptyMessage));
     }
 
     /// <summary>
     /// The ErrorsChanged event should fire when properties change.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldFireErrorsChangedEventWhenValidationStateChanges()
     {
         var viewModel = new IndeiTestViewModel();
@@ -118,23 +119,23 @@ public class NotifyDataErrorInfoTests
 
         viewModel.ValidationContext.Add(firstValidation);
 
-        Assert.True(viewModel.HasErrors);
-        Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.Single(viewModel.ValidationContext.Validations.Items);
-        Assert.Single(viewModel.GetErrors("Name").Cast<string>());
+        Assert.That(viewModel.HasErrors, Is.True);
+        Assert.That(viewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(viewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
+        Assert.That(viewModel.GetErrors("Name").Cast<string>().Count(), Is.EqualTo(1));
 
         viewModel.Name = "JoJo";
 
-        Assert.False(viewModel.HasErrors);
-        Assert.Empty(viewModel.GetErrors("Name").Cast<string>());
-        Assert.NotNull(arguments);
-        Assert.Equal("Name", arguments.PropertyName);
+        Assert.That(viewModel.HasErrors, Is.False);
+        Assert.That(viewModel.GetErrors("Name").Cast<string>(), Is.Empty);
+        Assert.That(arguments, Is.Not.Null);
+        Assert.That(arguments.PropertyName, Is.EqualTo("Name"));
     }
 
     /// <summary>
     /// Using ModelObservableValidation with NotifyDataErrorInfo should return errors when associated property changes.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldDeliverErrorsWhenModelObservableValidationTriggers()
     {
         var viewModel = new IndeiTestViewModel();
@@ -148,27 +149,27 @@ public class NotifyDataErrorInfoTests
                 (name, other) => name == other),
             namesShouldMatchMessage);
 
-        Assert.False(viewModel.HasErrors);
-        Assert.True(viewModel.ValidationContext.IsValid);
-        Assert.Single(viewModel.ValidationContext.Validations.Items);
-        Assert.Empty(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>());
-        Assert.Empty(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>());
+        Assert.That(viewModel.HasErrors, Is.False);
+        Assert.That(viewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(viewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
+        Assert.That(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>(), Is.Empty);
+        Assert.That(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>(), Is.Empty);
 
         viewModel.Name = "JoJo";
         viewModel.OtherName = "NoNo";
 
-        Assert.True(viewModel.HasErrors);
-        Assert.Empty(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>());
-        Assert.Single(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>());
-        Assert.Single(viewModel.ValidationContext.Text);
-        Assert.Equal(namesShouldMatchMessage, viewModel.ValidationContext.Text.Single());
+        Assert.That(viewModel.HasErrors, Is.True);
+        Assert.That(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>(), Is.Empty);
+        Assert.That(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>().Count(), Is.EqualTo(1));
+        Assert.That(viewModel.ValidationContext.Text, Has.Count.EqualTo(1));
+        Assert.That(viewModel.ValidationContext.Text.Single(), Is.EqualTo(namesShouldMatchMessage));
     }
 
     /// <summary>
     /// Verifies that validation rules of the same property do not duplicate.
     /// Earlier they sometimes could, due to the .Connect() method misuse.
     /// </summary>
-    [Fact]
+    [Test]
     public void ValidationRulesOfTheSamePropertyShouldNotDuplicate()
     {
         var viewModel = new IndeiTestViewModel();
@@ -182,15 +183,15 @@ public class NotifyDataErrorInfoTests
             m => !string.IsNullOrWhiteSpace(m),
             "Name shouldn't be white space.");
 
-        Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
+        Assert.That(viewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(viewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
     }
 
     /// <summary>
     /// Verifies that the <see cref="INotifyDataErrorInfo"/> events are published
     /// according to the changes of the validated properties.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSendPropertyChangeNotificationsForCorrectProperties()
     {
         var viewModel = new IndeiTestViewModel();
@@ -204,26 +205,26 @@ public class NotifyDataErrorInfoTests
             m => m is not null,
             "Other name shouldn't be null.");
 
-        Assert.Single(viewModel.GetErrors(nameof(viewModel.Name)));
-        Assert.Single(viewModel.GetErrors(nameof(viewModel.OtherName)));
+        Assert.That(viewModel.GetErrors(nameof(viewModel.Name)).Cast<string>().Count(), Is.EqualTo(1));
+        Assert.That(viewModel.GetErrors(nameof(viewModel.OtherName)).Cast<string>().Count(), Is.EqualTo(1));
 
         var arguments = new List<DataErrorsChangedEventArgs>();
         viewModel.ErrorsChanged += (_, args) => arguments.Add(args);
         viewModel.Name = "Josuke";
         viewModel.OtherName = "Jotaro";
 
-        Assert.Equal(2, arguments.Count);
-        Assert.Equal(nameof(viewModel.Name), arguments[0].PropertyName);
-        Assert.Equal(nameof(viewModel.OtherName), arguments[1].PropertyName);
-        Assert.False(viewModel.HasErrors);
+        Assert.That(arguments.Count, Is.EqualTo(2));
+        Assert.That(arguments[0].PropertyName, Is.EqualTo(nameof(viewModel.Name)));
+        Assert.That(arguments[1].PropertyName, Is.EqualTo(nameof(viewModel.OtherName)));
+        Assert.That(viewModel.HasErrors, Is.False);
 
         viewModel.Name = null;
         viewModel.OtherName = null;
 
-        Assert.Equal(4, arguments.Count);
-        Assert.Equal(nameof(viewModel.Name), arguments[2].PropertyName);
-        Assert.Equal(nameof(viewModel.OtherName), arguments[3].PropertyName);
-        Assert.True(viewModel.HasErrors);
+        Assert.That(arguments.Count, Is.EqualTo(4));
+        Assert.That(arguments[2].PropertyName, Is.EqualTo(nameof(viewModel.Name)));
+        Assert.That(arguments[3].PropertyName, Is.EqualTo(nameof(viewModel.OtherName)));
+        Assert.That(viewModel.HasErrors, Is.True);
     }
 
     /// <summary>
@@ -231,7 +232,7 @@ public class NotifyDataErrorInfoTests
     /// <see cref="ValidationHelper"/> is disposed. Also, here we ensure that
     /// the property change subscriptions are unsubscribed.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldDetachAndDisposeTheComponentWhenValidationHelperDisposes()
     {
         var view = new IndeiTestView(new IndeiTestViewModel { Name = string.Empty });
@@ -245,25 +246,25 @@ public class NotifyDataErrorInfoTests
                 name => !string.IsNullOrWhiteSpace(name),
                 "Name shouldn't be empty.");
 
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.True(view.ViewModel.HasErrors);
-        Assert.Equal(1, arguments.Count);
-        Assert.Equal(nameof(view.ViewModel.Name), arguments[0].PropertyName);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.HasErrors, Is.True);
+        Assert.That(arguments.Count, Is.EqualTo(1));
+        Assert.That(arguments[0].PropertyName, Is.EqualTo(nameof(view.ViewModel.Name)));
 
         helper.Dispose();
 
-        Assert.Equal(0, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.False(view.ViewModel.HasErrors);
-        Assert.Equal(2, arguments.Count);
-        Assert.Equal(nameof(view.ViewModel.Name), arguments[1].PropertyName);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(0));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(view.ViewModel.HasErrors, Is.False);
+        Assert.That(arguments.Count, Is.EqualTo(2));
+        Assert.That(arguments[1].PropertyName, Is.EqualTo(nameof(view.ViewModel.Name)));
     }
 
     /// <summary>
     /// Verifies that we support custom formatters in our <see cref="INotifyDataErrorInfo"/> implementation.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldInvokeCustomFormatters()
     {
         var formatter = new PrefixFormatter("Validation error:");
@@ -276,17 +277,17 @@ public class NotifyDataErrorInfoTests
             name => !string.IsNullOrWhiteSpace(name),
             "Name shouldn't be empty.");
 
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.True(view.ViewModel.HasErrors);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.HasErrors, Is.True);
 
         var errors = view.ViewModel
             .GetErrors("Name")
             .Cast<string>()
             .ToArray();
 
-        Assert.Single(errors);
-        Assert.Equal("Validation error: Name shouldn't be empty.", errors[0]);
+        Assert.That(errors, Has.Length.EqualTo(1));
+        Assert.That(errors[0], Is.EqualTo("Validation error: Name shouldn't be empty."));
     }
 
     private class PrefixFormatter : IValidationTextFormatter<string>

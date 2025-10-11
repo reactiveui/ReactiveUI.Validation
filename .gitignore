@@ -363,3 +363,5 @@ src/*.Tests/API/*.received.txt
 
 # Fody Weavers (for tests)
 src/Tools/
+.dotnet/
+dotnet-install.sh

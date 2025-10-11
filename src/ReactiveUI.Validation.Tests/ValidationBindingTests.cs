@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using NUnit.Framework;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
@@ -18,19 +19,19 @@ using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.Tests.Models;
 using ReactiveUI.Validation.ValidationBindings;
-using Xunit;
 
 namespace ReactiveUI.Validation.Tests;
 
 /// <summary>
 /// Contains tests for validation binding extensions.
 /// </summary>
+[TestFixture]
 public class ValidationBindingTests
 {
     /// <summary>
     /// Verifies that two validations properties are correctly applied in a View property.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSupportBindingTwoValidationsForOneProperty()
     {
         const int minimumLength = 5;
@@ -52,18 +53,18 @@ public class ValidationBindingTests
 
         view.ViewModel.Name = "som";
 
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
 
         // Checks if second validation error message is shown
-        Assert.Equal(minimumLengthErrorMessage, view.NameErrorLabel);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(minimumLengthErrorMessage));
     }
 
     /// <summary>
     /// Verifies that two validations properties are correctly applied
     /// in a View property given by a complex expression.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSupportBindingTwoValidationsForOnePropertyToChainedViewProperties()
     {
         const int minimumLength = 5;
@@ -83,15 +84,15 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
         view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorContainer.Text);
 
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.Equal(minimumLengthErrorMessage, view.NameErrorContainer.Text);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        Assert.That(view.NameErrorContainer.Text, Is.EqualTo(minimumLengthErrorMessage));
     }
 
     /// <summary>
     /// Verifies that validations registered with different lambda names are retrieved successfully.
     /// </summary>
-    [Fact]
+    [Test]
     public void RegisterValidationsWithDifferentLambdaNameWorksTest()
     {
         const string validName = "valid";
@@ -105,14 +106,14 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
         view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
-        Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.Single(view.ViewModel.ValidationContext.Validations.Items);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
     }
 
     /// <summary>
     /// Verifies that validation error messages get concatenated using white space.
     /// </summary>
-    [Fact]
+    [Test]
     public void ValidationMessagesDefaultConcatenationTest()
     {
         var view = new TestView(new TestViewModel { Name = string.Empty });
@@ -131,17 +132,17 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name2, v => v.Name2Label);
         view.BindValidation(view.ViewModel, v => v.NameErrorLabel);
 
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.NotEmpty(view.NameErrorLabel);
-        Assert.Equal("Name should not be empty. Name2 should not be empty.", view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        Assert.That(view.NameErrorLabel, Is.Not.Empty);
+        Assert.That(view.NameErrorLabel, Is.EqualTo("Name should not be empty. Name2 should not be empty."));
     }
 
     /// <summary>
     /// Property validations backed by ModelObservableValidationBase should
     /// be bound to view as well as base property validations are.
     /// </summary>
-    [Fact]
+    [Test]
     public void ComplexValidationRulesShouldBeBoundToView()
     {
         const string errorMessage = "Both inputs should be the same";
@@ -158,15 +159,15 @@ public class ValidationBindingTests
 
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
 
-        Assert.NotEmpty(view.NameErrorLabel);
-        Assert.Equal(errorMessage, view.NameErrorLabel);
+        Assert.That(view.NameErrorLabel, Is.Not.Empty);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(errorMessage));
     }
 
     /// <summary>
     /// Using 2 validation rules ending with the same property name should not
     /// result in both properties having all the errors of both properties.
     /// </summary>
-    [Fact]
+    [Test]
     public void ErrorsWithTheSameLastPropertyShouldNotShareErrors()
     {
         var model = new SourceDestinationViewModel();
@@ -185,15 +186,15 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, x => x.Source.Name, x => x.SourceError);
         view.BindValidation(view.ViewModel, x => x.Destination.Name, x => x.DestinationError);
 
-        Assert.NotNull(view.SourceError);
-        Assert.Equal("Source text", view.SourceError);
-        Assert.Equal("Destination text", view.DestinationError);
+        Assert.That(view.SourceError, Is.Not.Null);
+        Assert.That(view.SourceError, Is.EqualTo("Source text"));
+        Assert.That(view.DestinationError, Is.EqualTo("Destination text"));
     }
 
     /// <summary>
     /// Verifies that we still support binding to <see cref="ValidationHelper" /> properties.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSupportBindingValidationHelperProperties()
     {
         const string nameErrorMessage = "Name should not be empty.";
@@ -209,25 +210,25 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
         view.BindValidation(view.ViewModel, vm => vm.NameRule, v => v.NameErrorLabel);
 
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Single(view.ViewModel.ValidationContext.Validations.Items);
-        Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
+        Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
 
         view.ViewModel.Name = "Jonathan";
 
-        Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.Empty(view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(view.NameErrorLabel, Is.Empty);
 
         view.ViewModel.Name = string.Empty;
 
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
     }
 
     /// <summary>
     /// Verifies that bindings support model observable validations.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSupportBindingModelObservableValidationHelperProperties()
     {
         const string namesShouldMatchMessage = "Names should match.";
@@ -248,23 +249,23 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name2, v => v.Name2Label);
         view.BindValidation(view.ViewModel, vm => vm.NameRule, v => v.NameErrorLabel);
 
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Single(view.ViewModel.ValidationContext.Validations.Items);
-        Assert.Equal(namesShouldMatchMessage, view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
+        Assert.That(view.NameErrorLabel, Is.EqualTo(namesShouldMatchMessage));
 
         view.ViewModel.Name = "Bongo";
         view.ViewModel.Name2 = "Bongo";
 
-        Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.Single(view.ViewModel.ValidationContext.Validations.Items);
-        Assert.Empty(view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Items, Has.Count.EqualTo(1));
+        Assert.That(view.NameErrorLabel, Is.Empty);
     }
 
     /// <summary>
     /// Verifies that the IsValid and Message properties of a
     /// <see cref="ValidationHelper" /> produce change notifications.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldUpdateBindableValidationHelperIsValidProperty()
     {
         const string nameErrorMessage = "Name should not be empty.";
@@ -280,19 +281,19 @@ public class ValidationBindingTests
         view.OneWayBind(view.ViewModel, vm => vm.NameRule.IsValid, v => v.IsNameValid);
         view.OneWayBind(view.ViewModel, vm => vm.NameRule.Message, v => v.NameErrorLabel, s => s.ToSingleLine());
 
-        Assert.False(view.IsNameValid);
-        Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+        Assert.That(view.IsNameValid, Is.False);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
 
         view.ViewModel.Name = "Bingo";
 
-        Assert.True(view.IsNameValid);
-        Assert.Empty(view.NameErrorLabel);
+        Assert.That(view.IsNameValid, Is.True);
+        Assert.That(view.NameErrorLabel, Is.Empty);
     }
 
     /// <summary>
     /// Ensures that we allow to use custom formatters in bindings.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldAllowUsingCustomFormatters()
     {
         const string validationConstant = "View model is invalid.";
@@ -306,17 +307,17 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
         view.BindValidation(view.ViewModel, v => v.NameErrorLabel, new ConstFormatter(validationConstant));
 
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.NotEmpty(view.NameErrorLabel);
-        Assert.Equal(validationConstant, view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.NameErrorLabel, Is.Not.Empty);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(validationConstant));
     }
 
     /// <summary>
     /// Verifies that we support binding to a separate <see cref="ValidationContext" />
     /// wrapped in the <see cref="ValidationHelper" /> bindable class.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSupportBindingToValidationContextWrappedInValidationHelper()
     {
         const string nameValidationError = "Name should not be empty.";
@@ -334,20 +335,20 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
         view.BindValidation(view.ViewModel, vm => vm.NameRule, v => v.NameErrorLabel);
 
-        Assert.False(view.ViewModel.NameRule.IsValid);
-        Assert.NotEmpty(view.NameErrorLabel);
-        Assert.Equal(nameValidationError, view.NameErrorLabel);
+        Assert.That(view.ViewModel.NameRule.IsValid, Is.False);
+        Assert.That(view.NameErrorLabel, Is.Not.Empty);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(nameValidationError));
 
         view.ViewModel.Name = "Jotaro";
 
-        Assert.True(view.ViewModel.NameRule.IsValid);
-        Assert.Empty(view.NameErrorLabel);
+        Assert.That(view.ViewModel.NameRule.IsValid, Is.True);
+        Assert.That(view.NameErrorLabel, Is.Empty);
     }
 
     /// <summary>
     /// Verifies that we support various validation rule overloads.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSupportObservableValidationRuleOverloads()
     {
         var view = new TestView(new TestViewModel
@@ -388,24 +389,24 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, x => x.Name2, x => x.Name2Label);
         view.BindValidation(view.ViewModel, x => x.NameErrorLabel);
 
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(4, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.NotEmpty(view.NameErrorLabel);
-        Assert.Equal("Foo != Bar. Bar != Foo. Names should be equal. Foo should equal Bar.", view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(4));
+        Assert.That(view.NameErrorLabel, Is.Not.Empty);
+        Assert.That(view.NameErrorLabel, Is.EqualTo("Foo != Bar. Bar != Foo. Names should be equal. Foo should equal Bar."));
 
         view.ViewModel.Name = "Foo";
         view.ViewModel.Name2 = "Foo";
 
-        Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(4, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.Empty(view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(4));
+        Assert.That(view.NameErrorLabel, Is.Empty);
     }
 
     /// <summary>
     /// Verifies that we support binding validations to actions. This feature is required for platform-specific
     /// extension methods implementation, e.g. the <see cref="ViewForExtensions" /> for the Android Platform.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSupportActionBindingRequiredForPlatformSpecificImplementations()
     {
         const string nameErrorMessage = "Name should not be empty.";
@@ -422,10 +423,10 @@ public class ValidationBindingTests
             (_, errorText) => view.NameErrorLabel = errorText.FirstOrDefault(msg => !string.IsNullOrEmpty(msg)),
             SingleLineFormatter.Default);
 
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.NotEmpty(view.NameErrorLabel);
-        Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.NameErrorLabel, Is.Not.Empty);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
     }
 
     /// <summary>
@@ -433,7 +434,7 @@ public class ValidationBindingTests
     /// is required for platform-specific extension methods implementation, e.g. the
     /// <see cref="ViewForExtensions" /> for the Android Platform.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSupportValidationHelperActionBindingRequiredForPlatformSpecificImplementations()
     {
         const string nameErrorMessage = "Name should not be empty.";
@@ -451,10 +452,10 @@ public class ValidationBindingTests
             (_, errorText) => view.NameErrorLabel = errorText,
             SingleLineFormatter.Default);
 
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.NotEmpty(view.NameErrorLabel);
-        Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.NameErrorLabel, Is.Not.Empty);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
     }
 
     /// <summary>
@@ -462,7 +463,7 @@ public class ValidationBindingTests
     /// is required for platform-specific extension methods implementation, e.g. the
     /// <see cref="ViewForExtensions" /> for the Android Platform.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSupportViewModelActionBindingRequiredForPlatformSpecificImplementations()
     {
         const string nameErrorMessage = "Name should not be empty.";
@@ -478,17 +479,17 @@ public class ValidationBindingTests
             errorText => view.NameErrorLabel = errorText,
             SingleLineFormatter.Default);
 
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.NotEmpty(view.NameErrorLabel);
-        Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.NameErrorLabel, Is.Not.Empty);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
     }
 
     /// <summary>
     /// Verifies that we support creating validation rules from interfaces, and also support
     /// creating bindings to <see cref="IViewFor" /> with interface supplied as a type argument.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSupportBindingToInterfaces()
     {
         const string nameErrorMessage = "Name shouldn't be empty.";
@@ -502,15 +503,15 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
 
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.NotEmpty(view.NameErrorLabel);
-        Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.NameErrorLabel, Is.Not.Empty);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
 
         view.ViewModel.Name = "Saitama";
 
-        Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.Empty(view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(view.NameErrorLabel, Is.Empty);
     }
 
     /// <summary>
@@ -518,7 +519,7 @@ public class ValidationBindingTests
     /// <see cref="ValidationHelper"/> is disposed. Also, here we ensure that
     /// the property change subscriptions are unsubscribed.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldDetachAndDisposeTheComponentWhenValidationHelperDisposes()
     {
         const string nameErrorMessage = "Name shouldn't be empty.";
@@ -538,34 +539,34 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
         view.BindValidation(view.ViewModel, x => x.Name2, x => x.Name2ErrorLabel);
 
-        Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(nameErrorMessage, view.NameErrorLabel);
-        Assert.Equal(name2ErrorMessage, view.Name2ErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
+        Assert.That(view.Name2ErrorLabel, Is.EqualTo(name2ErrorMessage));
 
         nameRule.Dispose();
 
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Empty(view.NameErrorLabel);
-        Assert.Equal(name2ErrorMessage, view.Name2ErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.NameErrorLabel, Is.Empty);
+        Assert.That(view.Name2ErrorLabel, Is.EqualTo(name2ErrorMessage));
 
         name2Rule.Dispose();
 
-        Assert.Equal(0, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.Empty(view.NameErrorLabel);
-        Assert.Empty(view.Name2ErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(0));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(view.NameErrorLabel, Is.Empty);
+        Assert.That(view.Name2ErrorLabel, Is.Empty);
 
         view.ViewModel.ValidationRule(
             viewModel => viewModel.Name,
             name => !string.IsNullOrWhiteSpace(name),
             nameErrorMessage);
 
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(nameErrorMessage, view.NameErrorLabel);
-        Assert.Empty(view.Name2ErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
+        Assert.That(view.Name2ErrorLabel, Is.Empty);
     }
 
     /// <summary>
@@ -573,7 +574,7 @@ public class ValidationBindingTests
     /// e.g. when one disposes of a <see cref="ValidationHelper"/>, the view model
     /// validity should recalculate.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldUpdateViewModelValidityWhenValidationHelpersDetach()
     {
         var view = new TestView(new TestViewModel { Name = string.Empty });
@@ -590,37 +591,37 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
         view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
 
-        Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal("Name is empty. Name2 is empty.", view.NameErrorContainer.Text);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.NameErrorContainer.Text, Is.EqualTo("Name is empty. Name2 is empty."));
 
         nameRule.Dispose();
 
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal("Name2 is empty.", view.NameErrorContainer.Text);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.NameErrorContainer.Text, Is.EqualTo("Name2 is empty."));
 
         name2Rule.Dispose();
 
-        Assert.Equal(0, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.Empty(view.NameErrorContainer.Text);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(0));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(view.NameErrorContainer.Text, Is.Empty);
 
         view.ViewModel.ValidationRule(
             viewModel => viewModel.Name,
             name => !string.IsNullOrWhiteSpace(name),
             "Name is empty.");
 
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal("Name is empty.", view.NameErrorContainer.Text);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.NameErrorContainer.Text, Is.EqualTo("Name is empty."));
     }
 
     /// <summary>
     /// Verifies that we update the binding to <see cref="ValidationHelper"/> property when that
     /// property sends <see cref="IReactiveNotifyPropertyChanged{TSender}"/> notifications.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldUpdateValidationHelperBindingOnPropertyChange()
     {
         var view = new TestView(new TestViewModel { Name = string.Empty });
@@ -635,16 +636,16 @@ public class ValidationBindingTests
         view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
         view.BindValidation(view.ViewModel, x => x.NameRule, x => x.NameErrorLabel);
 
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(nameErrorMessage, view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(nameErrorMessage));
 
         view.ViewModel.NameRule.Dispose();
         view.ViewModel.NameRule = null;
 
-        Assert.Equal(0, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.Empty(view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(0));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(view.NameErrorLabel, Is.Empty);
 
         const string secretMessage = "This is the secret message.";
         view.ViewModel.NameRule = view.ViewModel
@@ -653,15 +654,15 @@ public class ValidationBindingTests
                 name => !string.IsNullOrWhiteSpace(name),
                 secretMessage);
 
-        Assert.Equal(1, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Equal(secretMessage, view.NameErrorLabel);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(1));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(secretMessage));
     }
 
     /// <summary>
     /// Verifies that the <see cref="ValidatableViewModelExtensions.ValidationRule{TVIewModel}(TVIewModel, IObservable{IValidationState})"/> methods work.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldBindValidationRuleEmittingValidationStates()
     {
         const StringComparison comparison = StringComparison.InvariantCulture;
@@ -691,24 +692,24 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
         view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
 
-        Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Contains(nameErrorMessage, view.NameErrorLabel, comparison);
-        Assert.Contains(viewModelIsBlockedMessage, view.NameErrorContainer.Text, comparison);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.NameErrorLabel.Contains(nameErrorMessage, comparison), Is.True);
+        Assert.That(view.NameErrorContainer.Text.Contains(viewModelIsBlockedMessage, comparison), Is.True);
 
         view.ViewModel.Name = "Qwerty";
         isViewModelBlocked.OnNext(false);
 
-        Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.DoesNotContain(nameErrorMessage, view.NameErrorLabel, comparison);
-        Assert.DoesNotContain(viewModelIsBlockedMessage, view.NameErrorContainer.Text, comparison);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(view.NameErrorLabel.Contains(nameErrorMessage, comparison), Is.False);
+        Assert.That(view.NameErrorContainer.Text.Contains(viewModelIsBlockedMessage, comparison), Is.False);
     }
 
     /// <summary>
     /// Verifies that the <see cref="ValidatableViewModelExtensions.ValidationRule{TVIewModel, TValue}(TVIewModel, IObservable{TValue})"/> methods work.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldBindValidationRuleEmittingValidationStatesGeneric()
     {
         const StringComparison comparison = StringComparison.InvariantCulture;
@@ -735,24 +736,24 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
         view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
 
-        Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.False(view.ViewModel.ValidationContext.IsValid);
-        Assert.Contains(nameErrorMessage, view.NameErrorLabel, comparison);
-        Assert.Contains(viewModelIsBlockedMessage, view.NameErrorContainer.Text, comparison);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.False);
+        Assert.That(view.NameErrorLabel.Contains(nameErrorMessage, comparison), Is.True);
+        Assert.That(view.NameErrorContainer.Text.Contains(viewModelIsBlockedMessage, comparison), Is.True);
 
         view.ViewModel.Name = "Qwerty";
         isViewModelBlocked.OnNext(false);
 
-        Assert.Equal(2, view.ViewModel.ValidationContext.Validations.Count);
-        Assert.True(view.ViewModel.ValidationContext.IsValid);
-        Assert.DoesNotContain(nameErrorMessage, view.NameErrorLabel, comparison);
-        Assert.DoesNotContain(viewModelIsBlockedMessage, view.NameErrorContainer.Text, comparison);
+        Assert.That(view.ViewModel.ValidationContext.Validations.Count, Is.EqualTo(2));
+        Assert.That(view.ViewModel.ValidationContext.IsValid, Is.True);
+        Assert.That(view.NameErrorLabel.Contains(nameErrorMessage, comparison), Is.False);
+        Assert.That(view.NameErrorContainer.Text.Contains(viewModelIsBlockedMessage, comparison), Is.False);
     }
 
     /// <summary>
     /// Verifies that we support nullable view model properties.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSupportDelayedViewModelInitialization()
     {
         var view = new TestView
@@ -765,18 +766,18 @@ public class ValidationBindingTests
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
         view.BindValidation(view.ViewModel, x => x.NameErrorContainer.Text);
 
-        Assert.Empty(view.NameErrorLabel);
-        Assert.Empty(view.NameErrorContainer.Text);
+        Assert.That(view.NameErrorLabel, Is.Empty);
+        Assert.That(view.NameErrorContainer.Text, Is.Empty);
 
         const string errorMessage = "Name shouldn't be empty.";
         var viewModel = new TestViewModel();
         viewModel.ValidationRule(x => x.Name, x => !string.IsNullOrWhiteSpace(x), errorMessage);
         view.ViewModel = viewModel;
 
-        Assert.NotEmpty(view.NameErrorLabel);
-        Assert.NotEmpty(view.NameErrorContainer.Text);
-        Assert.Equal(errorMessage, view.NameErrorLabel);
-        Assert.Equal(errorMessage, view.NameErrorContainer.Text);
+        Assert.That(view.NameErrorLabel, Is.Not.Empty);
+        Assert.That(view.NameErrorContainer.Text, Is.Not.Empty);
+        Assert.That(view.NameErrorLabel, Is.EqualTo(errorMessage));
+        Assert.That(view.NameErrorContainer.Text, Is.EqualTo(errorMessage));
     }
 
     private class CustomValidationState(bool isValid, string message) : IValidationState
