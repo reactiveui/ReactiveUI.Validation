@@ -5,10 +5,10 @@
 
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
+using NUnit.Framework;
 using ReactiveUI.Validation.APITests;
 using ReactiveUI.Validation.ValidationBindings;
-using VerifyXunit;
-using Xunit;
+using VerifyNUnit;
 
 namespace ReactiveUI.Validation.Tests.API;
 
@@ -16,12 +16,13 @@ namespace ReactiveUI.Validation.Tests.API;
 /// Tests to make sure that the API matches the approved ones.
 /// </summary>
 [ExcludeFromCodeCoverage]
+[TestFixture]
 public class ApiApprovalTests
 {
     /// <summary>
     /// Tests to make sure the splat project is approved.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
-    [Fact]
-    public Task ValidationProject() => typeof(ValidationBinding).Assembly.CheckApproval(["ReactiveUI.Validation"]);
+    [Test]
+    public Task ValidationProject() => typeof(ValidationBinding).Assembly.CheckApproval([" ReactiveUI.Validation"]);
 }

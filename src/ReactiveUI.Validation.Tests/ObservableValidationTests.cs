@@ -6,11 +6,11 @@
 using System;
 using System.Collections.Generic;
 using System.Reactive.Subjects;
+using NUnit.Framework;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.Tests.Models;
-using Xunit;
 
 namespace ReactiveUI.Validation.Tests;
 
@@ -18,19 +18,33 @@ namespace ReactiveUI.Validation.Tests;
 /// Tests for the generic <see cref="ObservableValidation{TViewModel, TValue}"/> and for
 /// <see cref="ObservableValidation{TViewModel,TValue,TProp}"/> as well.
 /// </summary>
+[TestFixture]
 public class ObservableValidationTests
 {
-    private readonly ISubject<bool> _validState = new ReplaySubject<bool>(1);
-    private readonly TestViewModel _validModel = new()
+    private ReplaySubject<bool> _validState = default!;
+    private TestViewModel _validModel = default!;
+
+    [SetUp]
+    public void SetUp()
     {
-        Name = "name",
-        Name2 = "name2"
-    };
+        _validState = new ReplaySubject<bool>(1);
+        _validModel = new TestViewModel
+        {
+            Name = "name",
+            Name2 = "name2"
+        };
+    }
+
+    [TearDown]
+    public void TearDown()
+    {
+        _validState?.Dispose();
+    }
 
     /// <summary>
     /// Verifies if the initial state is True.
     /// </summary>
-    [Fact]
+    [Test]
     public void InitialValidStateIsCorrectTest()
     {
         _validState.OnNext(true);
@@ -41,13 +55,13 @@ public class ObservableValidationTests
             valid => valid,
             "broken");
 
-        Assert.True(validation.IsValid);
+        Assert.That(validation.IsValid, Is.True);
     }
 
     /// <summary>
     /// Verifies if the initial state is True.
     /// </summary>
-    [Fact]
+    [Test]
     public void InitialValidStateOfPropertyValidationIsCorrectTest()
     {
         _validState.OnNext(true);
@@ -59,13 +73,13 @@ public class ObservableValidationTests
             valid => valid,
             "broken");
 
-        Assert.True(propertyValidation.IsValid);
+        Assert.That(propertyValidation.IsValid, Is.True);
     }
 
     /// <summary>
     /// Verifies if the observable returns invalid.
     /// </summary>
-    [Fact]
+    [Test]
     public void ObservableToInvalidTest()
     {
         using var validation = new ObservableValidation<TestViewModel, bool>(
@@ -78,14 +92,17 @@ public class ObservableValidationTests
         _validState.OnNext(true);
         _validState.OnNext(false);
 
-        Assert.False(validation.IsValid);
-        Assert.Equal("broken", validation.Text?.ToSingleLine());
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(validation.IsValid, Is.False);
+            Assert.That(validation.Text?.ToSingleLine(), Is.EqualTo("broken"));
+        }
     }
 
     /// <summary>
     /// Verifies if the observable returns invalid.
     /// </summary>
-    [Fact]
+    [Test]
     public void ObservableToInvalidOfPropertyValidationTest()
     {
         using var propertyValidation = new ObservableValidation<TestViewModel, bool, string>(
@@ -99,15 +116,18 @@ public class ObservableValidationTests
         _validState.OnNext(true);
         _validState.OnNext(false);
 
-        Assert.False(propertyValidation.IsValid);
-        Assert.Equal("broken", propertyValidation.Text?.ToSingleLine());
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(propertyValidation.IsValid, Is.False);
+            Assert.That(propertyValidation.Text?.ToSingleLine(), Is.EqualTo("broken"));
+        }
     }
 
     /// <summary>
     /// Verifies that a call to Dispose disconnects the underlying observable
     /// of a <see cref="ObservableValidation{TViewModel,TValue}"/>.
     /// </summary>
-    [Fact]
+    [Test]
     public void DisposeShouldStopTrackingTheObservable()
     {
         var validation = new ObservableValidation<TestViewModel, bool>(
@@ -118,11 +138,11 @@ public class ObservableValidationTests
 
         _validState.OnNext(true);
 
-        Assert.True(validation.IsValid);
+        Assert.That(validation.IsValid, Is.True);
 
         _validState.OnNext(false);
 
-        Assert.False(validation.IsValid);
+        Assert.That(validation.IsValid, Is.False);
 
         validation.Dispose();
 
@@ -130,14 +150,14 @@ public class ObservableValidationTests
         _validState.OnNext(false);
         _validState.OnNext(true);
 
-        Assert.False(validation.IsValid);
+        Assert.That(validation.IsValid, Is.False);
     }
 
     /// <summary>
     /// Verifies that a call to Dispose disconnects the underlying observable
     /// of a <see cref="ObservableValidation{TViewModel,TValue,TProp}"/>.
     /// </summary>
-    [Fact]
+    [Test]
     public void DisposeShouldStopTrackingThePropertyValidationObservable()
     {
         var validation = new ObservableValidation<TestViewModel, bool, string>(
@@ -149,11 +169,11 @@ public class ObservableValidationTests
 
         _validState.OnNext(true);
 
-        Assert.True(validation.IsValid);
+        Assert.That(validation.IsValid, Is.True);
 
         _validState.OnNext(false);
 
-        Assert.False(validation.IsValid);
+        Assert.That(validation.IsValid, Is.False);
 
         validation.Dispose();
 
@@ -161,13 +181,13 @@ public class ObservableValidationTests
         _validState.OnNext(false);
         _validState.OnNext(true);
 
-        Assert.False(validation.IsValid);
+        Assert.That(validation.IsValid, Is.False);
     }
 
     /// <summary>
     /// Verifies that we support resolving properties by expressions.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldResolveTypedProperties()
     {
         var viewModel = new TestViewModel { Name = string.Empty };
@@ -179,17 +199,20 @@ public class ObservableValidationTests
                 state => !string.IsNullOrWhiteSpace(state),
                 "Name shouldn't be empty.");
 
-        Assert.True(component.ContainsProperty<TestViewModel, string>(model => model.Name));
-        Assert.True(component.ContainsProperty<TestViewModel, string>(model => model.Name, true));
-        Assert.False(component.ContainsProperty<TestViewModel, string>(model => model.Name2));
-        Assert.False(component.ContainsProperty<TestViewModel, string>(model => model.Name2, true));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name), Is.True);
+            Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name, true), Is.True);
+            Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name2), Is.False);
+            Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name2, true), Is.False);
+        }
         Assert.Throws<ArgumentNullException>(() => component.ContainsProperty<TestViewModel, string>(null!));
     }
 
     /// <summary>
     /// Verifies that we support the simplest possible observable-based validation component.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldSupportMinimalObservableValidation()
     {
         using var stream = new Subject<IValidationState>();
@@ -198,21 +221,25 @@ public class ObservableValidationTests
         component.ValidationStatusChange.Subscribe(arguments.Add);
         stream.OnNext(ValidationState.Valid);
 
-        Assert.True(component.IsValid);
-        Assert.Empty(component.Text!.ToSingleLine());
-        Assert.Single(arguments);
-
-        Assert.True(arguments[0].IsValid);
-        Assert.Empty(arguments[0].Text.ToSingleLine());
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(component.IsValid, Is.True);
+            Assert.That(component.Text!.ToSingleLine(), Is.Empty);
+            Assert.That(arguments, Has.Count.EqualTo(1));
+            Assert.That(arguments[0].IsValid, Is.True);
+            Assert.That(arguments[0].Text.ToSingleLine(), Is.Empty);
+        }
 
         const string errorMessage = "Errors exist.";
         stream.OnNext(new ValidationState(false, errorMessage));
 
-        Assert.False(component.IsValid);
-        Assert.Equal(errorMessage, component.Text.ToSingleLine());
-        Assert.Equal(2, arguments.Count);
-
-        Assert.False(arguments[1].IsValid);
-        Assert.Equal(errorMessage, arguments[1].Text.ToSingleLine());
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(component.IsValid, Is.False);
+            Assert.That(component.Text.ToSingleLine(), Is.EqualTo(errorMessage));
+            Assert.That(arguments, Has.Count.EqualTo(2));
+            Assert.That(arguments[1].IsValid, Is.False);
+            Assert.That(arguments[1].Text.ToSingleLine(), Is.EqualTo(errorMessage));
+        }
     }
 }

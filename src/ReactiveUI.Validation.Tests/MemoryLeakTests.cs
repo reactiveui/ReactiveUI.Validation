@@ -4,32 +4,26 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using FluentAssertions;
 using JetBrains.dotMemoryUnit;
+using NUnit.Framework;
 using ReactiveUI.Validation.Tests.Models;
-using Xunit;
-using Xunit.Abstractions;
 
 namespace ReactiveUI.Validation.Tests;
 
 /// <summary>
 /// MemoryLeakTests.
 /// </summary>
+[TestFixture]
 public class MemoryLeakTests
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="MemoryLeakTests"/> class.
-    /// </summary>
-    /// <param name="testOutputHelper">The test output helper.</param>
-    public MemoryLeakTests(ITestOutputHelper testOutputHelper)
+    [SetUp]
+    public void SetUp()
     {
-        ArgumentNullException.ThrowIfNull(testOutputHelper);
-
-        DotMemoryUnitTestOutput.SetOutputMethod(testOutputHelper.WriteLine);
+        DotMemoryUnitTestOutput.SetOutputMethod(TestContext.WriteLine);
     }
 
     /// <summary>Tests whether the created object can be garbage collected.</summary>
-    [Fact]
+    [Test]
     [DotMemoryUnit(FailIfRunWithoutSupport = false)]
     public void Instance_Released_IsGarbageCollected()
     {
@@ -45,12 +39,14 @@ public class MemoryLeakTests
 
         // memTest should have gone out of scope about now, so the garbage collector can clean it up
         dotMemory.Check(
-            memory => memory.GetObjects(
-                where => where.Type.Is<TestClassMemory>()).ObjectsCount.Should().Be(0, "it is out of scope"));
+            memory => Assert.That(
+                memory.GetObjects(where => where.Type.Is<TestClassMemory>()).ObjectsCount,
+                Is.Zero,
+                "it is out of scope"));
 
         GC.Collect();
         GC.WaitForPendingFinalizers();
 
-        reference.IsAlive.Should().BeFalse("it is garbage collected");
+        Assert.That(reference.IsAlive, Is.False, "it is garbage collected");
     }
 }

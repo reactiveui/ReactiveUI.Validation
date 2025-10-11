@@ -5,23 +5,24 @@
 
 using System;
 using System.Collections.Generic;
+using NUnit.Framework;
 using ReactiveUI.Validation.Comparators;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.Tests.Models;
-using Xunit;
 
 namespace ReactiveUI.Validation.Tests;
 
 /// <summary>
 /// Tests for <see cref="BasePropertyValidation{TViewModel}"/>.
 /// </summary>
+[TestFixture]
 public class PropertyValidationTests
 {
     /// <summary>
     /// Verifies if the default state is true.
     /// </summary>
-    [Fact]
+    [Test]
     public void ValidModelDefaultStateTest()
     {
         var model = CreateDefaultValidModel();
@@ -32,14 +33,17 @@ public class PropertyValidationTests
             n => !string.IsNullOrEmpty(n),
             "broken");
 
-        Assert.True(validation.IsValid);
-        Assert.True(string.IsNullOrEmpty(validation.Text?.ToSingleLine()));
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(validation.IsValid, Is.True);
+            Assert.That(string.IsNullOrEmpty(validation.Text?.ToSingleLine()), Is.True);
+        }
     }
 
     /// <summary>
     /// Verifies if the state transition is valid when the IsValid property changes.
     /// </summary>
-    [Fact]
+    [Test]
     public void StateTransitionsWhenValidityChangesTest()
     {
         const string testValue = "test";
@@ -58,20 +62,26 @@ public class PropertyValidationTests
             .ValidationStatusChange
             .Subscribe(v => lastVal = v.IsValid);
 
-        Assert.False(validation.IsValid);
-        Assert.False(lastVal);
-        Assert.True(lastVal.HasValue);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(validation.IsValid, Is.False);
+            Assert.That(lastVal, Is.False);
+            Assert.That(lastVal.HasValue, Is.True);
+        }
 
         model.Name = testValue + "-" + testValue;
 
-        Assert.True(validation.IsValid);
-        Assert.True(lastVal);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(validation.IsValid, Is.True);
+            Assert.That(lastVal, Is.True);
+        }
     }
 
     /// <summary>
     /// Verifies if the validation message is the expected.
     /// </summary>
-    [Fact]
+    [Test]
     public void PropertyContentsProvidedToMessageTest()
     {
         const string testValue = "bongo";
@@ -86,13 +96,13 @@ public class PropertyValidationTests
 
         model.Name = testValue;
 
-        Assert.Equal("The value 'bongo' is incorrect", validation.Text?.ToSingleLine());
+        Assert.That(validation.Text?.ToSingleLine(), Is.EqualTo("The value 'bongo' is incorrect"));
     }
 
     /// <summary>
     /// Verifies that validation message updates are correctly propagated.
     /// </summary>
-    [Fact]
+    [Test]
     public void MessageUpdatedWhenPropertyChanged()
     {
         const string testRoot = "bon";
@@ -112,21 +122,31 @@ public class PropertyValidationTests
 
         validation.ValidationStatusChange.Subscribe(v => changes.Add(v));
 
-        Assert.Equal("The value 'bongo' is incorrect", validation.Text?.ToSingleLine());
-        Assert.Single(changes);
-        Assert.Equal(new ValidationState(false, "The value 'bongo' is incorrect"), changes[0], new ValidationStateComparer());
+        var expectedState1 = new ValidationState(false, "The value 'bongo' is incorrect");
+        var comparer = new ValidationStateComparer();
+        
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(validation.Text?.ToSingleLine(), Is.EqualTo("The value 'bongo' is incorrect"));
+            Assert.That(changes, Has.Count.EqualTo(1));
+            Assert.That(comparer.Equals(changes[0], expectedState1), Is.True, "Validation states should be equal");
+        }
 
         model.Name = testRoot;
 
-        Assert.Equal("The value 'bon' is incorrect", validation.Text?.ToSingleLine());
-        Assert.Equal(2, changes.Count);
-        Assert.Equal(new ValidationState(false, "The value 'bon' is incorrect"), changes[1], new ValidationStateComparer());
+        var expectedState2 = new ValidationState(false, "The value 'bon' is incorrect");
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(validation.Text?.ToSingleLine(), Is.EqualTo("The value 'bon' is incorrect"));
+            Assert.That(changes, Has.Count.EqualTo(2));
+            Assert.That(comparer.Equals(changes[1], expectedState2), Is.True, "Validation states should be equal");
+        }
     }
 
     /// <summary>
     /// Verifies that validation message changes if one validation is valid but the other one is not.
     /// </summary>
-    [Fact]
+    [Test]
     public void DualStateMessageTest()
     {
         const string testRoot = "bon";
@@ -140,11 +160,11 @@ public class PropertyValidationTests
             n => n is not null && n.Length > testRoot.Length,
             (p, v) => v ? "cool" : $"The value '{p}' is incorrect");
 
-        Assert.Equal("cool", validation.Text?.ToSingleLine());
+        Assert.That(validation.Text?.ToSingleLine(), Is.EqualTo("cool"));
 
         model.Name = testRoot;
 
-        Assert.Equal("The value 'bon' is incorrect", validation.Text?.ToSingleLine());
+        Assert.That(validation.Text?.ToSingleLine(), Is.EqualTo("The value 'bon' is incorrect"));
     }
 
     private static TestViewModel CreateDefaultValidModel() => new() { Name = "name" };

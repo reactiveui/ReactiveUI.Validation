@@ -5,35 +5,39 @@
 
 using System;
 using System.Reactive.Concurrency;
+using NUnit.Framework;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Tests.Models;
-using Xunit;
 
 namespace ReactiveUI.Validation.Tests;
 
 /// <summary>
 /// Tests for <see cref="ValidationContext"/>.
 /// </summary>
+[TestFixture]
 public class ValidationContextTests
 {
     /// <summary>
     /// Verifies that a <see cref="ValidationContext"/> without validations is valid.
     /// </summary>
-    [Fact]
+    [Test]
     public void EmptyValidationContextIsValid()
     {
         using var vc = new ValidationContext(ImmediateScheduler.Instance);
 
-        Assert.True(vc.IsValid);
-        Assert.Equal(0, vc.Text.Count);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(vc.IsValid, Is.True);
+            Assert.That(vc.Text, Has.Count.Zero);
+        }
     }
 
     /// <summary>
     /// Verifies that validations can be added in the <see cref="ValidationContext"/>.
     /// </summary>
-    [Fact]
+    [Test]
     public void CanAddValidationComponentsTest()
     {
         using var vc = new ValidationContext(ImmediateScheduler.Instance);
@@ -50,20 +54,22 @@ public class ValidationContextTests
 
         vc.Add(v1);
 
-        Assert.True(vc.IsValid);
+        Assert.That(vc.IsValid, Is.True);
 
         vm.Name = invalidName;
 
-        Assert.False(v1.IsValid);
-        Assert.False(vc.IsValid);
-
-        Assert.Equal(1, vc.Text.Count);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(v1.IsValid, Is.False);
+            Assert.That(vc.IsValid, Is.False);
+            Assert.That(vc.Text, Has.Count.EqualTo(1));
+        }
     }
 
     /// <summary>
     /// Verifies that two validations properties are correctly applied in the <see cref="ValidationContext"/>.
     /// </summary>
-    [Fact]
+    [Test]
     public void TwoValidationComponentsCorrectlyResultInContextTest()
     {
         const string validName = "valid";
@@ -88,32 +94,44 @@ public class ValidationContextTests
         vc.Add(firstValidation);
         vc.Add(secondValidation);
 
-        Assert.True(vc.IsValid);
-        Assert.Equal(0, vc.Text.Count);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(vc.IsValid, Is.True);
+            Assert.That(vc.Text, Has.Count.Zero);
+        }
 
         vm.Name = invalidName;
-        Assert.False(vc.IsValid);
-        Assert.Equal(1, vc.Text.Count);
-        Assert.Equal("Name " + invalidName + " isn't valid", vc.Text[0]);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(vc.IsValid, Is.False);
+            Assert.That(vc.Text, Has.Count.EqualTo(1));
+            Assert.That(vc.Text[0], Is.EqualTo("Name " + invalidName + " isn't valid"));
+        }
 
         vm.Name2 = invalidName;
-        Assert.False(vc.IsValid);
-        Assert.Equal(2, vc.Text.Count);
-        Assert.Equal("Name " + invalidName + " isn't valid", vc.Text[0]);
-        Assert.Equal("Name 2 " + invalidName + " isn't valid", vc.Text[1]);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(vc.IsValid, Is.False);
+            Assert.That(vc.Text, Has.Count.EqualTo(2));
+            Assert.That(vc.Text[0], Is.EqualTo("Name " + invalidName + " isn't valid"));
+            Assert.That(vc.Text[1], Is.EqualTo("Name 2 " + invalidName + " isn't valid"));
+        }
 
         vm.Name = validName;
         vm.Name2 = validName;
 
-        Assert.True(vc.IsValid);
-        Assert.Equal(0, vc.Text.Count);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(vc.IsValid, Is.True);
+            Assert.That(vc.Text, Has.Count.Zero);
+        }
     }
 
     /// <summary>
     /// Verifies that this.IsValid() extension method observes a
     /// <see cref="ValidationContext"/> and emits new values.
     /// </summary>
-    [Fact]
+    [Test]
     public void IsValidShouldNotifyOfValidityChange()
     {
         var viewModel = new TestViewModel { Name = string.Empty };
@@ -126,13 +144,13 @@ public class ValidationContextTests
 
         var latestValidity = false;
         var d = viewModel.IsValid().Subscribe(isValid => latestValidity = isValid);
-        Assert.False(latestValidity);
+        Assert.That(latestValidity, Is.False);
 
         viewModel.Name = "Jonathan";
-        Assert.True(latestValidity);
+        Assert.That(latestValidity, Is.True);
 
         viewModel.Name = string.Empty;
-        Assert.False(latestValidity);
+        Assert.That(latestValidity, Is.False);
         d.Dispose();
     }
 
@@ -140,7 +158,7 @@ public class ValidationContextTests
     /// Ensures that the ClearValidationRules extension method works.
     /// Also verifies that the ClearValidationRules extension method is idempotent.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldClearAttachedValidationRules()
     {
         var viewModel = new TestViewModel { Name = string.Empty };
@@ -159,29 +177,38 @@ public class ValidationContextTests
         viewModel.ValidationContext.Add(nameValidation);
         viewModel.ValidationContext.Add(name2Validation);
 
-        Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
-        Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.NotEmpty(viewModel.ValidationContext.Text);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(viewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
+            Assert.That(viewModel.ValidationContext.IsValid, Is.False);
+            Assert.That(viewModel.ValidationContext.Text, Is.Not.Empty);
+        }
 
         viewModel.ClearValidationRules();
 
-        Assert.Equal(0, viewModel.ValidationContext.Validations.Count);
-        Assert.True(viewModel.ValidationContext.IsValid);
-        Assert.Empty(viewModel.ValidationContext.Text);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(viewModel.ValidationContext.Validations, Has.Count.Zero);
+            Assert.That(viewModel.ValidationContext.IsValid, Is.True);
+            Assert.That(viewModel.ValidationContext.Text, Is.Empty);
+        }
 
         // Verify that the method is idempotent.
         viewModel.ClearValidationRules();
 
-        Assert.Equal(0, viewModel.ValidationContext.Validations.Count);
-        Assert.True(viewModel.ValidationContext.IsValid);
-        Assert.Empty(viewModel.ValidationContext.Text);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(viewModel.ValidationContext.Validations, Has.Count.Zero);
+            Assert.That(viewModel.ValidationContext.IsValid, Is.True);
+            Assert.That(viewModel.ValidationContext.Text, Is.Empty);
+        }
     }
 
     /// <summary>
     /// Ensures that the ClearValidationRules extension method accepting an expression works.
     /// Also verifies that the ClearValidationRules extension method is idempotent.
     /// </summary>
-    [Fact]
+    [Test]
     public void ShouldClearAttachedValidationRulesForTheGivenProperty()
     {
         var viewModel = new TestViewModel { Name = string.Empty };
@@ -201,24 +228,33 @@ public class ValidationContextTests
         viewModel.ValidationContext.Add(nameValidation);
         viewModel.ValidationContext.Add(name2Validation);
 
-        Assert.Equal(2, viewModel.ValidationContext.Validations.Count);
-        Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.NotEmpty(viewModel.ValidationContext.Text);
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(viewModel.ValidationContext.Validations, Has.Count.EqualTo(2));
+            Assert.That(viewModel.ValidationContext.IsValid, Is.False);
+            Assert.That(viewModel.ValidationContext.Text, Is.Not.Empty);
+        }
         Assert.Throws<ArgumentNullException>(() => viewModel.ClearValidationRules<TestViewModel, string>(null!));
 
         viewModel.ClearValidationRules(x => x.Name);
 
-        Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
-        Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.NotEmpty(viewModel.ValidationContext.Text);
-        Assert.Equal(name2ErrorMessage, viewModel.ValidationContext.Text.ToSingleLine());
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(viewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
+            Assert.That(viewModel.ValidationContext.IsValid, Is.False);
+            Assert.That(viewModel.ValidationContext.Text, Is.Not.Empty);
+            Assert.That(viewModel.ValidationContext.Text.ToSingleLine(), Is.EqualTo(name2ErrorMessage));
+        }
 
         // Verify that the method is idempotent.
         viewModel.ClearValidationRules(x => x.Name);
 
-        Assert.Equal(1, viewModel.ValidationContext.Validations.Count);
-        Assert.False(viewModel.ValidationContext.IsValid);
-        Assert.NotEmpty(viewModel.ValidationContext.Text);
-        Assert.Equal(name2ErrorMessage, viewModel.ValidationContext.Text.ToSingleLine());
+        using (Assert.EnterMultipleScope())
+        {
+            Assert.That(viewModel.ValidationContext.Validations, Has.Count.EqualTo(1));
+            Assert.That(viewModel.ValidationContext.IsValid, Is.False);
+            Assert.That(viewModel.ValidationContext.Text, Is.Not.Empty);
+            Assert.That(viewModel.ValidationContext.Text.ToSingleLine(), Is.EqualTo(name2ErrorMessage));
+        }
     }
 }
