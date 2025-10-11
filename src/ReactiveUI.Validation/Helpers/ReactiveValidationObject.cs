@@ -7,18 +7,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
 using System.Reactive.Linq;
+
 using DynamicData;
+
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
+
 using Splat;
 
 namespace ReactiveUI.Validation.Helpers;
@@ -44,6 +48,9 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
     /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
     /// </param>
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     protected ReactiveValidationObject(
         IScheduler? scheduler = null,
         IValidationTextFormatter<string>? formatter = null)

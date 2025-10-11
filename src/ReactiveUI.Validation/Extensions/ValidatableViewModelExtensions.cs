@@ -4,10 +4,12 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
+
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Components.Abstractions;
@@ -32,6 +34,10 @@ public static class ValidatableViewModelExtensions
     /// <param name="isPropertyValid">Func to define if the viewModelProperty is valid or not.</param>
     /// <param name="message">Validation error message.</param>
     /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
         this TViewModel viewModel,
         Expression<Func<TViewModel, TViewModelProp?>> viewModelProperty,
@@ -76,6 +82,10 @@ public static class ValidatableViewModelExtensions
     /// <param name="isPropertyValid">Func to define if the viewModelProperty is valid or not.</param>
     /// <param name="message">Func to define the validation error message based on the viewModelProperty value.</param>
     /// <returns>Returns a <see cref="ValidationHelper"/> object.</returns>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
         this TViewModel viewModel,
         Expression<Func<TViewModel, TViewModelProp?>> viewModelProperty,
@@ -120,6 +130,10 @@ public static class ValidatableViewModelExtensions
     /// It should be noted that the observable should provide an initial value, otherwise that can result
     /// in an inconsistent performance.
     /// </remarks>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public static ValidationHelper ValidationRule<TViewModel>(
         this TViewModel viewModel,
         IObservable<bool> validationObservable,
@@ -164,6 +178,10 @@ public static class ValidatableViewModelExtensions
     /// It should be noted that the observable should provide an initial value, otherwise that can result
     /// in an inconsistent performance.
     /// </remarks>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public static ValidationHelper ValidationRule<TViewModel, TValue>(
         this TViewModel viewModel,
         IObservable<TValue> validationObservable,
@@ -207,6 +225,10 @@ public static class ValidatableViewModelExtensions
     /// It should be noted that the observable should provide an initial value, otherwise that can result
     /// in an inconsistent performance.
     /// </remarks>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public static ValidationHelper ValidationRule<TViewModel>(
         this TViewModel viewModel,
         IObservable<IValidationState> validationObservable)
@@ -239,6 +261,10 @@ public static class ValidatableViewModelExtensions
     /// It should be noted that the observable should provide an initial value, otherwise that can result
     /// in an inconsistent performance.
     /// </remarks>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public static ValidationHelper ValidationRule<TViewModel, TValue>(
         this TViewModel viewModel,
         IObservable<TValue> validationObservable)
@@ -275,6 +301,10 @@ public static class ValidatableViewModelExtensions
     /// It should be noted that the observable should provide an initial value, otherwise that can result
     /// in an inconsistent performance.
     /// </remarks>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
         this TViewModel viewModel,
         Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
@@ -328,6 +358,10 @@ public static class ValidatableViewModelExtensions
     /// It should be noted that the observable should provide an initial value, otherwise that can result
     /// in an inconsistent performance.
     /// </remarks>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public static ValidationHelper ValidationRule<TViewModel, TViewModelProp, TValue>(
         this TViewModel viewModel,
         Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
@@ -379,6 +413,10 @@ public static class ValidatableViewModelExtensions
     /// It should be noted that the observable should provide an initial value, otherwise that can result
     /// in an inconsistent performance.
     /// </remarks>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public static ValidationHelper ValidationRule<TViewModel, TViewModelProp>(
         this TViewModel viewModel,
         Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
@@ -419,6 +457,10 @@ public static class ValidatableViewModelExtensions
     /// It should be noted that the observable should provide an initial value, otherwise that can result
     /// in an inconsistent performance.
     /// </remarks>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     public static ValidationHelper ValidationRule<TViewModel, TViewModelProp, TValue>(
         this TViewModel viewModel,
         Expression<Func<TViewModel, TViewModelProp>> viewModelProperty,
@@ -525,6 +567,10 @@ public static class ValidatableViewModelExtensions
     /// <param name="validation">The disposable validation component to register into the context.</param>
     /// <typeparam name="TValidationComponent">The disposable validation component type.</typeparam>
     /// <returns>The bindable validation helper holding the disposable.</returns>
+#if NET6_0_OR_GREATER
+    [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+#endif
     private static ValidationHelper RegisterValidation<TValidationComponent>(
         this IValidatableViewModel viewModel,
         TValidationComponent validation)

@@ -22,7 +22,7 @@ public class SampleView : IViewFor<ISampleViewModel>
     /// <summary>
     /// Gets or sets the view model of this particular view.
     /// </summary>
-    public ISampleViewModel ViewModel { get; set; } = null!;
+    public ISampleViewModel? ViewModel { get; set; }
     /// <summary>
     /// Gets or sets the name view property.
     /// </summary>
@@ -32,9 +32,9 @@ public class SampleView : IViewFor<ISampleViewModel>
     /// </summary>
     public string NameErrorLabel { get; set; } = null!;
     /// <inheritdoc />
-    object IViewFor.ViewModel
+    object? IViewFor.ViewModel
     {
         get => ViewModel;
-        set => ViewModel = (ISampleViewModel)value;
+        set => ViewModel = (ISampleViewModel?)value;
     }
 }

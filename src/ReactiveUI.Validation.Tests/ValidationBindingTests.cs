@@ -576,7 +576,8 @@ public class ValidationBindingTests
         const string nameErrorMessage = "Name shouldn't be empty.";
         var view = new SampleView(new SampleViewModel());
 
-        view.ViewModel.ValidationRule(
+        Assert.That(view.ViewModel, Is.Not.Null);
+        view.ViewModel!.ValidationRule(
             viewModel => viewModel.Name,
             name => !string.IsNullOrWhiteSpace(name),
             nameErrorMessage);
@@ -813,7 +814,7 @@ public class ValidationBindingTests
         var viewModelBlockedValidationState = isViewModelBlocked.Select(blocked =>
             (IValidationState)new CustomValidationState(!blocked, viewModelIsBlockedMessage));
 
-        view.ViewModel.ValidationRule(viewModelBlockedValidationState);
+        view.ViewModel!.ValidationRule(viewModelBlockedValidationState);
 
         view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
         view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
@@ -863,7 +864,7 @@ public class ValidationBindingTests
                     !string.IsNullOrWhiteSpace(name),
                     nameErrorMessage)));
 
-        view.ViewModel.ValidationRule(
+        view.ViewModel!.ValidationRule(
             isViewModelBlocked.Select(blocked =>
                 new CustomValidationState(!blocked, viewModelIsBlockedMessage)));
 
