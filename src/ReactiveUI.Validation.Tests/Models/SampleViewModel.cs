@@ -13,7 +13,7 @@ namespace ReactiveUI.Validation.Tests.Models;
 /// </summary>
 public class SampleViewModel : ReactiveValidationObject, ISampleViewModel
 {
-    private string _name;
+    private string _name = null!;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SampleViewModel"/> class.

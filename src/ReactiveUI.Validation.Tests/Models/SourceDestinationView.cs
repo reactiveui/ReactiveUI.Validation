@@ -24,15 +24,13 @@ public class SourceDestinationView : IViewFor<SourceDestinationViewModel>
     }
 
     /// <inheritdoc/>
-    public SourceDestinationViewModel ViewModel { get; set; }
-
+    public SourceDestinationViewModel ViewModel { get; set; } = null!;
     /// <summary>
     /// Gets or sets the SourceError Label which emulates a Text property (eg. Entry in Xamarin.Forms).
     /// </summary>
-    public string SourceError { get; set; }
-
+    public string SourceError { get; set; } = null!;
     /// <summary>
     /// Gets or sets the DestinationError Label which emulates a Text property (eg. Entry in Xamarin.Forms).
     /// </summary>
-    public string DestinationError { get; set; }
+    public string DestinationError { get; set; } = null!;
 }

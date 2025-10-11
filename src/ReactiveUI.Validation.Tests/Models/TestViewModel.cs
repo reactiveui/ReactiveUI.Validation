@@ -17,9 +17,9 @@ namespace ReactiveUI.Validation.Tests.Models;
 /// </summary>
 public class TestViewModel : ReactiveObject, IValidatableViewModel
 {
-    private ValidationHelper _nameRule;
-    private string _name;
-    private string _name2;
+    private ValidationHelper _nameRule = null!;
+    private string _name = null!;
+    private string _name2 = null!;
 
     /// <summary>
     /// Gets or sets get the Name.

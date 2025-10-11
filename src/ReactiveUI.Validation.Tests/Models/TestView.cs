@@ -10,7 +10,7 @@ namespace ReactiveUI.Validation.Tests.Models;
 /// </summary>
 public class TestView : ReactiveObject, IViewFor<TestViewModel>
 {
-    private TestViewModel _viewModel;
+    private TestViewModel _viewModel = null!;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="TestView"/> class.
@@ -42,28 +42,23 @@ public class TestView : ReactiveObject, IViewFor<TestViewModel>
     /// <summary>
     /// Gets or sets the Name Label which emulates a Text property (eg. Entry in Xamarin.Forms).
     /// </summary>
-    public string NameLabel { get; set; }
-
+    public string NameLabel { get; set; } = null!;
     /// <summary>
     /// Gets or sets the Name2 Label which emulates a Text property (eg. Entry in Xamarin.Forms).
     /// </summary>
-    public string Name2Label { get; set; }
-
+    public string Name2Label { get; set; } = null!;
     /// <summary>
     /// Gets or sets the NameError Label which emulates a Text property (eg. Entry in Xamarin.Forms).
     /// </summary>
-    public string NameErrorLabel { get; set; }
-
+    public string NameErrorLabel { get; set; } = null!;
     /// <summary>
     /// Gets or sets the Name2 Error Label which emulates a Text property (eg. Entry in Xamarin.Forms).
     /// </summary>
-    public string Name2ErrorLabel { get; set; }
-
+    public string Name2ErrorLabel { get; set; } = null!;
     /// <summary>
     /// Gets or sets a value indicating whether the form is valid.
     /// </summary>
-    public bool IsNameValid { get; set; }
-
+    public bool IsNameValid { get; set; } = null!;
     /// <summary>
     /// Gets the error label which is represented by a container.
     /// </summary>

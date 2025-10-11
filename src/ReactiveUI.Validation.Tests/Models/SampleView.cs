@@ -22,18 +22,15 @@ public class SampleView : IViewFor<ISampleViewModel>
     /// <summary>
     /// Gets or sets the view model of this particular view.
     /// </summary>
-    public ISampleViewModel ViewModel { get; set; }
-
+    public ISampleViewModel ViewModel { get; set; } = null!;
     /// <summary>
     /// Gets or sets the name view property.
     /// </summary>
-    public string NameLabel { get; set; }
-
+    public string NameLabel { get; set; } = null!;
     /// <summary>
     /// Gets or sets the name error text.
     /// </summary>
-    public string NameErrorLabel { get; set; }
-
+    public string NameErrorLabel { get; set; } = null!;
     /// <inheritdoc />
     object IViewFor.ViewModel
     {

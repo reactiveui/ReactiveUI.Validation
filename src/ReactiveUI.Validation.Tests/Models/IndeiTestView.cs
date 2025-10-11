@@ -24,15 +24,13 @@ public class IndeiTestView : IViewFor<IndeiTestViewModel>
     }
 
     /// <inheritdoc/>
-    public IndeiTestViewModel ViewModel { get; set; }
-
+    public IndeiTestViewModel ViewModel { get; set; } = null!;
     /// <summary>
     /// Gets or sets the Name Label which emulates a Text property (eg. Entry in Xamarin.Forms).
     /// </summary>
-    public string NameLabel { get; set; }
-
+    public string NameLabel { get; set; } = null!;
     /// <summary>
     /// Gets or sets the NameError Label which emulates a Text property (eg. Entry in Xamarin.Forms).
     /// </summary>
-    public string NameErrorLabel { get; set; }
+    public string NameErrorLabel { get; set; } = null!;
 }

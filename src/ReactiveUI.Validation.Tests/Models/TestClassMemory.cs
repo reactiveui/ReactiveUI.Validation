@@ -43,8 +43,7 @@ public sealed class TestClassMemory : ReactiveValidationObject
     /// <value>
     /// The name.
     /// </value>
-    public string Name { get; set; }
-
+    public string Name { get; set; } = null!;
     /// <summary>
     /// Disposes the specified disposing.
     /// </summary>

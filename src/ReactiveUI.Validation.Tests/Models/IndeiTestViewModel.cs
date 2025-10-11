@@ -14,8 +14,8 @@ namespace ReactiveUI.Validation.Tests.Models;
 /// </summary>
 public class IndeiTestViewModel : ReactiveValidationObject
 {
-    private string _name;
-    private string _otherName;
+    private string _name = null!;
+    private string _otherName = null!;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="IndeiTestViewModel"/> class.

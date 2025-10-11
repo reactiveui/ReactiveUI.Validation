@@ -13,5 +13,5 @@ public class TestControl
     /// <summary>
     /// Gets or sets the text property of the container.
     /// </summary>
-    public string Text { get; set; }
+    public string Text { get; set; } = null!;
 }
