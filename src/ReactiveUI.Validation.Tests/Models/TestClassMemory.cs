@@ -5,6 +5,7 @@
 
 using System;
 using System.Reactive.Disposables;
+using System.Reactive.Disposables.Fluent;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Helpers;
 
