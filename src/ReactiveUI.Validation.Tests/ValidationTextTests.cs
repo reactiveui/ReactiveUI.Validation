@@ -1,6 +1,6 @@
-// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Licensed to the ReactiveUI and Contributors under one or more agreements.
+// The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System;
@@ -90,7 +90,7 @@ public class ValidationTextTests
     [Test]
     public void CreateNullReturnsNone()
     {
-        var vt = ValidationText.Create((string)null);
+        var vt = ValidationText.Create((string)null!);
 
         Assert.That(vt, Is.SameAs(ValidationText.None));
     }
@@ -101,7 +101,7 @@ public class ValidationTextTests
     [Test]
     public void CreateNullStringEnumerableReturnsNone()
     {
-        var vt = ValidationText.Create((IEnumerable<string>)null);
+        var vt = ValidationText.Create((IEnumerable<string>)null!);
 
         Assert.That(vt, Is.SameAs(ValidationText.None));
     }
@@ -112,7 +112,7 @@ public class ValidationTextTests
     [Test]
     public void CreateNullValidationTextEnumerableReturnsNone()
     {
-        var vt = ValidationText.Create((IEnumerable<IValidationText>)null);
+        var vt = ValidationText.Create((IEnumerable<IValidationText>)null!);
 
         Assert.That(vt, Is.SameAs(ValidationText.None));
     }
@@ -123,7 +123,7 @@ public class ValidationTextTests
     [Test]
     public void CreateNullItemStringEnumerableReturnsNone()
     {
-        var vt = ValidationText.Create((IEnumerable<string>)[null]);
+        var vt = ValidationText.Create((IEnumerable<string>)[null!]);
 
         Assert.That(vt, Is.SameAs(ValidationText.None));
     }

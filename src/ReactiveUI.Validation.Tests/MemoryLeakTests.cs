@@ -1,6 +1,6 @@
-﻿// Copyright (c) 2021 .NET Foundation and Contributors. All rights reserved.
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
+﻿// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Licensed to the ReactiveUI and Contributors under one or more agreements.
+// The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System;
@@ -30,7 +30,7 @@ public class MemoryLeakTests
     [DotMemoryUnit(FailIfRunWithoutSupport = false)]
     public void Instance_Released_IsGarbageCollected()
     {
-        WeakReference reference = null;
+        WeakReference? reference = null;
         new Action(
             () =>
             {
@@ -49,6 +49,8 @@ public class MemoryLeakTests
 
         GC.Collect();
         GC.WaitForPendingFinalizers();
+
+        Assert.That(reference, Is.Not.Null);
 
         Assert.That(reference.IsAlive, Is.False, "it is garbage collected");
     }
