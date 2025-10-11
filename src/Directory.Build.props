@@ -1,4 +1,30 @@
-<Project>  
+<Project>
+  <PropertyGroup>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <NetCorePlatforms>net8.0;net9.0;net10.0;netstandard2.0</NetCorePlatforms>
+    <NetWindowsPlatforms>net8.0-windows10.0.19041.0;net9.0-windows10.0.19041.0;net10.0-windows10.0.19041.0</NetWindowsPlatforms>
+    <MauiAndroidTargets>net9.0-android;net10.0-android</MauiAndroidTargets>
+    <MauiAppleTargets>net9.0-ios;net9.0-tvos;net9.0-macos;net9.0-maccatalyst;net10.0-ios;net10.0-tvos;net10.0-macos;net10.0-maccatalyst</MauiAppleTargets>
+    <NetFrameworkPlatforms Condition="$([MSBuild]::IsOSPlatform('Windows'))">net462;net472</NetFrameworkPlatforms>
+    <TestTargetFrameworks>net8.0;net9.0;net10.0</TestTargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <CreatableMauiTargets Condition="$([MSBuild]::IsOSPlatform('Windows'))">$(MauiAndroidTargets);$(MauiAppleTargets)</CreatableMauiTargets>
+    <CreatableMauiTargets Condition="$([MSBuild]::IsOSPlatform('OSX'))">$(MauiAndroidTargets);$(MauiAppleTargets)</CreatableMauiTargets>
+    <CreatableMauiTargets Condition="$([MSBuild]::IsOSPlatform('Linux'))">$(MauiAndroidTargets)</CreatableMauiTargets>
+
+    <LibraryTargetFrameworks>$(NetCorePlatforms);$(NetWindowsPlatforms);$(CreatableMauiTargets);$(NetFrameworkPlatforms)</LibraryTargetFrameworks>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
   <PropertyGroup>
     <Copyright>Copyright (c) .NET Foundation and Contributors</Copyright>
     <Product>ReactiveUI.Validations ($(TargetFramework))</Product>
@@ -24,7 +50,6 @@
     <!-- Optional: Include PDB in the built .nupkg -->
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
     <WarningsAsErrors>CS8600;CS8602;CS8603;CS8604;CS8605;CS8606;CS8607;CS8608;CS8609;CS8610;CS8611;CS8612;CS8613;CS8614;CS8615;CS8616;CS8617;CS8618;CS8619;CS8620;CS8621;CS8622;CS8623;CS8624;CS8625</WarningsAsErrors>
-    <LangVersion>preview</LangVersion>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
     <AnalysisLevel>latest</AnalysisLevel>
 		<NoWarn>$(NoWarn);IDE1006;IDE0130</NoWarn>
