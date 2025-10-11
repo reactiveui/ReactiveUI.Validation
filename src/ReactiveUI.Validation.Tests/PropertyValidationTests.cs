@@ -124,7 +124,7 @@ public class PropertyValidationTests
 
         var expectedState1 = new ValidationState(false, "The value 'bongo' is incorrect");
         var comparer = new ValidationStateComparer();
-        
+
         using (Assert.EnterMultipleScope())
         {
             Assert.That(validation.Text?.ToSingleLine(), Is.EqualTo("The value 'bongo' is incorrect"));

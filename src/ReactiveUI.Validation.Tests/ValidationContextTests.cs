@@ -234,6 +234,7 @@ public class ValidationContextTests
             Assert.That(viewModel.ValidationContext.IsValid, Is.False);
             Assert.That(viewModel.ValidationContext.Text, Is.Not.Empty);
         }
+
         Assert.Throws<ArgumentNullException>(() => viewModel.ClearValidationRules<TestViewModel, string>(null!));
 
         viewModel.ClearValidationRules(x => x.Name);

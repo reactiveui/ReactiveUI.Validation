@@ -16,6 +16,9 @@ namespace ReactiveUI.Validation.Tests;
 [TestFixture]
 public class MemoryLeakTests
 {
+    /// <summary>
+    /// Sets up the test fixtures.
+    /// </summary>
     [SetUp]
     public void SetUp()
     {

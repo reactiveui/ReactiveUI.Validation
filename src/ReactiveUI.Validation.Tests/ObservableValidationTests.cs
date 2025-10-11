@@ -24,6 +24,9 @@ public class ObservableValidationTests
     private ReplaySubject<bool> _validState = default!;
     private TestViewModel _validModel = default!;
 
+    /// <summary>
+    /// Sets up the test fixtures.
+    /// </summary>
     [SetUp]
     public void SetUp()
     {
@@ -35,6 +38,9 @@ public class ObservableValidationTests
         };
     }
 
+    /// <summary>
+    /// Tears down the test fixtures.
+    /// </summary>
     [TearDown]
     public void TearDown()
     {
@@ -206,6 +212,7 @@ public class ObservableValidationTests
             Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name2), Is.False);
             Assert.That(component.ContainsProperty<TestViewModel, string>(model => model.Name2, true), Is.False);
         }
+
         Assert.Throws<ArgumentNullException>(() => component.ContainsProperty<TestViewModel, string>(null!));
     }
 
