@@ -10,6 +10,6 @@
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('netstandard')) or $(TargetFramework.StartsWith('net4'))">
-    <PackageReference Include="System.Collections.Immutable" Version="9.0.11" />
+    <PackageReference Include="System.Collections.Immutable" Version="10.0.0" />
   </ItemGroup>
 </Project>
