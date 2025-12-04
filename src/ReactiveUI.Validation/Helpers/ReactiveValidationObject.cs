@@ -56,7 +56,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
         IValidationTextFormatter<string>? formatter = null)
     {
         _formatter = formatter ??
-                     Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+                     AppLocator.Current.GetService<IValidationTextFormatter<string>>() ??
                      SingleLineFormatter.Default;
 
         ValidationContext = new ValidationContext(scheduler);
