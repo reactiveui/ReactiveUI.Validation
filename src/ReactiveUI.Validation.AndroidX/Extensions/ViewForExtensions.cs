@@ -54,7 +54,7 @@ public static class ViewForExtensions
 
         ArgumentNullException.ThrowIfNull(viewProperty);
 
-        formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+        formatter ??= AppLocator.Current.GetService<IValidationTextFormatter<string>>() ??
                       SingleLineFormatter.Default;
 
         return ValidationBinding.ForProperty(
@@ -94,7 +94,7 @@ public static class ViewForExtensions
 
         ArgumentNullException.ThrowIfNull(viewProperty);
 
-        formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+        formatter ??= AppLocator.Current.GetService<IValidationTextFormatter<string>>() ??
                       SingleLineFormatter.Default;
 
         return ValidationBinding.ForValidationHelperProperty(

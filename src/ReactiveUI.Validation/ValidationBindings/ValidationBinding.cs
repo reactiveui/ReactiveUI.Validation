@@ -75,7 +75,7 @@ public sealed class ValidationBinding : IValidationBinding
             throw new ArgumentNullException(nameof(viewProperty));
         }
 
-        formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+        formatter ??= AppLocator.Current.GetService<IValidationTextFormatter<string>>() ??
                       SingleLineFormatter.Default;
 
         var vcObs = view
@@ -193,7 +193,7 @@ public sealed class ValidationBinding : IValidationBinding
             throw new ArgumentNullException(nameof(viewProperty));
         }
 
-        formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+        formatter ??= AppLocator.Current.GetService<IValidationTextFormatter<string>>() ??
                       SingleLineFormatter.Default;
 
         var vcObs = view
@@ -356,7 +356,7 @@ public sealed class ValidationBinding : IValidationBinding
             throw new ArgumentNullException(nameof(viewProperty));
         }
 
-        formatter ??= Locator.Current.GetService<IValidationTextFormatter<string>>() ??
+        formatter ??= AppLocator.Current.GetService<IValidationTextFormatter<string>>() ??
                       SingleLineFormatter.Default;
 
         var vcObs = view
