@@ -57,7 +57,7 @@
   </ItemGroup>
 
 	<ItemGroup Condition="'$(IsTestProject)' != 'true'">
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.102" PrivateAssets="All" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50" PrivateAssets="all" />
