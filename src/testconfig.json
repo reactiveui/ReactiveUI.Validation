@@ -9,7 +9,12 @@
       "extensionId": "Microsoft.Testing.Extensions.CodeCoverage",
       "settings": {
         "format": "cobertura",
-        "skipAutoProperties": true
+        "skipAutoProperties": true,
+        "excludeAssemblyFilters": [
+          "LoginApp*",
+          "AvaloniaApplication1*",
+          "ReactiveUI.Validation.Tests*"
+        ]
       }
     }
   ]

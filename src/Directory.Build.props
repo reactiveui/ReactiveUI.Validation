@@ -21,6 +21,7 @@
     <RepositoryType>git</RepositoryType>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <IsTestProject>$(MSBuildProjectName.Contains('Tests'))</IsTestProject>
+    <IsSampleProject>$(MSBuildProjectDirectory.Contains('samples'))</IsSampleProject>
     <DebugType>Embedded</DebugType>
     <!-- Optional: Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
@@ -36,6 +37,11 @@
 
   <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
     <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(IsSampleProject)' == 'true'">
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup>
