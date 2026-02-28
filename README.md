@@ -13,7 +13,32 @@
 
 # ReactiveUI.Validation
 
-Validation for ReactiveUI based solutions, functioning in a reactive way. `ReactiveUI.Validation` was originally developed by [@jcmm33](https://github.com/jcmm33) as [Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation), and then refactored and updated by [Àlex Martínez Morón](https://github.com/alexmartinezm) and the [ReactiveUI Core Team](https://github.com/reactiveui/ReactiveUI#core-team).
+Validation for ReactiveUI based solutions, functioning in a reactive way.
+
+## Core Team
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top">
+        <img width="100" height="100" src="https://github.com/ChrisPulman.png?s=150">
+        <br>
+        <a href="https://github.com/ChrisPulman">Chris Pulman</a>
+        <p>London, UK</p>
+      </td>
+      <td align="center" valign="top">
+        <img width="100" height="100" src="https://github.com/glennawatson.png?s=150">
+        <br>
+        <a href="https://github.com/glennawatson">Glenn Watson</a>
+        <p>Melbourne, Australia</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Alumni & History
+
+ReactiveUI.Validation was originally developed by [@jcmm33](https://github.com/jcmm33) as [Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation), and then refactored and updated by [Àlex Martínez Morón](https://github.com/alexmartinezm) and the ReactiveUI community.
 
 ## Supported Platforms
 
