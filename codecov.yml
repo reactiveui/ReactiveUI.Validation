@@ -1,9 +1,5 @@
-### YamlMime:ManagedReference
 ignore:
-  - src/tests
-  - src/samples
-  - "**/Tests/"
-  - "**/*.Tests/"
-  - "**/*.Test/"
-  - "**/LoginApp*/"
-  - "**/AvaloniaApplication1*/"
+  - "src/tests/**"
+  - "src/samples/**"
+  - "**/LoginApp*/**"
+  - "**/AvaloniaApplication1*/**"
