@@ -49,4 +49,22 @@ public class IndeiTestViewModel : ReactiveValidationObject
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
+
+    /// <summary>
+    /// Gets or sets the minimum value for cross-field validation testing.
+    /// </summary>
+    public double MinValue
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
+
+    /// <summary>
+    /// Gets or sets the maximum value for cross-field validation testing.
+    /// </summary>
+    public double MaxValue
+    {
+        get;
+        set => this.RaiseAndSetIfChanged(ref field, value);
+    }
 }

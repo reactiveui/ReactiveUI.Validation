@@ -6,6 +6,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
 using ReactiveUI.Validation.Collections;
@@ -593,6 +594,192 @@ public class NotifyDataErrorInfoTests
 
         // The formatter should receive ValidationText.None (the fallback) and format it
         await Assert.That(errors).Count().IsEqualTo(1);
+    }
+
+    /// <summary>
+    /// Verifies that disposing a ValidationHelper does not throw ObjectDisposedException
+    /// when validation bindings are still active (GitHub issue #665).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task DisposingValidationHelperShouldNotThrowObjectDisposedException()
+    {
+        var viewModel = new IndeiTestViewModel();
+        var view = new IndeiTestView(viewModel);
+
+        var helper = viewModel.ValidationRule(
+            vm => vm.Name,
+            name => !string.IsNullOrWhiteSpace(name),
+            "Name shouldn't be empty.");
+
+        view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+        view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
+
+        // Verify initial invalid state.
+        using (Assert.Multiple())
+        {
+            await Assert.That(viewModel.HasErrors).IsTrue();
+            await Assert.That(viewModel.ValidationContext.IsValid).IsFalse();
+        }
+
+        // Make it valid first, then dispose the helper while bindings are active.
+        viewModel.Name = "valid";
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(viewModel.HasErrors).IsFalse();
+            await Assert.That(viewModel.ValidationContext.IsValid).IsTrue();
+        }
+
+        // This should not throw ObjectDisposedException (GitHub #665).
+        helper.Dispose();
+
+        // After disposal, the context should be valid (no rules left).
+        using (Assert.Multiple())
+        {
+            await Assert.That(viewModel.HasErrors).IsFalse();
+            await Assert.That(viewModel.ValidationContext.IsValid).IsTrue();
+            await Assert.That(viewModel.ValidationContext.Validations.Count).IsEqualTo(0);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that disposing the ViewModel does not throw ObjectDisposedException
+    /// when validation subscriptions are active (GitHub issue #665).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task DisposingViewModelWithActiveSubscriptionsShouldNotThrow()
+    {
+        var viewModel = new IndeiTestViewModel();
+        var errorsChangedCount = 0;
+        viewModel.ErrorsChanged += (_, _) => errorsChangedCount++;
+
+        viewModel.ValidationRule(
+            vm => vm.Name,
+            name => !string.IsNullOrWhiteSpace(name),
+            "Name shouldn't be empty.");
+
+        viewModel.ValidationRule(
+            vm => vm.OtherName,
+            other => !string.IsNullOrWhiteSpace(other),
+            "Other name shouldn't be empty.");
+
+        // Verify initial state.
+        await Assert.That(viewModel.HasErrors).IsTrue();
+
+        // Change properties to trigger subscriptions.
+        viewModel.Name = "test";
+        viewModel.OtherName = "test2";
+
+        await Assert.That(viewModel.HasErrors).IsFalse();
+
+        // Dispose should not throw even with active subscriptions.
+        viewModel.Dispose();
+
+        await Assert.That(errorsChangedCount).IsGreaterThan(0);
+    }
+
+    /// <summary>
+    /// Verifies that clearing validation rules while subscriptions are active
+    /// does not throw ObjectDisposedException (GitHub issue #665).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task ClearingValidationRulesWithActiveSubscriptionsShouldNotThrow()
+    {
+        var viewModel = new IndeiTestViewModel();
+
+        viewModel.ValidationRule(
+            vm => vm.Name,
+            name => !string.IsNullOrWhiteSpace(name),
+            "Name shouldn't be empty.");
+
+        // Subscribe to IsValid observable to create active subscriptions.
+        var latestValidity = false;
+        using var subscription = viewModel.IsValid().Subscribe(v => latestValidity = v);
+
+        await Assert.That(latestValidity).IsFalse();
+
+        // This should not throw ObjectDisposedException.
+        viewModel.ClearValidationRules();
+
+        await Assert.That(latestValidity).IsTrue();
+    }
+
+    /// <summary>
+    /// Verifies that HasErrors reflects the correct validation state when reading
+    /// it inside a property-change subscription created via WhenAnyValue (GitHub issue #515).
+    /// This tests the scenario where a user subscribes to property changes and
+    /// checks HasErrors in the callback.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task HasErrorsShouldBeCorrectInsidePropertyChangedCallback()
+    {
+        var viewModel = new IndeiTestViewModel();
+
+        viewModel.ValidationRule(
+            vm => vm.Name,
+            name => !string.IsNullOrWhiteSpace(name),
+            "Name shouldn't be empty.");
+
+        // Track HasErrors state at the time of each property change.
+        var hasErrorsValues = new List<bool>();
+        using var subscription = viewModel.WhenAnyValue(x => x.Name)
+            .Subscribe(_ => hasErrorsValues.Add(viewModel.HasErrors));
+
+        // Initial subscription fires with null Name - should have errors.
+        await Assert.That(hasErrorsValues).Count().IsGreaterThanOrEqualTo(1);
+
+        // Set a valid name.
+        viewModel.Name = "valid";
+
+        // Set an invalid name.
+        viewModel.Name = string.Empty;
+
+        // We expect the sequence: initial invalid (true) -> valid (false) -> invalid (true).
+        await Assert.That(hasErrorsValues).Count().IsEqualTo(3);
+        await Assert.That(hasErrorsValues[0]).IsTrue();
+        await Assert.That(hasErrorsValues[1]).IsFalse();
+        await Assert.That(hasErrorsValues[2]).IsTrue();
+    }
+
+    /// <summary>
+    /// Verifies that HasErrors correctly reflects cross-field validation state
+    /// when reading it inside a property changed side effect (GitHub issue #515).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task HasErrorsShouldBeCorrectForCrossFieldValidationInSideEffect()
+    {
+        var viewModel = new IndeiTestViewModel { MaxValue = 100.0 };
+
+        var minMaxObs = viewModel.WhenAnyValue(
+            v => v.MinValue,
+            v => v.MaxValue,
+            (min, max) => min < max);
+
+        viewModel.ValidationRule(
+            v => v.MaxValue,
+            minMaxObs,
+            "Max value must be greater than min value.");
+
+        // Initially valid: MinValue=0, MaxValue=100.
+        await Assert.That(viewModel.HasErrors).IsFalse();
+
+        // Track HasErrors at the moment MaxValue changes.
+        var hasErrorsOnChange = new List<bool>();
+        using var hasErrorsSubscription = viewModel.WhenAnyValue(x => x.MaxValue)
+            .Skip(1)
+            .Subscribe(_ => hasErrorsOnChange.Add(viewModel.HasErrors));
+
+        // Set MaxValue below MinValue -> should be invalid.
+        viewModel.MaxValue = -1.0;
+
+        // HasErrors should be true immediately in the callback.
+        await Assert.That(hasErrorsOnChange).Count().IsEqualTo(1);
+        await Assert.That(hasErrorsOnChange[0]).IsTrue();
     }
 
     /// <summary>
