@@ -132,6 +132,27 @@ The `--treenode-filter` follows the pattern: `/{AssemblyName}/{Namespace}/{Class
 
 See https://tunit.dev/docs/reference/command-line-flags for complete TUnit flag reference.
 
+### Code Coverage Reports
+
+To generate and view a code coverage report:
+
+```powershell
+# 1. Clean bin/obj to ensure fresh instrumentation
+find . -type d \( -name bin -o -name obj \) -exec rm -rf {} + 2>/dev/null
+
+# 2. Run tests with coverage
+dotnet test --project tests/ReactiveUI.Validation.Tests/ReactiveUI.Validation.Tests.csproj -c Release -- --coverage --coverage-output-format cobertura --disable-logo --no-progress
+
+# 3. Generate a text summary (requires dotnet-reportgenerator-globaltool)
+reportgenerator -reports:"tests/ReactiveUI.Validation.Tests/bin/Release/net10.0/TestResults/*.cobertura.xml" -targetdir:/tmp/coverage-report -reporttypes:TextSummary
+cat /tmp/coverage-report/Summary.txt
+
+# 4. Generate an HTML report for detailed per-file analysis
+reportgenerator -reports:"tests/ReactiveUI.Validation.Tests/bin/Release/net10.0/TestResults/*.cobertura.xml" -targetdir:/tmp/coverage-report -reporttypes:Html
+```
+
+**Note:** `Microsoft.Testing.Extensions.CodeCoverage` is pinned at 18.4.1 due to a regression in newer versions that produces incorrect coverage data. Do not upgrade without verifying coverage output.
+
 ### Key Configuration Files
 
 - `global.json` - Specifies `"Microsoft.Testing.Platform"` as the test runner
