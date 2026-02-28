@@ -709,7 +709,7 @@ public class NotifyDataErrorInfoTests
 
     /// <summary>
     /// Verifies that HasErrors reflects the correct validation state when reading
-    /// it inside a WhenAnyPropertyChanged side effect (GitHub issue #515).
+    /// it inside a property-change subscription created via WhenAnyValue (GitHub issue #515).
     /// This tests the scenario where a user subscribes to property changes and
     /// checks HasErrors in the callback.
     /// </summary>
@@ -726,7 +726,7 @@ public class NotifyDataErrorInfoTests
 
         // Track HasErrors state at the time of each property change.
         var hasErrorsValues = new List<bool>();
-        viewModel.WhenAnyValue(x => x.Name)
+        using var subscription = viewModel.WhenAnyValue(x => x.Name)
             .Subscribe(_ => hasErrorsValues.Add(viewModel.HasErrors));
 
         // Initial subscription fires with null Name - should have errors.
@@ -738,9 +738,11 @@ public class NotifyDataErrorInfoTests
         // Set an invalid name.
         viewModel.Name = string.Empty;
 
-        // The last entry should reflect that Name is empty -> HasErrors should be true.
-        var lastValue = hasErrorsValues[^1];
-        await Assert.That(lastValue).IsTrue();
+        // We expect the sequence: initial invalid (true) -> valid (false) -> invalid (true).
+        await Assert.That(hasErrorsValues).Count().IsEqualTo(3);
+        await Assert.That(hasErrorsValues[0]).IsTrue();
+        await Assert.That(hasErrorsValues[1]).IsFalse();
+        await Assert.That(hasErrorsValues[2]).IsTrue();
     }
 
     /// <summary>
@@ -768,7 +770,7 @@ public class NotifyDataErrorInfoTests
 
         // Track HasErrors at the moment MaxValue changes.
         var hasErrorsOnChange = new List<bool>();
-        viewModel.WhenAnyValue(x => x.MaxValue)
+        using var hasErrorsSubscription = viewModel.WhenAnyValue(x => x.MaxValue)
             .Skip(1)
             .Subscribe(_ => hasErrorsOnChange.Add(viewModel.HasErrors));
 
