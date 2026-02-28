@@ -4,8 +4,10 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections;
+using System.Linq.Expressions;
 
 using ReactiveUI.Validation.Collections;
+using ReactiveUI.Validation.Extensions;
 
 namespace ReactiveUI.Validation.Tests;
 
@@ -241,5 +243,19 @@ public class InternalCollectionTests
         collection.Dispose();
 
         await Assert.That(collection).IsNotNull();
+    }
+
+    /// <summary>
+    /// Verifies that GetPropertyPath throws for static member expressions where the parent is null.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task GetPropertyPathThrowsForStaticMemberExpression()
+    {
+        // DateTime.Now is a static property, so MemberExpression.Expression is null.
+        Expression<Func<DateTime>> expr = () => DateTime.Now;
+        var body = expr.Body;
+
+        await Assert.That(() => body.GetPropertyPath()).Throws<ArgumentException>();
     }
 }

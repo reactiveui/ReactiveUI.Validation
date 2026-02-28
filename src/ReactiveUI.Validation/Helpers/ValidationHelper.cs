@@ -18,7 +18,7 @@ namespace ReactiveUI.Validation.Helpers;
 /// <summary>
 /// Encapsulation of a validation with bindable properties.
 /// </summary>
-public class ValidationHelper : ReactiveObject, IDisposable
+public sealed class ValidationHelper : ReactiveObject, IDisposable
 {
     private readonly ObservableAsPropertyHelper<IValidationText> _message;
     private readonly ObservableAsPropertyHelper<bool> _isValid;
@@ -65,27 +65,10 @@ public class ValidationHelper : ReactiveObject, IDisposable
     /// <inheritdoc/>
     public void Dispose()
     {
-        // Dispose of unmanaged resources.
-        Dispose(true);
-
-        // Suppress finalization.
-        GC.SuppressFinalize(this);
-    }
-
-    /// <summary>
-    /// Disposes of the managed resources.
-    /// </summary>
-    /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!disposing)
-        {
-            return;
-        }
-
         _isValid.Dispose();
         _message.Dispose();
         _cleanup?.Dispose();
         _cleanup = null;
+        GC.SuppressFinalize(this);
     }
 }

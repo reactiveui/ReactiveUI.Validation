@@ -259,7 +259,7 @@ namespace ReactiveUI.Validation.Helpers
         public virtual System.Collections.IEnumerable GetErrors(string? propertyName) { }
         protected void RaiseErrorsChanged(string propertyName = "") { }
     }
-    public class ValidationHelper : ReactiveUI.ReactiveObject, System.IDisposable
+    public sealed class ValidationHelper : ReactiveUI.ReactiveObject, System.IDisposable
     {
         [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
         public ValidationHelper(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation, System.IDisposable? cleanup = null) { }
@@ -267,7 +267,6 @@ namespace ReactiveUI.Validation.Helpers
         public ReactiveUI.Validation.Collections.IValidationText Message { get; }
         public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationChanged { get; }
         public void Dispose() { }
-        protected virtual void Dispose(bool disposing) { }
     }
 }
 namespace ReactiveUI.Validation.States
