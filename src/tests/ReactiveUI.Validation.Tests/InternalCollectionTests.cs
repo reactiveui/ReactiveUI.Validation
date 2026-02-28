@@ -258,4 +258,195 @@ public class InternalCollectionTests
 
         await Assert.That(() => body.GetPropertyPath()).Throws<ArgumentException>();
     }
+
+    /// <summary>
+    /// Verifies that CopyArray copies the correct number of elements.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task CopyArrayCopiesCorrectNumberOfElements()
+    {
+        var source = new[] { "a", "b", "c", "d" };
+
+        var result = ValidationText.CopyArray(source, 2);
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(result).Count().IsEqualTo(2);
+            await Assert.That(result[0]).IsEqualTo("a");
+            await Assert.That(result[1]).IsEqualTo("b");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that CopyArray with full length copies all elements.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task CopyArrayFullLengthCopiesAllElements()
+    {
+        var source = new[] { "x", "y" };
+
+        var result = ValidationText.CopyArray(source, 2);
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(result).Count().IsEqualTo(2);
+            await Assert.That(result[0]).IsEqualTo("x");
+            await Assert.That(result[1]).IsEqualTo("y");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that CopyArray returns a new array (not the same reference).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task CopyArrayReturnsNewArrayInstance()
+    {
+        var source = new[] { "a", "b" };
+
+        var result = ValidationText.CopyArray(source, 2);
+
+        await Assert.That(result).IsNotSameReferenceAs(source);
+    }
+
+    /// <summary>
+    /// Verifies that CreateValidationText with empty string returns Empty singleton.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task CreateValidationTextEmptyStringReturnsEmpty()
+    {
+        var result = ValidationText.CreateValidationText(string.Empty);
+
+        await Assert.That(result).IsSameReferenceAs(ValidationText.Empty);
+    }
+
+    /// <summary>
+    /// Verifies that CreateValidationText with non-empty string returns SingleValidationText.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task CreateValidationTextNonEmptyStringReturnsSingleValidationText()
+    {
+        var result = ValidationText.CreateValidationText("Error");
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(result).Count().IsEqualTo(1);
+            await Assert.That(result[0]).IsEqualTo("Error");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that CreateValidationText with count 0 returns None.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task CreateValidationTextListCountZeroReturnsNone()
+    {
+        IReadOnlyList<string> texts = new[] { "a", "b" };
+
+        var result = ValidationText.CreateValidationText(texts, 0);
+
+        await Assert.That(result).IsSameReferenceAs(ValidationText.None);
+    }
+
+    /// <summary>
+    /// Verifies that CreateValidationText with count 1 returns a single element.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task CreateValidationTextListCountOneReturnsSingleElement()
+    {
+        IReadOnlyList<string> texts = new[] { "Error", "Ignored" };
+
+        var result = ValidationText.CreateValidationText(texts, 1);
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(result).Count().IsEqualTo(1);
+            await Assert.That(result[0]).IsEqualTo("Error");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that CreateValidationText with array and full count reuses the array.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task CreateValidationTextListArrayFullCountReusesArray()
+    {
+        var array = new[] { "A", "B" };
+        IReadOnlyList<string> texts = array;
+
+        var result = ValidationText.CreateValidationText(texts, 2);
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(result).Count().IsEqualTo(2);
+            await Assert.That(result[0]).IsEqualTo("A");
+            await Assert.That(result[1]).IsEqualTo("B");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that CreateValidationText with array and partial count copies subset.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task CreateValidationTextListArrayPartialCountCopiesSubset()
+    {
+        var array = new[] { "A", "B", "C" };
+        IReadOnlyList<string> texts = array;
+
+        var result = ValidationText.CreateValidationText(texts, 2);
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(result).Count().IsEqualTo(2);
+            await Assert.That(result[0]).IsEqualTo("A");
+            await Assert.That(result[1]).IsEqualTo("B");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that CreateValidationText with non-array list and count uses Take path.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task CreateValidationTextListNonArrayListUsesTakePath()
+    {
+        IReadOnlyList<string> texts = new List<string> { "X", "Y", "Z" };
+
+        var result = ValidationText.CreateValidationText(texts, 2);
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(result).Count().IsEqualTo(2);
+            await Assert.That(result[0]).IsEqualTo("X");
+            await Assert.That(result[1]).IsEqualTo("Y");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that ReadOnlyDisposableCollection.Dispose(false) does not dispose.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task ReadOnlyDisposableCollectionDisposeFalseDoesNotDispose()
+    {
+        var collection = new ReadOnlyDisposableCollection<int>([1, 2, 3]);
+
+        collection.Dispose(false);
+
+        // Collection should still be usable after Dispose(false)
+        await Assert.That(collection.Count).IsEqualTo(3);
+
+        // But calling Dispose(true) afterwards should work
+        collection.Dispose(true);
+
+        await Assert.That(collection).IsNotNull();
+    }
 }

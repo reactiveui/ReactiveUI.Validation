@@ -21,7 +21,14 @@ namespace ReactiveUI.Validation.Tests;
 [SuppressMessage("Design", "CA1001:TypesThatOwnDisposableFieldsShouldBeDisposable", Justification = "Disposed via TUnit [After(Test)] lifecycle hook.")]
 public class ObservableValidationTests
 {
+    /// <summary>
+    /// Replay subject that drives validity state changes for tests.
+    /// </summary>
     private ReplaySubject<bool> _validState = default!;
+
+    /// <summary>
+    /// Test view model instance initialized before each test.
+    /// </summary>
     private TestViewModel _validModel = default!;
 
     /// <summary>

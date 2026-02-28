@@ -14,9 +14,9 @@ namespace ReactiveUI.Validation.States;
 /// <remarks>
 /// Initializes a new instance of the <see cref="ValidationState"/> class.
 /// </remarks>
-/// <param name="isValid">Determines if the property is valid or not.</param>
-/// <param name="text">Validation text.</param>
-public class ValidationState(bool isValid, IValidationText text) : IValidationState
+/// <param name="IsValid">Determines if the property is valid or not.</param>
+/// <param name="Text">Validation text.</param>
+public sealed record ValidationState(bool IsValid, IValidationText Text) : IValidationState
 {
     /// <summary>
     /// Indicates a valid state.
@@ -34,12 +34,7 @@ public class ValidationState(bool isValid, IValidationText text) : IValidationSt
     }
 
     /// <summary>
-    /// Gets a value indicating whether the validation is currently valid or not.
-    /// </summary>
-    public bool IsValid { get; } = isValid;
-
-    /// <summary>
     /// Gets the validation text.
     /// </summary>
-    public IValidationText Text { get; } = text ?? throw new ArgumentNullException(nameof(text));
+    public IValidationText Text { get; } = Text ?? throw new ArgumentNullException(nameof(Text));
 }

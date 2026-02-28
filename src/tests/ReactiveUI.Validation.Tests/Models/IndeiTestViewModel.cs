@@ -33,7 +33,7 @@ public class IndeiTestViewModel : ReactiveValidationObject
     }
 
     /// <summary>
-    /// Gets or sets get the Name.
+    /// Gets or sets the name.
     /// </summary>
     public string? Name
     {
@@ -42,7 +42,7 @@ public class IndeiTestViewModel : ReactiveValidationObject
     }
 
     /// <summary>
-    /// Gets or sets get the Name.
+    /// Gets or sets the other name used for cross-field validation testing.
     /// </summary>
     public string? OtherName
     {

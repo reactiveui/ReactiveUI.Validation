@@ -26,9 +26,16 @@ namespace ReactiveUI.Validation.ValidationBindings;
 /// <inheritdoc />
 public sealed class ValidationBinding : IValidationBinding
 {
+    /// <summary>
+    /// The subscription to the binding observable that keeps the validation binding active.
+    /// </summary>
     private IDisposable _disposable;
 
-    private ValidationBinding(IObservable<Unit> bindingObservable) => _disposable = bindingObservable.Subscribe();
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidationBinding"/> class.
+    /// </summary>
+    /// <param name="bindingObservable">The observable that drives the validation binding updates.</param>
+    internal ValidationBinding(IObservable<Unit> bindingObservable) => _disposable = bindingObservable.Subscribe();
 
     /// <summary>
     /// Creates a binding between a ViewModel property and a view property.
@@ -47,10 +54,9 @@ public sealed class ValidationBinding : IValidationBinding
     /// </param>
     /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
     /// <returns>Returns a validation component.</returns>
-#if NET6_0_OR_GREATER
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="view"/>, <paramref name="viewModelProperty"/>, or <paramref name="viewProperty"/> is null.</exception>
     [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(
         TView view,
         Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
@@ -74,7 +80,7 @@ public sealed class ValidationBinding : IValidationBinding
 
         var vcObs = view
             .WhenAnyValue(v => v.ViewModel)
-            .Where(vm => vm is not null)
+            .Where(static vm => vm is not null)
             .SelectMany(vm => vm!.ValidationContext.ObserveFor(viewModelProperty, strict))
             .Select(
                 states => states
@@ -100,10 +106,9 @@ public sealed class ValidationBinding : IValidationBinding
     /// <param name="formatter">Validation formatter.</param>
     /// <param name="strict">Indicates if the ViewModel property to find is unique.</param>
     /// <returns>Returns a validation component.</returns>
-#if NET6_0_OR_GREATER
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="view"/>, <paramref name="viewModelProperty"/>, <paramref name="action"/>, or <paramref name="formatter"/> is null.</exception>
     [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     public static IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(
         TView view,
         Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
@@ -126,10 +131,10 @@ public sealed class ValidationBinding : IValidationBinding
 
         var vcObs = view
             .WhenAnyValue(v => v.ViewModel)
-            .Where(vm => vm is not null)
+            .Where(static vm => vm is not null)
             .SelectMany(vm => vm!.ValidationContext.ObserveFor(viewModelProperty, strict))
             .Do(states => action(states, [.. states.Select(state => formatter.Format(state.Text))]))
-            .Select(_ => Unit.Default);
+            .Select(static _ => Unit.Default);
 
         return new ValidationBinding(vcObs);
     }
@@ -149,10 +154,9 @@ public sealed class ValidationBinding : IValidationBinding
     /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
     /// </param>
     /// <returns>Returns a validation component.</returns>
-#if NET6_0_OR_GREATER
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="view"/>, <paramref name="viewModelHelperProperty"/>, or <paramref name="viewProperty"/> is null.</exception>
     [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(
         TView view,
         Expression<Func<TViewModel?, ValidationHelper?>> viewModelHelperProperty,
@@ -175,7 +179,7 @@ public sealed class ValidationBinding : IValidationBinding
 
         var vcObs = view
             .WhenAnyValue(v => v.ViewModel)
-            .Where(vm => vm is not null)
+            .Where(static vm => vm is not null)
             .Select(
                 viewModel => viewModel
                     .WhenAnyValue(viewModelHelperProperty)
@@ -202,10 +206,9 @@ public sealed class ValidationBinding : IValidationBinding
     /// <param name="action">Action to be executed.</param>
     /// <param name="formatter">Validation formatter.</param>
     /// <returns>Returns a validation component.</returns>
-#if NET6_0_OR_GREATER
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="view"/>, <paramref name="viewModelHelperProperty"/>, <paramref name="action"/>, or <paramref name="formatter"/> is null.</exception>
     [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     public static IValidationBinding ForValidationHelperProperty<TView, TViewModel, TOut>(
         TView view,
         Expression<Func<TViewModel?, ValidationHelper?>> viewModelHelperProperty,
@@ -227,7 +230,7 @@ public sealed class ValidationBinding : IValidationBinding
 
         var vcObs = view
             .WhenAnyValue(v => v.ViewModel)
-            .Where(vm => vm is not null)
+            .Where(static vm => vm is not null)
             .Select(
                 viewModel => viewModel
                     .WhenAnyValue(viewModelHelperProperty)
@@ -236,7 +239,7 @@ public sealed class ValidationBinding : IValidationBinding
                         : Observable.Return(ValidationState.Valid)))
             .Switch()
             .Do(state => action(state, formatter.Format(state.Text)))
-            .Select(_ => Unit.Default);
+            .Select(static _ => Unit.Default);
 
         return new ValidationBinding(vcObs);
     }
@@ -253,10 +256,9 @@ public sealed class ValidationBinding : IValidationBinding
     /// <param name="action">Action to be executed.</param>
     /// <param name="formatter">Validation formatter.</param>
     /// <returns>Returns a validation component.</returns>
-#if NET6_0_OR_GREATER
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="view"/>, <paramref name="action"/>, or <paramref name="formatter"/> is null.</exception>
     [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     public static IValidationBinding ForViewModel<TView, TViewModel, TOut>(
         TView view,
         Action<TOut> action,
@@ -275,10 +277,10 @@ public sealed class ValidationBinding : IValidationBinding
 
         var vcObs = view
             .WhenAnyValue(v => v.ViewModel)
-            .Where(vm => vm is not null)
+            .Where(static vm => vm is not null)
             .SelectMany(vm => vm!.ValidationContext.ValidationStatusChange)
             .Do(state => action(formatter.Format(state.Text)))
-            .Select(_ => Unit.Default);
+            .Select(static _ => Unit.Default);
 
         return new ValidationBinding(vcObs);
     }
@@ -297,10 +299,9 @@ public sealed class ValidationBinding : IValidationBinding
     /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
     /// </param>
     /// <returns>Returns a validation component.</returns>
-#if NET6_0_OR_GREATER
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="view"/> or <paramref name="viewProperty"/> is null.</exception>
     [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     public static IValidationBinding ForViewModel<TView, TViewModel, TViewProperty>(
         TView view,
         Expression<Func<TView, TViewProperty>> viewProperty,
@@ -320,7 +321,7 @@ public sealed class ValidationBinding : IValidationBinding
 
         var vcObs = view
             .WhenAnyValue(v => v.ViewModel)
-            .Where(vm => vm is not null)
+            .Where(static vm => vm is not null)
             .SelectMany(vm => vm!.ValidationContext.ValidationStatusChange)
             .Select(vc => formatter.Format(vc.Text));
 
@@ -342,10 +343,8 @@ public sealed class ValidationBinding : IValidationBinding
     /// <param name="target">Target instance.</param>
     /// <param name="viewProperty">View property.</param>
     /// <returns>Returns a validation component.</returns>
-#if NET6_0_OR_GREATER
     [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     internal static IObservable<Unit> BindToView<TView, TViewProperty, TTarget>(
         IObservable<string> valueChange,
         TTarget target,
@@ -354,33 +353,35 @@ public sealed class ValidationBinding : IValidationBinding
     {
         var viewExpression = Reflection.Rewrite(viewProperty.Body);
         var setter = Reflection.GetValueSetterOrThrow(viewExpression.GetMemberInfo())!;
+        var parent = viewExpression.GetParent();
+        var args = viewExpression.GetArgumentsArray();
 
-        if (viewExpression.GetParent()?.NodeType == ExpressionType.Parameter)
+        if (parent?.NodeType == ExpressionType.Parameter)
         {
             return valueChange
                 .Do(
-                    x => setter(target, x, viewExpression.GetArgumentsArray()),
+                    x => setter(target, x, args),
                     ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"))
-                .Select(_ => Unit.Default);
+                .Select(static _ => Unit.Default);
         }
 
         var bindInfo = valueChange.CombineLatest(
-            target.WhenAnyDynamic(viewExpression.GetParent(), x => x.Value),
-            (val, host) => new { val, host });
+            target.WhenAnyDynamic(parent, x => x.Value),
+            static (val, host) => (val, host));
 
         return bindInfo
-            .Where(x => x.host is not null)
+            .Where(static x => x.host is not null)
             .Do(
-                x => setter(x.host, x.val, viewExpression.GetArgumentsArray()),
+                x => setter(x.host, x.val, args),
                 ex => LogHost.Default.Error(ex, $"{viewExpression} Binding received an Exception!"))
-            .Select(_ => Unit.Default);
+            .Select(static _ => Unit.Default);
     }
 
     /// <summary>
     /// Disposes of the managed resources.
     /// </summary>
     /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
-    private void Dispose(bool disposing)
+    internal void Dispose(bool disposing)
     {
         if (disposing)
         {

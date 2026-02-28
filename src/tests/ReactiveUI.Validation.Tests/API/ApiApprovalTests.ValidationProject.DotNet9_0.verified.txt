@@ -276,12 +276,12 @@ namespace ReactiveUI.Validation.States
         bool IsValid { get; }
         ReactiveUI.Validation.Collections.IValidationText Text { get; }
     }
-    public class ValidationState : ReactiveUI.Validation.States.IValidationState
+    public sealed class ValidationState : ReactiveUI.Validation.States.IValidationState, System.IEquatable<ReactiveUI.Validation.States.ValidationState>
     {
         public static readonly ReactiveUI.Validation.States.IValidationState Valid;
-        public ValidationState(bool isValid, ReactiveUI.Validation.Collections.IValidationText text) { }
+        public ValidationState(bool IsValid, ReactiveUI.Validation.Collections.IValidationText Text) { }
         public ValidationState(bool isValid, string text) { }
-        public bool IsValid { get; }
+        public bool IsValid { get; init; }
         public ReactiveUI.Validation.Collections.IValidationText Text { get; }
     }
 }

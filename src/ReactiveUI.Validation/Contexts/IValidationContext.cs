@@ -29,7 +29,7 @@ public interface IValidationContext : IValidationComponent, IReactiveObject, ICa
     IObservable<bool> Valid { get; }
 
     /// <summary>
-    /// Gets get the list of validations.
+    /// Gets the list of validations.
     /// </summary>
     IObservableList<IValidationComponent> Validations { get; }
 

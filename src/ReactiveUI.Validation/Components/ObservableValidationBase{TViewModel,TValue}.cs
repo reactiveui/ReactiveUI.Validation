@@ -25,10 +25,29 @@ namespace ReactiveUI.Validation.Components;
 /// </summary>
 public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObject, IDisposable, IPropertyValidationComponent
 {
+    /// <summary>
+    /// Replays the latest validation state to subscribers.
+    /// </summary>
     private readonly ReplaySubject<IValidationState> _isValidSubject = new(1);
+
+    /// <summary>
+    /// Tracks property names this validation monitors.
+    /// </summary>
     private readonly HashSet<string> _propertyNames = [];
+
+    /// <summary>
+    /// Composite disposable for lifecycle management.
+    /// </summary>
     private readonly CompositeDisposable _disposables = [];
+
+    /// <summary>
+    /// The connected observable that multicasts validation state changes.
+    /// </summary>
     private readonly IConnectableObservable<IValidationState> _validityConnectedObservable;
+
+    /// <summary>
+    /// Tracks whether <see cref="Activate"/> has been called.
+    /// </summary>
     private bool _isActive;
 
     /// <summary>
@@ -130,6 +149,20 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
             : _propertyNames.Contains(propertyName);
 
     /// <summary>
+    /// Activates the validation, connecting the observable chain.
+    /// </summary>
+    internal void Activate()
+    {
+        if (_isActive)
+        {
+            return;
+        }
+
+        _isActive = true;
+        _disposables.Add(_validityConnectedObservable.Connect());
+    }
+
+    /// <summary>
     /// Disposes of the managed resources.
     /// </summary>
     /// <param name="disposing">
@@ -155,16 +188,5 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
 
         var propertyName = property.Body.GetPropertyPath();
         _propertyNames.Add(propertyName);
-    }
-
-    private void Activate()
-    {
-        if (_isActive)
-        {
-            return;
-        }
-
-        _isActive = true;
-        _disposables.Add(_validityConnectedObservable.Connect());
     }
 }

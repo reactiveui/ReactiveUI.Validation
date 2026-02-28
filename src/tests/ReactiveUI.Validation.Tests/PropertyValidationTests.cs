@@ -285,5 +285,9 @@ public class PropertyValidationTests
         await Assert.That(validation.IsValid).IsTrue();
     }
 
+    /// <summary>
+    /// Creates a <see cref="TestViewModel"/> with a non-empty Name for valid-state tests.
+    /// </summary>
+    /// <returns>A test view model instance with valid default values.</returns>
     private static TestViewModel CreateDefaultValidModel() => new() { Name = "name" };
 }

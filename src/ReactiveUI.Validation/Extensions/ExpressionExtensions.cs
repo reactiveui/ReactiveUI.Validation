@@ -4,8 +4,8 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Text;
 
 namespace ReactiveUI.Validation.Extensions;
 
@@ -26,22 +26,20 @@ internal static class ExpressionExtensions
     /// </remarks>
     public static string GetPropertyPath(this Expression expression)
     {
-        var path = new StringBuilder();
+        var members = new Stack<string>();
         while (expression is MemberExpression memberExpression)
         {
-            if (path.Length > 0)
-            {
-                path.Insert(0, '.');
-            }
-
-            path.Insert(0, memberExpression.Member.Name);
-
+            members.Push(memberExpression.Member.Name);
             expression = memberExpression.Expression ??
                          throw new ArgumentException(
                              $"Unable to obtain parent expression of {memberExpression.Member.Name}",
                              nameof(expression));
         }
 
-        return path.ToString();
+#if NET8_0_OR_GREATER
+        return string.Join('.', members);
+#else
+        return string.Join(".", members);
+#endif
     }
 }

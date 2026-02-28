@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <PackageReference Include="ReactiveUI" />
-    <PackageReference Include="Polyfill" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

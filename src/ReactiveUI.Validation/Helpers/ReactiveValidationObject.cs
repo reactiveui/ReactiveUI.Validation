@@ -32,8 +32,21 @@ namespace ReactiveUI.Validation.Helpers;
 /// </summary>
 public abstract class ReactiveValidationObject : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo, IDisposable
 {
+    /// <summary>
+    /// Composite disposable for lifecycle management.
+    /// </summary>
     private readonly CompositeDisposable _disposables = [];
+
+    /// <summary>
+    /// The formatter used to convert <see cref="IValidationText"/> into error message strings
+    /// for <see cref="INotifyDataErrorInfo.GetErrors"/>.
+    /// </summary>
     private readonly IValidationTextFormatter<string> _formatter;
+
+    /// <summary>
+    /// Tracks property names that have previously appeared in <see cref="ErrorsChanged"/> notifications,
+    /// so that non-property validation components can re-notify for all known properties.
+    /// </summary>
     private readonly HashSet<string> _mentionedPropertyNames = [];
 
     /// <summary>
@@ -47,9 +60,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
     /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
     /// </param>
-#if NET6_0_OR_GREATER
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     protected ReactiveValidationObject(
         IScheduler? scheduler = null,
         IValidationTextFormatter<string>? formatter = null)
@@ -93,12 +104,12 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     /// <returns>A list of error messages, usually strings.</returns>
     /// <inheritdoc />
     public virtual IEnumerable GetErrors(string? propertyName) =>
-        propertyName is null || string.IsNullOrEmpty(propertyName)
+        string.IsNullOrEmpty(propertyName)
             ? SelectInvalidPropertyValidations()
                 .Select(state => _formatter.Format(state.Text ?? ValidationText.None))
                 .ToArray()
             : [.. SelectInvalidPropertyValidations()
-                .Where(validation => validation.ContainsPropertyName(propertyName))
+                .Where(validation => validation.ContainsPropertyName(propertyName!))
                 .Select(state => _formatter.Format(state.Text ?? ValidationText.None))];
 
     /// <summary>
@@ -112,31 +123,10 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     }
 
     /// <summary>
-    /// Raises the <see cref="ErrorsChanged"/> event.
-    /// </summary>
-    /// <param name="propertyName">The name of the validated property.</param>
-    protected void RaiseErrorsChanged(string propertyName = "") =>
-        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
-
-    /// <summary>
-    /// Disposes the specified disposing.
-    /// </summary>
-    /// <param name="disposing">if set to <c>true</c> [disposing].</param>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!_disposables.IsDisposed && disposing)
-        {
-            _disposables.Dispose();
-            ValidationContext.Dispose();
-            _mentionedPropertyNames.Clear();
-        }
-    }
-
-    /// <summary>
     /// Selects validation components that are invalid.
     /// </summary>
     /// <returns>Returns the invalid property validations.</returns>
-    private IEnumerable<IPropertyValidationComponent> SelectInvalidPropertyValidations() =>
+    internal IEnumerable<IPropertyValidationComponent> SelectInvalidPropertyValidations() =>
         ValidationContext.Validations.Items
             .OfType<IPropertyValidationComponent>()
             .Where(validation => !validation.IsValid);
@@ -153,7 +143,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     /// detached from the <see cref="ValidationContext"/>, and we'd like to mark all invalid
     /// properties as valid (because the thing that validates them no longer exists).
     /// </remarks>
-    private void OnValidationStatusChange(IValidationComponent component)
+    internal void OnValidationStatusChange(IValidationComponent component)
     {
         HasErrors = !ValidationContext.GetIsValid();
         if (component is IPropertyValidationComponent propertyValidationComponent)
@@ -166,10 +156,34 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
         }
         else
         {
+            // Non-property components (e.g. cross-field observable validations) don't carry
+            // property names, so re-notify for every property that has been mentioned
+            // previously to ensure the UI refreshes all relevant error indicators.
             foreach (var propertyName in _mentionedPropertyNames)
             {
                 RaiseErrorsChanged(propertyName);
             }
+        }
+    }
+
+    /// <summary>
+    /// Raises the <see cref="ErrorsChanged"/> event.
+    /// </summary>
+    /// <param name="propertyName">The name of the validated property.</param>
+    protected void RaiseErrorsChanged(string propertyName = "") =>
+        ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
+
+    /// <summary>
+    /// Releases the unmanaged resources used by this instance and optionally releases the managed resources.
+    /// </summary>
+    /// <param name="disposing"><c>true</c> to release managed resources; <c>false</c> when called from a finalizer.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposables.IsDisposed && disposing)
+        {
+            _disposables.Dispose();
+            ValidationContext.Dispose();
+            _mentionedPropertyNames.Clear();
         }
     }
 }

@@ -14,6 +14,9 @@ namespace ReactiveUI.Validation.Tests;
 /// </summary>
 public class ValidationStateComparerTests
 {
+    /// <summary>
+    /// Shared comparer instance used across all tests.
+    /// </summary>
     private readonly ValidationStateComparer _comparer = new();
 
     /// <summary>
@@ -98,17 +101,51 @@ public class ValidationStateComparerTests
     }
 
     /// <summary>
-    /// Verifies that GetHashCode delegates to the object's GetHashCode.
+    /// Verifies that GetHashCode is consistent for equal states.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
-    public async Task GetHashCodeDelegatesToObject()
+    public async Task GetHashCodeIsConsistentForEqualStates()
     {
-        var state = new ValidationState(true, ValidationText.Empty);
+        var state1 = new ValidationState(true, ValidationText.Empty);
+        var state2 = new ValidationState(true, ValidationText.Empty);
 
-        var result = _comparer.GetHashCode(state);
+        var hash1 = _comparer.GetHashCode(state1);
+        var hash2 = _comparer.GetHashCode(state2);
 
-        await Assert.That(result).IsEqualTo(state.GetHashCode());
+        await Assert.That(hash1).IsEqualTo(hash2);
+    }
+
+    /// <summary>
+    /// Verifies that GetHashCode differs for states with different validity.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task GetHashCodeDiffersForDifferentValidity()
+    {
+        var valid = new ValidationState(true, ValidationText.Empty);
+        var invalid = new ValidationState(false, ValidationText.Empty);
+
+        var hash1 = _comparer.GetHashCode(valid);
+        var hash2 = _comparer.GetHashCode(invalid);
+
+        await Assert.That(hash1).IsNotEqualTo(hash2);
+    }
+
+    /// <summary>
+    /// Verifies that GetHashCode differs for states with different text.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task GetHashCodeDiffersForDifferentText()
+    {
+        var stateA = new ValidationState(false, "Error A");
+        var stateB = new ValidationState(false, "Error B");
+
+        var hash1 = _comparer.GetHashCode(stateA);
+        var hash2 = _comparer.GetHashCode(stateB);
+
+        await Assert.That(hash1).IsNotEqualTo(hash2);
     }
 
     /// <summary>
@@ -119,6 +156,68 @@ public class ValidationStateComparerTests
     public async Task GetHashCodeNullThrowsArgumentNullException()
     {
         await Assert.That(() => _comparer.GetHashCode(null!)).Throws<ArgumentNullException>();
+    }
+
+    /// <summary>
+    /// Verifies that the same reference returns true for Equals.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task EqualsSameReferenceReturnsTrue()
+    {
+        var state = new ValidationState(false, "Error");
+
+        var result = _comparer.Equals(state, state);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    /// <summary>
+    /// Verifies that states with the same multi-element text are equal.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task EqualsSameMultiElementTextReturnsTrue()
+    {
+        var text1 = ValidationText.Create(["Error A", "Error B"]);
+        var text2 = ValidationText.Create(["Error A", "Error B"]);
+        var x = new ValidationState(false, text1);
+        var y = new ValidationState(false, text2);
+
+        var result = _comparer.Equals(x, y);
+
+        await Assert.That(result).IsTrue();
+    }
+
+    /// <summary>
+    /// Verifies that states with different text counts are not equal.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task EqualsDifferentTextCountReturnsFalse()
+    {
+        var x = new ValidationState(false, ValidationText.Create(["Error A"]));
+        var y = new ValidationState(false, ValidationText.Create(["Error A", "Error B"]));
+
+        var result = _comparer.Equals(x, y);
+
+        await Assert.That(result).IsFalse();
+    }
+
+    /// <summary>
+    /// Verifies that states sharing the same text reference are equal.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task EqualsSameTextReferenceReturnsTrue()
+    {
+        var text = ValidationText.Create("shared");
+        var x = new ValidationState(false, text);
+        var y = new ValidationState(false, text);
+
+        var result = _comparer.Equals(x, y);
+
+        await Assert.That(result).IsTrue();
     }
 
     /// <summary>

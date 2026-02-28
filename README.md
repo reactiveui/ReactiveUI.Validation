@@ -282,17 +282,13 @@ In essence, ReactiveUI.Validation is a relatively simple model of the `Validatio
 4. Validation text can reference either the ViewModel or properties which comprise the validation rule e.g. include text entered as part of validation message.
 5. Validation text output can be adjusted using custom formatters, not only allowing for single & multiline output but also for platforms like Android it should be possible to achieve richer renderings i.e. Bold/italics.
 
-## Feedback
-
-Please use [GitHub issues](https://github.com/reactiveui/ReactiveUI.Validation/issues) for questions, comments, or bug reports.
-
 ## Contribute
 
 ReactiveUI.Validation is developed under an OSI-approved open source license, making it freely usable and distributable, even for commercial use. We love the people who are involved in this project, and we'd love to have you on board, especially if you are just getting started or have never contributed to open-source before.
 
 So here's to you, lovely person who wants to join us — this is how you can support us:
 
-* [Responding to questions on StackOverflow](https://stackoverflow.com/questions/tagged/reactiveui)
+* [Responding to questions on GitHub Discussions](https://github.com/reactiveui/ReactiveUI.Validation/discussions)
 * [Passing on knowledge and teaching the next generation of developers](http://ericsink.com/entries/dont_use_rxui.html)
 * Submitting documentation updates where you see fit or lacking.
 * Making contributions to the code base.

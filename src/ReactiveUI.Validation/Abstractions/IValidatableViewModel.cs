@@ -13,7 +13,7 @@ namespace ReactiveUI.Validation.Abstractions;
 public interface IValidatableViewModel
 {
     /// <summary>
-    /// Gets get the validation context.
+    /// Gets the validation context.
     /// </summary>
     IValidationContext ValidationContext { get; }
 }

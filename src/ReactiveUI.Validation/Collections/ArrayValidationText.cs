@@ -8,19 +8,37 @@ using System.Collections.Generic;
 
 namespace ReactiveUI.Validation.Collections;
 
-internal sealed class ArrayValidationText : IValidationText
+/// <summary>
+/// An <see cref="IValidationText"/> implementation that wraps an array of validation message strings.
+/// </summary>
+/// <param name="texts">The array of validation message strings.</param>
+internal sealed class ArrayValidationText(string[] texts) : IValidationText
 {
-    private readonly string[] _texts;
+    /// <summary>
+    /// Gets the number of validation messages in the array.
+    /// </summary>
+    public int Count => texts.Length;
 
-    internal ArrayValidationText(string[] texts) => _texts = texts;
+    /// <summary>
+    /// Gets the validation message at the specified index.
+    /// </summary>
+    /// <param name="index">The zero-based index of the message to retrieve.</param>
+    /// <returns>The validation message string at the specified index.</returns>
+    public string this[int index] => texts[index];
 
-    public int Count => _texts.Length;
+    /// <summary>
+    /// Returns an enumerator that iterates through the validation messages.
+    /// </summary>
+    /// <returns>An enumerator for the validation message strings.</returns>
+    public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>)texts).GetEnumerator();
 
-    public string this[int index] => _texts[index];
+    /// <inheritdoc/>
+    IEnumerator IEnumerable.GetEnumerator() => texts.GetEnumerator();
 
-    public IEnumerator<string> GetEnumerator() => ((IEnumerable<string>)_texts).GetEnumerator();
-
-    IEnumerator IEnumerable.GetEnumerator() => _texts.GetEnumerator();
-
-    public string ToSingleLine(string? separator) => string.Join(separator, _texts);
+    /// <summary>
+    /// Joins all validation messages into a single string using the specified separator.
+    /// </summary>
+    /// <param name="separator">The string to use as a separator between messages.</param>
+    /// <returns>A single string containing all validation messages joined by the separator.</returns>
+    public string ToSingleLine(string? separator) => string.Join(separator, texts);
 }

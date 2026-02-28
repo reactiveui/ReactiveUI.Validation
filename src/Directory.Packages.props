@@ -7,8 +7,8 @@
   <ItemGroup Label="Core packages">
     <PackageVersion Include="ReactiveUI" Version="23.1.1" />
     <PackageVersion Include="ReactiveUI.AndroidX" Version="23.1.1" />
-    <PackageVersion Include="System.Collections.Immutable" Version="10.0.3" />
     <PackageVersion Include="Polyfill" Version="9.12.0" />
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.3" />
     <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.13.0.1" />
     <PackageVersion Include="Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx" Version="2.10.0" />
     <PackageVersion Include="Xamarin.AndroidX.Lifecycle.Process" Version="2.10.0" />

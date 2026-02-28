@@ -37,10 +37,9 @@ public static class ViewForExtensions
     /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
     /// </param>
     /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-#if NET6_0_OR_GREATER
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="viewModelProperty"/> or <paramref name="viewProperty"/> is null.</exception>
     [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     public static IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(
         this TView view,
         TViewModel? viewModel,
@@ -72,10 +71,9 @@ public static class ViewForExtensions
     /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
     /// </param>
     /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-#if NET6_0_OR_GREATER
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="viewProperty"/> is null.</exception>
     [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
         this TView view,
         TViewModel? viewModel,
@@ -105,10 +103,9 @@ public static class ViewForExtensions
     /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
     /// </param>
     /// <returns>Returns a <see cref="IDisposable"/> object.</returns>
-#if NET6_0_OR_GREATER
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="viewModelHelperProperty"/> or <paramref name="viewProperty"/> is null.</exception>
     [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     public static IDisposable BindValidation<TView, TViewModel, TViewProperty>(
         this TView view,
         TViewModel? viewModel,
