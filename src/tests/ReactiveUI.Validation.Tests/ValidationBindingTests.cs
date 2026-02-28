@@ -1450,6 +1450,54 @@ public class ValidationBindingTests
         }
     }
 
+    /// <summary>
+    /// Verifies that BindToView onError handler fires when the source observable errors (parameter parent path).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task BindToViewParameterPathHandlesSourceError()
+    {
+        var subject = new Subject<string>();
+        var view = new TestView(new TestViewModel());
+
+        // v => v.NameErrorLabel is a direct property (parameter parent path)
+        var obs = ValidationBinding.BindToView<TestView, string, TestView>(
+            subject, view, v => v.NameErrorLabel);
+
+        Exception? captured = null;
+        obs.Subscribe(_ => { }, ex => captured = ex);
+
+        subject.OnNext("test");
+        await Assert.That(view.NameErrorLabel).IsEqualTo("test");
+
+        subject.OnError(new InvalidOperationException("source error"));
+        await Assert.That(captured).IsNotNull();
+    }
+
+    /// <summary>
+    /// Verifies that BindToView onError handler fires when the source observable errors (chained property path).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task BindToViewChainedPathHandlesSourceError()
+    {
+        var subject = new Subject<string>();
+        var view = new TestView(new TestViewModel());
+
+        // v => v.NameErrorContainer.Text is a chained property (non-parameter parent path)
+        var obs = ValidationBinding.BindToView<TestView, string, TestView>(
+            subject, view, v => v.NameErrorContainer.Text);
+
+        Exception? captured = null;
+        obs.Subscribe(_ => { }, ex => captured = ex);
+
+        subject.OnNext("test");
+        await Assert.That(view.NameErrorContainer.Text).IsEqualTo("test");
+
+        subject.OnError(new InvalidOperationException("source error"));
+        await Assert.That(captured).IsNotNull();
+    }
+
     private class CustomValidationState(bool isValid, string message) : IValidationState
     {
         public IValidationText Text { get; } = isValid ? ValidationText.Empty : ValidationText.Create(message);

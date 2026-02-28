@@ -346,7 +346,7 @@ public sealed class ValidationBinding : IValidationBinding
     [RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
 #endif
-    private static IObservable<Unit> BindToView<TView, TViewProperty, TTarget>(
+    internal static IObservable<Unit> BindToView<TView, TViewProperty, TTarget>(
         IObservable<string> valueChange,
         TTarget target,
         Expression<Func<TView, TViewProperty>> viewProperty)
