@@ -65,15 +65,9 @@ public sealed class ValidationBinding : IValidationBinding
             throw new ArgumentNullException(nameof(view));
         }
 
-        if (viewModelProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelProperty);
 
-        if (viewProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewProperty);
 
         formatter ??= AppLocator.Current.GetService<IValidationTextFormatter<string>>() ??
                       SingleLineFormatter.Default;
@@ -124,28 +118,17 @@ public sealed class ValidationBinding : IValidationBinding
             throw new ArgumentNullException(nameof(view));
         }
 
-        if (viewModelProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelProperty);
 
-        if (action is null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(action);
 
-        if (formatter is null)
-        {
-            throw new ArgumentNullException(nameof(formatter));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(formatter);
 
         var vcObs = view
             .WhenAnyValue(v => v.ViewModel)
             .Where(vm => vm is not null)
             .SelectMany(vm => vm!.ValidationContext.ObserveFor(viewModelProperty, strict))
-            .Do(states => action(states, states
-                .Select(state => formatter.Format(state.Text))
-                .ToList()))
+            .Do(states => action(states, [.. states.Select(state => formatter.Format(state.Text))]))
             .Select(_ => Unit.Default);
 
         return new ValidationBinding(vcObs);
@@ -183,15 +166,9 @@ public sealed class ValidationBinding : IValidationBinding
             throw new ArgumentNullException(nameof(view));
         }
 
-        if (viewModelHelperProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelHelperProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelHelperProperty);
 
-        if (viewProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewProperty);
 
         formatter ??= AppLocator.Current.GetService<IValidationTextFormatter<string>>() ??
                       SingleLineFormatter.Default;
@@ -242,20 +219,11 @@ public sealed class ValidationBinding : IValidationBinding
             throw new ArgumentNullException(nameof(view));
         }
 
-        if (viewModelHelperProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelHelperProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelHelperProperty);
 
-        if (action is null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(action);
 
-        if (formatter is null)
-        {
-            throw new ArgumentNullException(nameof(formatter));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(formatter);
 
         var vcObs = view
             .WhenAnyValue(v => v.ViewModel)
@@ -301,15 +269,9 @@ public sealed class ValidationBinding : IValidationBinding
             throw new ArgumentNullException(nameof(view));
         }
 
-        if (action is null)
-        {
-            throw new ArgumentNullException(nameof(action));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(action);
 
-        if (formatter is null)
-        {
-            throw new ArgumentNullException(nameof(formatter));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(formatter);
 
         var vcObs = view
             .WhenAnyValue(v => v.ViewModel)
@@ -351,10 +313,7 @@ public sealed class ValidationBinding : IValidationBinding
             throw new ArgumentNullException(nameof(view));
         }
 
-        if (viewProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewProperty);
 
         formatter ??= AppLocator.Current.GetService<IValidationTextFormatter<string>>() ??
                       SingleLineFormatter.Default;

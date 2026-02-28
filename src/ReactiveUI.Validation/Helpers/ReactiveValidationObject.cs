@@ -35,7 +35,6 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     private readonly CompositeDisposable _disposables = [];
     private readonly IValidationTextFormatter<string> _formatter;
     private readonly HashSet<string> _mentionedPropertyNames = [];
-    private bool _hasErrors;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ReactiveValidationObject"/> class.
@@ -80,8 +79,8 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     /// <inheritdoc />
     public bool HasErrors
     {
-        get => _hasErrors;
-        private set => this.RaiseAndSetIfChanged(ref _hasErrors, value);
+        get;
+        private set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
     /// <inheritdoc />
@@ -98,10 +97,9 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
             ? SelectInvalidPropertyValidations()
                 .Select(state => _formatter.Format(state.Text ?? ValidationText.None))
                 .ToArray()
-            : SelectInvalidPropertyValidations()
+            : [.. SelectInvalidPropertyValidations()
                 .Where(validation => validation.ContainsPropertyName(propertyName))
-                .Select(state => _formatter.Format(state.Text ?? ValidationText.None))
-                .ToArray();
+                .Select(state => _formatter.Format(state.Text ?? ValidationText.None))];
 
     /// <summary>
     /// Releases unmanaged and - optionally - managed resources.

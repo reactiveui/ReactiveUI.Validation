@@ -37,15 +37,9 @@ public static class ValidationContextExtensions
         Expression<Func<TViewModel, TViewModelProperty>> viewModelProperty,
         bool strict = true)
     {
-        if (context is null)
-        {
-            throw new ArgumentNullException(nameof(context));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(context);
 
-        if (viewModelProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelProperty);
 
         return context
             .Validations

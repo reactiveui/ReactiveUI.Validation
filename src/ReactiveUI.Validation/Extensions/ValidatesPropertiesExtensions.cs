@@ -29,15 +29,9 @@ public static class ValidatesPropertiesExtensions
         Expression<Func<TViewModel, TProp>> propertyExpression,
         bool exclusively = false)
     {
-        if (validatesProperties is null)
-        {
-            throw new ArgumentNullException(nameof(validatesProperties));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(validatesProperties);
 
-        if (propertyExpression is null)
-        {
-            throw new ArgumentNullException(nameof(propertyExpression));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(propertyExpression);
 
         var propertyName = propertyExpression.Body.GetPropertyPath();
         return validatesProperties.ContainsPropertyName(propertyName, exclusively);

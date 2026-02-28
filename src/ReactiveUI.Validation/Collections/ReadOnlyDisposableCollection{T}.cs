@@ -12,7 +12,7 @@ namespace ReactiveUI.Validation.Collections;
 
 internal sealed class ReadOnlyDisposableCollection<T>(IEnumerable<T> items) : IReadOnlyCollection<T>, IDisposable
 {
-    private readonly ImmutableList<T> _immutableList = ImmutableList.CreateRange(items);
+    private readonly ImmutableList<T> _immutableList = [.. items];
     private bool _disposedValue;
 
     /// <summary>

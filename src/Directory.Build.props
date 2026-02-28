@@ -4,6 +4,7 @@
     <WarningsAsErrors>$(WarningsAsErrors);nullable</WarningsAsErrors>
     <LangVersion>preview</LangVersion>
     <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
     <Copyright>Copyright © 2019-$(CompanyName) $([System.DateTime]::Now.ToString(`yyyy`)) ReactiveUI and Contributors</Copyright>
     <Product>ReactiveUI.Validations ($(TargetFramework))</Product>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -12,7 +13,7 @@
     <Authors>ReactiveUI and Contributors</Authors>
     <Description>Validations library for ReactiveUI.</Description>
     <Owners>xanaisbettsx;ghuntley</Owners>
-    <PackageTags>reactiveui;validation library;reactive programming;netcore;netstandard;netframework</PackageTags>
+    <PackageTags>reactiveui;validation library;reactive programming;netcore;netframework</PackageTags>
     <PackageIcon>logo.png</PackageIcon>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageReleaseNotes>https://github.com/reactiveui/reactiveui.validation/releases</PackageReleaseNotes>
@@ -33,12 +34,16 @@
     <NoWarn>$(NoWarn);IDE1006;IDE0130</NoWarn>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+  </PropertyGroup>
+
   <PropertyGroup>
-    <NetCorePlatforms>net8.0;net9.0;net10.0;netstandard2.0</NetCorePlatforms>
+    <NetCorePlatforms>net8.0;net9.0;net10.0</NetCorePlatforms>
     <NetWindowsPlatforms>net8.0-windows10.0.19041.0;net9.0-windows10.0.19041.0;net10.0-windows10.0.19041.0</NetWindowsPlatforms>
     <MauiAndroidTargets>net9.0-android;net10.0-android</MauiAndroidTargets>
     <MauiAppleTargets>net9.0-ios;net9.0-tvos;net9.0-macos;net9.0-maccatalyst;net10.0-ios;net10.0-tvos;net10.0-macos;net10.0-maccatalyst</MauiAppleTargets>
-    <NetFrameworkPlatforms Condition="$([MSBuild]::IsOSPlatform('Windows'))">net462;net472</NetFrameworkPlatforms>
+    <NetFrameworkPlatforms>net462;net472;net481</NetFrameworkPlatforms>
     <TestTargetFrameworks>net8.0;net9.0;net10.0</TestTargetFrameworks>
   </PropertyGroup>
 
@@ -56,13 +61,29 @@
     <None Include="$(MSBuildThisFileDirectory)..\README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
-	<ItemGroup Condition="'$(IsTestProject)' != 'true'">
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="10.0.102" PrivateAssets="All" />
-	</ItemGroup>
+  <!-- MTP Native JSON Configuration -->
+  <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+    <None Include="$(MSBuildThisFileDirectory)testconfig.json">
+      <Link>$(AssemblyName).testconfig.json</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup Condition="'$(IsTestProject)' == 'true'">
+    <PackageReference Include="TUnit" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
+    <PackageReference Include="Verify.TUnit" />
+    <PackageReference Include="Microsoft.Reactive.Testing" />
+    <PackageReference Include="PublicApiGenerator" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(IsTestProject)' != 'true'">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
+  </ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Nerdbank.GitVersioning" Version="3.9.50" PrivateAssets="all" />
-		<PackageReference Include="stylecop.analyzers" Version="1.2.0-beta.556" PrivateAssets="all" />
-		<PackageReference Include="Roslynator.Analyzers" Version="4.15.0" PrivateAssets="All" />
+		<PackageReference Include="Nerdbank.GitVersioning" PrivateAssets="all" />
+		<PackageReference Include="stylecop.analyzers" PrivateAssets="all" />
+		<PackageReference Include="Roslynator.Analyzers" PrivateAssets="All" />
 	</ItemGroup>
 	<ItemGroup>
 		<AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />

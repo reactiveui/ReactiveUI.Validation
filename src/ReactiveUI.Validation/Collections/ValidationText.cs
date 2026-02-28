@@ -80,7 +80,7 @@ public static class ValidationText
             return None;
         }
 
-// Optimize code path for single item array.
+        // Optimize code path for single item array.
         if (validationTexts.Length == 1)
         {
             var text = validationTexts[0];
@@ -125,7 +125,7 @@ public static class ValidationText
     {
         0 => None,
         1 => CreateValidationText(texts[0]),
-        _ => new ArrayValidationText(texts.Take(count).ToArray())
+        _ => new ArrayValidationText([.. texts.Take(count)])
     };
 
     private static IValidationText CreateValidationText(string text) => text.Length is 0 ? Empty : new SingleValidationText(text);

@@ -33,15 +33,13 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
     private readonly CompositeDisposable _disposables = [];
     private IConnectableObservable<IValidationState>? _connectedChange;
     private bool _isConnected;
-    private bool _isValid;
-    private IValidationText? _text;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BasePropertyValidation{TViewModel}"/> class.
     /// Subscribe to the valid subject so we can assign the validity.
     /// </summary>
     protected BasePropertyValidation() =>
-        _isValidSubject.Subscribe(v => _isValid = v).DisposeWith(_disposables);
+        _isValidSubject.Subscribe(v => IsValid = v).DisposeWith(_disposables);
 
     /// <inheritdoc/>
     public int PropertyCount => _propertyNames.Count;
@@ -55,8 +53,10 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
         get
         {
             Activate();
-            return _isValid;
+            return field;
         }
+
+        private set;
     }
 
     /// <summary>
@@ -67,13 +67,7 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
         get
         {
             Activate();
-
-            if (_connectedChange is null)
-            {
-                throw new InvalidOperationException("ConnectedChange observable has not been initialized properly.");
-            }
-
-            return _connectedChange;
+            return _connectedChange!;
         }
     }
 
@@ -83,8 +77,10 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
         get
         {
             Activate();
-            return _text;
+            return field;
         }
+
+        private set;
     }
 
     /// <inheritdoc/>
@@ -110,10 +106,7 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
     /// <param name="property">ViewModel property.</param>
     protected void AddProperty<TProp>(Expression<Func<TViewModel, TProp>> property)
     {
-        if (property is null)
-        {
-            throw new ArgumentNullException(nameof(property));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(property);
 
         var propertyName = property.Body.GetPropertyPath();
         _propertyNames.Add(propertyName);
@@ -148,8 +141,8 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
         _connectedChange = GetValidationChangeObservable()
             .Do(state =>
             {
-                _isValid = state.IsValid;
-                _text = state.Text;
+                IsValid = state.IsValid;
+                Text = state.Text;
             })
             .Replay(1);
 
@@ -172,7 +165,6 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
     private readonly Func<TViewModelProperty?, bool, IValidationText> _message;
     private readonly Func<TViewModelProperty?, bool> _isValidFunc;
     private readonly CompositeDisposable _disposables = [];
-    private bool _isConnected;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="BasePropertyValidation{TViewModel, TProperty1}"/> class.
@@ -273,7 +265,7 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
     /// <returns></returns>
     protected override IObservable<IValidationState> GetValidationChangeObservable()
     {
-        Activate();
+        _disposables.Add(_valueConnectedObservable.Connect());
         return _valueSubject
             .Select(value => new ValidationState(_isValidFunc(value), _message(value, _isValidFunc(value))))
             .DistinctUntilChanged(new ValidationStateComparer());
@@ -289,16 +281,5 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
             _disposables.Dispose();
             _valueSubject.Dispose();
         }
-    }
-
-    private void Activate()
-    {
-        if (_isConnected)
-        {
-            return;
-        }
-
-        _disposables.Add(_valueConnectedObservable.Connect());
-        _isConnected = true;
     }
 }
