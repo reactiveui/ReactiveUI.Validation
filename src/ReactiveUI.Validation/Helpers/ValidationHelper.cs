@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
 // Licensed to the ReactiveUI and Contributors under one or more agreements.
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -20,9 +20,24 @@ namespace ReactiveUI.Validation.Helpers;
 /// </summary>
 public sealed class ValidationHelper : ReactiveObject, IDisposable
 {
+    /// <summary>
+    /// Backing property helper that derives the current <see cref="Message"/> from validation state changes.
+    /// </summary>
     private readonly ObservableAsPropertyHelper<IValidationText> _message;
+
+    /// <summary>
+    /// Backing property helper that derives the current <see cref="IsValid"/> from validation state changes.
+    /// </summary>
     private readonly ObservableAsPropertyHelper<bool> _isValid;
+
+    /// <summary>
+    /// The underlying validation component whose state is exposed through this helper.
+    /// </summary>
     private readonly IValidationComponent _validation;
+
+    /// <summary>
+    /// The disposable that removes the validation component from the context when this helper is disposed.
+    /// </summary>
     private IDisposable? _cleanup;
 
     /// <summary>
@@ -30,9 +45,7 @@ public sealed class ValidationHelper : ReactiveObject, IDisposable
     /// </summary>
     /// <param name="validation">Validation property.</param>
     /// <param name="cleanup">The disposable to dispose when the helper is disposed.</param>
-#if NET6_0_OR_GREATER
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     public ValidationHelper(IValidationComponent validation, IDisposable? cleanup = null)
     {
         _validation = validation ?? throw new ArgumentNullException(nameof(validation));

@@ -1,4 +1,4 @@
-﻿// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+﻿// Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
 // Licensed to the ReactiveUI and Contributors under one or more agreements.
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -29,7 +29,7 @@ public interface IValidationContext : IValidationComponent, IReactiveObject, ICa
     IObservable<bool> Valid { get; }
 
     /// <summary>
-    /// Gets get the list of validations.
+    /// Gets the list of validations.
     /// </summary>
     IObservableList<IValidationComponent> Validations { get; }
 

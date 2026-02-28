@@ -13,7 +13,32 @@
 
 # ReactiveUI.Validation
 
-Validation for ReactiveUI based solutions, functioning in a reactive way. `ReactiveUI.Validation` was originally developed by [@jcmm33](https://github.com/jcmm33) as [Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation), and then refactored and updated by [Àlex Martínez Morón](https://github.com/alexmartinezm) and the [ReactiveUI Core Team](https://github.com/reactiveui/ReactiveUI#core-team).
+Validation for ReactiveUI based solutions, functioning in a reactive way.
+
+## Core Team
+
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top">
+        <img width="100" height="100" src="https://github.com/ChrisPulman.png?s=150">
+        <br>
+        <a href="https://github.com/ChrisPulman">Chris Pulman</a>
+        <p>London, UK</p>
+      </td>
+      <td align="center" valign="top">
+        <img width="100" height="100" src="https://github.com/glennawatson.png?s=150">
+        <br>
+        <a href="https://github.com/glennawatson">Glenn Watson</a>
+        <p>Melbourne, Australia</p>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+## Alumni & History
+
+ReactiveUI.Validation was originally developed by [@jcmm33](https://github.com/jcmm33) as [Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation), and then refactored and updated by [Àlex Martínez Morón](https://github.com/alexmartinezm) and the ReactiveUI community.
 
 ## Supported Platforms
 
@@ -282,17 +307,13 @@ In essence, ReactiveUI.Validation is a relatively simple model of the `Validatio
 4. Validation text can reference either the ViewModel or properties which comprise the validation rule e.g. include text entered as part of validation message.
 5. Validation text output can be adjusted using custom formatters, not only allowing for single & multiline output but also for platforms like Android it should be possible to achieve richer renderings i.e. Bold/italics.
 
-## Feedback
-
-Please use [GitHub issues](https://github.com/reactiveui/ReactiveUI.Validation/issues) for questions, comments, or bug reports.
-
 ## Contribute
 
 ReactiveUI.Validation is developed under an OSI-approved open source license, making it freely usable and distributable, even for commercial use. We love the people who are involved in this project, and we'd love to have you on board, especially if you are just getting started or have never contributed to open-source before.
 
 So here's to you, lovely person who wants to join us — this is how you can support us:
 
-* [Responding to questions on StackOverflow](https://stackoverflow.com/questions/tagged/reactiveui)
+* [Responding to questions on GitHub Discussions](https://github.com/reactiveui/ReactiveUI.Validation/discussions)
 * [Passing on knowledge and teaching the next generation of developers](http://ericsink.com/entries/dont_use_rxui.html)
 * Submitting documentation updates where you see fit or lacking.
 * Making contributions to the code base.

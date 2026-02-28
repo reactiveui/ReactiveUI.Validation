@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
 // Licensed to the ReactiveUI and Contributors under one or more agreements.
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -34,25 +34,51 @@ namespace ReactiveUI.Validation.Contexts;
 /// </remarks>
 public class ValidationContext : ReactiveObject, IValidationContext
 {
+    /// <summary>
+    /// Composite disposable for lifecycle management.
+    /// </summary>
     private readonly CompositeDisposable _disposables = [];
 
+    /// <summary>
+    /// Replays the latest validation state to subscribers of <see cref="ValidationStatusChange"/>.
+    /// </summary>
     private readonly ReplaySubject<IValidationState> _validationStatusChange = new(1);
+
+    /// <summary>
+    /// Replays the latest overall validity boolean to subscribers of <see cref="Valid"/>.
+    /// </summary>
     private readonly ReplaySubject<bool> _validSubject = new(1);
 
+    /// <summary>
+    /// The observable that computes the aggregate validity of all validation components.
+    /// </summary>
     private readonly IObservable<bool> _validationObservable;
+
+    /// <summary>
+    /// Backing property helper that derives the current <see cref="Text"/> from validity changes.
+    /// </summary>
     private readonly ObservableAsPropertyHelper<IValidationText> _validationText;
+
+    /// <summary>
+    /// Backing property helper that derives the current <see cref="IsValid"/> from validity changes.
+    /// </summary>
     private readonly ObservableAsPropertyHelper<bool> _isValid;
 
+    /// <summary>
+    /// The mutable source list that stores all registered <see cref="IValidationComponent"/> instances.
+    /// </summary>
     private readonly SourceList<IValidationComponent> _validationSource = new();
+
+    /// <summary>
+    /// Tracks whether <see cref="Activate"/> has been called to avoid duplicate subscriptions.
+    /// </summary>
     private bool _isActive;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationContext"/> class.
     /// </summary>
     /// <param name="scheduler">Optional scheduler to use for the properties. Uses the current thread scheduler by default.</param>
-#if NET6_0_OR_GREATER
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-#endif
     public ValidationContext(IScheduler? scheduler = null)
     {
         scheduler ??= CurrentThreadScheduler.Instance;
@@ -99,7 +125,7 @@ public class ValidationContext : ReactiveObject, IValidationContext
     }
 
     /// <summary>
-    /// Gets get the list of validations.
+    /// Gets the list of validations.
     /// </summary>
     public IObservableList<IValidationComponent> Validations { get; }
 
@@ -173,31 +199,18 @@ public class ValidationContext : ReactiveObject, IValidationContext
     }
 
     /// <summary>
-    /// Disposes of the managed resources.
+    /// Activates the validation context, connecting the observable chain.
     /// </summary>
-    /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
-    protected virtual void Dispose(bool disposing)
-    {
-        if (!_disposables.IsDisposed && disposing)
-        {
-            _disposables.Dispose();
-            _isValid.Dispose();
-            _validationText.Dispose();
-            _validationStatusChange.Dispose();
-            _validSubject.Dispose();
-            _validationSource.Clear();
-            _validationSource.Dispose();
-            Validations.Dispose();
-        }
-    }
-
-    private void Activate()
+    internal void Activate()
     {
         if (_isActive)
         {
             return;
         }
 
+        // Defer subscription until first access to avoid computing validity
+        // before any consumer needs it. This lazy activation pattern ensures
+        // the observable chain is only connected once.
         _isActive = true;
         _disposables.Add(_validationObservable.Subscribe(_validSubject));
     }
@@ -208,7 +221,7 @@ public class ValidationContext : ReactiveObject, IValidationContext
     /// <returns>
     /// Returns the <see cref="IValidationText"/> with all the error messages from the non valid components.
     /// </returns>
-    private IValidationText BuildText()
+    internal IValidationText BuildText()
     {
         var validationComponents = ArrayPool<IValidationText>.Shared.Rent(Validations.Count);
 
@@ -236,6 +249,25 @@ public class ValidationContext : ReactiveObject, IValidationContext
         finally
         {
             ArrayPool<IValidationText>.Shared.Return(validationComponents, true);
+        }
+    }
+
+    /// <summary>
+    /// Disposes of the managed resources.
+    /// </summary>
+    /// <param name="disposing">If its getting called by the <see cref="Dispose()"/> method.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!_disposables.IsDisposed && disposing)
+        {
+            _disposables.Dispose();
+            _isValid.Dispose();
+            _validationText.Dispose();
+            _validationStatusChange.Dispose();
+            _validSubject.Dispose();
+            _validationSource.Clear();
+            _validationSource.Dispose();
+            Validations.Dispose();
         }
     }
 }

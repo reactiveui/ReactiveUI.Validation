@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
 // Licensed to the ReactiveUI and Contributors under one or more agreements.
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -6,12 +6,15 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reactive.Subjects;
 
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
+using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
+using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.Tests.Models;
 
 namespace ReactiveUI.Validation.Tests;
@@ -21,6 +24,9 @@ namespace ReactiveUI.Validation.Tests;
 /// </summary>
 public class NotifyDataErrorInfoTests
 {
+    /// <summary>
+    /// Reusable error message for name validation.
+    /// </summary>
     private const string NameShouldNotBeEmptyMessage = "Name shouldn't be empty.";
 
     /// <summary>
@@ -473,10 +479,164 @@ public class NotifyDataErrorInfoTests
         await Assert.That(arguments.Any(a => a.PropertyName == "Name")).IsTrue();
     }
 
+    /// <summary>
+    /// Verifies that SelectInvalidPropertyValidations returns only invalid components.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task SelectInvalidPropertyValidationsReturnsOnlyInvalidComponents()
+    {
+        var viewModel = new IndeiTestViewModel { Name = "valid" };
+        viewModel.ValidationRule(
+            m => m.Name,
+            m => !string.IsNullOrEmpty(m),
+            "Name shouldn't be empty.");
+
+        viewModel.ValidationRule(
+            m => m.OtherName,
+            m => m is not null,
+            "Other name shouldn't be null.");
+
+        var invalidValidations = viewModel.SelectInvalidPropertyValidations().ToList();
+
+        // Name is "valid" so that rule passes; OtherName is null so that rule fails
+        using (Assert.Multiple())
+        {
+            await Assert.That(invalidValidations).Count().IsEqualTo(1);
+            await Assert.That(invalidValidations[0].Properties.First()).IsEqualTo("OtherName");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that SelectInvalidPropertyValidations returns empty when all valid.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task SelectInvalidPropertyValidationsReturnsEmptyWhenAllValid()
+    {
+        var viewModel = new IndeiTestViewModel { Name = "valid", OtherName = "also valid" };
+        viewModel.ValidationRule(
+            m => m.Name,
+            m => !string.IsNullOrEmpty(m),
+            "Name shouldn't be empty.");
+
+        viewModel.ValidationRule(
+            m => m.OtherName,
+            m => m is not null,
+            "Other name shouldn't be null.");
+
+        var invalidValidations = viewModel.SelectInvalidPropertyValidations().ToList();
+
+        await Assert.That(invalidValidations).IsEmpty();
+    }
+
+    /// <summary>
+    /// Verifies that OnValidationStatusChange updates HasErrors and fires ErrorsChanged.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task OnValidationStatusChangeUpdatesHasErrorsDirectly()
+    {
+        var viewModel = new IndeiTestViewModel();
+        var arguments = new List<DataErrorsChangedEventArgs>();
+        viewModel.ErrorsChanged += (_, args) => arguments.Add(args);
+
+        using var validation = new BasePropertyValidation<IndeiTestViewModel, string>(
+            viewModel,
+            vm => vm.Name,
+            s => !string.IsNullOrEmpty(s),
+            "Name is required");
+
+        viewModel.ValidationContext.Add(validation);
+
+        // Call OnValidationStatusChange directly
+        viewModel.OnValidationStatusChange(validation);
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(viewModel.HasErrors).IsTrue();
+            await Assert.That(arguments.Any(a => a.PropertyName == "Name")).IsTrue();
+        }
+    }
+
+    /// <summary>
+    /// Verifies that GetErrors handles null Text on an invalid component for all-errors path.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task GetErrorsHandlesNullTextOnInvalidComponentForAllErrors()
+    {
+        var viewModel = new IndeiTestViewModel();
+        var stub = new NullTextPropertyValidation("Name");
+        viewModel.ValidationContext.Add(stub);
+
+        // null propertyName triggers the all-errors path (line 98: state.Text ?? ValidationText.None)
+        var errors = viewModel.GetErrors(null).Cast<string>().ToArray();
+
+        // The formatter should receive ValidationText.None (the fallback) and format it
+        await Assert.That(errors).Count().IsEqualTo(1);
+    }
+
+    /// <summary>
+    /// Verifies that GetErrors handles null Text on an invalid component for property-specific path.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task GetErrorsHandlesNullTextOnInvalidComponentForPropertyPath()
+    {
+        var viewModel = new IndeiTestViewModel();
+        var stub = new NullTextPropertyValidation("Name");
+        viewModel.ValidationContext.Add(stub);
+
+        // non-null propertyName triggers the property-specific path (line 102: state.Text ?? ValidationText.None)
+        var errors = viewModel.GetErrors("Name").Cast<string>().ToArray();
+
+        // The formatter should receive ValidationText.None (the fallback) and format it
+        await Assert.That(errors).Count().IsEqualTo(1);
+    }
+
+    /// <summary>
+    /// A test formatter that prepends a prefix to the formatted validation text.
+    /// </summary>
+    /// <param name="prefix">The prefix to prepend.</param>
     private class PrefixFormatter(string prefix) : IValidationTextFormatter<string>
     {
+        /// <summary>
+        /// The prefix prepended to formatted validation text.
+        /// </summary>
         private readonly string _prefix = prefix;
 
+        /// <summary>
+        /// Prepends the prefix to the validation text's single-line representation.
+        /// </summary>
+        /// <param name="validationText">The validation text to format.</param>
+        /// <returns>The prefixed validation message.</returns>
         public string Format(IValidationText validationText) => $"{_prefix} {validationText.ToSingleLine()}";
+    }
+
+    /// <summary>
+    /// A stub <see cref="IPropertyValidationComponent"/> that is always invalid with null Text,
+    /// used to exercise the <c>state.Text ?? ValidationText.None</c> branches in GetErrors.
+    /// </summary>
+    private sealed class NullTextPropertyValidation(string propertyName) : IPropertyValidationComponent
+    {
+        /// <inheritdoc/>
+        public IValidationText? Text => null;
+
+        /// <inheritdoc/>
+        public bool IsValid => false;
+
+        /// <inheritdoc/>
+        public IObservable<IValidationState> ValidationStatusChange { get; } = new ReplaySubject<IValidationState>(1);
+
+        /// <inheritdoc/>
+        public int PropertyCount => 1;
+
+        /// <inheritdoc/>
+        public IEnumerable<string> Properties { get; } = [propertyName];
+
+        /// <inheritdoc/>
+        public bool ContainsPropertyName(string name, bool exclusively = false) =>
+            string.Equals(name, propertyName, StringComparison.Ordinal);
     }
 }

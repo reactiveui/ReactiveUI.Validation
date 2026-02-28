@@ -1,10 +1,12 @@
-// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
 // Licensed to the ReactiveUI and Contributors under one or more agreements.
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Reactive.Concurrency;
 
+using ReactiveUI.Validation.Abstractions;
+using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
@@ -309,5 +311,186 @@ public class ValidationContextTests
             await Assert.That(viewModel.ValidationContext.Text).IsNotNull();
             await Assert.That(viewModel.ValidationContext.Text!.ToSingleLine()).IsEqualTo(name2ErrorMessage);
         }
+    }
+
+    /// <summary>
+    /// Verifies that BuildText returns None when there are no validation components.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task BuildTextReturnsNoneWhenNoComponents()
+    {
+        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+
+        var result = vc.BuildText();
+
+        await Assert.That(result).IsSameReferenceAs(Collections.ValidationText.None);
+    }
+
+    /// <summary>
+    /// Verifies that BuildText returns the text of a single invalid component.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task BuildTextReturnsSingleInvalidComponentText()
+    {
+        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+        var vm = new TestViewModel { Name = string.Empty };
+
+        using var validation = new BasePropertyValidation<TestViewModel, string>(
+            vm,
+            v => v.Name,
+            s => !string.IsNullOrEmpty(s),
+            "Name is required");
+
+        vc.Add(validation);
+
+        // Trigger activation
+        _ = vc.IsValid;
+
+        var result = vc.BuildText();
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(result).Count().IsEqualTo(1);
+            await Assert.That(result[0]).IsEqualTo("Name is required");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that BuildText returns combined text for multiple invalid components.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task BuildTextReturnsCombinedTextForMultipleInvalidComponents()
+    {
+        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+        var vm = new TestViewModel { Name = string.Empty };
+
+        using var validation1 = new BasePropertyValidation<TestViewModel, string>(
+            vm,
+            v => v.Name,
+            s => !string.IsNullOrEmpty(s),
+            "Name is required");
+
+        using var validation2 = new BasePropertyValidation<TestViewModel, string>(
+            vm,
+            v => v.Name2,
+            s => !string.IsNullOrEmpty(s),
+            "Name2 is required");
+
+        vc.Add(validation1);
+        vc.Add(validation2);
+
+        // Trigger activation
+        _ = vc.IsValid;
+
+        var result = vc.BuildText();
+
+        using (Assert.Multiple())
+        {
+            await Assert.That(result).Count().IsEqualTo(2);
+            await Assert.That(result[0]).IsEqualTo("Name is required");
+            await Assert.That(result[1]).IsEqualTo("Name2 is required");
+        }
+    }
+
+    /// <summary>
+    /// Verifies that BuildText returns None when all components are valid.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task BuildTextReturnsNoneWhenAllValid()
+    {
+        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+        var vm = new TestViewModel { Name = "valid" };
+
+        using var validation = new BasePropertyValidation<TestViewModel, string>(
+            vm,
+            v => v.Name,
+            s => !string.IsNullOrEmpty(s),
+            "Name is required");
+
+        vc.Add(validation);
+
+        // Trigger activation
+        _ = vc.IsValid;
+
+        var result = vc.BuildText();
+
+        await Assert.That(result).IsSameReferenceAs(Collections.ValidationText.None);
+    }
+
+    /// <summary>
+    /// Verifies that Activate is idempotent (calling it multiple times is safe).
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task ActivateIsIdempotent()
+    {
+        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+
+        vc.Activate();
+        vc.Activate();
+
+        await Assert.That(vc.IsValid).IsTrue();
+    }
+
+    /// <summary>
+    /// Verifies that disposing a ValidationHelper is safe when the ValidationContext is null.
+    /// This exercises the null-conditional branch in RegisterValidation dispose action.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task RegisterValidationDisposeIsSafeWhenContextIsNull()
+    {
+        var vm = new NullableContextViewModel();
+
+        var helper = vm.ValidationRule(
+            v => v.Name,
+            name => !string.IsNullOrEmpty(name),
+            "Name is required");
+
+        await Assert.That(vm.ValidationContext.IsValid).IsFalse();
+
+        // Null out the context before disposing the helper to exercise the ?.Remove branch
+        vm.NullifyContext();
+        helper.Dispose();
+
+        // Should not throw — the ?.Remove safely handles the null context
+        await Assert.That(helper).IsNotNull();
+    }
+
+    /// <summary>
+    /// A test ViewModel whose ValidationContext can be set to null to test defensive null checks.
+    /// </summary>
+    private sealed class NullableContextViewModel : ReactiveObject, IValidatableViewModel, IDisposable
+    {
+        /// <summary>
+        /// Backing field for the validation context; can be nullified for testing.
+        /// </summary>
+        private IValidationContext _context = new ValidationContext(ImmediateScheduler.Instance);
+
+        /// <summary>
+        /// Gets or sets the name property used in validation rules.
+        /// </summary>
+        public string? Name
+        {
+            get;
+            set => this.RaiseAndSetIfChanged(ref field, value);
+        }
+
+        /// <inheritdoc/>
+        public IValidationContext ValidationContext => _context;
+
+        /// <summary>
+        /// Disposes the underlying validation context.
+        /// </summary>
+        public void Dispose() => (_context as IDisposable)?.Dispose();
+
+        /// <summary>
+        /// Sets the validation context to null to simulate a disposed or missing context.
+        /// </summary>
+        internal void NullifyContext() => _context = null!;
     }
 }

@@ -1,4 +1,4 @@
-// Copyright (c) 2025 ReactiveUI and Contributors. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
 // Licensed to the ReactiveUI and Contributors under one or more agreements.
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
@@ -24,7 +24,7 @@ public class ValidationStateComparer : EqualityComparer<IValidationState>
     /// <returns>Returns true if both objects are equals, otherwise false.</returns>
     public override bool Equals(IValidationState? x, IValidationState? y)
     {
-        if (x is null && y is null)
+        if (ReferenceEquals(x, y))
         {
             return true;
         }
@@ -34,7 +34,33 @@ public class ValidationStateComparer : EqualityComparer<IValidationState>
             return false;
         }
 
-        return x.IsValid == y.IsValid && x.Text.ToSingleLine() == y.Text.ToSingleLine();
+        if (x.IsValid != y.IsValid)
+        {
+            return false;
+        }
+
+        var xText = x.Text;
+        var yText = y.Text;
+
+        if (ReferenceEquals(xText, yText))
+        {
+            return true;
+        }
+
+        if (xText.Count != yText.Count)
+        {
+            return false;
+        }
+
+        for (var i = 0; i < xText.Count; i++)
+        {
+            if (!string.Equals(xText[i], yText[i], StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /// <inheritdoc />
@@ -42,6 +68,13 @@ public class ValidationStateComparer : EqualityComparer<IValidationState>
     {
         ArgumentExceptionHelper.ThrowIfNull(obj);
 
-        return obj.GetHashCode();
+        HashCode hash = default;
+        hash.Add(obj.IsValid);
+        foreach (var text in obj.Text)
+        {
+            hash.Add(text, StringComparer.Ordinal);
+        }
+
+        return hash.ToHashCode();
     }
 }
