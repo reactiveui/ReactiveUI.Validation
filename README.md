@@ -1,4 +1,11 @@
-[![NuGet Stats](https://img.shields.io/nuget/v/reactiveui.validation.svg)](https://www.nuget.org/packages/reactiveui.validation) ![Build](https://github.com/reactiveui/ReactiveUI.Validation/workflows/Build/badge.svg) [![Code Coverage](https://codecov.io/gh/reactiveui/ReactiveUI.Validation/branch/main/graph/badge.svg)](https://codecov.io/gh/reactiveui/ReactiveUI.Validation) [![#yourfirstpr](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](https://reactiveui.net/contribute) [![Downloads](https://img.shields.io/nuget/dt/reactiveui.validation.svg)](https://www.nuget.org/packages/reactiveui.validation) [![Slack](https://img.shields.io/badge/chat-slack-blue.svg)](https://reactiveui.net/slack)
+[![NuGet](https://img.shields.io/nuget/v/ReactiveUI.Validation.svg)](https://www.nuget.org/packages/ReactiveUI.Validation)
+[![Downloads](https://img.shields.io/nuget/dt/ReactiveUI.Validation.svg)](https://www.nuget.org/packages/ReactiveUI.Validation)
+[![Build](https://github.com/reactiveui/ReactiveUI.Validation/actions/workflows/ci-build.yml/badge.svg)](https://github.com/reactiveui/ReactiveUI.Validation/actions/workflows/ci-build.yml)
+[![Code Coverage](https://codecov.io/gh/reactiveui/ReactiveUI.Validation/branch/main/graph/badge.svg)](https://codecov.io/gh/reactiveui/ReactiveUI.Validation)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Slack](https://img.shields.io/badge/chat-slack-blue.svg)](https://reactiveui.net/slack)
+[![Good First Issues](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](https://github.com/reactiveui/ReactiveUI.Validation/labels/good%20first%20issue)
+[![Stars](https://img.shields.io/github/stars/reactiveui/ReactiveUI.Validation.svg?style=social)](https://github.com/reactiveui/ReactiveUI.Validation/stargazers)
 
 <a href="https://github.com/reactiveui/ReactiveUI.Validation">
   <img width="140" heigth="140" src="https://github.com/reactiveui/ReactiveUI.Validation/blob/main/media/logo.png">
@@ -6,27 +13,33 @@
 
 # ReactiveUI.Validation
 
-Validation for ReactiveUI based solutions, functioning in a reactive way. `ReactiveUI.Validation` was originally developed by [@jcmm33](https://github.com/jcmm33) as [Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation), and then refactored and updated by [Àlex Martínez Morón](https://github.com/alexmartinezm) and the [ReactiveUI Core Team](https://github.com/reactiveui/ReactiveUI#core-team). `ReactiveUI.Validation` supports all platforms, including .NET Framework, .NET Standard, .NET Core, Maui.
+Validation for ReactiveUI based solutions, functioning in a reactive way. `ReactiveUI.Validation` was originally developed by [@jcmm33](https://github.com/jcmm33) as [Vistian.Reactive.Validation](https://github.com/jcmm33/ReactiveUI.Validation), and then refactored and updated by [Àlex Martínez Morón](https://github.com/alexmartinezm) and the [ReactiveUI Core Team](https://github.com/reactiveui/ReactiveUI#core-team).
+
+## Supported Platforms
+
+| Platform | Targets |
+|----------|---------|
+| .NET | net8.0, net9.0, net10.0 |
+| .NET Framework | net462, net472, net481 |
+| Windows | net8.0-windows10.0.19041.0, net9.0-windows10.0.19041.0, net10.0-windows10.0.19041.0 |
+| Android (MAUI) | net9.0-android, net10.0-android |
 
 ## NuGet Packages
 
 Install the following package into your class library and into a platform-specific project.
 
-| Platform           | ReactiveUI Package                               | NuGet                |
-| ------------------ | ------------------------------------------------ | -------------------- |
-| Any Platform       | [ReactiveUI.Validation][CoreDoc]                 | [![CoreBadge]][Core] |
-| AndroidX (Maui, Xamarin) | [ReactiveUI.Validation.AndroidX][DroDoc]         | [![DroXBadge]][DroX] |
-| Xamarin.Android    | [ReactiveUI.Validation.AndroidSupport][DroDoc]   | [![DroBadge]][Dro]   |
+| Platform | Package | NuGet |
+|----------|---------|-------|
+| Any Platform | [ReactiveUI.Validation][CoreDoc] | [![CoreBadge]][Core] |
+| AndroidX (MAUI) | [ReactiveUI.Validation.AndroidX][DroDoc] | [![DroXBadge]][DroX] |
 
 [Core]: https://www.nuget.org/packages/ReactiveUI.Validation/
 [CoreBadge]: https://img.shields.io/nuget/v/ReactiveUI.Validation.svg
 [CoreDoc]: https://reactiveui.net/docs/handbook/user-input-validation/
 
-[Dro]: https://www.nuget.org/packages/ReactiveUI.Validation.AndroidSupport/
-[DroBadge]: https://img.shields.io/nuget/v/ReactiveUI.Validation.AndroidSupport.svg
-[DroDoc]: https://github.com/reactiveui/reactiveui.validation#example-with-android-extensions
 [DroX]: https://www.nuget.org/packages/ReactiveUI.Validation.AndroidX/
 [DroXBadge]: https://img.shields.io/nuget/v/ReactiveUI.Validation.AndroidX.svg
+[DroDoc]: https://github.com/reactiveui/reactiveui.validation#example-with-android-extensions
 
 ## How to Use
 
@@ -103,7 +116,7 @@ Finally, you can directly supply an observable that streams any object (or struc
 ```csharp
 IObservable<IValidationState> usernameNotEmpty =
     this.WhenAnyValue(x => x.UserName)
-        .Select(name => string.IsNullOrEmpty(name) 
+        .Select(name => string.IsNullOrEmpty(name)
             ? new ValidationState(false, "The username must not be empty")
             : ValidationState.Valid);
 
@@ -127,7 +140,7 @@ public class SampleView : ReactiveContentPage<SampleViewModel>
             this.Bind(ViewModel, vm => vm.Name, view => view.Name.Text)
                 .DisposeWith(disposables);
 
-            // Bind any validations that reference the Name property 
+            // Bind any validations that reference the Name property
             // to the text of the NameError UI control.
             this.BindValidation(ViewModel, vm => vm.Name, view => view.NameError.Text)
                 .DisposeWith(disposables);
@@ -141,24 +154,18 @@ public class SampleView : ReactiveContentPage<SampleViewModel>
 }
 ```
 
-> **Note** `Name` is an `<Entry />`, `NameError` is a `<Label />`, and `FormErrors` is a `<Label />` as well. All these controls are from the [Xamarin.Forms](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/) library.
-
 ## Example with Android Extensions
 
-There are extensions methods for Xamarin.Android and its Material design control `TextInputLayout`. These extensions use internally the `Error` property from the `TextInputLayout` control, allowing you to implement a fully native behavior to showing validation errors. To use these extensions you must import `ReactiveUI.Validation.Extensions` and install either `ReactiveUI.Validation.AndroidSupport` or `ReactiveUI.Validation.AndroidX`:
+There are extensions methods for Android and its Material design control `TextInputLayout`. These extensions use internally the `Error` property from the `TextInputLayout` control, allowing you to implement a fully native behavior to showing validation errors. To use these extensions you must import `ReactiveUI.Validation.Extensions` and install `ReactiveUI.Validation.AndroidX`:
 
 ```
 dotnet add package ReactiveUI.Validation.AndroidX
 ```
 
-> **Note** In ReactiveUI.Validation **1.7 and lower**, the Android-specific extensions are available in [the main package](https://www.nuget.org/packages/reactiveui.validation) targeting `MonoAndroid90`, and you don't need to install `ReactiveUI.Validation.AndroidSupport`. In ReactiveUI.Validation **1.7 and lower**, add `using ReactiveUI.Validation.Platforms.Android` instead of `using ReactiveUI.Validation.Extensions`.
-
 <img src="https://user-images.githubusercontent.com/6759207/96716730-15729480-13ae-11eb-928e-7e408b7ffac4.png" width="400" />
 
 ```csharp
 // This using directive makes Android-specific extensions available.
-// Make sure to install either the ReactiveUI.Validation.AndroidSupport
-// package or the ReactiveUI.Validation.AndroidX package.
 using ReactiveUI.Validation.Extensions;
 
 public class SignUpActivity : ReactiveAppCompatActivity<SignUpViewModel>
@@ -182,7 +189,7 @@ public class SignUpActivity : ReactiveAppCompatActivity<SignUpViewModel>
         this.Bind(ViewModel, x => x.Password, x => x.Password.Text);
         this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPassword.Text);
 
-        // Bind any validations which reference the Password property 
+        // Bind any validations which reference the Password property
         // to the Error property of the TextInputLayout control.
         this.BindValidation(ViewModel, x => x.Password, PasswordField);
         this.BindValidation(ViewModel, x => x.ConfirmPassword, ConfirmPasswordField);
@@ -192,7 +199,7 @@ public class SignUpActivity : ReactiveAppCompatActivity<SignUpViewModel>
 
 ## `INotifyDataErrorInfo` Support
 
-For those platforms that support the `INotifyDataErrorInfo` interface, ReactiveUI.Validation provides a helper base class named `ReactiveValidationObject`. The helper class implements both the `IValidatableViewModel` interface and the `INotifyDataErrorInfo` interface. It listens to any changes in the `ValidationContext` and invokes `INotifyDataErrorInfo` events. 
+For those platforms that support the `INotifyDataErrorInfo` interface, ReactiveUI.Validation provides a helper base class named `ReactiveValidationObject`. The helper class implements both the `IValidatableViewModel` interface and the `INotifyDataErrorInfo` interface. It listens to any changes in the `ValidationContext` and invokes `INotifyDataErrorInfo` events.
 
 <img width="400" src="https://user-images.githubusercontent.com/6759207/96717163-bbbe9a00-13ae-11eb-8c54-89cd339cbd5c.png">
 
@@ -204,7 +211,7 @@ public class SampleViewModel : ReactiveValidationObject
     public SampleViewModel()
     {
         this.ValidationRule(
-            viewModel => viewModel.Name, 
+            viewModel => viewModel.Name,
             name => !string.IsNullOrWhiteSpace(name),
             "Name shouldn't be null or white space.");
     }
@@ -281,7 +288,7 @@ Please use [GitHub issues](https://github.com/reactiveui/ReactiveUI.Validation/i
 
 ## Contribute
 
-ReactiveUI.Validation is developed under an OSI-approved open source license, making it freely usable and distributable, even for commercial use. We ❤ the people who are involved in this project, and we’d love to have you on board, especially if you are just getting started or have never contributed to open-source before.
+ReactiveUI.Validation is developed under an OSI-approved open source license, making it freely usable and distributable, even for commercial use. We love the people who are involved in this project, and we'd love to have you on board, especially if you are just getting started or have never contributed to open-source before.
 
 So here's to you, lovely person who wants to join us — this is how you can support us:
 

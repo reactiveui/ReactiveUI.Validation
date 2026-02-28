@@ -1,0 +1,23 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../.editorconfig" />
+    <File Path="../.gitignore" />
+    <File Path="../README.md" />
+    <File Path="../version.json" />
+    <File Path="Directory.build.props" />
+    <File Path="Directory.build.targets" />
+    <File Path="stylecop.json" />
+  </Folder>
+  <Project Path="ReactiveUI.Validation.AndroidX/ReactiveUI.Validation.AndroidX.csproj" />
+  <Project Path="ReactiveUI.Validation/ReactiveUI.Validation.csproj" />
+  <Project Path="tests/ReactiveUI.Validation.Tests/ReactiveUI.Validation.Tests.csproj" />
+  <Folder Name="/Samples/">
+    <Project Path="samples/AvaloniaApplication1/AvaloniaApplication1.csproj" />
+    <Project Path="samples/AvaloniaApplication1.Desktop/AvaloniaApplication1.Desktop.csproj" />
+    <Project Path="samples/LoginApp/LoginApp.csproj" />
+    <Project Path="samples/LoginApp.Avalonia/LoginApp.Avalonia.csproj" />
+    <Project Path="samples/LoginApp.Avalonia.Desktop/LoginApp.Avalonia.Desktop.csproj" />
+    <Project Path="samples/LoginApp.WinForms/LoginApp.WinForms.csproj" />
+    <Project Path="samples/LoginApp.Wpf/LoginApp.Wpf.csproj" />
+  </Folder>
+</Solution>

@@ -30,8 +30,6 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
     private readonly CompositeDisposable _disposables = [];
     private readonly IConnectableObservable<IValidationState> _validityConnectedObservable;
     private bool _isActive;
-    private bool _isValid;
-    private IValidationText? _text;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ObservableValidationBase{TViewModel,TValue}"/> class.
@@ -63,8 +61,8 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
         _isValidSubject
             .Do(state =>
             {
-                _isValid = state.IsValid;
-                _text = state.Text;
+                IsValid = state.IsValid;
+                Text = state.Text;
             })
             .Subscribe()
             .DisposeWith(_disposables);
@@ -86,8 +84,10 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
         get
         {
             Activate();
-            return _text;
+            return field;
         }
+
+        private set;
     }
 
     /// <inheritdoc/>
@@ -96,8 +96,10 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
         get
         {
             Activate();
-            return _isValid;
+            return field;
         }
+
+        private set;
     }
 
     /// <inheritdoc/>
@@ -149,10 +151,7 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
     /// <param name="property">ViewModel property.</param>
     protected void AddProperty<TProp>(Expression<Func<TViewModel, TProp>> property)
     {
-        if (property is null)
-        {
-            throw new ArgumentNullException(nameof(property));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(property);
 
         var propertyName = property.Body.GetPropertyPath();
         _propertyNames.Add(propertyName);

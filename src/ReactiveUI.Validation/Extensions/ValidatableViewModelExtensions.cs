@@ -50,15 +50,9 @@ public static class ValidatableViewModelExtensions
             throw new ArgumentNullException(nameof(viewModel));
         }
 
-        if (viewModelProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelProperty);
 
-        if (isPropertyValid is null)
-        {
-            throw new ArgumentNullException(nameof(isPropertyValid));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(isPropertyValid);
 
         if (string.IsNullOrEmpty(message))
         {
@@ -98,20 +92,11 @@ public static class ValidatableViewModelExtensions
             throw new ArgumentNullException(nameof(viewModel));
         }
 
-        if (viewModelProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelProperty);
 
-        if (isPropertyValid is null)
-        {
-            throw new ArgumentNullException(nameof(isPropertyValid));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(isPropertyValid);
 
-        if (message is null)
-        {
-            throw new ArgumentNullException(nameof(message));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(message);
 
         return viewModel.RegisterValidation(
             new BasePropertyValidation<TViewModel, TViewModelProp>(
@@ -145,15 +130,9 @@ public static class ValidatableViewModelExtensions
             throw new ArgumentNullException(nameof(viewModel));
         }
 
-        if (validationObservable is null)
-        {
-            throw new ArgumentNullException(nameof(validationObservable));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(validationObservable);
 
-        if (message is null)
-        {
-            throw new ArgumentNullException(nameof(message));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(message);
 
         return viewModel.RegisterValidation(
             new ObservableValidation<TViewModel, bool>(
@@ -194,20 +173,11 @@ public static class ValidatableViewModelExtensions
             throw new ArgumentNullException(nameof(viewModel));
         }
 
-        if (validationObservable is null)
-        {
-            throw new ArgumentNullException(nameof(validationObservable));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(validationObservable);
 
-        if (isValidFunc is null)
-        {
-            throw new ArgumentNullException(nameof(isValidFunc));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(isValidFunc);
 
-        if (messageFunc is null)
-        {
-            throw new ArgumentNullException(nameof(messageFunc));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(messageFunc);
 
         return viewModel.RegisterValidation(
             new ObservableValidation<TViewModel, TValue>(
@@ -239,10 +209,7 @@ public static class ValidatableViewModelExtensions
             throw new ArgumentNullException(nameof(viewModel));
         }
 
-        if (validationObservable is null)
-        {
-            throw new ArgumentNullException(nameof(validationObservable));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(validationObservable);
 
         return viewModel.RegisterValidation(
             new ObservableValidation<TViewModel, bool>(
@@ -276,10 +243,7 @@ public static class ValidatableViewModelExtensions
             throw new ArgumentNullException(nameof(viewModel));
         }
 
-        if (validationObservable is null)
-        {
-            throw new ArgumentNullException(nameof(validationObservable));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(validationObservable);
 
         return viewModel.RegisterValidation(
             new ObservableValidation<TViewModel, bool>(
@@ -317,20 +281,11 @@ public static class ValidatableViewModelExtensions
             throw new ArgumentNullException(nameof(viewModel));
         }
 
-        if (viewModelProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelProperty);
 
-        if (viewModelObservable is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelObservable));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelObservable);
 
-        if (message is null)
-        {
-            throw new ArgumentNullException(nameof(message));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(message);
 
         return viewModel.RegisterValidation(
             new ObservableValidation<TViewModel, bool, TViewModelProp>(
@@ -375,25 +330,13 @@ public static class ValidatableViewModelExtensions
             throw new ArgumentNullException(nameof(viewModel));
         }
 
-        if (viewModelProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelProperty);
 
-        if (viewModelObservable is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelObservable));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelObservable);
 
-        if (isValidFunc is null)
-        {
-            throw new ArgumentNullException(nameof(isValidFunc));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(isValidFunc);
 
-        if (messageFunc is null)
-        {
-            throw new ArgumentNullException(nameof(messageFunc));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(messageFunc);
 
         return viewModel.RegisterValidation(
             new ObservableValidation<TViewModel, TValue, TViewModelProp>(
@@ -428,15 +371,9 @@ public static class ValidatableViewModelExtensions
             throw new ArgumentNullException(nameof(viewModel));
         }
 
-        if (viewModelProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelProperty);
 
-        if (validationObservable is null)
-        {
-            throw new ArgumentNullException(nameof(validationObservable));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(validationObservable);
 
         return viewModel.RegisterValidation(
             new ObservableValidation<TViewModel, bool, TViewModelProp>(
@@ -473,15 +410,9 @@ public static class ValidatableViewModelExtensions
             throw new ArgumentNullException(nameof(viewModel));
         }
 
-        if (viewModelProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelProperty);
 
-        if (validationObservable is null)
-        {
-            throw new ArgumentNullException(nameof(validationObservable));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(validationObservable);
 
         return viewModel.RegisterValidation(
             new ObservableValidation<TViewModel, bool, TViewModelProp>(
@@ -506,10 +437,7 @@ public static class ValidatableViewModelExtensions
             throw new ArgumentNullException(nameof(viewModel));
         }
 
-        if (viewModelProperty is null)
-        {
-            throw new ArgumentNullException(nameof(viewModelProperty));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(viewModelProperty);
 
         var validationComponents = viewModel
             .ValidationContext

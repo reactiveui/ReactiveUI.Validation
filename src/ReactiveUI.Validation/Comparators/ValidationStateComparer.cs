@@ -40,10 +40,7 @@ public class ValidationStateComparer : EqualityComparer<IValidationState>
     /// <inheritdoc />
     public override int GetHashCode(IValidationState obj)
     {
-        if (obj is null)
-        {
-            throw new ArgumentNullException(nameof(obj));
-        }
+        ArgumentExceptionHelper.ThrowIfNull(obj);
 
         return obj.GetHashCode();
     }

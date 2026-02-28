@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<AvaloniaResource Include="Assets\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Avalonia" />
+		<PackageReference Include="Avalonia.Themes.Fluent" />
+		<PackageReference Include="Avalonia.Fonts.Inter" />
+		<PackageReference Include="ReactiveUI.Avalonia" />
+		<PackageReference Include="MessageBox.Avalonia" />
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\LoginApp\LoginApp.csproj" />
+	</ItemGroup>
+</Project>
