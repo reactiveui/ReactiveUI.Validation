@@ -8,7 +8,7 @@
     <PackageVersion Include="ReactiveUI" Version="23.1.8" />
     <PackageVersion Include="ReactiveUI.AndroidX" Version="23.1.8" />
     <PackageVersion Include="Polyfill" Version="9.22.0" />
-    <PackageVersion Include="System.Collections.Immutable" Version="10.0.3" />
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.5" />
     <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.13.0.1" />
     <PackageVersion Include="Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx" Version="2.10.0.1" />
     <PackageVersion Include="Xamarin.AndroidX.Lifecycle.Process" Version="2.10.0.1" />
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup Label="Build tools">
-    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.103" />
+    <PackageVersion Include="Microsoft.SourceLink.GitHub" Version="10.0.201" />
     <PackageVersion Include="Nerdbank.GitVersioning" Version="3.9.50" />
     <PackageVersion Include="Roslynator.Analyzers" Version="4.15.0" />
     <PackageVersion Include="stylecop.analyzers" Version="1.2.0-beta.556" />
