@@ -86,8 +86,18 @@
   <ItemGroup Condition="'$(IsTestProject)' != 'true'">
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
+	<!-- MinVer (versioning) — replaces Nerdbank.GitVersioning. Floor at 7.1
+	     so untagged builds produce 7.1.x-alpha.0.<height> until a v7.1.x
+	     (or later) tag is reachable. -->
+	<PropertyGroup>
+		<MinVerAutoIncrement>minor</MinVerAutoIncrement>
+		<MinVerDefaultPreReleaseIdentifiers>alpha.0</MinVerDefaultPreReleaseIdentifiers>
+		<MinVerTagPrefix>v</MinVerTagPrefix>
+		<MinVerMinimumMajorMinor>7.1</MinVerMinimumMajorMinor>
+	</PropertyGroup>
+
 	<ItemGroup>
-		<PackageReference Include="Nerdbank.GitVersioning" PrivateAssets="all" />
+		<PackageReference Include="MinVer" PrivateAssets="all" />
 		<PackageReference Include="stylecop.analyzers" PrivateAssets="all" />
 		<PackageReference Include="Roslynator.Analyzers" PrivateAssets="All" />
 	</ItemGroup>
