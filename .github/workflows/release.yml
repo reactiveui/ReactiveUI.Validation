@@ -23,7 +23,6 @@ jobs:
     with:
       solutionFile: ReactiveUI.Validation.slnx
       installWorkloads: true
-      versioningTool: minver
       minverMinimumMajorMinor: '7.1'
       bump: ${{ inputs.bump }}
     secrets:
