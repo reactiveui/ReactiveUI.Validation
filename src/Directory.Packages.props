@@ -31,6 +31,6 @@
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.7.0" />
     <PackageVersion Include="PublicApiGenerator" Version="11.5.4" />
     <PackageVersion Include="TUnit" Version="1.45.22" />
-    <PackageVersion Include="Verify.TUnit" Version="31.16.3" />
+    <PackageVersion Include="Verify.TUnit" Version="31.17.0" />
   </ItemGroup>
 </Project>
