@@ -15,6 +15,8 @@
 
 Validation for ReactiveUI based solutions, functioning in a reactive way.
 
+*Read this in other languages: [Español](README.es.md).*
+
 ## Core Team
 
 <table>
