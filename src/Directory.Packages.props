@@ -7,6 +7,8 @@
   <ItemGroup Label="Core packages">
     <PackageVersion Include="ReactiveUI" Version="23.2.28" />
     <PackageVersion Include="ReactiveUI.AndroidX" Version="23.2.28" />
+    <PackageVersion Include="Splat" Version="19.4.1" />
+    <PackageVersion Include="Splat.Builder" Version="19.4.1" />
     <PackageVersion Include="Polyfill" Version="10.8.0" />
     <PackageVersion Include="System.Collections.Immutable" Version="10.0.8" />
     <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.14.0" />

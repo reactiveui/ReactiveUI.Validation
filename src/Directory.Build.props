@@ -47,8 +47,9 @@
   <PropertyGroup>
     <NetCorePlatforms>net8.0;net9.0;net10.0</NetCorePlatforms>
     <NetWindowsPlatforms>net8.0-windows10.0.19041.0;net9.0-windows10.0.19041.0;net10.0-windows10.0.19041.0</NetWindowsPlatforms>
-    <MauiAndroidTargets>net9.0-android;net10.0-android</MauiAndroidTargets>
-    <MauiAppleTargets>net9.0-ios;net9.0-tvos;net9.0-macos;net9.0-maccatalyst;net10.0-ios;net10.0-tvos;net10.0-macos;net10.0-maccatalyst</MauiAppleTargets>
+    <!-- net9 MAUI (android/apple) targets dropped: those workloads are end of support. -->
+    <MauiAndroidTargets>net10.0-android</MauiAndroidTargets>
+    <MauiAppleTargets>net10.0-ios;net10.0-tvos;net10.0-macos;net10.0-maccatalyst</MauiAppleTargets>
     <NetFrameworkPlatforms>net462;net472;net481</NetFrameworkPlatforms>
     <TestTargetFrameworks>net8.0;net9.0;net10.0</TestTargetFrameworks>
   </PropertyGroup>
