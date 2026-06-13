@@ -8,7 +8,7 @@
     <PackageVersion Include="Avalonia.Desktop" Version="12.0.3" />
     <PackageVersion Include="Avalonia.Diagnostics" Version="11.3.17" />
     <PackageVersion Include="MessageBox.Avalonia" Version="12.0.0" />
-    <PackageVersion Include="ReactiveUI.SourceGenerators" Version="3.0.0" />
+    <PackageVersion Include="ReactiveUI.SourceGenerators" Version="3.1.0" />
     <PackageVersion Include="MahApps.Metro" Version="2.4.11" />
     <PackageVersion Include="ReactiveUI.WPF" Version="23.2.28" />
     <PackageVersion Include="ReactiveUI.WinForms" Version="23.2.28" />
