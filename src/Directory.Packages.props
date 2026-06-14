@@ -10,7 +10,7 @@
     <PackageVersion Include="Splat" Version="19.4.1" />
     <PackageVersion Include="Splat.Builder" Version="19.4.1" />
     <PackageVersion Include="Polyfill" Version="10.8.1" />
-    <PackageVersion Include="System.Collections.Immutable" Version="10.0.8" />
+    <PackageVersion Include="System.Collections.Immutable" Version="10.0.9" />
     <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.14.0" />
     <PackageVersion Include="Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx" Version="2.10.0.2" />
     <PackageVersion Include="Xamarin.AndroidX.Lifecycle.Process" Version="2.10.0.2" />
