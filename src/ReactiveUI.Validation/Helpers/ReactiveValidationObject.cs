@@ -44,7 +44,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     /// Initializes a new instance of the <see cref="ReactiveValidationObject"/> class.
     /// </summary>
     /// <param name="scheduler">
-    /// Scheduler for the <see cref="ValidationContext"/>. Uses <see cref="CurrentThreadScheduler"/> by default.
+    /// Scheduler for the <see cref="ValidationContext"/>. Uses <see cref="ReactiveUI.Primitives.Concurrency.CurrentThreadSequencer"/> by default.
     /// </param>
     /// <param name="formatter">
     /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
