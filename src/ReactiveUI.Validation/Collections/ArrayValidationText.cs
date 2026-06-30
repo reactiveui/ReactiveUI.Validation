@@ -4,7 +4,6 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections;
-using System.Collections.Generic;
 
 namespace ReactiveUI.Validation.Collections;
 

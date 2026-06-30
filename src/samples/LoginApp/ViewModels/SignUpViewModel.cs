@@ -5,19 +5,20 @@
 
 using System;
 using System.Linq;
-using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
 using System.Threading.Tasks;
 using LoginApp.Services;
 using ReactiveUI;
+using ReactiveUI.Primitives;
+using ReactiveUI.Primitives.Signals;
 using ReactiveUI.SourceGenerators;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.States;
 using Splat;
+using Unit = ReactiveUI.Primitives.RxVoid;
 
 namespace LoginApp.ViewModels;
 
@@ -126,7 +127,7 @@ public partial class SignUpViewModel : ReactiveValidationObject, IRoutableViewMo
         var usernameValidated =
             this.WhenAnyValue(x => x.UserName)
                 .Throttle(TimeSpan.FromSeconds(0.7), RxSchedulers.TaskpoolScheduler)
-                .SelectMany(ValidateNameImpl)
+                .SelectMany(username => Signal.FromAsync(() => ValidateNameImpl(username)))
                 .ObserveOn(RxSchedulers.MainThreadScheduler);
 
         // State to show while validation is in progress.
@@ -137,12 +138,11 @@ public partial class SignUpViewModel : ReactiveValidationObject, IRoutableViewMo
         // Merge both states: "Please wait..." immediately, followed by the actual result.
         this.ValidationRule(
             vm => vm.UserName,
-            usernameValidated.Merge(usernameDirty));
+            Signal.Merge(usernameValidated, usernameDirty));
 
         // Use the validation state to drive a 'Busy' indicator.
-        _isBusy = usernameValidated
-            .Select(_ => false)
-            .Merge(usernameDirty.Select(_ => true))
+        _isBusy = Signal
+            .Merge(usernameValidated.Select(_ => false), usernameDirty.Select(_ => true))
             .ToProperty(this, x => x.IsBusy)
             .DisposeWith(_disposables);
     }

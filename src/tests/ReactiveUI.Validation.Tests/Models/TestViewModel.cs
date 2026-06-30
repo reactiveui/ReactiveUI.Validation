@@ -4,8 +4,8 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
+using ReactiveUI.Primitives.Concurrency;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Contexts;
 using ReactiveUI.Validation.Helpers;
@@ -45,5 +45,5 @@ public class TestViewModel : ReactiveObject, IValidatableViewModel
     }
 
     /// <inheritdoc/>
-    public IValidationContext ValidationContext { get; } = new ValidationContext(ImmediateScheduler.Instance);
+    public IValidationContext ValidationContext { get; } = new ValidationContext(ImmediateSequencer.Instance);
 }

@@ -4,7 +4,7 @@
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
-using System.Reactive.Concurrency;
+using ReactiveUI.Primitives.Concurrency;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Contexts;
 
@@ -38,5 +38,5 @@ public class SourceDestinationViewModel : ReactiveObject, IValidatableViewModel
     } = new();
 
     /// <inheritdoc/>
-    public IValidationContext ValidationContext { get; } = new ValidationContext(Scheduler.Immediate);
+    public IValidationContext ValidationContext { get; } = new ValidationContext(ImmediateSequencer.Instance);
 }

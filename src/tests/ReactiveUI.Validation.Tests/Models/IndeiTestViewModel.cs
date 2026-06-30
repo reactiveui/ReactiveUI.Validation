@@ -3,7 +3,7 @@
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Reactive.Concurrency;
+using ReactiveUI.Primitives.Concurrency;
 using ReactiveUI.Validation.Formatters.Abstractions;
 using ReactiveUI.Validation.Helpers;
 
@@ -19,7 +19,7 @@ public class IndeiTestViewModel : ReactiveValidationObject
     /// Initializes a new instance of the <see cref="IndeiTestViewModel"/> class.
     /// </summary>
     public IndeiTestViewModel()
-        : base(ImmediateScheduler.Instance)
+        : base(ImmediateSequencer.Instance)
     {
     }
 
@@ -28,7 +28,7 @@ public class IndeiTestViewModel : ReactiveValidationObject
     /// </summary>
     /// <param name="formatter">Validation text formatter.</param>
     public IndeiTestViewModel(IValidationTextFormatter<string> formatter)
-        : base(ImmediateScheduler.Instance, formatter)
+        : base(ImmediateSequencer.Instance, formatter)
     {
     }
 

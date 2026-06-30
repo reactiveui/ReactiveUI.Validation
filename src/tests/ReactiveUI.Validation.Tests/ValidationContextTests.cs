@@ -3,8 +3,7 @@
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System.Reactive.Concurrency;
-
+using ReactiveUI.Primitives.Concurrency;
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
@@ -26,7 +25,7 @@ public class ValidationContextTests
     [Test]
     public async Task EmptyValidationContextIsValid()
     {
-        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+        using var vc = new ValidationContext(ImmediateSequencer.Instance);
 
         using (Assert.Multiple())
         {
@@ -42,7 +41,7 @@ public class ValidationContextTests
     [Test]
     public async Task CanAddValidationComponentsTest()
     {
-        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+        using var vc = new ValidationContext(ImmediateSequencer.Instance);
 
         var invalidName = string.Empty;
 
@@ -78,7 +77,7 @@ public class ValidationContextTests
         const string validName = "valid";
         var invalidName = string.Empty;
 
-        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+        using var vc = new ValidationContext(ImmediateSequencer.Instance);
 
         var vm = new TestViewModel { Name = validName, Name2 = validName };
 
@@ -246,7 +245,7 @@ public class ValidationContextTests
     [Test]
     public async Task IsDisposedReflectsContextState()
     {
-        var vc = new ValidationContext(ImmediateScheduler.Instance);
+        var vc = new ValidationContext(ImmediateSequencer.Instance);
 
         await Assert.That(vc.IsDisposed).IsFalse();
 
@@ -320,7 +319,7 @@ public class ValidationContextTests
     [Test]
     public async Task BuildTextReturnsNoneWhenNoComponents()
     {
-        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+        using var vc = new ValidationContext(ImmediateSequencer.Instance);
 
         var result = vc.BuildText();
 
@@ -334,7 +333,7 @@ public class ValidationContextTests
     [Test]
     public async Task BuildTextReturnsSingleInvalidComponentText()
     {
-        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+        using var vc = new ValidationContext(ImmediateSequencer.Instance);
         var vm = new TestViewModel { Name = string.Empty };
 
         using var validation = new BasePropertyValidation<TestViewModel, string>(
@@ -364,7 +363,7 @@ public class ValidationContextTests
     [Test]
     public async Task BuildTextReturnsCombinedTextForMultipleInvalidComponents()
     {
-        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+        using var vc = new ValidationContext(ImmediateSequencer.Instance);
         var vm = new TestViewModel { Name = string.Empty };
 
         using var validation1 = new BasePropertyValidation<TestViewModel, string>(
@@ -402,7 +401,7 @@ public class ValidationContextTests
     [Test]
     public async Task BuildTextReturnsNoneWhenAllValid()
     {
-        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+        using var vc = new ValidationContext(ImmediateSequencer.Instance);
         var vm = new TestViewModel { Name = "valid" };
 
         using var validation = new BasePropertyValidation<TestViewModel, string>(
@@ -428,7 +427,7 @@ public class ValidationContextTests
     [Test]
     public async Task ActivateIsIdempotent()
     {
-        using var vc = new ValidationContext(ImmediateScheduler.Instance);
+        using var vc = new ValidationContext(ImmediateSequencer.Instance);
 
         vc.Activate();
         vc.Activate();
@@ -469,7 +468,7 @@ public class ValidationContextTests
         /// <summary>
         /// Backing field for the validation context; can be nullified for testing.
         /// </summary>
-        private IValidationContext _context = new ValidationContext(ImmediateScheduler.Instance);
+        private IValidationContext _context = new ValidationContext(ImmediateSequencer.Instance);
 
         /// <summary>
         /// Gets or sets the name property used in validation rules.

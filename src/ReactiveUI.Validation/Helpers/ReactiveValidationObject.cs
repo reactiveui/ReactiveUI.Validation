@@ -3,19 +3,10 @@
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reactive.Concurrency;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
-
 using DynamicData;
-
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
@@ -71,7 +62,8 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
 
         ValidationContext = new ValidationContext(scheduler);
         ValidationContext.DisposeWith(_disposables);
-        ValidationContext.Validations
+        SubscribeExtensions.Subscribe(
+            ValidationContext.Validations
             .Connect()
             .ToCollection()
             .Select(components => components
@@ -80,8 +72,8 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
                     .Select(_ => component))
                 .Merge()
                 .StartWith(ValidationContext))
-            .Switch()
-            .Subscribe(OnValidationStatusChange).DisposeWith(_disposables);
+            .Switch(),
+            OnValidationStatusChange).DisposeWith(_disposables);
     }
 
     /// <inheritdoc />

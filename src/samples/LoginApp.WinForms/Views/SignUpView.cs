@@ -5,12 +5,11 @@
 
 using System;
 using System.ComponentModel;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
 using System.Windows.Forms;
 using LoginApp.ViewModels;
 using LoginApp.WinForms.Services;
 using ReactiveUI;
+using ReactiveUI.Primitives.Disposables;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters;
 
@@ -27,34 +26,26 @@ public partial class SignUpView : Form, IViewFor<SignUpViewModel>
     public SignUpView()
     {
         InitializeComponent();
-        this.WhenActivated(disposables =>
+        this.WhenActivated((MultipleDisposable disposables) =>
         {
             // Standard ReactiveUI bindings.
-            this.Bind(ViewModel, x => x.UserName, x => x.UserNameTextBox.Text)
-                .DisposeWith(disposables);
-            this.Bind(ViewModel, x => x.Password, x => x.PasswordTextBox.Text)
-                .DisposeWith(disposables);
-            this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordTextBox.Text)
-                .DisposeWith(disposables);
-            this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUpButton)
-                .DisposeWith(disposables);
+            disposables.Add(this.Bind(ViewModel, x => x.UserName, x => x.UserNameTextBox.Text));
+            disposables.Add(this.Bind(ViewModel, x => x.Password, x => x.PasswordTextBox.Text));
+            disposables.Add(this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordTextBox.Text));
+            disposables.Add(this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUpButton));
 
             // ReactiveUI.Validation: Bindings for error messages.
             // BindValidation(ViewModel, vmProperty, viewControlProperty)
             // This will bind the validation message for the specified property to the control property.
-            this.BindValidation(ViewModel, x => x.UserName, x => x.UserNameErrorLabel.Text)
-                .DisposeWith(disposables);
-            this.BindValidation(ViewModel, x => x.Password, x => x.PasswordErrorLabel.Text)
-                .DisposeWith(disposables);
-            this.BindValidation(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordErrorLabel.Text)
-                .DisposeWith(disposables);
+            disposables.Add(this.BindValidation(ViewModel, x => x.UserName, x => x.UserNameErrorLabel.Text));
+            disposables.Add(this.BindValidation(ViewModel, x => x.Password, x => x.PasswordErrorLabel.Text));
+            disposables.Add(this.BindValidation(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordErrorLabel.Text));
 
             // ReactiveUI.Validation: Compound validation bindings.
             // BindValidation(ViewModel, viewControlProperty)
             // This will bind all validation messages for the entire ViewModel to the control property.
             // We use a formatter to join multiple error messages with a new line.
-            this.BindValidation(ViewModel, x => x.ErrorLabel.Text, new SingleLineFormatter(Environment.NewLine))
-                .DisposeWith(disposables);
+            disposables.Add(this.BindValidation(ViewModel, x => x.ErrorLabel.Text, new SingleLineFormatter(Environment.NewLine)));
         });
     }
 

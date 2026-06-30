@@ -3,19 +3,10 @@
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Reactive.Concurrency;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
-
 using DynamicData;
-
+using ReactiveUI.Primitives.Concurrency;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.States;
@@ -42,12 +33,12 @@ public class ValidationContext : ReactiveObject, IValidationContext
     /// <summary>
     /// Replays the latest validation state to subscribers of <see cref="ValidationStatusChange"/>.
     /// </summary>
-    private readonly ReplaySubject<IValidationState> _validationStatusChange = new(1);
+    private readonly ReplaySignal<IValidationState> _validationStatusChange = new(1);
 
     /// <summary>
     /// Replays the latest overall validity boolean to subscribers of <see cref="Valid"/>.
     /// </summary>
-    private readonly ReplaySubject<bool> _validSubject = new(1);
+    private readonly ReplaySignal<bool> _validSubject = new(1);
 
     /// <summary>
     /// The observable that computes the aggregate validity of all validation components.
@@ -81,7 +72,7 @@ public class ValidationContext : ReactiveObject, IValidationContext
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
     public ValidationContext(IScheduler? scheduler = null)
     {
-        scheduler ??= CurrentThreadScheduler.Instance;
+        scheduler ??= CurrentThreadSequencer.Instance;
         var changeSets = _validationSource.Connect().ObserveOn(scheduler);
         Validations = changeSets.AsObservableList();
 
@@ -96,20 +87,17 @@ public class ValidationContext : ReactiveObject, IValidationContext
 
         _isValid = _validSubject
             .StartWith(true)
-            .ToProperty(this, m => m.IsValid, scheduler: scheduler)
-            .DisposeWith(_disposables);
+            .ToProperty(this, m => m.IsValid, scheduler: scheduler);
 
         _validationText = _validSubject
             .StartWith(true)
             .Select(_ => BuildText())
-            .ToProperty(this, m => m.Text, ValidationText.None, scheduler: scheduler)
-            .DisposeWith(_disposables);
+            .ToProperty(this, m => m.Text, ValidationText.None, scheduler: scheduler);
 
-        _validSubject
-            .Select(_ => new ValidationState(IsValid, BuildText()))
-            .Do(_validationStatusChange.OnNext)
-            .Subscribe()
-            .DisposeWith(_disposables);
+        SubscribeExtensions.Subscribe(_validSubject
+             .Select(_ => new ValidationState(IsValid, BuildText()))
+             .Do(_validationStatusChange.OnNext))
+             .DisposeWith(_disposables);
     }
 
     /// <summary>

@@ -5,10 +5,10 @@
 
 using System;
 using System.Linq;
-using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 
+using ReactiveUI.Primitives.Concurrency;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components;
 using ReactiveUI.Validation.Contexts;
@@ -386,7 +386,7 @@ public class ValidationBindingTests
 
         await Assert.That(view.ViewModel).IsNotNull();
 
-        using var outerContext = new ValidationContext(ImmediateScheduler.Instance);
+        using var outerContext = new ValidationContext(ImmediateSequencer.Instance);
         using var validation = new BasePropertyValidation<TestViewModel, string>(
             view.ViewModel!,
             vm => vm.Name,

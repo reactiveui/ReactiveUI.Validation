@@ -6,10 +6,19 @@
 
   <ItemGroup>
     <PackageReference Include="ReactiveUI" />
+    <PackageReference Include="DynamicData" />
   </ItemGroup>
 
   <ItemGroup>
     <Using Include="ReactiveUI.Validation.Helpers" />
+    <Using Include="ReactiveUI.Primitives" />
+    <Using Include="ReactiveUI.Primitives.Disposables" />
+    <Using Include="ReactiveUI.Primitives.Signals" />
+    <Using Include="ReactiveUI.Primitives.Disposables.Scope" Alias="Disposable" />
+    <Using Include="ReactiveUI.Primitives.Concurrency.ISequencer" Alias="IScheduler" />
+    <Using Include="ReactiveUI.Primitives.Signals.Signal" Alias="Observable" />
+    <Using Include="ReactiveUI.Primitives.RxVoid" Alias="Unit" />
+    <Using Include="ReactiveUI.Primitives.Disposables.MultipleDisposable" Alias="CompositeDisposable" />
   </ItemGroup>
 
   <ItemGroup>

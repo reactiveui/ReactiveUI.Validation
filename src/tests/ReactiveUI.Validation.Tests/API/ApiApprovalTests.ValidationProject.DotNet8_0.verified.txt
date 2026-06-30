@@ -109,7 +109,7 @@ namespace ReactiveUI.Validation.Components
 }
 namespace ReactiveUI.Validation.Contexts
 {
-    public interface IValidationContext : ReactiveUI.IReactiveObject, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, Splat.IEnableLogger, System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging, System.IDisposable, System.Reactive.Disposables.ICancelable
+    public interface IValidationContext : ReactiveUI.IReactiveObject, ReactiveUI.Primitives.Disposables.IsDisposed, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, Splat.IEnableLogger, System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging, System.IDisposable
     {
         System.IObservable<bool> Valid { get; }
         DynamicData.IObservableList<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> Validations { get; }
@@ -118,10 +118,10 @@ namespace ReactiveUI.Validation.Contexts
         void Remove(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation);
         void RemoveMany(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> validations);
     }
-    public class ValidationContext : ReactiveUI.ReactiveObject, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, ReactiveUI.Validation.Contexts.IValidationContext, Splat.IEnableLogger, System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging, System.IDisposable, System.Reactive.Disposables.ICancelable
+    public class ValidationContext : ReactiveUI.ReactiveObject, ReactiveUI.IReactiveObject, ReactiveUI.Primitives.Disposables.IsDisposed, ReactiveUI.Validation.Components.Abstractions.IValidationComponent, ReactiveUI.Validation.Contexts.IValidationContext, Splat.IEnableLogger, System.ComponentModel.INotifyPropertyChanged, System.ComponentModel.INotifyPropertyChanging, System.IDisposable
     {
         [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-        public ValidationContext(System.Reactive.Concurrency.IScheduler? scheduler = null) { }
+        public ValidationContext(ReactiveUI.Primitives.Concurrency.ISequencer? scheduler = null) { }
         public bool IsDisposed { get; }
         public bool IsValid { get; }
         public ReactiveUI.Validation.Collections.IValidationText Text { get; }
@@ -250,7 +250,7 @@ namespace ReactiveUI.Validation.Helpers
     public abstract class ReactiveValidationObject : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel, System.ComponentModel.INotifyDataErrorInfo, System.IDisposable
     {
         [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
-        protected ReactiveValidationObject(System.Reactive.Concurrency.IScheduler? scheduler = null, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null) { }
+        protected ReactiveValidationObject(ReactiveUI.Primitives.Concurrency.ISequencer? scheduler = null, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter = null) { }
         public bool HasErrors { get; }
         public ReactiveUI.Validation.Contexts.IValidationContext ValidationContext { get; }
         public event System.EventHandler<System.ComponentModel.DataErrorsChangedEventArgs>? ErrorsChanged;

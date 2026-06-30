@@ -4,10 +4,9 @@
 // See the LICENSE file in the project root for full license information.
 
 using System;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
 using LoginApp.ViewModels;
 using ReactiveUI;
+using ReactiveUI.Primitives.Disposables;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters;
 
@@ -24,39 +23,35 @@ public partial class SignUpView : ReactiveUserControl<SignUpViewModel>
     public SignUpView()
     {
         InitializeComponent();
-        this.WhenActivated(disposables =>
+        this.WhenActivated((MultipleDisposable disposables) =>
         {
-            this.WhenAnyValue(x => x.ViewModel)
-                .BindTo(this, x => x.DataContext)
-                .DisposeWith(disposables);
+            disposables.Add(
+                this.WhenAnyValue(x => x.ViewModel)
+                    .BindTo(this, x => x.DataContext));
 
             // ReactiveUI.Validation: Bindings for error messages.
             // BindValidation(ViewModel, vmProperty, viewControlProperty)
             // This will bind the validation message for the specified property to the control property.
-            this.BindValidation(ViewModel, x => x.UserName, x => x.UserNameValidation.Text)
-                .DisposeWith(disposables);
-            this.BindValidation(ViewModel, x => x.Password, x => x.PasswordValidation.Text)
-                .DisposeWith(disposables);
-            this.BindValidation(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordValidation.Text)
-                .DisposeWith(disposables);
+            disposables.Add(this.BindValidation(ViewModel, x => x.UserName, x => x.UserNameValidation.Text));
+            disposables.Add(this.BindValidation(ViewModel, x => x.Password, x => x.PasswordValidation.Text));
+            disposables.Add(this.BindValidation(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordValidation.Text));
 
             // ReactiveUI.Validation: Compound validation bindings.
             // BindValidation(ViewModel, viewControlProperty)
             // This will bind all validation messages for the entire ViewModel to the control property.
             // We use a formatter to join multiple error messages with a new line.
-            this.BindValidation(ViewModel, x => x.CompoundValidation.Text, new SingleLineFormatter(Environment.NewLine))
-                .DisposeWith(disposables);
+            disposables.Add(this.BindValidation(ViewModel, x => x.CompoundValidation.Text, new SingleLineFormatter(Environment.NewLine)));
 
             // Controlling visibility of validation messages based on their content.
-            this.WhenAnyValue(x => x.UserNameValidation.Text, text => !string.IsNullOrWhiteSpace(text))
-                .BindTo(this, x => x.UserNameValidation.Visibility)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(x => x.PasswordValidation.Text, text => !string.IsNullOrWhiteSpace(text))
-                .BindTo(this, x => x.PasswordValidation.Visibility)
-                .DisposeWith(disposables);
-            this.WhenAnyValue(x => x.ConfirmPasswordValidation.Text, text => !string.IsNullOrWhiteSpace(text))
-                .BindTo(this, x => x.ConfirmPasswordValidation.Visibility)
-                .DisposeWith(disposables);
+            disposables.Add(
+                this.WhenAnyValue(x => x.UserNameValidation.Text, text => !string.IsNullOrWhiteSpace(text))
+                    .BindTo(this, x => x.UserNameValidation.Visibility));
+            disposables.Add(
+                this.WhenAnyValue(x => x.PasswordValidation.Text, text => !string.IsNullOrWhiteSpace(text))
+                    .BindTo(this, x => x.PasswordValidation.Visibility));
+            disposables.Add(
+                this.WhenAnyValue(x => x.ConfirmPasswordValidation.Text, text => !string.IsNullOrWhiteSpace(text))
+                    .BindTo(this, x => x.ConfirmPasswordValidation.Visibility));
         });
     }
 }
