@@ -38,6 +38,7 @@
   <PropertyGroup Condition="'$(IsTestProject)' == 'true'">
     <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
     <IsPackable>false</IsPackable>
+    <UseAppHost>false</UseAppHost>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(IsSampleProject)' == 'true'">

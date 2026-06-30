@@ -3,19 +3,13 @@
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reactive;
-using System.Reactive.Linq;
 
 using ReactiveUI.Validation.Abstractions;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters;
 using ReactiveUI.Validation.Formatters.Abstractions;
-using ReactiveUI.Validation.Helpers;
 using ReactiveUI.Validation.States;
 using ReactiveUI.Validation.ValidationBindings.Abstractions;
 
@@ -35,7 +29,7 @@ public sealed class ValidationBinding : IValidationBinding
     /// Initializes a new instance of the <see cref="ValidationBinding"/> class.
     /// </summary>
     /// <param name="bindingObservable">The observable that drives the validation binding updates.</param>
-    internal ValidationBinding(IObservable<Unit> bindingObservable) => _disposable = bindingObservable.Subscribe();
+    internal ValidationBinding(IObservable<Unit> bindingObservable) => _disposable = SubscribeExtensions.Subscribe(bindingObservable);
 
     /// <summary>
     /// Creates a binding between a ViewModel property and a view property.

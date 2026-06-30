@@ -3,15 +3,8 @@
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Comparators;
@@ -31,7 +24,7 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
     /// <summary>
     /// Replays the latest validity boolean to subscribers.
     /// </summary>
-    private readonly ReplaySubject<bool> _isValidSubject = new(1);
+    private readonly ReplaySignal<bool> _isValidSubject = new(1);
 
     /// <summary>
     /// Tracks property names this validation monitors.
@@ -46,7 +39,7 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
     /// <summary>
     /// The connected observable that multicasts validation state changes.
     /// </summary>
-    private IConnectableObservable<IValidationState>? _connectedChange;
+    private ConnectableSignal<IValidationState>? _connectedChange;
 
     /// <summary>
     /// Tracks whether <see cref="Activate"/> has been called.
@@ -58,7 +51,7 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
     /// Subscribe to the valid subject so we can assign the validity.
     /// </summary>
     protected BasePropertyValidation() =>
-        _isValidSubject.Subscribe(v => IsValid = v).DisposeWith(_disposables);
+      SubscribeExtensions.Subscribe(_isValidSubject, v => IsValid = v).DisposeWith(_disposables);
 
     /// <inheritdoc/>
     public int PropertyCount => _propertyNames.Count;
@@ -188,12 +181,12 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
     /// <summary>
     /// Replays the latest property value to subscribers.
     /// </summary>
-    private readonly ReplaySubject<TViewModelProperty?> _valueSubject = new(1);
+    private readonly ReplaySignal<TViewModelProperty?> _valueSubject = new(1);
 
     /// <summary>
     /// The connected observable that multicasts property value changes.
     /// </summary>
-    private readonly IConnectableObservable<TViewModelProperty?> _valueConnectedObservable;
+    private readonly ConnectableSignal<TViewModelProperty?> _valueConnectedObservable;
 
     /// <summary>
     /// The function that produces validation text from the property value and validity.

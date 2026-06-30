@@ -1,16 +1,9 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
+// Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
 // Licensed to the ReactiveUI and Contributors under one or more agreements.
 // The ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Reactive.Disposables;
-using System.Reactive.Disposables.Fluent;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 using ReactiveUI.Validation.Collections;
 using ReactiveUI.Validation.Components.Abstractions;
 using ReactiveUI.Validation.Extensions;
@@ -28,7 +21,7 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
     /// <summary>
     /// Replays the latest validation state to subscribers.
     /// </summary>
-    private readonly ReplaySubject<IValidationState> _isValidSubject = new(1);
+    private readonly ReplaySignal<IValidationState> _isValidSubject = new(1);
 
     /// <summary>
     /// Tracks property names this validation monitors.
@@ -43,7 +36,7 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
     /// <summary>
     /// The connected observable that multicasts validation state changes.
     /// </summary>
-    private readonly IConnectableObservable<IValidationState> _validityConnectedObservable;
+    private readonly ConnectableSignal<IValidationState> _validityConnectedObservable;
 
     /// <summary>
     /// Tracks whether <see cref="Activate"/> has been called.
@@ -62,7 +55,7 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
         IObservable<TValue> observable,
         Func<TViewModel, TValue, bool> isValidFunc,
         Func<TViewModel, TValue, bool, IValidationText> messageFunc)
-        : this(observable.Select(value =>
+        : this((observable ?? throw new ArgumentNullException(nameof(observable))).Select(value =>
         {
             var isValid = isValidFunc(viewModel, value);
             var message = messageFunc(viewModel, value, isValid);
@@ -77,14 +70,13 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
     /// <param name="observable">Observable that updates the view model property validity.</param>
     protected ObservableValidationBase(IObservable<IValidationState> observable)
     {
-        _isValidSubject
-            .Do(state =>
-            {
-                IsValid = state.IsValid;
-                Text = state.Text;
-            })
-            .Subscribe()
-            .DisposeWith(_disposables);
+        SubscribeExtensions.Subscribe(_isValidSubject
+             .Do(state =>
+             {
+                 IsValid = state.IsValid;
+                 Text = state.Text;
+             }))
+             .DisposeWith(_disposables);
 
         _validityConnectedObservable = Observable
             .Defer(() => observable)

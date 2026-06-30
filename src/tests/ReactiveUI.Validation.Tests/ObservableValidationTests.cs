@@ -89,6 +89,20 @@ public class ObservableValidationTests
     }
 
     /// <summary>
+    /// Verifies that a null observable is rejected by the constructor overload that builds validation states.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
+    [Test]
+    public async Task NullObservableThrowsArgumentNullException()
+    {
+        await Assert.That(() => new ObservableValidation<TestViewModel, bool>(
+            _validModel,
+            null!,
+            valid => valid,
+            "broken")).Throws<ArgumentNullException>();
+    }
+
+    /// <summary>
     /// Verifies if the observable returns invalid.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
