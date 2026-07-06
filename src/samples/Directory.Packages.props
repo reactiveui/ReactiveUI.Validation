@@ -9,7 +9,7 @@
     <PackageVersion Include="MessageBox.Avalonia" Version="12.0.0" />
     <PackageVersion Include="ReactiveUI.SourceGenerators" Version="3.1.0" />
     <PackageVersion Include="MahApps.Metro" Version="2.4.11" />
-    <PackageVersion Include="ReactiveUI.WPF" Version="24.0.0-beta.2" />
-    <PackageVersion Include="ReactiveUI.WinForms" Version="24.0.0-beta.2" />
+    <PackageVersion Include="ReactiveUI.WPF" Version="24.0.0-beta.3" />
+    <PackageVersion Include="ReactiveUI.WinForms" Version="24.0.0-beta.3" />
   </ItemGroup>
 </Project>
