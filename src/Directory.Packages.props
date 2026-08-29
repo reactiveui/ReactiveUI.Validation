@@ -33,7 +33,7 @@
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="7.0.0" />
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.10.0" />
     <PackageVersion Include="PublicApiGenerator" Version="11.5.4" />
-    <PackageVersion Include="TUnit" Version="1.61.38" />
-    <PackageVersion Include="Verify.TUnit" Version="31.20.0" />
+    <PackageVersion Include="TUnit" Version="1.65.68" />
+    <PackageVersion Include="Verify.TUnit" Version="31.28.0" />
   </ItemGroup>
 </Project>
