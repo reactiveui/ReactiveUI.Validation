@@ -134,11 +134,15 @@ public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : Bas
     {
         base.Dispose(disposing);
 
-        if (!disposing)
+        if (disposing)
         {
-            return;
+            ReleaseSubscriptions();
         }
+    }
 
+    /// <summary>Disconnects the property observable, then releases the subject that replays its value.</summary>
+    private void ReleaseSubscriptions()
+    {
         _disposables.Dispose();
         _valueSubject.Dispose();
     }

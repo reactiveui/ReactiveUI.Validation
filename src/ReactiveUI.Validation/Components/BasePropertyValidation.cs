@@ -16,9 +16,6 @@ namespace ReactiveUI.Validation.Components;
 [System.Diagnostics.DebuggerDisplay("BasePropertyValidation: {PropertyCount}")]
 public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisposable, IPropertyValidationComponent
 {
-    /// <summary>Replays the latest validity boolean to subscribers.</summary>
-    private readonly ReplaySignal<bool> _isValidSubject = new(1);
-
     /// <summary>Tracks property names this validation monitors.</summary>
     private readonly HashSet<string> _propertyNames = [];
 
@@ -35,10 +32,6 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
 
     /// <summary>Set to 1 once <see cref="Activate"/> has been called.</summary>
     private int _isConnected;
-
-    /// <summary>Initializes a new instance of the <see cref="BasePropertyValidation{TViewModel}"/> class. Subscribe to the valid subject so we can assign the validity.</summary>
-    protected BasePropertyValidation() =>
-      SubscribeExtensions.Subscribe(_isValidSubject, v => IsValid = v).DisposeWith(_disposables);
 
     /// <inheritdoc/>
     public int PropertyCount => _propertyNames.Count;
@@ -137,12 +130,9 @@ public abstract class BasePropertyValidation<TViewModel> : ReactiveObject, IDisp
     /// <param name="disposing">If its getting called by the <see cref="BasePropertyValidation{TViewModel}.Dispose()"/> method.</param>
     protected virtual void Dispose(bool disposing)
     {
-        if (!disposing)
+        if (disposing)
         {
-            return;
+            _disposables.Dispose();
         }
-
-        _disposables.Dispose();
-        _isValidSubject.Dispose();
     }
 }

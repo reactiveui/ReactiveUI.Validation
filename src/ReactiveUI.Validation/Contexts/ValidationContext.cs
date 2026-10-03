@@ -75,12 +75,12 @@ public class ValidationContext : ReactiveObject, IValidationContext
 
         _isValid = _validSubject
             .StartWith(true)
-            .ToProperty(this, static m => m.IsValid, scheduler: scheduler);
+            .ToProperty(this, nameof(IsValid), scheduler);
 
         _validationText = _validSubject
             .StartWith(true)
             .Select(_ => BuildText())
-            .ToProperty(this, static m => m.Text, ValidationText.None, scheduler: scheduler);
+            .ToProperty(this, nameof(Text), ValidationText.None, scheduler);
 
         _ = SubscribeExtensions.Subscribe(_validSubject
              .Select(_ => new ValidationState(IsValid, BuildText()))
