@@ -3,10 +3,19 @@
   <PropertyGroup>
     <TargetFrameworks>$(TestTargetFrameworks)</TargetFrameworks>
     <IsPackable>false</IsPackable>
+    <ValidationNamespaceRoot>ReactiveUI.Validation</ValidationNamespaceRoot>
   </PropertyGroup>
+
+  <Import Project="..\..\ReactiveUI.Validation\ReactiveUI.Validation.Usings.props" />
 
   <ItemGroup>
     <ProjectReference Include="..\..\ReactiveUI.Validation\ReactiveUI.Validation.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="$(ValidationNamespaceRoot).Tests.Models" />
+    <Using Include="ReactiveUI.Builder" />
+    <Using Include="ReactiveUI.Primitives.Concurrency" />
   </ItemGroup>
 
 </Project>

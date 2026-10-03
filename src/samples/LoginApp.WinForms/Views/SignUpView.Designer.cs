@@ -150,11 +150,11 @@ namespace LoginApp.WinForms.Views
 
         #endregion
 
-        private System.Windows.Forms.TextBox UserNameTextBox;
-        private System.Windows.Forms.TextBox PasswordTextBox;
+        internal System.Windows.Forms.TextBox UserNameTextBox;
+        internal System.Windows.Forms.TextBox PasswordTextBox;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.TextBox ConfirmPasswordTextBox;
-        private System.Windows.Forms.Button SignUpButton;
+        internal System.Windows.Forms.TextBox ConfirmPasswordTextBox;
+        internal System.Windows.Forms.Button SignUpButton;
         private System.Windows.Forms.Label UserNameErrorLabel;
         private System.Windows.Forms.Label PasswordErrorLabel;
         private System.Windows.Forms.Label ConfirmPasswordErrorLabel;

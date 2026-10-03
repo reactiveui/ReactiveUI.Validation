@@ -1,6 +1,5 @@
 // Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
-// Licensed to the ReactiveUI and Contributors under one or more agreements.
-// The ReactiveUI and Contributors licenses this file to you under the MIT license.
+// ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
@@ -8,31 +7,42 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Runtime.CompilerServices;
 
-using ReactiveUI.Validation.Collections;
-using ReactiveUI.Validation.Components;
-using ReactiveUI.Validation.Components.Abstractions;
-using ReactiveUI.Validation.Extensions;
-using ReactiveUI.Validation.Formatters.Abstractions;
-using ReactiveUI.Validation.Helpers;
-using ReactiveUI.Validation.States;
-using ReactiveUI.Validation.Tests.Models;
-
+#if REACTIVE_SHIM
+namespace ReactiveUI.Validation.Reactive.Tests;
+#else
 namespace ReactiveUI.Validation.Tests;
+#endif
 
-/// <summary>
-/// Tests for INotifyDataErrorInfo support.
-/// </summary>
+/// <summary>Tests for INotifyDataErrorInfo support.</summary>
 public class NotifyDataErrorInfoTests
 {
-    /// <summary>
-    /// Reusable error message for name validation.
-    /// </summary>
+    /// <summary>Reusable error message for name validation.</summary>
     private const string NameShouldNotBeEmptyMessage = "Name shouldn't be empty.";
 
-    /// <summary>
-    /// Verifies that the ErrorsChanged event fires on ViewModel initialization.
-    /// </summary>
+    /// <summary>Reusable error message for a null name.</summary>
+    private const string NameShouldNotBeNullMessage = "Name shouldn't be null.";
+
+    /// <summary>Reusable error message for a null other name.</summary>
+    private const string OtherNameShouldNotBeNullMessage = "Other name shouldn't be null.";
+
+    /// <summary>A name that passes the validation rules.</summary>
+    private const string ValidName = "valid";
+
+    /// <summary>The expected count when two items are present.</summary>
+    private const int TwoItems = 2;
+
+    /// <summary>The expected count when three items are present.</summary>
+    private const int ThreeItems = 3;
+
+    /// <summary>The expected count when four items are present.</summary>
+    private const int FourItems = 4;
+
+    /// <summary>The starting maximum value, above the default minimum value.</summary>
+    private const double InitialMaxValue = 100.0;
+
+    /// <summary>Verifies that the ErrorsChanged event fires on ViewModel initialization.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task ShouldMarkPropertiesAsInvalidOnInit()
@@ -43,12 +53,12 @@ public class NotifyDataErrorInfoTests
         using var firstValidation = new BasePropertyValidation<IndeiTestViewModel, string>(
             viewModel,
             vm => vm.Name,
-            s => !string.IsNullOrEmpty(s),
+            static s => !string.IsNullOrEmpty(s),
             NameShouldNotBeEmptyMessage);
 
         viewModel.ValidationContext.Add(firstValidation);
-        view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
-        view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
+        _ = view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+        _ = view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
         // Verify validation context behavior.
         using (Assert.Multiple())
@@ -66,10 +76,7 @@ public class NotifyDataErrorInfoTests
         }
     }
 
-    /// <summary>
-    /// Verifies that the view model listens to the INotifyPropertyChanged event
-    /// and sends INotifyDataErrorInfo notifications.
-    /// </summary>
+    /// <summary>Verifies that the view model listens to the INotifyPropertyChanged event and sends INotifyDataErrorInfo notifications.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task ShouldSynchronizeNotifyDataErrorInfoWithValidationContext()
@@ -80,12 +87,12 @@ public class NotifyDataErrorInfoTests
         using var firstValidation = new BasePropertyValidation<IndeiTestViewModel, string>(
             viewModel,
             vm => vm.Name,
-            s => !string.IsNullOrEmpty(s),
+            static s => !string.IsNullOrEmpty(s),
             NameShouldNotBeEmptyMessage);
 
         viewModel.ValidationContext.Add(firstValidation);
-        view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
-        view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
+        _ = view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+        _ = view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
         // Verify the initial state.
         using (Assert.Multiple())
@@ -123,9 +130,7 @@ public class NotifyDataErrorInfoTests
         }
     }
 
-    /// <summary>
-    /// The ErrorsChanged event should fire when properties change.
-    /// </summary>
+    /// <summary>The ErrorsChanged event should fire when properties change.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task ShouldFireErrorsChangedEventWhenValidationStateChanges()
@@ -138,7 +143,7 @@ public class NotifyDataErrorInfoTests
         using var firstValidation = new BasePropertyValidation<IndeiTestViewModel, string>(
             viewModel,
             vm => vm.Name,
-            s => !string.IsNullOrEmpty(s),
+            static s => !string.IsNullOrEmpty(s),
             NameShouldNotBeEmptyMessage);
 
         viewModel.ValidationContext.Add(firstValidation);
@@ -162,9 +167,7 @@ public class NotifyDataErrorInfoTests
         }
     }
 
-    /// <summary>
-    /// Using ModelObservableValidation with NotifyDataErrorInfo should return errors when associated property changes.
-    /// </summary>
+    /// <summary>Using ModelObservableValidation with NotifyDataErrorInfo should return errors when associated property changes.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task ShouldDeliverErrorsWhenModelObservableValidationTriggers()
@@ -172,12 +175,12 @@ public class NotifyDataErrorInfoTests
         var viewModel = new IndeiTestViewModel();
 
         const string namesShouldMatchMessage = "names should match.";
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             vm => vm.OtherName,
             viewModel.WhenAnyValue(
                 m => m.Name,
                 m => m.OtherName,
-                (name, other) => name == other),
+                static (name, other) => name == other),
             namesShouldMatchMessage);
 
         using (Assert.Multiple())
@@ -212,41 +215,38 @@ public class NotifyDataErrorInfoTests
     public async Task ValidationRulesOfTheSamePropertyShouldNotDuplicate()
     {
         var viewModel = new IndeiTestViewModel();
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.Name,
-            m => m is not null,
-            "Name shouldn't be null.");
+            static m => m is not null,
+            NameShouldNotBeNullMessage);
 
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.Name,
-            m => !string.IsNullOrWhiteSpace(m),
+            static m => !string.IsNullOrWhiteSpace(m),
             "Name shouldn't be white space.");
 
         using (Assert.Multiple())
         {
             await Assert.That(viewModel.ValidationContext.IsValid).IsFalse();
-            await Assert.That(viewModel.ValidationContext.Validations.Count).IsEqualTo(2);
+            await Assert.That(viewModel.ValidationContext.Validations.Count).IsEqualTo(TwoItems);
         }
     }
 
-    /// <summary>
-    /// Verifies that the <see cref="INotifyDataErrorInfo"/> events are published
-    /// according to the changes of the validated properties.
-    /// </summary>
+    /// <summary>Verifies that the <see cref="INotifyDataErrorInfo"/> events are published according to the changes of the validated properties.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task ShouldSendPropertyChangeNotificationsForCorrectProperties()
     {
         var viewModel = new IndeiTestViewModel();
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.Name,
-            m => m is not null,
-            "Name shouldn't be null.");
+            static m => m is not null,
+            NameShouldNotBeNullMessage);
 
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.OtherName,
-            m => m is not null,
-            "Other name shouldn't be null.");
+            static m => m is not null,
+            OtherNameShouldNotBeNullMessage);
 
         using (Assert.Multiple())
         {
@@ -261,7 +261,7 @@ public class NotifyDataErrorInfoTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(arguments).Count().IsEqualTo(2);
+            await Assert.That(arguments).Count().IsEqualTo(TwoItems);
             await Assert.That(arguments[0].PropertyName).IsEqualTo(nameof(viewModel.Name));
             await Assert.That(arguments[1].PropertyName).IsEqualTo(nameof(viewModel.OtherName));
             await Assert.That(viewModel.HasErrors).IsFalse();
@@ -272,7 +272,7 @@ public class NotifyDataErrorInfoTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(arguments).Count().IsEqualTo(4);
+            await Assert.That(arguments).Count().IsEqualTo(FourItems);
             await Assert.That(arguments[2].PropertyName).IsEqualTo(nameof(viewModel.Name));
             await Assert.That(arguments[3].PropertyName).IsEqualTo(nameof(viewModel.OtherName));
             await Assert.That(viewModel.HasErrors).IsTrue();
@@ -297,8 +297,8 @@ public class NotifyDataErrorInfoTests
             .ViewModel!
             .ValidationRule(
                 viewModel => viewModel.Name,
-                name => !string.IsNullOrWhiteSpace(name),
-                "Name shouldn't be empty.");
+                static name => !string.IsNullOrWhiteSpace(name),
+                NameShouldNotBeEmptyMessage);
 
         using (Assert.Multiple())
         {
@@ -316,14 +316,12 @@ public class NotifyDataErrorInfoTests
             await Assert.That(view.ViewModel!.ValidationContext.Validations.Count).IsEqualTo(0);
             await Assert.That(view.ViewModel!.ValidationContext.IsValid).IsTrue();
             await Assert.That(view.ViewModel!.HasErrors).IsFalse();
-            await Assert.That(arguments).Count().IsEqualTo(2);
+            await Assert.That(arguments).Count().IsEqualTo(TwoItems);
             await Assert.That(arguments[1].PropertyName).IsEqualTo(nameof(IndeiTestViewModel.Name));
         }
     }
 
-    /// <summary>
-    /// Verifies that we support custom formatters in our <see cref="INotifyDataErrorInfo"/> implementation.
-    /// </summary>
+    /// <summary>Verifies that we support custom formatters in our <see cref="INotifyDataErrorInfo"/> implementation.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task ShouldInvokeCustomFormatters()
@@ -334,10 +332,10 @@ public class NotifyDataErrorInfoTests
 
         await Assert.That(view.ViewModel).IsNotNull();
         view.ViewModel!.ErrorsChanged += (_, args) => arguments.Add(args);
-        view.ViewModel!.ValidationRule(
+        _ = view.ViewModel!.ValidationRule(
             viewModel => viewModel.Name,
-            name => !string.IsNullOrWhiteSpace(name),
-            "Name shouldn't be empty.");
+            static name => !string.IsNullOrWhiteSpace(name),
+            NameShouldNotBeEmptyMessage);
 
         using (Assert.Multiple())
         {
@@ -358,72 +356,66 @@ public class NotifyDataErrorInfoTests
         }
     }
 
-    /// <summary>
-    /// Verifies that GetErrors(null) returns all validation errors.
-    /// </summary>
+    /// <summary>Verifies that GetErrors(null) returns all validation errors.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GetErrorsWithNullPropertyNameReturnsAllErrors()
     {
         var viewModel = new IndeiTestViewModel();
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.Name,
-            m => m is not null,
-            "Name shouldn't be null.");
+            static m => m is not null,
+            NameShouldNotBeNullMessage);
 
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.OtherName,
-            m => m is not null,
-            "Other name shouldn't be null.");
+            static m => m is not null,
+            OtherNameShouldNotBeNullMessage);
 
         var errors = viewModel.GetErrors(null).Cast<string>().ToArray();
 
         using (Assert.Multiple())
         {
-            await Assert.That(errors).Count().IsEqualTo(2);
+            await Assert.That(errors).Count().IsEqualTo(TwoItems);
             await Assert.That(viewModel.HasErrors).IsTrue();
         }
     }
 
-    /// <summary>
-    /// Verifies that GetErrors("") returns all validation errors.
-    /// </summary>
+    /// <summary>Verifies that GetErrors("") returns all validation errors.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GetErrorsWithEmptyPropertyNameReturnsAllErrors()
     {
         var viewModel = new IndeiTestViewModel();
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.Name,
-            m => m is not null,
-            "Name shouldn't be null.");
+            static m => m is not null,
+            NameShouldNotBeNullMessage);
 
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.OtherName,
-            m => m is not null,
-            "Other name shouldn't be null.");
+            static m => m is not null,
+            OtherNameShouldNotBeNullMessage);
 
         var errors = viewModel.GetErrors(string.Empty).Cast<string>().ToArray();
 
         using (Assert.Multiple())
         {
-            await Assert.That(errors).Count().IsEqualTo(2);
+            await Assert.That(errors).Count().IsEqualTo(TwoItems);
             await Assert.That(viewModel.HasErrors).IsTrue();
         }
     }
 
-    /// <summary>
-    /// Verifies that Dispose cleans up resources properly.
-    /// </summary>
+    /// <summary>Verifies that Dispose cleans up resources properly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task DisposeShouldCleanUpResources()
     {
         var viewModel = new IndeiTestViewModel();
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.Name,
-            m => m is not null,
-            "Name shouldn't be null.");
+            static m => m is not null,
+            NameShouldNotBeNullMessage);
 
         await Assert.That(viewModel.HasErrors).IsTrue();
 
@@ -433,18 +425,16 @@ public class NotifyDataErrorInfoTests
         await Assert.That(viewModel.ValidationContext).IsNotNull();
     }
 
-    /// <summary>
-    /// Verifies that calling Dispose twice is safe.
-    /// </summary>
+    /// <summary>Verifies that calling Dispose twice is safe.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task DoubleDisposeShouldBeSafe()
     {
         var viewModel = new IndeiTestViewModel();
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.Name,
-            m => m is not null,
-            "Name shouldn't be null.");
+            static m => m is not null,
+            NameShouldNotBeNullMessage);
 
         viewModel.Dispose();
         viewModel.Dispose();
@@ -452,10 +442,7 @@ public class NotifyDataErrorInfoTests
         await Assert.That(viewModel.ValidationContext).IsNotNull();
     }
 
-    /// <summary>
-    /// Verifies that a non-property validation component triggers ErrorsChanged for
-    /// previously mentioned property names.
-    /// </summary>
+    /// <summary>Verifies that a non-property validation component triggers ErrorsChanged for previously mentioned property names.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task NonPropertyComponentTriggersErrorsChangedForMentionedProperties()
@@ -464,39 +451,37 @@ public class NotifyDataErrorInfoTests
         var arguments = new List<DataErrorsChangedEventArgs>();
 
         // First add a property-based validation to populate _mentionedPropertyNames
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.Name,
-            m => m is not null,
-            "Name shouldn't be null.");
+            static m => m is not null,
+            NameShouldNotBeNullMessage);
 
         viewModel.ErrorsChanged += (_, args) => arguments.Add(args);
 
         // Now add a non-property observable validation (which triggers the else branch)
-        viewModel.ValidationRule(
-            viewModel.WhenAnyValue(x => x.Name, x => x.OtherName, (a, b) => a != null && b != null),
+        _ = viewModel.ValidationRule(
+            viewModel.WhenAnyValue(x => x.Name, x => x.OtherName, static (a, b) => a is not null && b is not null),
             "Both values required.");
 
         // The non-property component should trigger ErrorsChanged for "Name" (the previously mentioned property)
-        await Assert.That(arguments.Any(a => a.PropertyName == "Name")).IsTrue();
+        await Assert.That(arguments.Exists(static a => a.PropertyName == "Name")).IsTrue();
     }
 
-    /// <summary>
-    /// Verifies that SelectInvalidPropertyValidations returns only invalid components.
-    /// </summary>
+    /// <summary>Verifies that SelectInvalidPropertyValidations returns only invalid components.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task SelectInvalidPropertyValidationsReturnsOnlyInvalidComponents()
     {
-        var viewModel = new IndeiTestViewModel { Name = "valid" };
-        viewModel.ValidationRule(
+        var viewModel = new IndeiTestViewModel { Name = ValidName };
+        _ = viewModel.ValidationRule(
             m => m.Name,
-            m => !string.IsNullOrEmpty(m),
-            "Name shouldn't be empty.");
+            static m => !string.IsNullOrEmpty(m),
+            NameShouldNotBeEmptyMessage);
 
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.OtherName,
-            m => m is not null,
-            "Other name shouldn't be null.");
+            static m => m is not null,
+            OtherNameShouldNotBeNullMessage);
 
         var invalidValidations = viewModel.SelectInvalidPropertyValidations().ToList();
 
@@ -508,32 +493,28 @@ public class NotifyDataErrorInfoTests
         }
     }
 
-    /// <summary>
-    /// Verifies that SelectInvalidPropertyValidations returns empty when all valid.
-    /// </summary>
+    /// <summary>Verifies that SelectInvalidPropertyValidations returns empty when all valid.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task SelectInvalidPropertyValidationsReturnsEmptyWhenAllValid()
     {
-        var viewModel = new IndeiTestViewModel { Name = "valid", OtherName = "also valid" };
-        viewModel.ValidationRule(
+        var viewModel = new IndeiTestViewModel { Name = ValidName, OtherName = "also valid" };
+        _ = viewModel.ValidationRule(
             m => m.Name,
-            m => !string.IsNullOrEmpty(m),
-            "Name shouldn't be empty.");
+            static m => !string.IsNullOrEmpty(m),
+            NameShouldNotBeEmptyMessage);
 
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             m => m.OtherName,
-            m => m is not null,
-            "Other name shouldn't be null.");
+            static m => m is not null,
+            OtherNameShouldNotBeNullMessage);
 
         var invalidValidations = viewModel.SelectInvalidPropertyValidations().ToList();
 
         await Assert.That(invalidValidations).IsEmpty();
     }
 
-    /// <summary>
-    /// Verifies that OnValidationStatusChange updates HasErrors and fires ErrorsChanged.
-    /// </summary>
+    /// <summary>Verifies that OnValidationStatusChange updates HasErrors and fires ErrorsChanged.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task OnValidationStatusChangeUpdatesHasErrorsDirectly()
@@ -545,7 +526,7 @@ public class NotifyDataErrorInfoTests
         using var validation = new BasePropertyValidation<IndeiTestViewModel, string>(
             viewModel,
             vm => vm.Name,
-            s => !string.IsNullOrEmpty(s),
+            static s => !string.IsNullOrEmpty(s),
             "Name is required");
 
         viewModel.ValidationContext.Add(validation);
@@ -556,18 +537,16 @@ public class NotifyDataErrorInfoTests
         using (Assert.Multiple())
         {
             await Assert.That(viewModel.HasErrors).IsTrue();
-            await Assert.That(arguments.Any(a => a.PropertyName == "Name")).IsTrue();
+            await Assert.That(arguments.Exists(static a => a.PropertyName == "Name")).IsTrue();
         }
     }
 
-    /// <summary>
-    /// Verifies that GetErrors handles null Text on an invalid component for all-errors path.
-    /// </summary>
+    /// <summary>Verifies that GetErrors handles null Text on an invalid component for all-errors path.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GetErrorsHandlesNullTextOnInvalidComponentForAllErrors()
     {
-        var viewModel = new IndeiTestViewModel();
+        using var viewModel = new IndeiTestViewModel();
         var stub = new NullTextPropertyValidation("Name");
         viewModel.ValidationContext.Add(stub);
 
@@ -578,14 +557,12 @@ public class NotifyDataErrorInfoTests
         await Assert.That(errors).Count().IsEqualTo(1);
     }
 
-    /// <summary>
-    /// Verifies that GetErrors handles null Text on an invalid component for property-specific path.
-    /// </summary>
+    /// <summary>Verifies that GetErrors handles null Text on an invalid component for property-specific path.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task GetErrorsHandlesNullTextOnInvalidComponentForPropertyPath()
     {
-        var viewModel = new IndeiTestViewModel();
+        using var viewModel = new IndeiTestViewModel();
         var stub = new NullTextPropertyValidation("Name");
         viewModel.ValidationContext.Add(stub);
 
@@ -609,11 +586,11 @@ public class NotifyDataErrorInfoTests
 
         var helper = viewModel.ValidationRule(
             vm => vm.Name,
-            name => !string.IsNullOrWhiteSpace(name),
-            "Name shouldn't be empty.");
+            static name => !string.IsNullOrWhiteSpace(name),
+            NameShouldNotBeEmptyMessage);
 
-        view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
-        view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
+        _ = view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+        _ = view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
         // Verify initial invalid state.
         using (Assert.Multiple())
@@ -623,7 +600,7 @@ public class NotifyDataErrorInfoTests
         }
 
         // Make it valid first, then dispose the helper while bindings are active.
-        viewModel.Name = "valid";
+        viewModel.Name = ValidName;
 
         using (Assert.Multiple())
         {
@@ -655,14 +632,14 @@ public class NotifyDataErrorInfoTests
         var errorsChangedCount = 0;
         viewModel.ErrorsChanged += (_, _) => errorsChangedCount++;
 
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             vm => vm.Name,
-            name => !string.IsNullOrWhiteSpace(name),
-            "Name shouldn't be empty.");
+            static name => !string.IsNullOrWhiteSpace(name),
+            NameShouldNotBeEmptyMessage);
 
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             vm => vm.OtherName,
-            other => !string.IsNullOrWhiteSpace(other),
+            static other => !string.IsNullOrWhiteSpace(other),
             "Other name shouldn't be empty.");
 
         // Verify initial state.
@@ -690,10 +667,10 @@ public class NotifyDataErrorInfoTests
     {
         var viewModel = new IndeiTestViewModel();
 
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             vm => vm.Name,
-            name => !string.IsNullOrWhiteSpace(name),
-            "Name shouldn't be empty.");
+            static name => !string.IsNullOrWhiteSpace(name),
+            NameShouldNotBeEmptyMessage);
 
         // Subscribe to IsValid observable to create active subscriptions.
         var latestValidity = false;
@@ -719,10 +696,10 @@ public class NotifyDataErrorInfoTests
     {
         var viewModel = new IndeiTestViewModel();
 
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             vm => vm.Name,
-            name => !string.IsNullOrWhiteSpace(name),
-            "Name shouldn't be empty.");
+            static name => !string.IsNullOrWhiteSpace(name),
+            NameShouldNotBeEmptyMessage);
 
         // Track HasErrors state at the time of each property change.
         var hasErrorsValues = new List<bool>();
@@ -733,13 +710,13 @@ public class NotifyDataErrorInfoTests
         await Assert.That(hasErrorsValues).Count().IsGreaterThanOrEqualTo(1);
 
         // Set a valid name.
-        viewModel.Name = "valid";
+        viewModel.Name = ValidName;
 
         // Set an invalid name.
         viewModel.Name = string.Empty;
 
         // We expect the sequence: initial invalid (true) -> valid (false) -> invalid (true).
-        await Assert.That(hasErrorsValues).Count().IsEqualTo(3);
+        await Assert.That(hasErrorsValues).Count().IsEqualTo(ThreeItems);
         await Assert.That(hasErrorsValues[0]).IsTrue();
         await Assert.That(hasErrorsValues[1]).IsFalse();
         await Assert.That(hasErrorsValues[2]).IsTrue();
@@ -753,14 +730,14 @@ public class NotifyDataErrorInfoTests
     [Test]
     public async Task HasErrorsShouldBeCorrectForCrossFieldValidationInSideEffect()
     {
-        var viewModel = new IndeiTestViewModel { MaxValue = 100.0 };
+        var viewModel = new IndeiTestViewModel { MaxValue = InitialMaxValue };
 
         var minMaxObs = viewModel.WhenAnyValue(
             v => v.MinValue,
             v => v.MaxValue,
-            (min, max) => min < max);
+            static (min, max) => min < max);
 
-        viewModel.ValidationRule(
+        _ = viewModel.ValidationRule(
             v => v.MaxValue,
             minMaxObs,
             "Max value must be greater than min value.");
@@ -782,20 +759,14 @@ public class NotifyDataErrorInfoTests
         await Assert.That(hasErrorsOnChange[0]).IsTrue();
     }
 
-    /// <summary>
-    /// A test formatter that prepends a prefix to the formatted validation text.
-    /// </summary>
+    /// <summary>A test formatter that prepends a prefix to the formatted validation text.</summary>
     /// <param name="prefix">The prefix to prepend.</param>
-    private class PrefixFormatter(string prefix) : IValidationTextFormatter<string>
+    private sealed class PrefixFormatter(string prefix) : IValidationTextFormatter<string>
     {
-        /// <summary>
-        /// The prefix prepended to formatted validation text.
-        /// </summary>
+        /// <summary>The prefix prepended to formatted validation text.</summary>
         private readonly string _prefix = prefix;
 
-        /// <summary>
-        /// Prepends the prefix to the validation text's single-line representation.
-        /// </summary>
+        /// <summary>Prepends the prefix to the validation text's single-line representation.</summary>
         /// <param name="validationText">The validation text to format.</param>
         /// <returns>The prefixed validation message.</returns>
         public string Format(IValidationText validationText) => $"{_prefix} {validationText.ToSingleLine()}";
@@ -805,6 +776,7 @@ public class NotifyDataErrorInfoTests
     /// A stub <see cref="IPropertyValidationComponent"/> that is always invalid with null Text,
     /// used to exercise the <c>state.Text ?? ValidationText.None</c> branches in GetErrors.
     /// </summary>
+    /// <param name="propertyName">The name of the property this component validates.</param>
     private sealed class NullTextPropertyValidation(string propertyName) : IPropertyValidationComponent
     {
         /// <inheritdoc/>
@@ -823,7 +795,8 @@ public class NotifyDataErrorInfoTests
         public IEnumerable<string> Properties { get; } = [propertyName];
 
         /// <inheritdoc/>
-        public bool ContainsPropertyName(string name, bool exclusively = false) =>
-            string.Equals(name, propertyName, StringComparison.Ordinal);
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public bool ContainsPropertyName(string propertyName, bool exclusively = false) =>
+            string.Equals(propertyName, propertyName, StringComparison.Ordinal);
     }
 }

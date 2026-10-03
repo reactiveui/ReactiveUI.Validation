@@ -1,37 +1,27 @@
 // Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
-// Licensed to the ReactiveUI and Contributors under one or more agreements.
-// The ReactiveUI and Contributors licenses this file to you under the MIT license.
+// ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using DynamicData;
-using ReactiveUI.Validation.Abstractions;
-using ReactiveUI.Validation.Collections;
-using ReactiveUI.Validation.Components.Abstractions;
-using ReactiveUI.Validation.Contexts;
-using ReactiveUI.Validation.Formatters;
-using ReactiveUI.Validation.Formatters.Abstractions;
 
-using Splat;
-
+#if REACTIVE_SHIM
+namespace ReactiveUI.Validation.Reactive.Helpers;
+#else
 namespace ReactiveUI.Validation.Helpers;
+#endif
 
-/// <summary>
-/// Base class for ReactiveObjects that support <see cref="INotifyDataErrorInfo"/> validation.
-/// </summary>
-public abstract class ReactiveValidationObject : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo, IDisposable
+/// <summary>Base class for ReactiveObjects that support <see cref="INotifyDataErrorInfo"/> validation.</summary>
+[System.Diagnostics.DebuggerDisplay("ReactiveValidationObject: {HasErrors}")]
+public class ReactiveValidationObject : ReactiveObject, IValidatableViewModel, INotifyDataErrorInfo, IDisposable
 {
-    /// <summary>
-    /// Composite disposable for lifecycle management.
-    /// </summary>
+    /// <summary>Composite disposable for lifecycle management.</summary>
     private readonly CompositeDisposable _disposables = [];
 
-    /// <summary>
-    /// The formatter used to convert <see cref="IValidationText"/> into error message strings
-    /// for <see cref="INotifyDataErrorInfo.GetErrors"/>.
-    /// </summary>
+    /// <summary>The formatter used to convert <see cref="IValidationText"/> into error message strings for <see cref="INotifyDataErrorInfo.GetErrors"/>.</summary>
     private readonly IValidationTextFormatter<string> _formatter;
 
     /// <summary>
@@ -40,39 +30,47 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     /// </summary>
     private readonly HashSet<string> _mentionedPropertyNames = [];
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ReactiveValidationObject"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ReactiveValidationObject"/> class.</summary>
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+    protected ReactiveValidationObject()
+        : this(null, null)
+    {
+    }
+
+    /// <summary>Initializes a new instance of the <see cref="ReactiveValidationObject"/> class.</summary>
     /// <param name="scheduler">
-    /// Scheduler for the <see cref="ValidationContext"/>. Uses <see cref="ReactiveUI.Primitives.Concurrency.CurrentThreadSequencer"/> by default.
+    /// Scheduler for the <see cref="ValidationContext"/>. Uses <see cref="ReactiveUI.Primitives.Concurrency.CurrentThreadSequencer"/> when null.
+    /// </param>
+    [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+    protected ReactiveValidationObject(IScheduler? scheduler)
+        : this(scheduler, null)
+    {
+    }
+
+    /// <summary>Initializes a new instance of the <see cref="ReactiveValidationObject"/> class.</summary>
+    /// <param name="scheduler">
+    /// Scheduler for the <see cref="ValidationContext"/>. Uses <see cref="ReactiveUI.Primitives.Concurrency.CurrentThreadSequencer"/> when null.
     /// </param>
     /// <param name="formatter">
-    /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/>. In order to override the global
+    /// Validation formatter. Defaults to <see cref="SingleLineFormatter"/> when null. In order to override the global
     /// default value, implement <see cref="IValidationTextFormatter{TOut}"/> and register an instance of
     /// IValidationTextFormatter&lt;string&gt; into Splat.Locator.
     /// </param>
     [RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
     protected ReactiveValidationObject(
-        IScheduler? scheduler = null,
-        IValidationTextFormatter<string>? formatter = null)
+        IScheduler? scheduler,
+        IValidationTextFormatter<string>? formatter)
     {
-        _formatter = formatter ??
-                     AppLocator.Current.GetService<IValidationTextFormatter<string>>() ??
-                     SingleLineFormatter.Default;
+        _formatter = formatter ?? ValidationTextFormatterResolver.Resolve();
 
         ValidationContext = new ValidationContext(scheduler);
-        ValidationContext.DisposeWith(_disposables);
-        SubscribeExtensions.Subscribe(
+        _ = ValidationContext.DisposeWith(_disposables);
+        _ = SubscribeExtensions.Subscribe(
             ValidationContext.Validations
             .Connect()
             .ToCollection()
-            .Select(components => components
-                .Select(component => component
-                    .ValidationStatusChange
-                    .Select(_ => component))
-                .Merge()
-                .StartWith(ValidationContext))
-            .Switch(),
+            .Select(components => MergeValidationStatusChanges(components).StartWith(ValidationContext))
+            .SwitchTo(),
             OnValidationStatusChange).DisposeWith(_disposables);
     }
 
@@ -89,24 +87,28 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
     /// <inheritdoc />
     public IValidationContext ValidationContext { get; }
 
-    /// <summary>
-    /// Returns a collection of error messages, required by the INotifyDataErrorInfo interface.
-    /// </summary>
+    /// <summary>Returns a collection of error messages, required by the INotifyDataErrorInfo interface.</summary>
     /// <param name="propertyName">Property to search error notifications for.</param>
     /// <returns>A list of error messages, usually strings.</returns>
     /// <inheritdoc />
-    public virtual IEnumerable GetErrors(string? propertyName) =>
-        string.IsNullOrEmpty(propertyName)
-            ? SelectInvalidPropertyValidations()
-                .Select(state => _formatter.Format(state.Text ?? ValidationText.None))
-                .ToArray()
-            : [.. SelectInvalidPropertyValidations()
-                .Where(validation => validation.ContainsPropertyName(propertyName!))
-                .Select(state => _formatter.Format(state.Text ?? ValidationText.None))];
+    public virtual IEnumerable GetErrors(string? propertyName)
+    {
+        var filterPropertyName = string.IsNullOrEmpty(propertyName) ? null : propertyName;
+        List<string> errors = [];
+        foreach (var validation in SelectInvalidPropertyValidations())
+        {
+            if (filterPropertyName is not null && !validation.ContainsPropertyName(filterPropertyName))
+            {
+                continue;
+            }
 
-    /// <summary>
-    /// Releases unmanaged and - optionally - managed resources.
-    /// </summary>
+            errors.Add(_formatter.Format(validation.Text ?? ValidationText.None));
+        }
+
+        return errors.ToArray();
+    }
+
+    /// <summary>Releases unmanaged and - optionally - managed resources.</summary>
     public void Dispose()
     {
         // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
@@ -114,20 +116,28 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
         GC.SuppressFinalize(this);
     }
 
-    /// <summary>
-    /// Selects validation components that are invalid.
-    /// </summary>
+    /// <summary>Selects validation components that are invalid.</summary>
     /// <returns>Returns the invalid property validations.</returns>
-    internal IEnumerable<IPropertyValidationComponent> SelectInvalidPropertyValidations() =>
-        ValidationContext.Validations.Items
-            .OfType<IPropertyValidationComponent>()
-            .Where(validation => !validation.IsValid);
+    internal List<IPropertyValidationComponent> SelectInvalidPropertyValidations()
+    {
+        List<IPropertyValidationComponent> invalidValidations = [];
+        foreach (var validation in ValidationContext.Validations.Items)
+        {
+            if (validation is IPropertyValidationComponent { IsValid: false } propertyValidation)
+            {
+                invalidValidations.Add(propertyValidation);
+            }
+        }
+
+        return invalidValidations;
+    }
 
     /// <summary>
     /// Updates the <see cref="HasErrors" /> property before raising the <see cref="ErrorsChanged" />
     /// event, and then raises the <see cref="ErrorsChanged" /> event. This behaviour is required by WPF, see:
     /// https://stackoverflow.com/questions/24518520/ui-not-calling-inotifydataerrorinfo-geterrors/24837028.
     /// </summary>
+    /// <param name="component">The validation component whose status changed.</param>
     /// <remarks>
     /// WPF doesn't understand string.Empty as an argument for the <see cref="ErrorsChanged"/>
     /// event, so we are sending <see cref="ErrorsChanged"/> notifications for every saved property.
@@ -143,7 +153,7 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
             foreach (var propertyName in propertyValidationComponent.Properties)
             {
                 RaiseErrorsChanged(propertyName);
-                _mentionedPropertyNames.Add(propertyName);
+                _ = _mentionedPropertyNames.Add(propertyName);
             }
         }
         else
@@ -158,24 +168,41 @@ public abstract class ReactiveValidationObject : ReactiveObject, IValidatableVie
         }
     }
 
-    /// <summary>
-    /// Raises the <see cref="ErrorsChanged"/> event.
-    /// </summary>
+    /// <summary>Raises the <see cref="ErrorsChanged"/> event for the whole object.</summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected void RaiseErrorsChanged() => RaiseErrorsChanged(string.Empty);
+
+    /// <summary>Raises the <see cref="ErrorsChanged"/> event.</summary>
     /// <param name="propertyName">The name of the validated property.</param>
-    protected void RaiseErrorsChanged(string propertyName = "") =>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    protected void RaiseErrorsChanged(string propertyName) =>
         ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
 
-    /// <summary>
-    /// Releases the unmanaged resources used by this instance and optionally releases the managed resources.
-    /// </summary>
+    /// <summary>Releases the unmanaged resources used by this instance and optionally releases the managed resources.</summary>
     /// <param name="disposing"><c>true</c> to release managed resources; <c>false</c> when called from a finalizer.</param>
     protected virtual void Dispose(bool disposing)
     {
-        if (!_disposables.IsDisposed && disposing)
+        if (_disposables.IsDisposed || !disposing)
         {
-            _disposables.Dispose();
-            ValidationContext.Dispose();
-            _mentionedPropertyNames.Clear();
+            return;
         }
+
+        _disposables.Dispose();
+        ValidationContext.Dispose();
+        _mentionedPropertyNames.Clear();
+    }
+
+    /// <summary>Merges the status changes of every component into one stream that emits the component that changed.</summary>
+    /// <param name="components">The validation components to watch.</param>
+    /// <returns>An observable that emits a component each time its validation status changes.</returns>
+    private static IObservable<IValidationComponent> MergeValidationStatusChanges(IReadOnlyCollection<IValidationComponent> components)
+    {
+        var statusChanges = new List<IObservable<IValidationComponent>>(components.Count);
+        foreach (var component in components)
+        {
+            statusChanges.Add(component.ValidationStatusChange.Select(_ => component));
+        }
+
+        return statusChanges.Merge();
     }
 }

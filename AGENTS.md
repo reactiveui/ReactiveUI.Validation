@@ -28,7 +28,7 @@ dotnet restore ReactiveUI.Validation.slnx
 # Build the solution
 dotnet build ReactiveUI.Validation.slnx -c Release
 
-# Build with warnings as errors (includes StyleCop violations)
+# Build with warnings as errors (includes StyleSharp, PerformanceSharp and SecuritySharp violations)
 dotnet build ReactiveUI.Validation.slnx -c Release -warnaserror
 
 # Clean the solution
@@ -215,8 +215,10 @@ this.ValidationRule(
 ### Style Enforcement
 
 - EditorConfig rules (`.editorconfig`) - comprehensive C# formatting and naming conventions
-- StyleCop Analyzers - builds fail on violations
-- Roslynator Analyzers - additional code quality rules
+- StyleSharp.Analyzers (SST rules) - style and maintainability; builds fail on violations
+- PerformanceSharp.Analyzers (PSH rules) - performance
+- SecuritySharp.Analyzers (SES rules) - security
+- Rule docs: https://github.com/glennawatson/RoslynCommonAnalyzers/tree/main/docs/rules
 - **All public APIs require XML documentation comments**
 
 ### C# Style Rules

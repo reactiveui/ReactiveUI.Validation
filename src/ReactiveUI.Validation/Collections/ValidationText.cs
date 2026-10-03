@@ -1,25 +1,22 @@
 // Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
-// Licensed to the ReactiveUI and Contributors under one or more agreements.
-// The ReactiveUI and Contributors licenses this file to you under the MIT license.
+// ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Buffers;
 
+#if REACTIVE_SHIM
+namespace ReactiveUI.Validation.Reactive.Collections;
+#else
 namespace ReactiveUI.Validation.Collections;
+#endif
 
-/// <summary>
-/// Factory container for validation text.
-/// </summary>
+/// <summary>Factory container for validation text.</summary>
 public static class ValidationText
 {
-    /// <summary>
-    /// The none validation text singleton instance contains no items.
-    /// </summary>
+    /// <summary>The none validation text singleton instance contains no items.</summary>
     public static readonly IValidationText None = new ArrayValidationText([]);
 
-    /// <summary>
-    /// The empty validation text singleton instance contains single empty string.
-    /// </summary>
+    /// <summary>The empty validation text singleton instance contains single empty string.</summary>
     public static readonly IValidationText Empty = new SingleValidationText(string.Empty);
 
     /// <summary>
@@ -36,9 +33,13 @@ public static class ValidationText
         }
 
         // Note _texts are already validated as not-null
-        var texts = validationTexts.SelectMany(static vt => vt).ToArray();
+        List<string> texts = [];
+        foreach (var validationText in validationTexts)
+        {
+            texts.AddRange(validationText);
+        }
 
-        return CreateValidationText(texts, texts.Length);
+        return CreateValidationText(texts, texts.Count);
     }
 
     /// <summary>
@@ -53,14 +54,19 @@ public static class ValidationText
             return None;
         }
 
-        var texts = validationTexts.Where(t => t is not null).ToArray();
+        List<string> texts = [];
+        foreach (var text in validationTexts)
+        {
+            if (text is not null)
+            {
+                texts.Add(text);
+            }
+        }
 
-        return CreateValidationText(texts!, texts.Length);
+        return CreateValidationText(texts, texts.Count);
     }
 
-    /// <summary>
-    /// Wraps a single validation message into an <see cref="IValidationText"/> instance, or returns <see cref="None"/> if the message is null.
-    /// </summary>
+    /// <summary>Wraps a single validation message into an <see cref="IValidationText"/> instance, or returns <see cref="None"/> if the message is null.</summary>
     /// <param name="validationText">A single validation message.</param>
     /// <returns>A <see cref="IValidationText"/>.</returns>
     public static IValidationText Create(string? validationText) => validationText is null ? None : CreateValidationText(validationText);
@@ -114,7 +120,7 @@ public static class ValidationText
         }
         finally
         {
-            ArrayPool<string>.Shared.Return(texts);
+            ArrayPool<string>.Shared.Return(texts, clearArray: true);
         }
     }
 
@@ -132,7 +138,7 @@ public static class ValidationText
         1 => CreateValidationText(texts[0]),
         _ when texts is string[] array && count == array.Length => new ArrayValidationText(array),
         _ when texts is string[] array => new ArrayValidationText(CopyArray(array, count)),
-        _ => new ArrayValidationText([.. texts.Take(count)])
+        _ => new ArrayValidationText(CopyList(texts, count))
     };
 
     /// <summary>
@@ -143,9 +149,7 @@ public static class ValidationText
     /// <returns>An <see cref="IValidationText"/> wrapping the message.</returns>
     internal static IValidationText CreateValidationText(string text) => text.Length is 0 ? Empty : new SingleValidationText(text);
 
-    /// <summary>
-    /// Copies the first <paramref name="count"/> elements from the source array into a new array.
-    /// </summary>
+    /// <summary>Copies the first <paramref name="count"/> elements from the source array into a new array.</summary>
     /// <param name="source">The source array to copy from.</param>
     /// <param name="count">The number of elements to copy.</param>
     /// <returns>A new array containing the first <paramref name="count"/> elements.</returns>
@@ -153,6 +157,21 @@ public static class ValidationText
     {
         var result = new string[count];
         Array.Copy(source, result, count);
+        return result;
+    }
+
+    /// <summary>Copies the first <paramref name="count"/> elements from the source list into a new array.</summary>
+    /// <param name="source">The source list to copy from.</param>
+    /// <param name="count">The number of elements to copy.</param>
+    /// <returns>A new array containing the first <paramref name="count"/> elements.</returns>
+    internal static string[] CopyList(IReadOnlyList<string> source, int count)
+    {
+        var result = new string[count];
+        for (var i = 0; i < count; i++)
+        {
+            result[i] = source[i];
+        }
+
         return result;
     }
 }

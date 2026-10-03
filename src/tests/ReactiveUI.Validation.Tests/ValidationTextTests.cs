@@ -1,24 +1,35 @@
 // Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
-// Licensed to the ReactiveUI and Contributors under one or more agreements.
-// The ReactiveUI and Contributors licenses this file to you under the MIT license.
+// ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Collections.Generic;
 using System.Linq;
 
-using ReactiveUI.Validation.Collections;
-using ReactiveUI.Validation.Contexts;
-
+#if REACTIVE_SHIM
+namespace ReactiveUI.Validation.Reactive.Tests;
+#else
 namespace ReactiveUI.Validation.Tests;
+#endif
 
-/// <summary>
-/// Tests for <see cref="ValidationContext"/>.
-/// </summary>
+/// <summary>Tests for <see cref="ValidationContext"/>.</summary>
 public class ValidationTextTests
 {
-    /// <summary>
-    /// Verifies that <see cref="ValidationText.None"/> is genuinely empty.
-    /// </summary>
+    /// <summary>A simple error text.</summary>
+    private const string ErrorText = "Error";
+
+    /// <summary>A sample sentence used as validation text.</summary>
+    private const string HelloWorldText = "Hello world";
+
+    /// <summary>The expected count when two items are present.</summary>
+    private const int TwoItems = 2;
+
+    /// <summary>The expected count when three items are present.</summary>
+    private const int ThreeItems = 3;
+
+    /// <summary>An array with one null element.</summary>
+    private static readonly string?[] SingleNullElement = [null];
+
+    /// <summary>Verifies that <see cref="ValidationText.None"/> is genuinely empty.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task NoneValidationTextIsEmpty()
@@ -32,9 +43,7 @@ public class ValidationTextTests
         }
     }
 
-    /// <summary>
-    /// Verifies that <see cref="ValidationText.Empty"/> has a single empty item.
-    /// </summary>
+    /// <summary>Verifies that <see cref="ValidationText.Empty"/> has a single empty item.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task EmptyValidationTextIsSingleEmpty()
@@ -49,9 +58,7 @@ public class ValidationTextTests
         }
     }
 
-    /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(string[])"/> without parameters returns <see cref="ValidationText.None"/>.
-    /// </summary>
+    /// <summary>Verifies that calling <see cref="ValidationText.Create(string[])"/> without parameters returns <see cref="ValidationText.None"/>.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task ParameterlessCreateReturnsNone()
@@ -61,9 +68,7 @@ public class ValidationTextTests
         await Assert.That(vt).IsSameReferenceAs(ValidationText.None);
     }
 
-    /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{string})"/> with an empty enumerable <see cref="ValidationText.None"/>.
-    /// </summary>
+    /// <summary>Verifies that calling <see cref="ValidationText.Create(IEnumerable{string})"/> with an empty enumerable <see cref="ValidationText.None"/>.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateEmptyStringEnumerableReturnsNone()
@@ -73,21 +78,17 @@ public class ValidationTextTests
         await Assert.That(vt).IsSameReferenceAs(ValidationText.None);
     }
 
-    /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with an empty enumerable <see cref="ValidationText.None"/>.
-    /// </summary>
+    /// <summary>Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with an empty enumerable <see cref="ValidationText.None"/>.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateEmptyValidationTextEnumerableReturnsNone()
     {
-        var vt = ValidationText.Create(Array.Empty<IValidationText>());
+        var vt = ValidationText.Create((IEnumerable<IValidationText>)[]);
 
         await Assert.That(vt).IsSameReferenceAs(ValidationText.None);
     }
 
-    /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(string[])"/> with <see langword="null"/> returns <see cref="ValidationText.None"/>.
-    /// </summary>
+    /// <summary>Verifies that calling <see cref="ValidationText.Create(string[])"/> with <see langword="null"/> returns <see cref="ValidationText.None"/>.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateNullReturnsNone()
@@ -97,9 +98,7 @@ public class ValidationTextTests
         await Assert.That(vt).IsSameReferenceAs(ValidationText.None);
     }
 
-    /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{string})"/> with <see langword="null"/> enumerable returns <see cref="ValidationText.None"/>.
-    /// </summary>
+    /// <summary>Verifies that calling <see cref="ValidationText.Create(IEnumerable{string})"/> with <see langword="null"/> enumerable returns <see cref="ValidationText.None"/>.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateNullStringEnumerableReturnsNone()
@@ -109,9 +108,7 @@ public class ValidationTextTests
         await Assert.That(vt).IsSameReferenceAs(ValidationText.None);
     }
 
-    /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with <see langword="null"/> returns <see cref="ValidationText.None"/>.
-    /// </summary>
+    /// <summary>Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with <see langword="null"/> returns <see cref="ValidationText.None"/>.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateNullValidationTextEnumerableReturnsNone()
@@ -134,7 +131,8 @@ public class ValidationTextTests
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/>  with an enumerable containing <see cref="ValidationText.None"/> returns <see cref="ValidationText.None"/>.
+    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with an enumerable
+    /// containing <see cref="ValidationText.None"/> returns <see cref="ValidationText.None"/>.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
@@ -157,9 +155,7 @@ public class ValidationTextTests
         await Assert.That(vt).IsSameReferenceAs(ValidationText.None);
     }
 
-    /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(string[])"/> with <see cref="string.Empty"/> returns <see cref="ValidationText.Empty"/>.
-    /// </summary>
+    /// <summary>Verifies that calling <see cref="ValidationText.Create(string[])"/> with <see cref="string.Empty"/> returns <see cref="ValidationText.Empty"/>.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateStringEmptyReturnsEmpty()
@@ -194,7 +190,8 @@ public class ValidationTextTests
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with an enumerable containing two <see cref="ValidationText.None"/> returns <see cref="ValidationText.None"/>.
+    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with an enumerable
+    /// containing two <see cref="ValidationText.None"/> returns <see cref="ValidationText.None"/>.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
@@ -206,7 +203,8 @@ public class ValidationTextTests
     }
 
     /// <summary>
-    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with an enumerable containing <see cref="ValidationText.None"/> and <see cref="ValidationText.Empty"/> returns <see cref="ValidationText.Empty"/>.
+    /// Verifies that calling <see cref="ValidationText.Create(IEnumerable{IValidationText})"/> with an enumerable
+    /// containing <see cref="ValidationText.None"/> and <see cref="ValidationText.Empty"/> returns <see cref="ValidationText.Empty"/>.
     /// </summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
@@ -230,16 +228,14 @@ public class ValidationTextTests
         using (Assert.Multiple())
         {
             await Assert.That(vt).IsNotSameReferenceAs(ValidationText.Empty);
-            await Assert.That(vt).Count().IsEqualTo(2);
+            await Assert.That(vt).Count().IsEqualTo(TwoItems);
             await Assert.That(vt[0]).IsEqualTo(string.Empty);
             await Assert.That(vt[1]).IsEqualTo(string.Empty);
             await Assert.That(vt.ToSingleLine("|")).IsEqualTo("|");
         }
     }
 
-    /// <summary>
-    /// Verifies that combining multiple IValidationText instances with actual text produces the combined result.
-    /// </summary>
+    /// <summary>Verifies that combining multiple IValidationText instances with actual text produces the combined result.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateFromMultipleValidationTextInstancesCombinesAllItems()
@@ -250,16 +246,14 @@ public class ValidationTextTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(combined).Count().IsEqualTo(2);
+            await Assert.That(combined).Count().IsEqualTo(TwoItems);
             await Assert.That(combined[0]).IsEqualTo("Error 1");
             await Assert.That(combined[1]).IsEqualTo("Error 2");
             await Assert.That(combined.ToSingleLine(", ")).IsEqualTo("Error 1, Error 2");
         }
     }
 
-    /// <summary>
-    /// Verifies that creating from a single IValidationText enumerable unwraps to the single text.
-    /// </summary>
+    /// <summary>Verifies that creating from a single IValidationText enumerable unwraps to the single text.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateFromSingleValidationTextEnumerableUnwraps()
@@ -274,9 +268,7 @@ public class ValidationTextTests
         }
     }
 
-    /// <summary>
-    /// Verifies that creating from multiple string enumerable combines correctly.
-    /// </summary>
+    /// <summary>Verifies that creating from multiple string enumerable combines correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateFromMultipleStringEnumerableCombines()
@@ -285,32 +277,28 @@ public class ValidationTextTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(vt).Count().IsEqualTo(2);
+            await Assert.That(vt).Count().IsEqualTo(TwoItems);
             await Assert.That(vt[0]).IsEqualTo("Error A");
             await Assert.That(vt[1]).IsEqualTo("Error B");
         }
     }
 
-    /// <summary>
-    /// Verifies that null strings are filtered from IEnumerable string overload.
-    /// </summary>
+    /// <summary>Verifies that null strings are filtered from IEnumerable string overload.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateFromStringEnumerableFiltersNulls()
     {
-        var vt = ValidationText.Create((IEnumerable<string?>)["Error", null, "Another"]);
+        var vt = ValidationText.Create((IEnumerable<string?>)[ErrorText, null, "Another"]);
 
         using (Assert.Multiple())
         {
-            await Assert.That(vt).Count().IsEqualTo(2);
-            await Assert.That(vt[0]).IsEqualTo("Error");
+            await Assert.That(vt).Count().IsEqualTo(TwoItems);
+            await Assert.That(vt[0]).IsEqualTo(ErrorText);
             await Assert.That(vt[1]).IsEqualTo("Another");
         }
     }
 
-    /// <summary>
-    /// Verifies that a single string in an IEnumerable returns a single validation text.
-    /// </summary>
+    /// <summary>Verifies that a single string in an IEnumerable returns a single validation text.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateFromSingleStringEnumerableReturnsSingleItem()
@@ -324,9 +312,7 @@ public class ValidationTextTests
         }
     }
 
-    /// <summary>
-    /// Verifies that the params string[] overload with multiple strings works.
-    /// </summary>
+    /// <summary>Verifies that the params string[] overload with multiple strings works.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateFromMultipleParamsStringsCombines()
@@ -335,16 +321,14 @@ public class ValidationTextTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(vt).Count().IsEqualTo(3);
+            await Assert.That(vt).Count().IsEqualTo(ThreeItems);
             await Assert.That(vt[0]).IsEqualTo("First");
             await Assert.That(vt[1]).IsEqualTo("Second");
             await Assert.That(vt[2]).IsEqualTo("Third");
         }
     }
 
-    /// <summary>
-    /// Verifies that the params string[] overload filters null items.
-    /// </summary>
+    /// <summary>Verifies that the params string[] overload filters null items.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateFromParamsStringsFiltersNulls()
@@ -353,15 +337,13 @@ public class ValidationTextTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(vt).Count().IsEqualTo(2);
+            await Assert.That(vt).Count().IsEqualTo(TwoItems);
             await Assert.That(vt[0]).IsEqualTo("Valid");
             await Assert.That(vt[1]).IsEqualTo("Also valid");
         }
     }
 
-    /// <summary>
-    /// Verifies that the params string[] overload with all nulls returns None.
-    /// </summary>
+    /// <summary>Verifies that the params string[] overload with all nulls returns None.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateFromParamsStringsAllNullsReturnsNone()
@@ -371,9 +353,7 @@ public class ValidationTextTests
         await Assert.That(vt).IsSameReferenceAs(ValidationText.None);
     }
 
-    /// <summary>
-    /// Verifies that passing a null array to the params string[] overload returns None.
-    /// </summary>
+    /// <summary>Verifies that passing a null array to the params string[] overload returns None.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateFromNullParamsArrayReturnsNone()
@@ -383,20 +363,18 @@ public class ValidationTextTests
         await Assert.That(vt).IsSameReferenceAs(ValidationText.None);
     }
 
-    /// <summary>
-    /// Verifies that creating a single non-empty string returns a single validation text.
-    /// </summary>
+    /// <summary>Verifies that creating a single non-empty string returns a single validation text.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateFromSingleNonEmptyStringReturnsSingleItem()
     {
-        var vt = ValidationText.Create("Hello world");
+        var vt = ValidationText.Create(HelloWorldText);
 
         using (Assert.Multiple())
         {
             await Assert.That(vt).Count().IsEqualTo(1);
-            await Assert.That(vt[0]).IsEqualTo("Hello world");
-            await Assert.That(vt.ToSingleLine()).IsEqualTo("Hello world");
+            await Assert.That(vt[0]).IsEqualTo(HelloWorldText);
+            await Assert.That(vt.ToSingleLine()).IsEqualTo(HelloWorldText);
         }
     }
 
@@ -408,7 +386,7 @@ public class ValidationTextTests
     [Test]
     public async Task CreateParamsSingleNullElementArrayReturnsNone()
     {
-        var vt = ValidationText.Create(new string?[] { null });
+        var vt = ValidationText.Create(SingleNullElement);
 
         await Assert.That(vt).IsSameReferenceAs(ValidationText.None);
     }
@@ -421,7 +399,7 @@ public class ValidationTextTests
     [Test]
     public async Task CreateParamsSingleEmptyElementArrayReturnsEmpty()
     {
-        var vt = ValidationText.Create(new string?[] { string.Empty });
+        var vt = ValidationText.Create([string.Empty]);
 
         await Assert.That(vt).IsSameReferenceAs(ValidationText.Empty);
     }
@@ -434,18 +412,16 @@ public class ValidationTextTests
     [Test]
     public async Task CreateParamsSingleValueElementArrayReturnsSingleText()
     {
-        var vt = ValidationText.Create(new string?[] { "Error" });
+        var vt = ValidationText.Create([ErrorText]);
 
         using (Assert.Multiple())
         {
             await Assert.That(vt).Count().IsEqualTo(1);
-            await Assert.That(vt[0]).IsEqualTo("Error");
+            await Assert.That(vt[0]).IsEqualTo(ErrorText);
         }
     }
 
-    /// <summary>
-    /// Verifies that combining IValidationText with multiple items flattens correctly.
-    /// </summary>
+    /// <summary>Verifies that combining IValidationText with multiple items flattens correctly.</summary>
     /// <returns>A <see cref="Task"/> representing the asynchronous unit test.</returns>
     [Test]
     public async Task CreateFromValidationTextWithMultipleItemsFlattensCombines()
@@ -456,7 +432,7 @@ public class ValidationTextTests
 
         using (Assert.Multiple())
         {
-            await Assert.That(combined).Count().IsEqualTo(3);
+            await Assert.That(combined).Count().IsEqualTo(ThreeItems);
             await Assert.That(combined[0]).IsEqualTo("A");
             await Assert.That(combined[1]).IsEqualTo("B");
             await Assert.That(combined[2]).IsEqualTo("C");

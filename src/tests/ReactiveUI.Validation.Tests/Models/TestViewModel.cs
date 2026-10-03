@@ -1,43 +1,34 @@
 // Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
-// Licensed to the ReactiveUI and Contributors under one or more agreements.
-// The ReactiveUI and Contributors licenses this file to you under the MIT license.
+// ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using System;
-using System.Reactive.Disposables;
-using ReactiveUI.Primitives.Concurrency;
-using ReactiveUI.Validation.Abstractions;
-using ReactiveUI.Validation.Contexts;
-using ReactiveUI.Validation.Helpers;
+using System.Runtime.CompilerServices;
 
+#if REACTIVE_SHIM
+namespace ReactiveUI.Validation.Reactive.Tests.Models;
+#else
 namespace ReactiveUI.Validation.Tests.Models;
+#endif
 
-/// <summary>
-/// Mocked ViewModel.
-/// </summary>
-public class TestViewModel : ReactiveObject, IValidatableViewModel
+/// <summary>Mocked ViewModel.</summary>
+[System.Diagnostics.DebuggerDisplay("TestViewModel: {Name}")]
+public sealed class TestViewModel : ReactiveObject, IValidatableViewModel, IDisposable
 {
-    /// <summary>
-    /// Gets or sets get the Name.
-    /// </summary>
+    /// <summary>Gets or sets get the Name.</summary>
     public string? Name
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    /// <summary>
-    /// Gets or sets get the Name2.
-    /// </summary>
+    /// <summary>Gets or sets get the Name2.</summary>
     public string? Name2
     {
         get;
         set => this.RaiseAndSetIfChanged(ref field, value);
     }
 
-    /// <summary>
-    /// Gets or sets the rule of Name property.
-    /// </summary>
+    /// <summary>Gets or sets the rule of Name property.</summary>
     public ValidationHelper? NameRule
     {
         get;
@@ -46,4 +37,8 @@ public class TestViewModel : ReactiveObject, IValidatableViewModel
 
     /// <inheritdoc/>
     public IValidationContext ValidationContext { get; } = new ValidationContext(ImmediateSequencer.Instance);
+
+    /// <summary>Disposes the validation context.</summary>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public void Dispose() => ValidationContext.Dispose();
 }

@@ -80,31 +80,37 @@
     <PackageReference Include="TUnit" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="Microsoft.Testing.Extensions.CodeCoverage" />
-    <PackageReference Include="Verify.TUnit" />
     <PackageReference Include="Microsoft.Reactive.Testing" />
-    <PackageReference Include="PublicApiGenerator" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(IsTestProject)' != 'true'">
     <PackageReference Include="Microsoft.SourceLink.GitHub" PrivateAssets="All" />
   </ItemGroup>
-	<!-- MinVer (versioning) — replaces Nerdbank.GitVersioning. Floor at 7.1
-	     so untagged builds produce 7.1.x-alpha.0.<height> until a v7.1.x
+	<!-- MinVer (versioning) — replaces Nerdbank.GitVersioning. Floor at 8.0
+	     so untagged builds produce 8.0.x-alpha.0.<height> until a v8.0.x
 	     (or later) tag is reachable. -->
 	<PropertyGroup>
 		<MinVerAutoIncrement>minor</MinVerAutoIncrement>
 		<MinVerDefaultPreReleaseIdentifiers>alpha.0</MinVerDefaultPreReleaseIdentifiers>
 		<MinVerTagPrefix>v</MinVerTagPrefix>
-		<MinVerMinimumMajorMinor>7.1</MinVerMinimumMajorMinor>
+		<MinVerMinimumMajorMinor>8.0</MinVerMinimumMajorMinor>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MinVer" PrivateAssets="all" />
-		<PackageReference Include="stylecop.analyzers" PrivateAssets="all" />
-		<PackageReference Include="Roslynator.Analyzers" PrivateAssets="All" />
+		<PackageReference Include="StyleSharp.Analyzers" PrivateAssets="all" />
+		<PackageReference Include="PerformanceSharp.Analyzers" PrivateAssets="all" />
+		<PackageReference Include="SecuritySharp.Analyzers" PrivateAssets="all" />
 	</ItemGroup>
-	<ItemGroup>
-		<AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
+
+	<!-- Shipped libraries keep their public API in PublicAPI/<tfm>/PublicAPI.txt; a build fails when the API drifts from it. -->
+	<PropertyGroup>
+		<TrackPublicApi Condition="'$(TrackPublicApi)' == ''">true</TrackPublicApi>
+		<TrackPublicApi Condition="'$(IsTestProject)' == 'true' or '$(IsSampleProject)' == 'true'">false</TrackPublicApi>
+		<EnablePublicApiBaseline>$(TrackPublicApi)</EnablePublicApiBaseline>
+	</PropertyGroup>
+	<ItemGroup Condition="'$(TrackPublicApi)' == 'true'">
+		<PackageReference Include="PublicApiSharp.Analyzers" PrivateAssets="all" />
 	</ItemGroup>
 
 </Project>

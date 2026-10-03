@@ -1,6 +1,5 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
-// Licensed to the ReactiveUI and Contributors under one or more agreements.
-// The ReactiveUI and Contributors licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
+// ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System;
@@ -9,21 +8,23 @@ using Avalonia;
 
 namespace LoginApp.Avalonia.Desktop;
 
-/// <summary>
-/// Program.
-/// </summary>
+/// <summary>The entry point of the desktop application.</summary>
 internal static class Program
 {
-    // Initialization code. Don't use any Avalonia, third-party APIs or any
-    // SynchronizationContext-reliant code before AppMain is called: things aren't initialized
-    // yet and stuff might break.
+    /// <summary>Starts the application.</summary>
+    /// <param name="args">The command line arguments.</param>
+    /// <remarks>
+    /// Do not use any Avalonia, third-party APIs or any SynchronizationContext-reliant code before AppMain is called.
+    /// They are not initialized yet.
+    /// </remarks>
     [STAThread]
-    public static void Main(string[] args) => BuildAvaloniaApp()
+    internal static void Main(string[] args) => BuildAvaloniaApp()
         .StartWithClassicDesktopLifetime(args);
 
-    // Avalonia configuration, don't remove; also used by visual designer.
-    public static AppBuilder BuildAvaloniaApp()
-        => AppBuilder.Configure<App>()
+    /// <summary>Builds the Avalonia configuration. The visual designer also uses it, so do not remove it.</summary>
+    /// <returns>The application builder.</returns>
+    internal static AppBuilder BuildAvaloniaApp() =>
+        AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .WithInterFont()
             .LogToTrace();

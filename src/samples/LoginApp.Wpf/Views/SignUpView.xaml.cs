@@ -1,29 +1,24 @@
-﻿// Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
-// Licensed to the ReactiveUI and Contributors under one or more agreements.
-// The ReactiveUI and Contributors licenses this file to you under the MIT license.
+// Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
+// ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System;
 using LoginApp.ViewModels;
 using ReactiveUI;
-using ReactiveUI.Primitives.Disposables;
 using ReactiveUI.Validation.Extensions;
 using ReactiveUI.Validation.Formatters;
 
 namespace LoginApp.Wpf.Views;
 
-/// <summary>
-/// A page which contains controls for signing up.
-/// </summary>
+/// <summary>A page which contains controls for signing up.</summary>
+[System.Diagnostics.DebuggerDisplay("SignUpView: {ViewModel}")]
 public partial class SignUpView : ReactiveUserControl<SignUpViewModel>
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SignUpView"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="SignUpView"/> class.</summary>
     public SignUpView()
     {
         InitializeComponent();
-        this.WhenActivated((MultipleDisposable disposables) =>
+        _ = this.WhenActivated(disposables =>
         {
             disposables.Add(
                 this.WhenAnyValue(x => x.ViewModel)
@@ -44,13 +39,13 @@ public partial class SignUpView : ReactiveUserControl<SignUpViewModel>
 
             // Controlling visibility of validation messages based on their content.
             disposables.Add(
-                this.WhenAnyValue(x => x.UserNameValidation.Text, text => !string.IsNullOrWhiteSpace(text))
+                this.WhenAnyValue(x => x.UserNameValidation.Text, static text =>!string.IsNullOrWhiteSpace(text))
                     .BindTo(this, x => x.UserNameValidation.Visibility));
             disposables.Add(
-                this.WhenAnyValue(x => x.PasswordValidation.Text, text => !string.IsNullOrWhiteSpace(text))
+                this.WhenAnyValue(x => x.PasswordValidation.Text, static text =>!string.IsNullOrWhiteSpace(text))
                     .BindTo(this, x => x.PasswordValidation.Visibility));
             disposables.Add(
-                this.WhenAnyValue(x => x.ConfirmPasswordValidation.Text, text => !string.IsNullOrWhiteSpace(text))
+                this.WhenAnyValue(x => x.ConfirmPasswordValidation.Text, static text =>!string.IsNullOrWhiteSpace(text))
                     .BindTo(this, x => x.ConfirmPasswordValidation.Visibility));
         });
     }

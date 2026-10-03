@@ -1,12 +1,15 @@
 // Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
-// Licensed to the ReactiveUI and Contributors under one or more agreements.
-// The ReactiveUI and Contributors licenses this file to you under the MIT license.
+// ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
+#if REACTIVE_SHIM
+namespace ReactiveUI.Validation.Reactive.Helpers;
+#else
 namespace ReactiveUI.Validation.Helpers;
+#endif
 
 /// <summary>
 /// Provides helper methods for argument validation.
@@ -16,12 +19,11 @@ namespace ReactiveUI.Validation.Helpers;
 [ExcludeFromCodeCoverage]
 internal static class ArgumentExceptionHelper
 {
-    /// <summary>
-    /// Throws an <see cref="ArgumentNullException"/> if <paramref name="argument"/> is null.
-    /// </summary>
+    /// <summary>Throws an <see cref="ArgumentNullException"/> if <paramref name="argument"/> is null.</summary>
     /// <param name="argument">The reference type argument to validate as non-null.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
-    public static void ThrowIfNull([NotNull] object? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+    /// <exception cref="ArgumentNullException">Thrown when <c>argument is null</c>.</exception>
+    internal static void ThrowIfNull([NotNull] object? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {
         if (argument is null)
         {
@@ -29,14 +31,12 @@ internal static class ArgumentExceptionHelper
         }
     }
 
-    /// <summary>
-    /// Throws an exception if <paramref name="argument"/> is null or empty.
-    /// </summary>
+    /// <summary>Throws an exception if <paramref name="argument"/> is null or empty.</summary>
     /// <param name="argument">The string argument to validate as non-null and non-empty.</param>
     /// <param name="paramName">The name of the parameter with which <paramref name="argument"/> corresponds.</param>
     /// <exception cref="ArgumentNullException"><paramref name="argument"/> is null.</exception>
     /// <exception cref="ArgumentException"><paramref name="argument"/> is empty.</exception>
-    public static void ThrowIfNullOrEmpty([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
+    internal static void ThrowIfNullOrEmpty([NotNull] string? argument, [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {
         if (argument is null)
         {

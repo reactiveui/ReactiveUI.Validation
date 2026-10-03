@@ -1,6 +1,5 @@
 // Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
-// Licensed to the ReactiveUI and Contributors under one or more agreements.
-// The ReactiveUI and Contributors licenses this file to you under the MIT license.
+// ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 // Polyfill implementation adapted from Simon Cropp's Polyfill library
@@ -12,24 +11,18 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace System.Runtime.CompilerServices;
 
-/// <summary>
-/// Indicates that a parameter captures the expression passed for another parameter as a string.
-/// </summary>
+/// <summary>Indicates that a parameter captures the expression passed for another parameter as a string.</summary>
 [ExcludeFromCodeCoverage]
 [DebuggerNonUserCode]
 [AttributeUsage(AttributeTargets.Parameter)]
 internal sealed class CallerArgumentExpressionAttribute : Attribute
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CallerArgumentExpressionAttribute"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="CallerArgumentExpressionAttribute"/> class.</summary>
     /// <param name="parameterName">The name of the parameter whose expression should be captured as a string.</param>
     public CallerArgumentExpressionAttribute(string parameterName) =>
         ParameterName = parameterName;
 
-    /// <summary>
-    /// Gets the name of the parameter whose expression should be captured as a string.
-    /// </summary>
+    /// <summary>Gets the name of the parameter whose expression should be captured as a string.</summary>
     public string ParameterName { get; }
 }
 
