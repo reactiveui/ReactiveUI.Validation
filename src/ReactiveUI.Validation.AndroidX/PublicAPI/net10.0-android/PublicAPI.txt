@@ -1,11 +1,4 @@
 [assembly: System.Runtime.Versioning.SupportedOSPlatform("Android21.0")]
-namespace ReactiveUI.Validation.AndroidX
-{
-    public class Resource : _Microsoft.Android.Resource.Designer.Resource
-    {
-        public Resource() { }
-    }
-}
 namespace ReactiveUI.Validation.Extensions
 {
     public static class ViewForExtensions

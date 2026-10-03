@@ -5,13 +5,6 @@
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Runtime.CompilerServices.CallerArgumentExpressionAttribute))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Runtime.CompilerServices.IsExternalInit))]
 [assembly: System.Runtime.Versioning.SupportedOSPlatform("Android21.0")]
-namespace ReactiveUI.Validation.Reactive
-{
-    public class Resource : _Microsoft.Android.Resource.Designer.Resource
-    {
-        public Resource() { }
-    }
-}
 namespace ReactiveUI.Validation.Reactive.Abstractions
 {
     public interface IValidatableViewModel
