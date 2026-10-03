@@ -7,11 +7,13 @@
     <File Path="Directory.build.props" />
     <File Path="Directory.build.targets" />
     <File Path="Directory.Packages.props" />
-    <File Path="stylecop.json" />
   </Folder>
   <Project Path="ReactiveUI.Validation.AndroidX/ReactiveUI.Validation.AndroidX.csproj" />
+  <Project Path="ReactiveUI.Validation.AndroidX.Reactive/ReactiveUI.Validation.AndroidX.Reactive.csproj" />
   <Project Path="ReactiveUI.Validation/ReactiveUI.Validation.csproj" />
+  <Project Path="ReactiveUI.Validation.Reactive/ReactiveUI.Validation.Reactive.csproj" />
   <Project Path="tests/ReactiveUI.Validation.Tests/ReactiveUI.Validation.Tests.csproj" />
+  <Project Path="tests/ReactiveUI.Validation.Reactive.Tests/ReactiveUI.Validation.Reactive.Tests.csproj" />
   <Folder Name="/Samples/">
     <Project Path="samples/AvaloniaApplication1/AvaloniaApplication1.csproj" />
     <File Path="samples/Directory.Packages.props" />

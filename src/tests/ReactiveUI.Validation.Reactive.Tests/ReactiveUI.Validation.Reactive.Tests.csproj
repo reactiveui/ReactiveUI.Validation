@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- Runs the ReactiveUI.Validation test suite again against ReactiveUI.Validation.Reactive. REACTIVE_SHIM moves the
+       tests to the ReactiveUI.Validation.Reactive.* namespaces and swaps the Primitives schedulers for System.Reactive's. -->
+  <PropertyGroup>
+    <TargetFrameworks>$(TestTargetFrameworks)</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <DefineConstants>$(DefineConstants);REACTIVE_SHIM</DefineConstants>
+    <ValidationNamespaceRoot>ReactiveUI.Validation.Reactive</ValidationNamespaceRoot>
+  </PropertyGroup>
+
+  <Import Project="..\..\ReactiveUI.Validation\ReactiveUI.Validation.Usings.props" />
+
+  <ItemGroup>
+    <Compile Include="..\ReactiveUI.Validation.Tests\**\*.cs" Exclude="..\ReactiveUI.Validation.Tests\obj\**;..\ReactiveUI.Validation.Tests\bin\**" Link="%(RecursiveDir)%(Filename)%(Extension)" />  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ReactiveUI.Validation.Reactive\ReactiveUI.Validation.Reactive.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="$(ValidationNamespaceRoot).Tests.Models" />
+    <Using Include="ReactiveUI.Reactive" />
+    <Using Include="ReactiveUI.Reactive.Builder" />
+    <Using Include="ReactiveUI.Binding.Reactive" />
+    <Using Include="System.Reactive.Concurrency.ImmediateScheduler" Alias="ImmediateSequencer" />
+  </ItemGroup>
+
+</Project>

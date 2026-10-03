@@ -1,6 +1,5 @@
 // Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
-// Licensed to the ReactiveUI and Contributors under one or more agreements.
-// The ReactiveUI and Contributors licenses this file to you under the MIT license.
+// ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System;
@@ -29,10 +28,28 @@ namespace LoginApp.ViewModels;
 /// Inheriting from <see cref="ReactiveValidationObject"/> provides a <see cref="ValidationContext"/>
 /// that manages all validation rules for this instance.
 /// </summary>
+[System.Diagnostics.DebuggerDisplay("SignUpViewModel: {IsBusy}")]
 public partial class SignUpViewModel : ReactiveValidationObject, IRoutableViewModel, IActivatableViewModel
 {
+    /// <summary>The minimum password length that passes validation.</summary>
+    private const int MinimumPasswordLength = 3;
+
+    /// <summary>The minimum user name length that passes validation.</summary>
+    private const int MinimumUserNameLength = 2;
+
+    /// <summary>The time to wait after the last user name change before validating it.</summary>
+    private static readonly TimeSpan UserNameThrottle = TimeSpan.FromMilliseconds(700);
+
+    /// <summary>The simulated delay of the user name availability check.</summary>
+    private static readonly TimeSpan UserNameCheckDelay = TimeSpan.FromMilliseconds(500);
+
+    /// <summary>Backs the <see cref="IsBusy"/> property.</summary>
     private readonly ObservableAsPropertyHelper<bool> _isBusy;
+
+    /// <summary>Shows dialogs to the user.</summary>
     private readonly IUserDialogs? _dialogs;
+
+    /// <summary>Holds the subscriptions owned by this view model.</summary>
     private readonly CompositeDisposable _disposables = [];
 
     /// <summary>
@@ -42,26 +59,25 @@ public partial class SignUpViewModel : ReactiveValidationObject, IRoutableViewMo
     [Reactive]
     private string _userName = string.Empty;
 
-    /// <summary>
-    /// Gets or sets the typed <see cref="Password"/>.
-    /// This property has multiple validation rules: required and minimum length.
-    /// </summary>
+    /// <summary>Gets or sets the typed <see cref="Password"/>. This property has multiple validation rules: required and minimum length.</summary>
     [Reactive]
     private string _password = string.Empty;
 
-    /// <summary>
-    /// Gets or sets the typed <see cref="ConfirmPassword"/>.
-    /// This property is validated against the <see cref="Password"/> property.
-    /// </summary>
+    /// <summary>Gets or sets the typed <see cref="ConfirmPassword"/>. This property is validated against the <see cref="Password"/> property.</summary>
     [Reactive]
     private string _confirmPassword = string.Empty;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SignUpViewModel"/> class.
-    /// </summary>
-    /// <param name="hostScreen">The screen used for routing purposes.</param>
-    /// <param name="dialogs"><see cref="IUserDialogs"/> implementation to show dialogs.</param>
-    public SignUpViewModel(IScreen? hostScreen = null, IUserDialogs? dialogs = null)
+    /// <summary>Initializes a new instance of the <see cref="SignUpViewModel"/> class.</summary>
+    /// <remarks>The screen and the dialogs come from the service locator.</remarks>
+    public SignUpViewModel()
+        : this(null, null)
+    {
+    }
+
+    /// <summary>Initializes a new instance of the <see cref="SignUpViewModel"/> class.</summary>
+    /// <param name="hostScreen">The screen used for routing purposes. When null, it comes from the service locator.</param>
+    /// <param name="dialogs"><see cref="IUserDialogs"/> implementation to show dialogs. When null, it comes from the service locator.</param>
+    public SignUpViewModel(IScreen? hostScreen, IUserDialogs? dialogs)
     {
         _dialogs = dialogs ?? Locator.Current.GetService<IUserDialogs>();
         HostScreen = hostScreen ?? Locator.Current.GetService<IScreen>()!;
@@ -72,32 +88,32 @@ public partial class SignUpViewModel : ReactiveValidationObject, IRoutableViewMo
 
         // 1. Basic property validation rule.
         // Validates that UserName is not empty.
-        this.ValidationRule(
+        _ = this.ValidationRule(
             vm => vm.UserName,
-            name => !string.IsNullOrWhiteSpace(name),
+            static name => !string.IsNullOrWhiteSpace(name),
             "UserName is required.")
             .DisposeWith(_disposables);
 
         // 2. Multiple rules for a single property.
         // First rule: Password is required.
-        this.ValidationRule(
+        _ = this.ValidationRule(
             vm => vm.Password,
-            password => !string.IsNullOrWhiteSpace(password),
+            static password => !string.IsNullOrWhiteSpace(password),
             "Password is required.")
             .DisposeWith(_disposables);
 
         // Second rule: Password length requirement.
         // Demonstrates using a lambda for the error message to include dynamic information.
-        this.ValidationRule(
+        _ = this.ValidationRule(
             vm => vm.Password,
-            password => password?.Length > 2,
-            password => $"Password should be longer, current length: {password!.Length}")
+            static password => password?.Length >= MinimumPasswordLength,
+            static password => $"Password should be longer, current length: {password!.Length}")
             .DisposeWith(_disposables);
 
         // 3. Simple cross-property validation.
-        this.ValidationRule(
+        _ = this.ValidationRule(
             vm => vm.ConfirmPassword,
-            confirmation => !string.IsNullOrWhiteSpace(confirmation),
+            static confirmation => !string.IsNullOrWhiteSpace(confirmation),
             "Confirm password field is required.")
             .DisposeWith(_disposables);
 
@@ -109,10 +125,10 @@ public partial class SignUpViewModel : ReactiveValidationObject, IRoutableViewMo
             this.WhenAnyValue(
                 x => x.Password,
                 x => x.ConfirmPassword,
-                (password, confirmation) =>
+                static (password, confirmation) =>
                     password == confirmation);
 
-        this.ValidationRule(
+        _ = this.ValidationRule(
             vm => vm.ConfirmPassword,
             passwordsObservable,
             "Passwords must match.")
@@ -122,59 +138,46 @@ public partial class SignUpViewModel : ReactiveValidationObject, IRoutableViewMo
         // Here we pass a complex IObservable<IValidationState> to the ValidationRule.
         // That observable emits an empty state when UserName is valid, and emits an
         // error state when UserName is either invalid, or just changed and hasn't been validated yet.
-
         // Asynchronous validation logic with throttling to avoid excessive calls.
         var usernameValidated =
             this.WhenAnyValue(x => x.UserName)
-                .Throttle(TimeSpan.FromSeconds(0.7), RxSchedulers.TaskpoolScheduler)
+                .Throttle(UserNameThrottle, RxSchedulers.TaskpoolScheduler)
                 .SelectMany(username => Signal.FromAsync(() => ValidateNameImpl(username)))
                 .ObserveOn(RxSchedulers.MainThreadScheduler);
 
         // State to show while validation is in progress.
         var usernameDirty =
             this.WhenAnyValue(x => x.UserName)
-                .Select(_ => new ValidationState(false, "Please wait..."));
+                .Select(static _ => new ValidationState(false, "Please wait..."));
 
         // Merge both states: "Please wait..." immediately, followed by the actual result.
-        this.ValidationRule(
+        _ = this.ValidationRule(
             vm => vm.UserName,
             Signal.Merge(usernameValidated, usernameDirty));
 
         // Use the validation state to drive a 'Busy' indicator.
         _isBusy = Signal
-            .Merge(usernameValidated.Select(_ => false), usernameDirty.Select(_ => true))
-            .ToProperty(this, x => x.IsBusy)
+            .Merge(usernameValidated.Select(static _ => false), usernameDirty.Select(static _ => true))
+            .ToProperty(this, static x => x.IsBusy)
             .DisposeWith(_disposables);
     }
 
-    /// <summary>
-    /// Gets a value indicating whether the form is currently validating asynchronously.
-    /// </summary>
+    /// <summary>Gets a value indicating whether the form is currently validating asynchronously.</summary>
     public bool IsBusy => _isBusy.Value;
 
-    /// <summary>
-    /// Gets a command which will create the account.
-    /// </summary>
+    /// <summary>Gets a command which will create the account.</summary>
     public ReactiveCommand<Unit, Unit> SignUp { get; }
 
-    /// <summary>
-    /// Gets the current page path.
-    /// </summary>
+    /// <summary>Gets the current page path.</summary>
     public string UrlPathSegment { get; } = "Sign Up";
 
-    /// <summary>
-    /// Gets the screen used for routing operations.
-    /// </summary>
+    /// <summary>Gets the screen used for routing operations.</summary>
     public IScreen HostScreen { get; }
 
-    /// <summary>
-    /// Gets the activator which contains context information for use in activation of the view model.
-    /// </summary>
+    /// <summary>Gets the activator which contains context information for use in activation of the view model.</summary>
     public ViewModelActivator Activator { get; } = new();
 
-    /// <summary>
-    /// Disposes the specified disposing.
-    /// </summary>
+    /// <summary>Disposes the specified disposing.</summary>
     /// <param name="disposing">if set to <c>true</c> [disposing].</param>
     protected override void Dispose(bool disposing)
     {
@@ -187,15 +190,22 @@ public partial class SignUpViewModel : ReactiveValidationObject, IRoutableViewMo
         base.Dispose(disposing);
     }
 
+    /// <summary>Simulates a remote check of the user name.</summary>
+    /// <param name="username">The user name to check.</param>
+    /// <returns>The validation state of the user name.</returns>
     private static async Task<IValidationState> ValidateNameImpl(string username)
     {
-        await Task.Delay(TimeSpan.FromSeconds(0.5)).ConfigureAwait(false);
-        return username.Length < 2
-            ? new ValidationState(false, "The name is too short.")
-            : username.Any(letter => !char.IsLetter(letter))
-                ? new ValidationState(false, "Only letters allowed.")
-                : ValidationState.Valid;
+        await Task.Delay(UserNameCheckDelay).ConfigureAwait(false);
+        if (username.Length < MinimumUserNameLength)
+        {
+            return new ValidationState(false, "The name is too short.");
+        }
+
+        return username.Any(static letter => !char.IsLetter(letter))
+            ? new ValidationState(false, "Only letters allowed.")
+            : ValidationState.Valid;
     }
 
+    /// <summary>Creates the account and tells the user.</summary>
     private void SignUpImpl() => _dialogs!.ShowDialog("User created successfully.");
 }

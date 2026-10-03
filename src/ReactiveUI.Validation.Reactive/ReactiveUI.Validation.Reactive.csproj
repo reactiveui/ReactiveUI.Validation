@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The System.Reactive flavour: recompiles the ReactiveUI.Validation source against ReactiveUI.Reactive.
+       REACTIVE_SHIM moves every type to the ReactiveUI.Validation.Reactive.* namespaces, and IScheduler binds to
+       System.Reactive's scheduler, so it plugs into ReactiveUI.Reactive view models and schedulers. -->
+  <PropertyGroup>
+    <TargetFrameworks>$(LibraryTargetFrameworks)</TargetFrameworks>
+    <DefineConstants>$(DefineConstants);REACTIVE_SHIM</DefineConstants>
+    <ValidationNamespaceRoot>ReactiveUI.Validation.Reactive</ValidationNamespaceRoot>
+    <Description>Validations library for ReactiveUI.Reactive, the System.Reactive flavour of ReactiveUI.</Description>
+    <PackageTags>$(PackageTags);system.reactive</PackageTags>
+  </PropertyGroup>
+
+  <Import Project="..\ReactiveUI.Validation\ReactiveUI.Validation.Usings.props" />
+
+  <ItemGroup>
+    <Compile Include="..\ReactiveUI.Validation\**\*.cs" Exclude="..\ReactiveUI.Validation\obj\**;..\ReactiveUI.Validation\bin\**" Link="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI.Reactive" />
+    <PackageReference Include="DynamicData" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="ReactiveUI.Reactive" />
+    <Using Include="ReactiveUI.Binding.Reactive" />
+    <Using Include="ReactiveUI.Binding.Reactive.Expressions" />
+    <!-- The System.Reactive build of the same operators, so ObserveOn and friends take System.Reactive's IScheduler. -->
+    <Using Include="ReactiveUI.Primitives.Reactive" />
+    <Using Include="ReactiveUI.Primitives.SubscribeExtensions" Alias="SubscribeExtensions" />
+    <Using Include="ReactiveUI.Primitives.Disposables" />
+    <Using Include="ReactiveUI.Primitives.Signals" />
+    <Using Include="ReactiveUI.Primitives.Disposables.Scope" Alias="Disposable" />
+    <Using Include="System.Reactive.Concurrency.IScheduler" Alias="IScheduler" />
+    <Using Include="System.Reactive.Concurrency.CurrentThreadScheduler" Alias="CurrentThreadSequencer" />
+    <Using Include="ReactiveUI.Primitives.Signals.Signal" Alias="Observable" />
+    <Using Include="ReactiveUI.Primitives.RxVoid" Alias="Unit" />
+    <Using Include="ReactiveUI.Primitives.Disposables.MultipleDisposable" Alias="CompositeDisposable" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="ReactiveUI.Validation.Reactive.Tests" />
+    <InternalsVisibleTo Include="ReactiveUI.Validation.AndroidX.Reactive" />
+  </ItemGroup>
+
+  <!-- Every line here is a line of ReactiveUI.Validation that its own tests already cover, so keep the recompile out
+       of the coverage report. The attribute only accepts an assembly target from netcoreapp3.0 onwards. -->
+  <ItemGroup Condition="$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)', 'netcoreapp3.0'))">
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
+    <PackageReference Include="System.Collections.Immutable" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" />
+  </ItemGroup>
+</Project>

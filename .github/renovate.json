@@ -11,8 +11,7 @@
             ],
             "groupName": "analyzers",
             "matchPackageNames": [
-                "/^Roslynator\\./",
-                "/^stylecop\\.analyzers$/i"
+                "/^(Style|Performance|Security|PublicApi)Sharp\\.Analyzers$/"
             ]
         },
         {
@@ -27,17 +26,6 @@
             ]
         },
         {
-            "description": "Verify.TUnit is built against a specific TUnit version. The shared preset groups TUnit separately from Verify.*, which can split a matched pair across two PRs and red the build; keep them together here.",
-            "matchManagers": [
-                "nuget"
-            ],
-            "groupName": "TUnit",
-            "matchPackageNames": [
-                "/^TUnit(\\.|$)/",
-                "/^Verify\\./"
-            ]
-        },
-        {
             "description": "MessageBox.Avalonia is part of the Avalonia sample stack but does not carry the Avalonia prefix the shared preset matches on.",
             "matchManagers": [
                 "nuget"
@@ -46,16 +34,6 @@
             "matchPackageNames": [
                 "/^Avalonia(\\.|$)/",
                 "/^MessageBox\\.Avalonia$/"
-            ]
-        },
-        {
-            "description": "Test and benchmark helpers that sit outside the framework cohorts the shared preset already groups.",
-            "matchManagers": [
-                "nuget"
-            ],
-            "groupName": "test tooling",
-            "matchPackageNames": [
-                "/^PublicApiGenerator$/"
             ]
         }
     ]

@@ -1,51 +1,42 @@
 // Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
-// Licensed to the ReactiveUI and Contributors under one or more agreements.
-// The ReactiveUI and Contributors licenses this file to you under the MIT license.
+// ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
 using System.Linq.Expressions;
-using ReactiveUI.Validation.Collections;
-using ReactiveUI.Validation.Components.Abstractions;
-using ReactiveUI.Validation.Extensions;
-using ReactiveUI.Validation.States;
 
+#if REACTIVE_SHIM
+namespace ReactiveUI.Validation.Reactive.Components;
+#else
 namespace ReactiveUI.Validation.Components;
+#endif
 
 /// <inheritdoc cref="ReactiveObject" />
 /// <inheritdoc cref="IDisposable" />
-/// <summary>
-/// A validation component that is based on an <see cref="IObservable{T}"/>.
-/// </summary>
-public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObject, IDisposable, IPropertyValidationComponent
+/// <summary>A validation component that is based on an <see cref="IObservable{T}"/>.</summary>
+[System.Diagnostics.DebuggerDisplay("ObservableValidationBase: {PropertyCount}")]
+public class ObservableValidationBase<TViewModel, TValue> : ReactiveObject, IDisposable, IPropertyValidationComponent
 {
-    /// <summary>
-    /// Replays the latest validation state to subscribers.
-    /// </summary>
+    /// <summary>Replays the latest validation state to subscribers.</summary>
     private readonly ReplaySignal<IValidationState> _isValidSubject = new(1);
 
-    /// <summary>
-    /// Tracks property names this validation monitors.
-    /// </summary>
+    /// <summary>Tracks property names this validation monitors.</summary>
     private readonly HashSet<string> _propertyNames = [];
 
-    /// <summary>
-    /// Composite disposable for lifecycle management.
-    /// </summary>
+    /// <summary>Composite disposable for lifecycle management.</summary>
     private readonly CompositeDisposable _disposables = [];
 
-    /// <summary>
-    /// The connected observable that multicasts validation state changes.
-    /// </summary>
+    /// <summary>The connected observable that multicasts validation state changes.</summary>
+#if REACTIVE_SHIM
+    // The Reactive leaf imports ReactiveUI.Primitives.Reactive in place of ReactiveUI.Primitives, where this type lives.
+    private readonly ReactiveUI.Primitives.ConnectableSignal<IValidationState> _validityConnectedObservable;
+#else
     private readonly ConnectableSignal<IValidationState> _validityConnectedObservable;
+#endif
 
-    /// <summary>
-    /// Tracks whether <see cref="Activate"/> has been called.
-    /// </summary>
-    private bool _isActive;
+    /// <summary>Set to 1 once <see cref="Activate"/> has been called.</summary>
+    private int _isActive;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ObservableValidationBase{TViewModel,TValue}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ObservableValidationBase{TViewModel,TValue}"/> class.</summary>
     /// <param name="viewModel">ViewModel instance.</param>
     /// <param name="observable">Observable that updates the view model property validity.</param>
     /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
@@ -64,13 +55,11 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ObservableValidationBase{TViewModel, TValue}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ObservableValidationBase{TViewModel, TValue}"/> class.</summary>
     /// <param name="observable">Observable that updates the view model property validity.</param>
     protected ObservableValidationBase(IObservable<IValidationState> observable)
     {
-        SubscribeExtensions.Subscribe(_isValidSubject
+        _ = SubscribeExtensions.Subscribe(_isValidSubject
              .Do(state =>
              {
                  IsValid = state.IsValid;
@@ -136,42 +125,37 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
     /// <inheritdoc/>
     public bool ContainsPropertyName(string propertyName, bool exclusively = false) =>
         exclusively
-            ? _propertyNames.Contains(propertyName) &&
-              _propertyNames.Count == 1
+            ? _propertyNames.Contains(propertyName)
+              && _propertyNames.Count == 1
             : _propertyNames.Contains(propertyName);
 
-    /// <summary>
-    /// Activates the validation, connecting the observable chain.
-    /// </summary>
+    /// <summary>Activates the validation, connecting the observable chain.</summary>
     internal void Activate()
     {
-        if (_isActive)
+        if (Interlocked.Exchange(ref _isActive, 1) != 0)
         {
             return;
         }
 
-        _isActive = true;
         _disposables.Add(_validityConnectedObservable.Connect());
     }
 
-    /// <summary>
-    /// Disposes of the managed resources.
-    /// </summary>
+    /// <summary>Disposes of the managed resources.</summary>
     /// <param name="disposing">
     /// If its getting called by the <see cref="BasePropertyValidation{TViewModel}.Dispose()"/> method.
     /// </param>
     protected virtual void Dispose(bool disposing)
     {
-        if (disposing)
+        if (!disposing)
         {
-            _disposables.Dispose();
-            _isValidSubject.Dispose();
+            return;
         }
+
+        _disposables.Dispose();
+        _isValidSubject.Dispose();
     }
 
-    /// <summary>
-    /// Adds a property to the list of this which this validation is associated with.
-    /// </summary>
+    /// <summary>Adds a property to the list of this which this validation is associated with.</summary>
     /// <typeparam name="TProp">Any type.</typeparam>
     /// <param name="property">ViewModel property.</param>
     protected void AddProperty<TProp>(Expression<Func<TViewModel, TProp>> property)
@@ -179,6 +163,6 @@ public abstract class ObservableValidationBase<TViewModel, TValue> : ReactiveObj
         ArgumentExceptionHelper.ThrowIfNull(property);
 
         var propertyName = property.Body.GetPropertyPath();
-        _propertyNames.Add(propertyName);
+        _ = _propertyNames.Add(propertyName);
     }
 }

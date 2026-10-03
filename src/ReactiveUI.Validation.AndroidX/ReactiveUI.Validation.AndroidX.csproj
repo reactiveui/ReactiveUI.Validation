@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>$(MauiAndroidTargets)</TargetFrameworks>
@@ -6,7 +6,10 @@
     <PackageId>ReactiveUI.Validation.AndroidX</PackageId>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
     <Nullable>enable</Nullable>
+    <ValidationNamespaceRoot>ReactiveUI.Validation</ValidationNamespaceRoot>
   </PropertyGroup>
+
+  <Import Project="..\ReactiveUI.Validation\ReactiveUI.Validation.Usings.props" />
 
   <ItemGroup>
     <PackageReference Include="ReactiveUI.AndroidX" />

@@ -1,23 +1,19 @@
 // Copyright (c) 2019-2026 ReactiveUI and Contributors. All rights reserved.
-// Licensed to the ReactiveUI and Contributors under one or more agreements.
-// The ReactiveUI and Contributors licenses this file to you under the MIT license.
+// ReactiveUI and Contributors licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for full license information.
 
-using ReactiveUI.Validation.Collections;
-using ReactiveUI.Validation.States;
-
+#if REACTIVE_SHIM
+namespace ReactiveUI.Validation.Reactive.Components;
+#else
 namespace ReactiveUI.Validation.Components;
+#endif
 
 /// <inheritdoc cref="ReactiveObject" />
 /// <inheritdoc cref="IDisposable" />
-/// <summary>
-/// A validation component that is based on an <see cref="IObservable{T}"/>.
-/// </summary>
+/// <summary>A validation component that is based on an <see cref="IObservable{T}"/>.</summary>
 public sealed class ObservableValidation<TViewModel, TValue> : ObservableValidationBase<TViewModel, TValue>
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.</summary>
     /// <param name="viewModel">ViewModel instance.</param>
     /// <param name="observable">Observable that updates the view model property validity.</param>
     /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
@@ -31,9 +27,7 @@ public sealed class ObservableValidation<TViewModel, TValue> : ObservableValidat
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.</summary>
     /// <param name="viewModel">ViewModel instance.</param>
     /// <param name="observable">Observable that updates the view model property validity.</param>
     /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
@@ -47,9 +41,7 @@ public sealed class ObservableValidation<TViewModel, TValue> : ObservableValidat
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.</summary>
     /// <param name="viewModel">ViewModel instance.</param>
     /// <param name="observable">Observable that updates the view model property validity.</param>
     /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
@@ -63,9 +55,7 @@ public sealed class ObservableValidation<TViewModel, TValue> : ObservableValidat
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.</summary>
     /// <param name="viewModel">ViewModel instance.</param>
     /// <param name="observable">Observable that updates the view model property validity.</param>
     /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
@@ -80,9 +70,7 @@ public sealed class ObservableValidation<TViewModel, TValue> : ObservableValidat
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.</summary>
     /// <param name="viewModel">ViewModel instance.</param>
     /// <param name="observable">Observable that updates the view model property validity.</param>
     /// <param name="isValidFunc">Func to define if the viewModelProperty is valid or not.</param>
@@ -97,9 +85,7 @@ public sealed class ObservableValidation<TViewModel, TValue> : ObservableValidat
     {
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.
-    /// </summary>
+    /// <summary>Initializes a new instance of the <see cref="ObservableValidation{TViewModel,TValue}"/> class.</summary>
     /// <param name="observable">Observable that updates the view model property validity.</param>
     public ObservableValidation(IObservable<IValidationState> observable)
         : base(observable)

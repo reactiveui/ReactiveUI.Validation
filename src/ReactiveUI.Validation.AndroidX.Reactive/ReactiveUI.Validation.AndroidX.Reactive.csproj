@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- The System.Reactive flavour of ReactiveUI.Validation.AndroidX: recompiles its source against
+       ReactiveUI.AndroidX.Reactive and ReactiveUI.Validation.Reactive. REACTIVE_SHIM moves every type to the
+       ReactiveUI.Validation.Reactive.* namespaces. -->
+  <PropertyGroup>
+    <TargetFrameworks>$(MauiAndroidTargets)</TargetFrameworks>
+    <PackageDescription>Provides ReactiveUI.Validation.Reactive extensions for the AndroidX Library, for apps that use ReactiveUI.Reactive.</PackageDescription>
+    <PackageId>ReactiveUI.Validation.AndroidX.Reactive</PackageId>
+    <PackageTags>$(PackageTags);system.reactive</PackageTags>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+    <Nullable>enable</Nullable>
+    <DefineConstants>$(DefineConstants);REACTIVE_SHIM</DefineConstants>
+    <ValidationNamespaceRoot>ReactiveUI.Validation.Reactive</ValidationNamespaceRoot>
+  </PropertyGroup>
+
+  <Import Project="..\ReactiveUI.Validation\ReactiveUI.Validation.Usings.props" />
+
+  <ItemGroup>
+    <Compile Include="..\ReactiveUI.Validation.AndroidX\**\*.cs" Exclude="..\ReactiveUI.Validation.AndroidX\obj\**;..\ReactiveUI.Validation.AndroidX\bin\**" Link="%(RecursiveDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ReactiveUI.AndroidX.Reactive" />
+    <PackageReference Include="Xamarin.Google.Android.Material" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ReactiveUI.Validation.Reactive\ReactiveUI.Validation.Reactive.csproj" />
+  </ItemGroup>
+
+  <!-- Every line here is a line of ReactiveUI.Validation.AndroidX, so keep the recompile out of the coverage report. -->
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage" />
+  </ItemGroup>
+</Project>

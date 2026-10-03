@@ -2,7 +2,10 @@
 
   <PropertyGroup>
     <TargetFrameworks>$(LibraryTargetFrameworks)</TargetFrameworks>
+    <ValidationNamespaceRoot>ReactiveUI.Validation</ValidationNamespaceRoot>
   </PropertyGroup>
+
+  <Import Project="ReactiveUI.Validation.Usings.props" />
 
   <ItemGroup>
     <PackageReference Include="ReactiveUI" />
@@ -10,7 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Using Include="ReactiveUI.Validation.Helpers" />
+    <Using Include="ReactiveUI.Binding.Expressions" />
+    <Using Include="ReactiveUI.Primitives.Concurrency" />
     <Using Include="ReactiveUI.Primitives" />
     <Using Include="ReactiveUI.Primitives.Disposables" />
     <Using Include="ReactiveUI.Primitives.Signals" />
@@ -23,9 +27,11 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="ReactiveUI.Validation.Tests" />
+    <InternalsVisibleTo Include="ReactiveUI.Validation.AndroidX" />
   </ItemGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith('net4'))">
     <PackageReference Include="System.Collections.Immutable" />
+    <PackageReference Include="Microsoft.Bcl.HashCode" />
   </ItemGroup>
 </Project>

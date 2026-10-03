@@ -1,0 +1,25 @@
+<Project>
+  <!--
+    The library's own namespaces, imported for every source file.
+
+    The same source compiles into two packages. ReactiveUI.Validation puts its types under ReactiveUI.Validation.*,
+    and ReactiveUI.Validation.Reactive puts them under ReactiveUI.Validation.Reactive.* (each file switches its
+    namespace on REACTIVE_SHIM). A file cannot name its sibling namespaces with a plain using directive, because the
+    name differs between the two packages, so the project imports them here from ValidationNamespaceRoot instead.
+  -->
+  <ItemGroup>
+    <Using Include="$(ValidationNamespaceRoot).Abstractions" />
+    <Using Include="$(ValidationNamespaceRoot).Collections" />
+    <Using Include="$(ValidationNamespaceRoot).Comparators" />
+    <Using Include="$(ValidationNamespaceRoot).Components" />
+    <Using Include="$(ValidationNamespaceRoot).Components.Abstractions" />
+    <Using Include="$(ValidationNamespaceRoot).Contexts" />
+    <Using Include="$(ValidationNamespaceRoot).Extensions" />
+    <Using Include="$(ValidationNamespaceRoot).Formatters" />
+    <Using Include="$(ValidationNamespaceRoot).Formatters.Abstractions" />
+    <Using Include="$(ValidationNamespaceRoot).Helpers" />
+    <Using Include="$(ValidationNamespaceRoot).States" />
+    <Using Include="$(ValidationNamespaceRoot).ValidationBindings" />
+    <Using Include="$(ValidationNamespaceRoot).ValidationBindings.Abstractions" />
+  </ItemGroup>
+</Project>

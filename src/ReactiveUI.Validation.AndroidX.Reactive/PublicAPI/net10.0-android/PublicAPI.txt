@@ -1,0 +1,13 @@
+[assembly: System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
+[assembly: System.Runtime.Versioning.SupportedOSPlatform("Android21.0")]
+namespace ReactiveUI.Validation.Reactive.Extensions;
+
+public static class ViewForExtensions
+{
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    public static System.IDisposable BindValidation<TView, TViewModel>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel?, ReactiveUI.Validation.Reactive.Helpers.ValidationHelper?>> viewModelHelperProperty, Google.Android.Material.TextField.TextInputLayout viewProperty) where TView : ReactiveUI.Binding.Reactive.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Reactive.Abstractions.IValidatableViewModel { }
+    public static System.IDisposable BindValidation<TView, TViewModel>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel?, ReactiveUI.Validation.Reactive.Helpers.ValidationHelper?>> viewModelHelperProperty, Google.Android.Material.TextField.TextInputLayout viewProperty, ReactiveUI.Validation.Reactive.Formatters.Abstractions.IValidationTextFormatter<string>? formatter) where TView : ReactiveUI.Binding.Reactive.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Reactive.Abstractions.IValidatableViewModel { }
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    public static System.IDisposable BindValidation<TView, TViewModel, TViewModelProperty>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty?>> viewModelProperty, Google.Android.Material.TextField.TextInputLayout viewProperty) where TView : ReactiveUI.Binding.Reactive.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Reactive.Abstractions.IValidatableViewModel { }
+    public static System.IDisposable BindValidation<TView, TViewModel, TViewModelProperty>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty?>> viewModelProperty, Google.Android.Material.TextField.TextInputLayout viewProperty, ReactiveUI.Validation.Reactive.Formatters.Abstractions.IValidationTextFormatter<string>? formatter) where TView : ReactiveUI.Binding.Reactive.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Reactive.Abstractions.IValidatableViewModel { }
+}
