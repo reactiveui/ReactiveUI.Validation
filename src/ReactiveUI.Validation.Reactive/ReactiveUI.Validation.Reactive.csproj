@@ -41,6 +41,7 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="ReactiveUI.Validation.Reactive.Tests" />
+    <InternalsVisibleTo Include="ReactiveUI.Validation.AndroidX.Reactive" />
   </ItemGroup>
 
   <!-- Every line here is a line of ReactiveUI.Validation that its own tests already cover, so keep the recompile out

@@ -60,11 +60,12 @@ Install the following package into your class library and into a platform-specif
 | Any Platform | [ReactiveUI.Validation][CoreDoc] | [![CoreBadge]][Core] |
 | AndroidX (MAUI) | [ReactiveUI.Validation.AndroidX][DroDoc] | [![DroXBadge]][DroX] |
 | Any Platform, with `ReactiveUI.Reactive` | ReactiveUI.Validation.Reactive | [![ReactiveBadge]][Reactive] |
+| AndroidX (MAUI), with `ReactiveUI.Reactive` | ReactiveUI.Validation.AndroidX.Reactive | [![DroXReactiveBadge]][DroXReactive] |
 
 Pick the package that matches your ReactiveUI package:
 
 - If your app uses `ReactiveUI`, install `ReactiveUI.Validation`.
-- If your app uses `ReactiveUI.Reactive` (the System.Reactive flavour), install `ReactiveUI.Validation.Reactive`.
+- If your app uses `ReactiveUI.Reactive` (the System.Reactive flavour), install `ReactiveUI.Validation.Reactive`. On AndroidX, install `ReactiveUI.Validation.AndroidX.Reactive` as well.
 
 `ReactiveUI.Validation.Reactive` has the same API. Its namespaces start with `ReactiveUI.Validation.Reactive` instead of `ReactiveUI.Validation`. Its schedulers are System.Reactive `IScheduler` instances.
 
@@ -78,6 +79,9 @@ Pick the package that matches your ReactiveUI package:
 
 [Reactive]: https://www.nuget.org/packages/ReactiveUI.Validation.Reactive/
 [ReactiveBadge]: https://img.shields.io/nuget/v/ReactiveUI.Validation.Reactive.svg
+
+[DroXReactive]: https://www.nuget.org/packages/ReactiveUI.Validation.AndroidX.Reactive/
+[DroXReactiveBadge]: https://img.shields.io/nuget/v/ReactiveUI.Validation.AndroidX.Reactive.svg
 
 ## How to Use
 

@@ -8,13 +8,12 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using Google.Android.Material.TextField;
-using ReactiveUI.Validation.Abstractions;
-using ReactiveUI.Validation.Formatters;
-using ReactiveUI.Validation.Formatters.Abstractions;
-using ReactiveUI.Validation.Helpers;
-using ReactiveUI.Validation.ValidationBindings;
 
+#if REACTIVE_SHIM
+namespace ReactiveUI.Validation.Reactive.Extensions;
+#else
 namespace ReactiveUI.Validation.Extensions;
+#endif
 
 /// <summary>Android specific extensions methods associated to <see cref="IViewFor"/> instances.</summary>
 [SuppressMessage(

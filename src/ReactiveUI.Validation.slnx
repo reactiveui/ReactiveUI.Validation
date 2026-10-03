@@ -9,6 +9,7 @@
     <File Path="Directory.Packages.props" />
   </Folder>
   <Project Path="ReactiveUI.Validation.AndroidX/ReactiveUI.Validation.AndroidX.csproj" />
+  <Project Path="ReactiveUI.Validation.AndroidX.Reactive/ReactiveUI.Validation.AndroidX.Reactive.csproj" />
   <Project Path="ReactiveUI.Validation/ReactiveUI.Validation.csproj" />
   <Project Path="ReactiveUI.Validation.Reactive/ReactiveUI.Validation.Reactive.csproj" />
   <Project Path="tests/ReactiveUI.Validation.Tests/ReactiveUI.Validation.Tests.csproj" />
