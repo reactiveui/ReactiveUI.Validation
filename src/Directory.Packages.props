@@ -10,10 +10,10 @@
 
   <ItemGroup Label="Core packages">
     <PackageVersion Include="DynamicData" Version="9.4.33" />
-    <PackageVersion Include="ReactiveUI" Version="26.0.0" />
-    <PackageVersion Include="ReactiveUI.AndroidX" Version="26.0.0" />
-    <PackageVersion Include="ReactiveUI.AndroidX.Reactive" Version="26.0.0" />
-    <PackageVersion Include="ReactiveUI.Reactive" Version="26.0.0" />
+    <PackageVersion Include="ReactiveUI" Version="26.0.1" />
+    <PackageVersion Include="ReactiveUI.AndroidX" Version="26.0.1" />
+    <PackageVersion Include="ReactiveUI.AndroidX.Reactive" Version="26.0.1" />
+    <PackageVersion Include="ReactiveUI.Reactive" Version="26.0.1" />
     <PackageVersion Include="Splat" Version="21.0.0" />
     <PackageVersion Include="Splat.Builder" Version="21.0.0" />
     <PackageVersion Include="Polyfill" Version="11.4.1" />
