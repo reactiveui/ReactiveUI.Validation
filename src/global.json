@@ -1,7 +1,4 @@
 {
-  "sdk": {
-    "allowPrerelease": true
-  },
   "test": {
     "runner": "Microsoft.Testing.Platform"
   }
