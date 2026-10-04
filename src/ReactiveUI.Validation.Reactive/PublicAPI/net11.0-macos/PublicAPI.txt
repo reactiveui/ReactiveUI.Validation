@@ -4,7 +4,7 @@
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Runtime.CompilerServices.CallerArgumentExpressionAttribute))]
 [assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Runtime.CompilerServices.IsExternalInit))]
-[assembly: System.Runtime.Versioning.SupportedOSPlatform("macOS26.0")]
+[assembly: System.Runtime.Versioning.SupportedOSPlatform("macOS26.5")]
 namespace ReactiveUI.Validation.Reactive.Abstractions
 {
     public interface IValidatableViewModel
