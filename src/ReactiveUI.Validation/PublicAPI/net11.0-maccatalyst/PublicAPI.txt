@@ -1,0 +1,361 @@
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("ReactiveUI.Validation.AndroidX")]
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("ReactiveUI.Validation.Tests")]
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Diagnostics.CodeAnalysis.RequiresDynamicCodeAttribute))]
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Diagnostics.CodeAnalysis.RequiresUnreferencedCodeAttribute))]
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Runtime.CompilerServices.CallerArgumentExpressionAttribute))]
+[assembly: System.Runtime.CompilerServices.TypeForwardedTo(typeof(System.Runtime.CompilerServices.IsExternalInit))]
+[assembly: System.Runtime.Versioning.SupportedOSPlatform("MacCatalyst26.5")]
+namespace ReactiveUI.Validation.Abstractions
+{
+    public interface IValidatableViewModel
+    {
+        ReactiveUI.Validation.Contexts.IValidationContext ValidationContext { get; }
+    }
+}
+namespace ReactiveUI.Validation.Collections
+{
+    public interface IValidationText : System.Collections.Generic.IReadOnlyList<string>
+    {
+        string ToSingleLine(string? separator = ",") { }
+    }
+    public static class ValidationText
+    {
+        public static readonly ReactiveUI.Validation.Collections.IValidationText Empty;
+        public static readonly ReactiveUI.Validation.Collections.IValidationText None;
+        public static ReactiveUI.Validation.Collections.IValidationText Create(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Collections.IValidationText>? validationTexts) { }
+        public static ReactiveUI.Validation.Collections.IValidationText Create(System.Collections.Generic.IEnumerable<string?>? validationTexts) { }
+        public static ReactiveUI.Validation.Collections.IValidationText Create(string? validationText) { }
+        public static ReactiveUI.Validation.Collections.IValidationText Create(params string?[]? validationTexts) { }
+    }
+}
+namespace ReactiveUI.Validation.Comparators
+{
+    public class ValidationStateComparer : System.Collections.Generic.EqualityComparer<ReactiveUI.Validation.States.IValidationState>
+    {
+        public ValidationStateComparer() { }
+        public override bool Equals(ReactiveUI.Validation.States.IValidationState? x, ReactiveUI.Validation.States.IValidationState? y) { }
+        public override int GetHashCode(ReactiveUI.Validation.States.IValidationState obj) { }
+    }
+}
+namespace ReactiveUI.Validation.Components
+{
+    [System.Diagnostics.DebuggerDisplay("BasePropertyValidation: {PropertyCount}")]
+    public abstract class BasePropertyValidation<TViewModel> : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, System.IDisposable
+    {
+        protected BasePropertyValidation() { }
+        public bool IsValid { get; }
+        public System.Collections.Generic.IEnumerable<string> Properties { get; }
+        public int PropertyCount { get; }
+        public ReactiveUI.Validation.Collections.IValidationText? Text { get; }
+        public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
+        protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
+        public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
+        public void Dispose() { }
+        protected virtual void Dispose(bool disposing) { }
+        protected abstract System.IObservable<ReactiveUI.Validation.States.IValidationState> GetValidationChangeObservable() { }
+    }
+    [System.Diagnostics.DebuggerDisplay("BasePropertyValidation: {_valueSubject}")]
+    public sealed class BasePropertyValidation<TViewModel, TViewModelProperty> : ReactiveUI.Validation.Components.BasePropertyValidation<TViewModel> where TViewModel : class
+    {
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty?>> viewModelProperty, System.Func<TViewModelProperty?, bool> isValidFunc, System.Func<TViewModelProperty?, bool, string> messageFunc) { }
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty?>> viewModelProperty, System.Func<TViewModelProperty?, bool> isValidFunc, System.Func<TViewModelProperty?, string> message) { }
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public BasePropertyValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty?>> viewModelProperty, System.Func<TViewModelProperty?, bool> isValidFunc, string message) { }
+        protected override void Dispose(bool disposing) { }
+        protected override System.IObservable<ReactiveUI.Validation.States.IValidationState> GetValidationChangeObservable() { }
+    }
+    public sealed class ObservableValidation<TViewModel, TValue> : ReactiveUI.Validation.Components.ObservableValidationBase<TViewModel, TValue>
+    {
+        public ObservableValidation(System.IObservable<ReactiveUI.Validation.States.IValidationState> observable) { }
+        public ObservableValidation(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TValue, bool> isValidFunc, System.Func<TValue, string> messageFunc) { }
+        public ObservableValidation(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TValue, bool> isValidFunc, string message) { }
+        public ObservableValidation(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, bool, string> messageFunc) { }
+        public ObservableValidation(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, string> messageFunc) { }
+        public ObservableValidation(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, string message) { }
+    }
+    public sealed class ObservableValidation<TViewModel, TValue, TProp> : ReactiveUI.Validation.Components.ObservableValidationBase<TViewModel, TValue>
+    {
+        public ObservableValidation(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> viewModelProperty, System.IObservable<ReactiveUI.Validation.States.IValidationState> observable) { }
+        public ObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> viewModelProperty, System.IObservable<TValue> observable, System.Func<TValue, bool> isValidFunc, System.Func<TValue, string> messageFunc) { }
+        public ObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> viewModelProperty, System.IObservable<TValue> observable, System.Func<TValue, bool> isValidFunc, string message) { }
+        public ObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> viewModelProperty, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, bool, string> messageFunc) { }
+        public ObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> viewModelProperty, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, string> messageFunc) { }
+        public ObservableValidation(TViewModel viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> viewModelProperty, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, string message) { }
+    }
+    [System.Diagnostics.DebuggerDisplay("ObservableValidationBase: {PropertyCount}")]
+    public class ObservableValidationBase<TViewModel, TValue> : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Components.Abstractions.IPropertyValidationComponent, System.IDisposable
+    {
+        protected ObservableValidationBase(System.IObservable<ReactiveUI.Validation.States.IValidationState> observable) { }
+        protected ObservableValidationBase(TViewModel viewModel, System.IObservable<TValue> observable, System.Func<TViewModel, TValue, bool> isValidFunc, System.Func<TViewModel, TValue, bool, ReactiveUI.Validation.Collections.IValidationText> messageFunc) { }
+        public bool IsValid { get; }
+        public System.Collections.Generic.IEnumerable<string> Properties { get; }
+        public int PropertyCount { get; }
+        public ReactiveUI.Validation.Collections.IValidationText? Text { get; }
+        public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
+        protected void AddProperty<TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> property) { }
+        public bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
+        public void Dispose() { }
+        protected virtual void Dispose(bool disposing) { }
+    }
+}
+namespace ReactiveUI.Validation.Components.Abstractions
+{
+    public interface IPropertyValidationComponent : ReactiveUI.Validation.Components.Abstractions.IValidatesProperties, ReactiveUI.Validation.Components.Abstractions.IValidationComponent
+    {
+    }
+    public interface IValidatesProperties
+    {
+        System.Collections.Generic.IEnumerable<string> Properties { get; }
+        int PropertyCount { get; }
+        bool ContainsPropertyName(string propertyName, bool exclusively = false) { }
+    }
+    public interface IValidationComponent
+    {
+        bool IsValid { get; }
+        ReactiveUI.Validation.Collections.IValidationText? Text { get; }
+        System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
+    }
+}
+namespace ReactiveUI.Validation.Contexts
+{
+    public interface IValidationContext : ReactiveUI.IReactiveObject, ReactiveUI.Primitives.Disposables.IsDisposed, ReactiveUI.Validation.Components.Abstractions.IValidationComponent
+    {
+        System.IObservable<bool> Valid { get; }
+        DynamicData.IObservableList<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> Validations { get; }
+        void Add(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation) { }
+        bool GetIsValid() { }
+        void Remove(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation) { }
+        void RemoveMany(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> validations) { }
+    }
+    [System.Diagnostics.DebuggerDisplay("ValidationContext: {Valid}")]
+    public class ValidationContext : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Contexts.IValidationContext
+    {
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public ValidationContext() { }
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public ValidationContext(ReactiveUI.Primitives.Concurrency.ISequencer? scheduler) { }
+        public bool IsDisposed { get; }
+        public bool IsValid { get; }
+        public ReactiveUI.Validation.Collections.IValidationText Text { get; }
+        public System.IObservable<bool> Valid { get; }
+        public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationStatusChange { get; }
+        public DynamicData.IObservableList<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> Validations { get; }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public void Add(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation) { }
+        public void Dispose() { }
+        protected virtual void Dispose(bool disposing) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public bool GetIsValid() { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public void Remove(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public void RemoveMany(System.Collections.Generic.IEnumerable<ReactiveUI.Validation.Components.Abstractions.IValidationComponent> validations) { }
+    }
+}
+namespace ReactiveUI.Validation.Extensions
+{
+    public static class ValidatableViewModelExtensions
+    {
+        extension<TViewModel>(TViewModel viewModel) where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel
+        {
+            public void ClearValidationRules() { }
+            public void ClearValidationRules<TViewModelProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty) { }
+            public System.IObservable<bool> IsValid() { }
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+            public ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule(System.IObservable<ReactiveUI.Validation.States.IValidationState> validationObservable) { }
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+            public ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule(System.IObservable<bool> validationObservable, string message) { }
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+            public ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TValue>(System.IObservable<TValue> validationObservable) where TValue : ReactiveUI.Validation.States.IValidationState { }
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+            public ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModelProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.IObservable<ReactiveUI.Validation.States.IValidationState> validationObservable) { }
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+            public ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TValue>(System.IObservable<TValue> validationObservable, System.Func<TValue, bool> isValidFunc, System.Func<TValue, string> messageFunc) { }
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+            public ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModelProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.IObservable<bool> viewModelObservable, string message) { }
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+            public ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModelProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp?>> viewModelProperty, System.Func<TViewModelProp?, bool> isPropertyValid, System.Func<TViewModelProp?, string> message) { }
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+            public ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModelProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp?>> viewModelProperty, System.Func<TViewModelProp?, bool> isPropertyValid, string message) { }
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+            public ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModelProp, TValue>(System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.IObservable<TValue> validationObservable) where TValue : ReactiveUI.Validation.States.IValidationState { }
+            [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+            [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+            public ReactiveUI.Validation.Helpers.ValidationHelper ValidationRule<TViewModelProp, TValue>(System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProp>> viewModelProperty, System.IObservable<TValue> viewModelObservable, System.Func<TValue, bool> isValidFunc, System.Func<TValue, string> messageFunc) { }
+        }
+    }
+    public static class ValidatesPropertiesExtensions
+    {
+        extension(ReactiveUI.Validation.Components.Abstractions.IValidatesProperties validatesProperties)
+        {
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+            public bool ContainsProperty<TViewModel, TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> propertyExpression) { }
+            public bool ContainsProperty<TViewModel, TProp>(System.Linq.Expressions.Expression<System.Func<TViewModel, TProp>> propertyExpression, bool exclusively) { }
+        }
+    }
+    public static class ValidationContextExtensions
+    {
+        extension(ReactiveUI.Validation.Contexts.IValidationContext context)
+        {
+            [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+            public System.IObservable<System.Collections.Generic.IList<ReactiveUI.Validation.States.IValidationState>> ObserveFor<TViewModel, TViewModelProperty>(System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty) { }
+            public System.IObservable<System.Collections.Generic.IList<ReactiveUI.Validation.States.IValidationState>> ObserveFor<TViewModel, TViewModelProperty>(System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, bool strict) { }
+        }
+    }
+    public static class ViewForExtensions
+    {
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel?, ReactiveUI.Validation.Helpers.ValidationHelper?>> viewModelHelperProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public static System.IDisposable BindValidation<TView, TViewModel, TViewProperty>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel?, ReactiveUI.Validation.Helpers.ValidationHelper?>> viewModelHelperProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public static System.IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public static System.IDisposable BindValidation<TView, TViewModel, TViewModelProperty, TViewProperty>(this TView view, TViewModel? viewModel, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+    }
+}
+namespace ReactiveUI.Validation.Formatters
+{
+    public class SingleLineFormatter : ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>
+    {
+        public SingleLineFormatter(string? separator = null) { }
+        public static ReactiveUI.Validation.Formatters.SingleLineFormatter Default { get; }
+        public string Format(ReactiveUI.Validation.Collections.IValidationText? validationText) { }
+    }
+}
+namespace ReactiveUI.Validation.Formatters.Abstractions
+{
+    public interface IValidationTextFormatter<out TOut>
+    {
+        TOut Format(ReactiveUI.Validation.Collections.IValidationText validationText) { }
+    }
+}
+namespace ReactiveUI.Validation.Helpers
+{
+    [System.Diagnostics.DebuggerDisplay("ReactiveValidationObject: {HasErrors}")]
+    public class ReactiveValidationObject : ReactiveUI.ReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel, System.ComponentModel.INotifyDataErrorInfo, System.IDisposable
+    {
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        protected ReactiveValidationObject() { }
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        protected ReactiveValidationObject(ReactiveUI.Primitives.Concurrency.ISequencer? scheduler) { }
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        protected ReactiveValidationObject(ReactiveUI.Primitives.Concurrency.ISequencer? scheduler, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter) { }
+        public bool HasErrors { get; }
+        public ReactiveUI.Validation.Contexts.IValidationContext ValidationContext { get; }
+        public event System.EventHandler<System.ComponentModel.DataErrorsChangedEventArgs>? ErrorsChanged;
+        public void Dispose() { }
+        protected virtual void Dispose(bool disposing) { }
+        public virtual System.Collections.IEnumerable GetErrors(string? propertyName) { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        protected void RaiseErrorsChanged() { }
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        protected void RaiseErrorsChanged(string propertyName) { }
+    }
+    [System.Diagnostics.DebuggerDisplay("ValidationHelper: {IsValid}")]
+    public sealed class ValidationHelper : ReactiveUI.ReactiveObject, System.IDisposable
+    {
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public ValidationHelper(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation) { }
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public ValidationHelper(ReactiveUI.Validation.Components.Abstractions.IValidationComponent validation, System.IDisposable? cleanup) { }
+        public bool IsValid { get; }
+        public ReactiveUI.Validation.Collections.IValidationText Message { get; }
+        public System.IObservable<ReactiveUI.Validation.States.IValidationState> ValidationChanged { get; }
+        public void Dispose() { }
+    }
+}
+namespace ReactiveUI.Validation.States
+{
+    public interface IValidationState
+    {
+        bool IsValid { get; }
+        ReactiveUI.Validation.Collections.IValidationText Text { get; }
+    }
+    [System.Diagnostics.DebuggerDisplay("ValidationState: {Text}")]
+    public record ValidationState : ReactiveUI.Validation.States.IValidationState, System.IEquatable<ReactiveUI.Validation.States.ValidationState>
+    {
+        public ValidationState(bool IsValid, ReactiveUI.Validation.Collections.IValidationText Text) { }
+        public ValidationState(bool isValid, string text) { }
+        public static readonly ReactiveUI.Validation.States.IValidationState Valid;
+        public bool IsValid { get; init; }
+        public ReactiveUI.Validation.Collections.IValidationText Text { get; }
+    }
+}
+namespace ReactiveUI.Validation.ValidationBindings
+{
+    [System.Diagnostics.DebuggerDisplay("ValidationBinding: {_disposable}")]
+    public sealed class ValidationBinding : ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding
+    {
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public void Dispose() { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Action<System.Collections.Generic.IList<ReactiveUI.Validation.States.IValidationState>, System.Collections.Generic.IList<TOut>> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TOut>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Action<System.Collections.Generic.IList<ReactiveUI.Validation.States.IValidationState>, System.Collections.Generic.IList<TOut>> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter, bool strict) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForProperty<TView, TViewModel, TViewModelProperty, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel, TViewModelProperty>> viewModelProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter, bool strict) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel?, ReactiveUI.Validation.Helpers.ValidationHelper?>> viewModelHelperProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForValidationHelperProperty<TView, TViewModel, TOut>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel?, ReactiveUI.Validation.Helpers.ValidationHelper?>> viewModelHelperProperty, System.Action<ReactiveUI.Validation.States.IValidationState, TOut> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForValidationHelperProperty<TView, TViewModel, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TViewModel?, ReactiveUI.Validation.Helpers.ValidationHelper?>> viewModelHelperProperty, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForViewModel<TView, TViewModel, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForViewModel<TView, TViewModel, TOut>(TView view, System.Action<TOut> action, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<TOut> formatter) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+        [System.Diagnostics.CodeAnalysis.RequiresDynamicCode("WhenAnyValue uses expression trees which require dynamic code generation in AOT scenarios.")]
+        [System.Diagnostics.CodeAnalysis.RequiresUnreferencedCode("WhenAnyValue may reference members that could be trimmed in AOT scenarios.")]
+        public static ReactiveUI.Validation.ValidationBindings.Abstractions.IValidationBinding ForViewModel<TView, TViewModel, TViewProperty>(TView view, System.Linq.Expressions.Expression<System.Func<TView, TViewProperty>> viewProperty, ReactiveUI.Validation.Formatters.Abstractions.IValidationTextFormatter<string>? formatter) where TView : ReactiveUI.Binding.IViewFor<TViewModel> where TViewModel : class, ReactiveUI.IReactiveObject, ReactiveUI.Validation.Abstractions.IValidatableViewModel { }
+    }
+}
+namespace ReactiveUI.Validation.ValidationBindings.Abstractions
+{
+    public interface IValidationBinding : System.IDisposable
+    {
+    }
+}

@@ -1,11 +1,11 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-        "local>reactiveui/.github:renovate"
+        "local\u003Ereactiveui/.github:renovate"
     ],
     "packageRules": [
         {
-            "description": "Analyzer packages all gate the build through the same warnings-as-errors pass, so landing them separately just means several red CI runs in a row. Move them in one PR.",
+            "description": "Update the analyzers together.",
             "matchManagers": [
                 "nuget"
             ],
@@ -15,7 +15,7 @@
             ]
         },
         {
-            "description": "Packaging, versioning and symbol tooling. These affect how the package is produced, never the shipped API, so they are safe to move as one.",
+            "description": "Update packaging tools together.",
             "matchManagers": [
                 "nuget"
             ],
@@ -26,7 +26,7 @@
             ]
         },
         {
-            "description": "MessageBox.Avalonia is part of the Avalonia sample stack but does not carry the Avalonia prefix the shared preset matches on.",
+            "description": "Include MessageBox.Avalonia in the Avalonia group.",
             "matchManagers": [
                 "nuget"
             ],
@@ -35,6 +35,41 @@
                 "/^Avalonia(\\.|$)/",
                 "/^MessageBox\\.Avalonia$/"
             ]
+        },
+        {
+            "description": "Keep runtime packages in their target framework\u0027s major version.",
+            "matchManagers": [
+                "nuget"
+            ],
+            "matchPackageNames": [
+                "System.Collections.Immutable"
+            ],
+            "matchUpdateTypes": [
+                "major"
+            ],
+            "enabled": false
+        },
+        {
+            "description": "Allow .NET 11 preview updates within the .NET 11 band.",
+            "matchManagers": [
+                "nuget"
+            ],
+            "matchPackageNames": [
+                "System.Collections.Immutable"
+            ],
+            "matchCurrentVersion": "/^11\\./",
+            "allowedVersions": "/^11\\./",
+            "ignoreUnstable": false
+        },
+        {
+            "description": "Keep the coverage package pinned until its regression is resolved.",
+            "matchManagers": [
+                "nuget"
+            ],
+            "matchPackageNames": [
+                "Microsoft.Testing.Extensions.CodeCoverage"
+            ],
+            "enabled": false
         }
     ]
 }
