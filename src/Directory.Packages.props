@@ -16,7 +16,7 @@
     <PackageVersion Include="ReactiveUI.Reactive" Version="26.0.1" />
     <PackageVersion Include="Splat" Version="21.0.0" />
     <PackageVersion Include="Splat.Builder" Version="21.0.0" />
-    <PackageVersion Include="Polyfill" Version="11.4.1" />
+    <PackageVersion Include="Polyfill" Version="11.4.3" />
     <PackageVersion Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
     <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.14.0.6" />
     <PackageVersion Include="Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx" Version="2.11.0.1" />
