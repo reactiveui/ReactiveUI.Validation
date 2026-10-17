@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup Label="Core packages">
-    <PackageVersion Include="DynamicData" Version="9.4.33" />
+    <PackageVersion Include="DynamicData" Version="9.5.0" />
     <PackageVersion Include="ReactiveUI" Version="26.0.1" />
     <PackageVersion Include="ReactiveUI.AndroidX" Version="26.0.1" />
     <PackageVersion Include="ReactiveUI.AndroidX.Reactive" Version="26.0.1" />
