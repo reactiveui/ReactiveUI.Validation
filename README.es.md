@@ -46,10 +46,10 @@ ReactiveUI.Validation fue desarrollado originalmente por [@jcmm33](https://githu
 
 | Plataforma | Targets |
 |------------|---------|
-| .NET | net8.0, net9.0, net10.0 |
-| .NET Framework | net462, net472, net481 |
-| Windows | net8.0-windows10.0.19041.0, net9.0-windows10.0.19041.0, net10.0-windows10.0.19041.0 |
-| Android (MAUI) | net9.0-android, net10.0-android |
+| .NET | net10.0, net11.0 |
+| .NET Framework | net462, net47, net471, net472, net48, net481 |
+| Windows | net10.0-windows10.0.19041.0, net11.0-windows10.0.19041.0 |
+| Android (MAUI) | net10.0-android, net11.0-android |
 
 ## Paquetes NuGet
 
