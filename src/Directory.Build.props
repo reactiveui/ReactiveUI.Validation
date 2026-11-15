@@ -2,7 +2,7 @@
   <PropertyGroup>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
     <WarningsAsErrors>$(WarningsAsErrors);nullable</WarningsAsErrors>
-    <LangVersion>preview</LangVersion>
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <Copyright>Copyright © 2019-$(CompanyName) $([System.DateTime]::Now.ToString(`yyyy`)) ReactiveUI and Contributors</Copyright>
