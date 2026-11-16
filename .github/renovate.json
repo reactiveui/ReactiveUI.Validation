@@ -1,66 +1,9 @@
 {
     "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": [
-        "local\u003Ereactiveui/.github:renovate"
+        "local>reactiveui/.github:renovate"
     ],
     "packageRules": [
-        {
-            "description": "Update the analyzers together.",
-            "matchManagers": [
-                "nuget"
-            ],
-            "groupName": "analyzers",
-            "matchPackageNames": [
-                "/^(Style|Performance|Security|PublicApi)Sharp\\.Analyzers$/"
-            ]
-        },
-        {
-            "description": "Update packaging tools together.",
-            "matchManagers": [
-                "nuget"
-            ],
-            "groupName": "build tooling",
-            "matchPackageNames": [
-                "/^MinVer$/",
-                "/^Microsoft\\.SourceLink\\./"
-            ]
-        },
-        {
-            "description": "Include MessageBox.Avalonia in the Avalonia group.",
-            "matchManagers": [
-                "nuget"
-            ],
-            "groupName": "Avalonia",
-            "matchPackageNames": [
-                "/^Avalonia(\\.|$)/",
-                "/^MessageBox\\.Avalonia$/"
-            ]
-        },
-        {
-            "description": "Keep runtime packages in their target framework\u0027s major version.",
-            "matchManagers": [
-                "nuget"
-            ],
-            "matchPackageNames": [
-                "System.Collections.Immutable"
-            ],
-            "matchUpdateTypes": [
-                "major"
-            ],
-            "enabled": false
-        },
-        {
-            "description": "Allow .NET 11 preview updates within the .NET 11 band.",
-            "matchManagers": [
-                "nuget"
-            ],
-            "matchPackageNames": [
-                "System.Collections.Immutable"
-            ],
-            "matchCurrentVersion": "/^11\\./",
-            "allowedVersions": "/^11\\./",
-            "ignoreUnstable": false
-        },
         {
             "description": "Keep the coverage package pinned until its regression is resolved.",
             "matchManagers": [
