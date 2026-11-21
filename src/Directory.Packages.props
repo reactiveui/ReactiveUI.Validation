@@ -10,10 +10,10 @@
 
   <ItemGroup Label="Core packages">
     <PackageVersion Include="DynamicData" Version="9.5.0" />
-    <PackageVersion Include="ReactiveUI" Version="27.0.0" />
-    <PackageVersion Include="ReactiveUI.AndroidX" Version="27.0.0" />
-    <PackageVersion Include="ReactiveUI.AndroidX.Reactive" Version="27.0.0" />
-    <PackageVersion Include="ReactiveUI.Reactive" Version="27.0.0" />
+    <PackageVersion Include="ReactiveUI" Version="27.0.1" />
+    <PackageVersion Include="ReactiveUI.AndroidX" Version="27.0.1" />
+    <PackageVersion Include="ReactiveUI.AndroidX.Reactive" Version="27.0.1" />
+    <PackageVersion Include="ReactiveUI.Reactive" Version="27.0.1" />
     <PackageVersion Include="Polyfill" Version="11.4.5" />
     <PackageVersion Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
     <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.14.0.6" />
