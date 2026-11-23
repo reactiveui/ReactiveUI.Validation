@@ -10,11 +10,11 @@
 
   <ItemGroup Label="Core packages">
     <PackageVersion Include="DynamicData" Version="9.5.0" />
-    <PackageVersion Include="ReactiveUI" Version="27.0.0" />
-    <PackageVersion Include="ReactiveUI.AndroidX" Version="27.0.0" />
-    <PackageVersion Include="ReactiveUI.AndroidX.Reactive" Version="27.0.0" />
-    <PackageVersion Include="ReactiveUI.Reactive" Version="27.0.0" />
-    <PackageVersion Include="Polyfill" Version="11.4.5" />
+    <PackageVersion Include="ReactiveUI" Version="28.0.0" />
+    <PackageVersion Include="ReactiveUI.AndroidX" Version="28.0.0" />
+    <PackageVersion Include="ReactiveUI.AndroidX.Reactive" Version="28.0.0" />
+    <PackageVersion Include="ReactiveUI.Reactive" Version="28.0.0" />
+    <PackageVersion Include="Polyfill" Version="12.0.0" />
     <PackageVersion Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
     <PackageVersion Include="Xamarin.Google.Android.Material" Version="1.14.0.6" />
   </ItemGroup>
@@ -50,6 +50,6 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.12.0" />
     <PackageVersion Include="Microsoft.Reactive.Testing" Version="7.0.0" />
     <PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.12.0" />
-    <PackageVersion Include="TUnit" Version="1.85.0" />
+    <PackageVersion Include="TUnit" Version="1.87.12" />
   </ItemGroup>
 </Project>
