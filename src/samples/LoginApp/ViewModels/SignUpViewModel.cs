@@ -123,8 +123,8 @@ public partial class SignUpViewModel : ReactiveValidationObject, IRoutableViewMo
         // 'ConfirmPassword' property via a call to the ValidationRule extension method.
         var passwordsObservable =
             this.WhenAnyValue(
-                x => x.Password,
-                x => x.ConfirmPassword,
+                static x => x.Password,
+                static x => x.ConfirmPassword,
                 static (password, confirmation) =>
                     password == confirmation);
 
@@ -140,14 +140,14 @@ public partial class SignUpViewModel : ReactiveValidationObject, IRoutableViewMo
         // error state when UserName is either invalid, or just changed and hasn't been validated yet.
         // Asynchronous validation logic with throttling to avoid excessive calls.
         var usernameValidated =
-            this.WhenAnyValue(x => x.UserName)
+            this.WhenAnyValue(static x => x.UserName)
                 .Throttle(UserNameThrottle, RxSchedulers.TaskpoolScheduler)
                 .SelectMany(username => Signal.FromAsync(() => ValidateNameImpl(username)))
                 .ObserveOn(RxSchedulers.MainThreadScheduler);
 
         // State to show while validation is in progress.
         var usernameDirty =
-            this.WhenAnyValue(x => x.UserName)
+            this.WhenAnyValue(static x => x.UserName)
                 .Select(static _ => new ValidationState(false, "Please wait..."));
 
         // Merge both states: "Please wait..." immediately, followed by the actual result.

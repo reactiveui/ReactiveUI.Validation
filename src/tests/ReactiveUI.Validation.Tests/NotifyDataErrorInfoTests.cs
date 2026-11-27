@@ -57,7 +57,7 @@ public class NotifyDataErrorInfoTests
             NameShouldNotBeEmptyMessage);
 
         viewModel.ValidationContext.Add(firstValidation);
-        _ = view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+        _ = view.Bind(view.ViewModel, static vm => vm.Name, static v => v.NameLabel);
         _ = view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
         // Verify validation context behavior.
@@ -91,7 +91,7 @@ public class NotifyDataErrorInfoTests
             NameShouldNotBeEmptyMessage);
 
         viewModel.ValidationContext.Add(firstValidation);
-        _ = view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+        _ = view.Bind(view.ViewModel, static vm => vm.Name, static v => v.NameLabel);
         _ = view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
         // Verify the initial state.
@@ -178,8 +178,8 @@ public class NotifyDataErrorInfoTests
         _ = viewModel.ValidationRule(
             vm => vm.OtherName,
             viewModel.WhenAnyValue(
-                m => m.Name,
-                m => m.OtherName,
+                static m => m.Name,
+                static m => m.OtherName,
                 static (name, other) => name == other),
             namesShouldMatchMessage);
 
@@ -460,7 +460,7 @@ public class NotifyDataErrorInfoTests
 
         // Now add a non-property observable validation (which triggers the else branch)
         _ = viewModel.ValidationRule(
-            viewModel.WhenAnyValue(x => x.Name, x => x.OtherName, static (a, b) => a is not null && b is not null),
+            viewModel.WhenAnyValue(static x => x.Name, static x => x.OtherName, static (a, b) => a is not null && b is not null),
             "Both values required.");
 
         // The non-property component should trigger ErrorsChanged for "Name" (the previously mentioned property)
@@ -589,7 +589,7 @@ public class NotifyDataErrorInfoTests
             static name => !string.IsNullOrWhiteSpace(name),
             NameShouldNotBeEmptyMessage);
 
-        _ = view.Bind(view.ViewModel, vm => vm.Name, v => v.NameLabel);
+        _ = view.Bind(view.ViewModel, static vm => vm.Name, static v => v.NameLabel);
         _ = view.BindValidation(view.ViewModel, vm => vm.Name, v => v.NameErrorLabel);
 
         // Verify initial invalid state.
@@ -703,7 +703,7 @@ public class NotifyDataErrorInfoTests
 
         // Track HasErrors state at the time of each property change.
         var hasErrorsValues = new List<bool>();
-        using var subscription = viewModel.WhenAnyValue(x => x.Name)
+        using var subscription = viewModel.WhenAnyValue(static x => x.Name)
             .Subscribe(_ => hasErrorsValues.Add(viewModel.HasErrors));
 
         // Initial subscription fires with null Name - should have errors.
@@ -733,8 +733,8 @@ public class NotifyDataErrorInfoTests
         var viewModel = new IndeiTestViewModel { MaxValue = InitialMaxValue };
 
         var minMaxObs = viewModel.WhenAnyValue(
-            v => v.MinValue,
-            v => v.MaxValue,
+            static v => v.MinValue,
+            static v => v.MaxValue,
             static (min, max) => min < max);
 
         _ = viewModel.ValidationRule(
@@ -747,7 +747,7 @@ public class NotifyDataErrorInfoTests
 
         // Track HasErrors at the moment MaxValue changes.
         var hasErrorsOnChange = new List<bool>();
-        using var hasErrorsSubscription = viewModel.WhenAnyValue(x => x.MaxValue)
+        using var hasErrorsSubscription = viewModel.WhenAnyValue(static x => x.MaxValue)
             .Skip(1)
             .Subscribe(_ => hasErrorsOnChange.Add(viewModel.HasErrors));
 

@@ -111,12 +111,12 @@ public class ValidationBindingEdgeCaseTests
         _ = view.ViewModel!.ValidationRule(
             vm => vm.Name,
             view.ViewModel!.WhenAnyValue(
-                vm => vm.Name,
+                static vm => vm.Name,
                 static name => (IValidationState)new CustomValidationState(
                     !string.IsNullOrWhiteSpace(name),
                     nameErrorMessage)));
 
-        _ = view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+        _ = view.Bind(view.ViewModel, static x => x.Name, static x => x.NameLabel);
         _ = view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
 
         using (Assert.Multiple())
@@ -146,12 +146,12 @@ public class ValidationBindingEdgeCaseTests
         _ = view.ViewModel!.ValidationRule(
             vm => vm.Name,
             view.ViewModel!.WhenAnyValue(
-                vm => vm.Name,
+                static vm => vm.Name,
                 static name => new CustomValidationState(
                     !string.IsNullOrWhiteSpace(name),
                     nameErrorMessage)));
 
-        _ = view.Bind(view.ViewModel, x => x.Name, x => x.NameLabel);
+        _ = view.Bind(view.ViewModel, static x => x.Name, static x => x.NameLabel);
         _ = view.BindValidation(view.ViewModel, x => x.Name, x => x.NameErrorLabel);
 
         using (Assert.Multiple())
