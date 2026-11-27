@@ -24,10 +24,10 @@ public partial class SignUpView : Form, IViewFor<SignUpViewModel>
         _ = this.WhenActivated((disposables) =>
         {
             // Standard ReactiveUI bindings.
-            disposables.Add(this.Bind(ViewModel, x => x.UserName, x => x.UserNameTextBox.Text));
-            disposables.Add(this.Bind(ViewModel, x => x.Password, x => x.PasswordTextBox.Text));
-            disposables.Add(this.Bind(ViewModel, x => x.ConfirmPassword, x => x.ConfirmPasswordTextBox.Text));
-            disposables.Add(this.BindCommand(ViewModel, x => x.SignUp, x => x.SignUpButton));
+            disposables.Add(this.Bind(ViewModel, static x => x.UserName, static x => x.UserNameTextBox.Text));
+            disposables.Add(this.Bind(ViewModel, static x => x.Password, static x => x.PasswordTextBox.Text));
+            disposables.Add(this.Bind(ViewModel, static x => x.ConfirmPassword, static x => x.ConfirmPasswordTextBox.Text));
+            disposables.Add(this.BindCommand(ViewModel, static x => x.SignUp, static x => x.SignUpButton));
 
             // ReactiveUI.Validation: Bindings for error messages.
             // BindValidation(ViewModel, vmProperty, viewControlProperty)

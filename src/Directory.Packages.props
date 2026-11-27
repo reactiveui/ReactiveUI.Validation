@@ -31,8 +31,9 @@
       </ItemGroup>
     </When>
     <Otherwise>
+      <!-- .NET Framework: ReactiveUI.Primitives 10.2 needs System.Collections.Immutable 11.0.0 there. -->
       <ItemGroup>
-        <PackageVersion Include="System.Collections.Immutable" Version="10.0.15" />
+        <PackageVersion Include="System.Collections.Immutable" Version="11.0.0" />
       </ItemGroup>
     </Otherwise>
   </Choose>

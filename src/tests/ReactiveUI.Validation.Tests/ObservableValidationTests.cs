@@ -199,7 +199,7 @@ public class ObservableValidationTests
             new ObservableValidation<TestViewModel, string?, string?>(
                 viewModel,
                 model => model.Name!,
-                viewModel.WhenAnyValue(x => x.Name),
+                viewModel.WhenAnyValue(static x => x.Name),
                 static state => !string.IsNullOrWhiteSpace(state),
                 "Name shouldn't be empty.");
 

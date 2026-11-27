@@ -21,8 +21,8 @@ public partial class SignUpView : ReactiveUserControl<SignUpViewModel>
         _ = this.WhenActivated(disposables =>
         {
             disposables.Add(
-                this.WhenAnyValue(x => x.ViewModel)
-                    .BindTo(this, x => x.DataContext));
+                this.WhenAnyValue(static x => x.ViewModel)
+                    .BindTo(this, static x => x.DataContext));
 
             // ReactiveUI.Validation: Bindings for error messages.
             // BindValidation(ViewModel, vmProperty, viewControlProperty)
@@ -39,14 +39,14 @@ public partial class SignUpView : ReactiveUserControl<SignUpViewModel>
 
             // Controlling visibility of validation messages based on their content.
             disposables.Add(
-                this.WhenAnyValue(x => x.UserNameValidation.Text, static text =>!string.IsNullOrWhiteSpace(text))
-                    .BindTo(this, x => x.UserNameValidation.Visibility));
+                this.WhenAnyValue(static x => x.UserNameValidation.Text, static text =>!string.IsNullOrWhiteSpace(text))
+                    .BindTo(this, static x => x.UserNameValidation.Visibility));
             disposables.Add(
-                this.WhenAnyValue(x => x.PasswordValidation.Text, static text =>!string.IsNullOrWhiteSpace(text))
-                    .BindTo(this, x => x.PasswordValidation.Visibility));
+                this.WhenAnyValue(static x => x.PasswordValidation.Text, static text =>!string.IsNullOrWhiteSpace(text))
+                    .BindTo(this, static x => x.PasswordValidation.Visibility));
             disposables.Add(
-                this.WhenAnyValue(x => x.ConfirmPasswordValidation.Text, static text =>!string.IsNullOrWhiteSpace(text))
-                    .BindTo(this, x => x.ConfirmPasswordValidation.Visibility));
+                this.WhenAnyValue(static x => x.ConfirmPasswordValidation.Text, static text =>!string.IsNullOrWhiteSpace(text))
+                    .BindTo(this, static x => x.ConfirmPasswordValidation.Visibility));
         });
     }
 }
