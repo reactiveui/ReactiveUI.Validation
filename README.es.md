@@ -3,7 +3,7 @@
 [![Build](https://github.com/reactiveui/ReactiveUI.Validation/actions/workflows/ci-build.yml/badge.svg)](https://github.com/reactiveui/ReactiveUI.Validation/actions/workflows/ci-build.yml)
 [![Cobertura](https://codecov.io/gh/reactiveui/ReactiveUI.Validation/branch/main/graph/badge.svg)](https://codecov.io/gh/reactiveui/ReactiveUI.Validation)
 [![Licencia](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Slack](https://img.shields.io/badge/chat-slack-blue.svg)](https://reactiveui.net/slack)
+[![Discussions](https://img.shields.io/badge/discussions-ask%20a%20question-8A2BE2?logo=github&logoColor=white)](https://github.com/reactiveui/ReactiveUI.Validation/discussions)
 [![Good First Issues](https://img.shields.io/badge/first--timers--only-friendly-blue.svg)](https://github.com/reactiveui/ReactiveUI.Validation/labels/good%20first%20issue)
 [![Stars](https://img.shields.io/github/stars/reactiveui/ReactiveUI.Validation.svg?style=social)](https://github.com/reactiveui/ReactiveUI.Validation/stargazers)
 
