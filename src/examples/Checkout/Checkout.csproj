@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFrameworks>net10.0;net11.0</TargetFrameworks>
+    <IsPackable>false</IsPackable>
+    <ValidationNamespaceRoot>ReactiveUI.Validation</ValidationNamespaceRoot>
+  </PropertyGroup>
+  <Import Project="../../ReactiveUI.Validation/ReactiveUI.Validation.Usings.props" />
+  <ItemGroup>
+    <ProjectReference Include="../../ReactiveUI.Validation/ReactiveUI.Validation.csproj" />
+    <Using Include="ReactiveUI" />
+    <Using Include="ReactiveUI.Builder" />
+    <Using Include="ReactiveUI.Primitives.Concurrency.ImmediateSequencer" Alias="Immediate" />
+  </ItemGroup>
+</Project>

@@ -15,6 +15,8 @@
   <Project Path="tests/ReactiveUI.Validation.Tests/ReactiveUI.Validation.Tests.csproj" />
   <Project Path="tests/ReactiveUI.Validation.Reactive.Tests/ReactiveUI.Validation.Reactive.Tests.csproj" />
   <Folder Name="/Samples/">
+    <Project Path="examples/Checkout/Checkout.csproj" />
+    <Project Path="examples/Checkout.Reactive/Checkout.Reactive.csproj" />
     <Project Path="samples/AvaloniaApplication1/AvaloniaApplication1.csproj" />
     <File Path="samples/Directory.Packages.props" />
     <Project Path="samples/AvaloniaApplication1.Desktop/AvaloniaApplication1.Desktop.csproj" />
